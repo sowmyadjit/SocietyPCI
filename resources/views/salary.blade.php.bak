@@ -1,0 +1,662 @@
+<link href="css/datepicker.css" rel='stylesheet'>
+<script src="js/bootstrap-typeahead.js"></script>
+<div id="content" class="col-md-12">
+	<div class="row">
+		<div class="box">
+			<div class="box-inner">
+				<!--<div class="box-header well" data-original-title="">
+					<h2><i class="glyphicon glyphicon-user"></i>SALARY</h2>
+					<div class="box-icon">
+					<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+					<a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
+					<a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+					</div>
+				</div>-->
+				{!! Form::open(['url' => "dlrepay",'class' => 'form-horizontal','id' => 'form_dlrepay','method'=>'post']) !!}
+				
+				<div class="col-md-6">
+					<div class="">
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Employee Name:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="ename" name="ename"  value="{{ $sal['data']->FirstName }}" >
+								<input type="text" class="hidden" id="eid" name="eid"  value="{{ $sal['data']->Eid }}" >
+								<input type="text" class="hidden" id="uid" name="uid"  value="{{ $sal['data']->Uid }}" >
+								<input type="text" class="hidden" id="bid" name="bid"  value="{{ $sal['data']->Bid }}" >
+							</div>
+						</div>
+						
+						<div class="form-group hidden">
+							<label class="control-label col-sm-4">Bank Name:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="bname" name="bname"  >
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Designation:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="desig" name="desig"  value="{{ $sal['data']->DName }}" >
+								<input type="text" class="hidden" id="desigid" name="desigid"  value="{{ $sal['data']->Did }}" >
+							</div>
+						</div>
+						
+			            <div class="form-group">
+							<label class="control-label col-sm-4">Employee Code:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="ecode" name="ecode"  value="{{ $sal['data']->ECode }}" >
+							</div>
+						</div>
+						
+						
+						<div class="form-group hidden">
+							<label class="control-label col-sm-4">Cheque No:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="cqno" name="cqno"  >
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Basic Pay:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="bpay" name="bpay"  value="{{ $sal['data']->basicpay }}" >
+							</div>
+						</div>
+						
+						
+						<input type="text" class="form-control hidden" id="spf" name="spf"  value="{{ $sal['data']->spf }}" >
+						
+						<input type="text" class="form-control hidden" id="sesi" name="sesi"  value="{{ $sal['data']->sesi }}" >
+						
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">HRA:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="hra" name="hra"  value="{{ $sal['data']->hra }}" >
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">CCNA:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="ccna" name="ccna"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4">OTHERS:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="oth" name="oth"  >
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">TA:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="ta" name="ta"  >
+							</div>
+						</div>
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Special Allowance:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="sa" name="sa"  onblur="earningcalculate();">
+							</div>
+						</div>
+						
+						<div class="form-group da1">
+							<label class="control-label col-sm-4">DA:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="da1" name="da1"  onblur=>
+							</div>
+						</div>
+						
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Gross Earning:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="ge" name="ge"   >
+							</div>
+						</div>
+						
+						
+						
+					</div>
+				</div>
+				
+				
+				<div class="col-md-6">
+					<div class="">
+						
+						
+						<div class="form-group hidden">
+							<label class="control-label col-sm-4">Cheque Date:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="cqdate" name="cqdate"  >
+							</div>
+						</div>
+						
+						
+						
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Date:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="date" name="date" >
+							</div>
+						</div>
+						
+						
+						
+						
+						
+						<div class="form-group hidden">
+							<label class="control-label col-sm-4">Year:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="year" name="year"  >
+							</div>
+						</div>
+						
+						<div class="form-group hidden">
+							<label class="control-label col-sm-4">PF:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="pf" name="pf"  value="{{ $sal['data']->pf }}">
+							</div>
+						</div>
+						<div class="form-group hidden">
+							<label class="control-label col-sm-4">ESI:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="esi1" name="esi1"  value="{{ $sal['data']->esi }}">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Income Tax:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="it" name="it"   >
+							</div>
+						</div>
+						
+						
+						
+						
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Professional Tax:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="pt" name="pt"  >
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4">other Deduction:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="od" name="od"  onblur="calculatededuction();" >
+							</div>
+						</div>
+						
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">PF:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="staffpf" name="staffpf"   >
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4"> Society PF:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="socpf" name="socpf"   >
+							</div>
+						</div>
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">ESI:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="esi" name="esi"   >
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4"> Society ESI:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="socesi" name="socesi"   >
+							</div>
+						</div>
+						
+						
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Gross Deduction:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="gd" name="gd" >
+							</div>
+						</div>
+						
+						
+						
+					</div>
+				</div>
+				
+				
+				
+				
+				<div class="col-md-12">
+					<div class="">
+						
+						<h4>LOAN DETAILS:</h4>
+						<div class="loandetails">
+							<div class="form-group">
+								<label class="control-label col-sm-4">LOAN NUMBER</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="ln" name="ln" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-4">remaining amount:</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="ra" name="ra" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-4">EMI AMOUNT:</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="ea" name="ea" >
+								</div>
+							</div>
+							
+						</div>
+						<input type="text" class="form-control hidden" id="temp" name="temp" >
+						
+						<!--staff loan SECTION STARTS HERE-->
+						<div class="staff_loan">
+							<div class="col-md-6">
+								<div class="row">	
+									
+									<div class="form-group">
+										<label class="control-label col-sm-4" for="first_name">SL Account Number :</label>
+										<div id="the-basics" class="col-sm-8">
+											<input class="SLAccNumTypeAhead form-control"  type="text" placeholder="SELECT SL ACCOUNT NUMBER" id="SLAccNum">  
+										</div>
+									</div>
+									
+									
+									
+									<div class="form-group">
+										<label class="control-label col-sm-4" for="comment">Employee Name:</label>
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="slcustname" name="slcustname" placeholder="EMPLOYEE NAME"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="control-label col-sm-4" for="comment">Remaining Amount:</label>
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="slremamt" name="slremamt" placeholder="REMAINING AMOUNT"/>
+										</div>
+									</div>
+									
+									<div class="form-group" >
+										<label class="control-label col-sm-4">DONT PAY LOAN AMT :</label>
+										<div class="col-md-8">
+											<input type="checkbox" id="dp" name="dp" style="margin-top: 11px;">
+										</div>
+									</div>
+									
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="row">
+									<div class="form-group">
+										<label class="control-label col-sm-4" for="comment">Interest Amount:</label>
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="slintamt" name="slintamt" placeholder="INTEREST AMOUNT"/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label class="control-label col-sm-4" for="comment">EMI Amount :</label>
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="EMI_Amount" name="EMI_Amount" placeholder="EMI Amount"/>
+										</div>
+									</div>
+									
+									
+									<input type="button" value="Add charages" class="btn btn-success btn-sm pdladdcharg"/>
+									<div class="form-group" id="pdlcharge">
+									</div>
+									
+									
+									<div class="form-group">
+										<label class="control-label col-sm-4">Net Pay:</label>
+										<div class="col-md-8">
+											<input type="text" class="form-control" id="npay" name="npay" >
+											
+										</div>
+									</div>
+									
+								</div>
+								<!--staff loan ENDS HERE-->
+								
+								
+								
+							</div>
+						</div>
+						
+						
+						<input type="text" class="form-control hidden" id="totpf" name="totpf" >
+						<input type="text" class="form-control hidden" id="totesi" name="totesi" >
+						
+						
+						
+					</div>
+				</div>
+				
+				
+				<div class="form-group">
+					<div class="text-center">
+						<input id="btn_add" name="btn_add" type="submit" class="btn btn-primary sbmbtn" value="SUBMIT" />
+						
+					</div>
+				</div>
+			</form>
+			
+		</div>
+	</div>
+	
+</div>
+</div>
+<script>
+	$('.loandetails').hide();
+	$('.da1').hide();
+	function earningcalculate()
+	{
+		sallowance=$('#sa').val();
+		//alert(sallowance);
+		basic=$('#bpay').val();
+		hra_amt=$('#hra').val();
+		ccna=$('#ccna').val();
+		others=$('#oth').val();
+		ta=$('#ta').val();
+		
+		
+		DA=((basic*20)/100);
+		
+		$('.da1').show();
+		$('#da1').val(DA);
+		gearning=(parseFloat(sallowance)+parseFloat(basic)+parseFloat(hra_amt)+parseFloat(ccna)+parseFloat(others)+parseFloat(DA)+parseFloat(ta));
+		// alert('gearning');
+		$('#ge').val(gearning);
+		a=0;
+		loan=0;
+		usr="<?php echo $temp=$sal['data']->Uid;?>";
+		$.ajax({
+			url: 'getloandetaiforsalary',
+			type: 'get',
+			data: '&userid='+usr,
+			success: function(data) {
+				
+				if(data=="[object Object]")
+				{
+					$('.loandetails').hide();
+				}
+				else
+				{				
+					$('.loandetails').show();
+					$('#ln').val(data['loannum']);
+					$('#ea').val(data['emiamt']);
+					$('#ra').val(data['remainigamt']);
+					$('#temp').val(data['ac']);
+				}
+			}
+		});
+		
+	}
+</script>
+<script>
+	function calculatededuction()
+	{
+		
+		
+		
+		pfund1=$('#pf').val();
+		itax=$('#it').val();
+		ptax=$('#pt').val();
+		basic=$('#bpay').val();
+		DA=((basic*20)/100);
+		DA=Math.round(DA);
+		esi1=$('#esi1').val();
+		otherdedction=$('#od').val();
+		at=(parseFloat(basic)+parseFloat(DA));
+		pfund=(at*parseFloat(pfund1))/100;
+		
+		pfund=Math.round(pfund);
+		esi=(at*parseFloat(esi1))/100;
+		/*esi=Math.round(esi);*/esi=Math.ceil(esi);
+		gdeduction=(parseFloat(pfund)+parseFloat(itax)+parseFloat(ptax)+parseFloat(esi)+parseFloat(otherdedction));
+		$('#gd').val(gdeduction);
+		//	$('#esi').val(esi);
+		gearn=$('#ge').val();
+		netpay=(parseFloat(gearn)-parseFloat(gdeduction));
+		a=$('#ea').val();
+		
+		pfsociety=$('#spf').val();
+		essociety=$('#sesi').val();
+		
+		societypf=(at*parseFloat(pfsociety))/100;
+		societyesi=(at*parseFloat(essociety))/100;
+		societypf=Math.round(societypf);
+		societyesi=Math.round(societyesi);
+		
+		totpf=societypf+pfund;
+		totesi=societyesi+esi;
+		
+		$('#totpf').val(totpf);
+		$('#totesi').val(totesi);
+		//staffpf socpf esi socesi
+		$('#staffpf').val(pfund);
+		$('#socpf').val(societypf);
+		$('#esi').val(esi);
+		$('#socesi').val(societyesi);
+		loan=$('#temp').val();
+		
+		
+		
+		
+		
+		
+		
+		
+		$('#dp').click(function(e){
+			if($('#dp').is(":checked"))
+			{
+				$('#npay').val(netpay);
+				noloan="YES";
+			}
+			else{
+				//a=$('#ea').val();
+				intt=$('#slintamt').val();
+				EMI_Amount=$('#EMI_Amount').val();
+				//a=intt+EMI_Amount;
+				temp="";
+				temp1="";
+				sum=0;
+				for(i=1;i<xpdl;i++)
+				{
+					amt=$('#BranchListDDpdl'+i).val();
+					amt1=$('#xtr_chargpdl'+i).val();
+					sum=parseInt(sum)+parseInt(amt1);
+					if(i < xpdl-1){
+						temp+=amt+",";
+						temp1+=amt1+",";
+						}else{
+						temp+=amt;
+						temp1+=amt1;
+					}
+				}
+				
+				x=xpdl;
+				charges=temp;
+				amount=temp1;
+				
+				a=((parseFloat(intt)+parseFloat(EMI_Amount))+sum);
+				
+				netpay=(parseFloat(gearn)-parseFloat(gdeduction));
+				pay=(parseFloat(netpay)-parseFloat(a));
+				pay=Math.round(pay);
+				$('#npay').val(pay);
+				noloan="NO";
+			}
+		});
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+</script>
+<script>
+	indexid=0;
+	$('.sbmbtn').click( function(e) {
+	e.preventDefault();
+		alert("hai");
+		loannum=$('.SLAccNumTypeAhead').data('value');
+		
+		if(indexid==0)
+		{
+			as=$('#npay').val();
+			
+			if(as=="")
+			{
+		alert("select wether to pay loan or not");
+			}
+			else
+			{
+				indexid++;
+				
+				if(x>0)
+				{
+					charges;
+					amount;
+				}
+				else
+				{
+					charges="";
+					amount="";
+					
+				}
+				
+				$.ajax({
+					
+					url: 'salaryinsert',
+					type: 'post',
+					data: $('#form_dlrepay').serialize()+'&noloan='+noloan+'&loannum='+loannum+'&charges='+charges+'&amount='+amount+'&loopid='+x,
+					success: function(data) {
+						alert("success");
+						//$('.salclassid').click();
+						
+					}
+				});
+			}
+		}
+	});
+	
+	
+	
+	$('.SLAccNumTypeAhead').typeahead({
+		ajax:'/getslacc'
+	});
+	
+	
+	$('.SLAccNumTypeAhead').change(function(e)
+	{
+	slaccid=$('.SLAccNumTypeAhead').data('value');
+	
+	$.ajax({
+		url:'/GetslDetail',
+		type:'post',
+		data:'&slAlcID='+slaccid,
+		success:function(data)
+		{
+			
+			$('#slremamt').val(data['reamt']);
+			fullname=data['FN']+" . "+data['MN']+" . "+data['LN'];
+			$('#slcustname').val(fullname);
+			$('#slStdate').val(data['StDte']);
+			$('#EMI_Amount').val(data['EMI_Amount']);
+			alert(data['EMI_Amount']);
+			//sdate=$('#slStdate').val();
+			bal=$('#slremamt').val();
+			sdate=data['StDte'];
+			$.ajax({
+				url:'/CalcDayDiff',
+				type:'post',
+				data:'&dlsdate='+sdate,
+				success:function(data)
+				{
+					daydiff=data;
+					inerest=13/100;
+					days=daydiff/365;
+					
+					
+					totbal=days*inerest*bal;
+					totbal=Math.round(totbal);
+					$('#slintamt').val(totbal);
+					totamt=(parseFloat(totbal)+parseFloat(bal));
+					//alert(bal+" "+totbal+" "+totamt);
+					$('#slremtotamt').val(totamt);
+					
+					
+				}
+			});
+		}
+	});
+	
+	
+	
+	
+	});
+	$('.BranchTypeAheadSL').typeahead({
+		ajax:'/GetBranches'
+	});
+	xpdl=1;
+	var drop_val="<?php foreach($sal['drop'] as $key){
+		echo "<option >-------------</option>";
+		echo "<option value='".$key->charges_id."' >" .$key->charges_name."";
+		echo "</option>";
+	}?>";
+	
+	var htmltextpdl="";
+	$('.pdladdcharg').click(function(e){
+		
+		
+		htmltextpdl='<span class="xtr"><label class="control-label inline col-md-4">chareges:';
+		htmltextpdl+='<select class="form-control xtr_drop"  id="BranchListDDpdl'+xpdl+'" name="BranchListDDpdl'+xpdl+'" >'+drop_val+'</select>';  
+		htmltextpdl+='<input type="text" class="form-control xtr_charg" id="xtr_chargpdl'+xpdl+'">';
+		htmltextpdl+="</label></span>";
+		
+		xpdl=xpdl+1;
+		
+		
+		
+		
+		$("#pdlcharge").append(htmltextpdl);
+		//append
+	});
+</script>
+
+
+
+
+
+
