@@ -1483,7 +1483,7 @@
 			$loan_deduction_amount = $rem_amt + $rem_int + $charges;
 		/*	$extra_amount =  */
 			
-			$extra_amount = $auctionAmt - $rem_amt - $rem_int;
+			$extra_amount = $auctionAmt - $loan_deduction_amount;
 			if($extra_amount < 0)
 				$extra_amount = 0;
 			
