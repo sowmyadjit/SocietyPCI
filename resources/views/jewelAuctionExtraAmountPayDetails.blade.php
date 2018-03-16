@@ -217,7 +217,7 @@
 		
 		$('.sbmbtn').click( function(e) {
 			e.preventDefault();
-			var jl_alloc_id,auc_amt,name,ln_no,st_date,end_date,gross_wt,net_wt,app_val,ln_amt,auc_amt,pay_mode;
+			var jl_alloc_id,auc_amt,name,ln_no,st_date,end_date,gross_wt,net_wt,app_val,ln_amt,auc_amt,pay_mode,per;
 			
 				jl_alloc_id = "{{$data['jl_alloc_id']}}";
 				cname = "{{$data['cname']}}";
@@ -236,6 +236,7 @@
 				cheque_date = $("#cheque_date").val();
 				bank_acc_no = $("#bank_acc_no").attr("data-value");
 				pay_date = $("#pay_date").val();
+				per = $("#per").val();
 			
 			$.ajax({
 				url: 'jewelAuctionExtraAmountPayDetails',

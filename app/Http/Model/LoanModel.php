@@ -1549,6 +1549,9 @@
 			
 			$today=date("Y-m-d");
 			$pay_date = $id["pay_date"];
+			$pay_date_time =  strtotime($pay_date);
+			$per = $id["per"];
+			
 			if($today == $pay_date) {
 				$old_entry = false;
 			} else {
@@ -1556,11 +1559,11 @@
 			}
 			
 			$extra_amount = $id['extra_amt'];
-			$date_ymd = date("Y-m-d");
-			$date_dmy = date("d-m-Y");
+			$date_ymd = date("Y-m-d",$pay_date_time);
+			$date_dmy = date("d-m-Y",$pay_date_time);
 			$time = date("Y-m-d H:i:s");
-			$month = date("d");
-			$year = date("Y");
+			$month = date("m",$pay_date_time);
+			$year = date("Y",$pay_date_time);
 			$voucher_no = 0;
 			$voucher_no = DB::table("branch")->where("Bid","=",$BID)->value("payment_voucher_No");
 			$voucher_no++;
@@ -1586,7 +1589,7 @@
 									"Accid"=>$acc_id,
 									"AccTid"=>"1",
 									"TransactionType"=>"CREDIT",
-									"particulars"=>"By Adjust Jewel Auction Account",
+									"particulars"=>$per,
 									"Amount"=>$extra_amount,
 									"tran_Date"=>$date_dmy,
 									"SBReport_TranDate"=>$date_ymd,
