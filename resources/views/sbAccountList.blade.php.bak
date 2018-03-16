@@ -5,7 +5,8 @@
 			
 			<div class="box-header well" data-original-title="">
 				<h2><i class="glyphicon glyphicon-globe"></i>SB Account List</h2>
-				<input type="button" value="Print" class="btn btn-info btn-sm print" style="float: right;" id="print">
+				<br>
+				<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
 			</div>
 			<script src="js/FileSaver.js"/>			
 			<script src="js/tableExport.js"/>	
