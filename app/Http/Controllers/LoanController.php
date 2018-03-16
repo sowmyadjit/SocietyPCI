@@ -1132,6 +1132,7 @@
 			$data['cheque_no'] = $request->input("cheque_no","");
 			$data['cheque_date'] = $request->input("cheque_date","");
 			$data['bank_acc_no'] = $request->input("bank_acc_no","");
+			$data['pay_date'] = $request->input("pay_date","");
 			if($data['pay_mode'] !== "") {
 				$this->loan->jewelAuctionExtraAmountPay($data);//5
 				return "succuss";

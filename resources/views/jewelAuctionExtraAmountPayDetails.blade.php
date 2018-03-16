@@ -38,6 +38,20 @@
 							<input type="text" class="form-control" id="extra_amt" name="extra_amt" value="{{$data['extra_amt']}}" >
 						</div>
 					</div>
+					
+					<div class="form-group">
+						<label class="control-label col-sm-4" for="comment">PAYMENT DATE:</label>
+						<div class="col-md-4">
+							<div class="input-group input-append date " id="datePicker">
+								<input type="text" class="form-control datepicker" name="pay_date" id="pay_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" VALUE="{{date('Y-m-d')}}"/>
+								<span class="input-group-addon add-on">
+									<span class="glyphicon glyphicon-calendar">
+									</span>
+								</span> 
+							</div>
+						</div>
+					</div>
+					
 					<div class="form-group">
 						<label class="control-label col-sm-4">Payment Mode:</label>
 						<div class="col-md-4">
@@ -111,6 +125,13 @@
 	</div>
 </div>
 
+
+
+<script>
+	$('.datepicker').datepicker().on('changeDate',function(e){
+		$(this).datepicker('hide');
+	});
+</script>
 
 <script>
 	function pay_mode_change() {
@@ -214,13 +235,14 @@
 				cheque_no = $("#cheque_no").val();
 				cheque_date = $("#cheque_date").val();
 				bank_acc_no = $("#bank_acc_no").attr("data-value");
+				pay_date = $("#pay_date").val();
 			
 			$.ajax({
 				url: 'jewelAuctionExtraAmountPayDetails',
 			//	type: 'post',
 			//	data:  $('#form_des').serialize(),
 				type: 'get',
-				data:'&jl_alloc_id='+jl_alloc_id+'&cname='+cname+'&ln_no='+ln_no+'&st_date='+st_date+'&end_date='+end_date+'&gross_wt='+gross_wt+'&net_wt='+net_wt+'&ln_amt='+ln_amt+'&auc_amt='+auc_amt+'&pay_mode='+pay_mode+'&bk_name='+bk_name+'&per='+per+'&acc_no='+acc_no+'&extra_amt='+extra_amt+'&cheque_no='+cheque_no+'&cheque_date='+cheque_date+'&bank_acc_no='+bank_acc_no,
+				data:'&jl_alloc_id='+jl_alloc_id+'&cname='+cname+'&ln_no='+ln_no+'&st_date='+st_date+'&end_date='+end_date+'&gross_wt='+gross_wt+'&net_wt='+net_wt+'&ln_amt='+ln_amt+'&auc_amt='+auc_amt+'&pay_mode='+pay_mode+'&bk_name='+bk_name+'&per='+per+'&acc_no='+acc_no+'&extra_amt='+extra_amt+'&cheque_no='+cheque_no+'&cheque_date='+cheque_date+'&bank_acc_no='+bank_acc_no+'&pay_date='+pay_date,
 				success: function(data) {
 					alert('success');
 				//	$('.branchclassid').click();

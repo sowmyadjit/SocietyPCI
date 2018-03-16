@@ -1548,6 +1548,13 @@
 			$BID=$uname->Bid;
 			
 			$today=date("Y-m-d");
+			$pay_date = $id["pay_date"];
+			if($today == $pay_date) {
+				$old_entry = false;
+			} else {
+				$old_entry = true;
+			}
+			
 			$extra_amount = $id['extra_amt'];
 			$date_ymd = date("Y-m-d");
 			$date_dmy = date("d-m-Y");
@@ -1562,12 +1569,14 @@
 				$bank_acc_no = $id["bank_acc_no"];
 			
 			DB::table('auction_amount_transaction')
-				->insert(['bid'=>$BID,'jl_alloc_id'=>$id['jl_alloc_id'],'tran_date'=>$today,'amt_piad'=>$id['extra_amt'],'created_by'=>$UID,'pay_mode'=>$id["pay_mode"],"voucher_no"=>$voucher_no,"cheque_no"=>$cheque_no,"cheque_date"=>$cheque_date,'SubLedgerId'=>"67"]);
+				->insert(['bid'=>$BID,'jl_alloc_id'=>$id['jl_alloc_id'],'tran_date'=>$pay_date,'amt_piad'=>$id['extra_amt'],'created_by'=>$UID,'pay_mode'=>$id["pay_mode"],"voucher_no"=>$voucher_no,"cheque_no"=>$cheque_no,"cheque_date"=>$cheque_date,'SubLedgerId'=>"67"]);
 				
 			if($id["pay_mode"] == "CASH") {
-				$cash_amount = DB::table("cash")->where("BID","=",$BID)->value("InHandCash");
-				$rem_cash = $cash_amount - $id['extra_amt'];
-				DB::table("cash")->where("BID","=",$BID)->update(["InHandCash"=>$rem_cash]);
+				if(!$old_entry) {
+					$cash_amount = DB::table("cash")->where("BID","=",$BID)->value("InHandCash");
+					$rem_cash = $cash_amount - $id['extra_amt'];
+					DB::table("cash")->where("BID","=",$BID)->update(["InHandCash"=>$rem_cash]);
+				}
 			} elseif($id["pay_mode"] == "SB") {
 			
 				$acc_id = $id["acc_no"];
@@ -1594,11 +1603,15 @@
 				
 				$ret_id = DB::table("sb_transaction")->insertGetId($sb_array);
 				$acc_new_amt = $acc_amt + $extra_amount;
-				DB::table("createaccount")->where("Accid","=",$acc_id)->update(["Total_Amount"=>$acc_new_amt]);
+				if(!$old_entry) {
+					DB::table("createaccount")->where("Accid","=",$acc_id)->update(["Total_Amount"=>$acc_new_amt]);
+				}
 			} else {//if($id["pay_mode"] == "CHEQUE") {
 				$initial_amt = DB::table("addbank")->where("Bankid","=",$bank_acc_no)->value("TotalAmt");
 				$total_bal = $initial_amt - $extra_amount;
-				DB::table("addbank")->where("Bankid","=",$bank_acc_no)->update(["TotalAmt"=>$total_bal]);
+				if(!$old_entry) {
+					DB::table("addbank")->where("Bankid","=",$bank_acc_no)->update(["TotalAmt"=>$total_bal]);
+				}
 			}
 				
 			$fn_data['jewel_allocation_id'] = $id['jl_alloc_id'];
