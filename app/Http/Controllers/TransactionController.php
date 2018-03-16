@@ -148,8 +148,13 @@ use App\Http\Model\TransactionModel;
 		{
 			$acc['acttype']=$request->input('acttype');
 			$get=$this->acc->getvalue($acc);
+			/*********/
+			$fn_data["acc_id"] =  $request->input('acttype');
+			$sb_balance = $this->acc->get_account_balance($fn_data);
+			/*********/
+			
 			//print_r($get);
-			$id['crbal']=$get->Total_Amount;
+			$id['crbal'] = $sb_balance;//$get->Total_Amount;
 			$id['actype']=$get->Acc_Type;
 			$id['fname']=$get->FirstName;
 			$id['mname']=$get->MiddleName;

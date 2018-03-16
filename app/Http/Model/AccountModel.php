@@ -231,6 +231,10 @@
 //			->paginate(10);
 			->get();
 			
+			foreach($id as $key => $row) {
+				$id[$key]->Total_Amount = $this->get_account_balance(["acc_id"=>$row->Accid]);
+			}
+			
 			return $id;
 		}
 		
@@ -250,6 +254,10 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->get();
+			
+			foreach($id as $key => $row) {
+				$id[$key]->Total_Amount = $this->get_account_balance(["acc_id"=>$row->Accid]);
+			}
 			
 			return $id;
 		}
