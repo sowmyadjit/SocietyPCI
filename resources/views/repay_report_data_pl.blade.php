@@ -106,18 +106,15 @@
                 <th>
                     Principal Amount
                 </th>
-    <?php /*            <th>
-                    Last Int Paid Date
-                </th>*/?>
+                <th>
+                    Interest Paid Till
+                </th>
                 <th>
                     Interest
                 </th>
                 <th>
                     Charges
                 </th>
-  <?php /*              <th>
-                    Paid Upto
-                </th>*/?>
             </tr>
 			<?php $i = 0; ?>
 			@foreach($data["repayments"] as $key_repay => $row_repay)
@@ -131,18 +128,20 @@
 					<td>
 						{{$row_repay["repayment_paid_principle_amount"]}}
 					</td>
-<?php /*					<td>
-						{{$row_repay["paid_up_to"]}}
-					</td>*/?>
+					<td>
+						<span id="interest_paid_till_{{$row_repay["repayment_id"]}}">{{$row_repay["interest_paid_upto"]}}</span>
+					</td>
 					<td>
 						{{$row_repay["repayment_paid_interest_amount"]}}
 					</td>
 					<td>
 						{{$row_repay["charges_sum"]}}
 					</td>
-<?php /*					<td>
-						{{$row_repay["paid_up_to"]}}
-					</td>*/?>
+					<td>
+						<button type="button" class="btn btn-primary btn-sm btn_edit" data-toggle="modal" data-target="#modal_repay_edit" data="{{$row_repay["repayment_id"]}}">
+						  <span class="glyphicon glyphicon-pencil" ></span>
+						</button>
+					</td>
 				</tr>
 			@endforeach
         </table>
@@ -159,3 +158,74 @@
         </table>
         </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal_repay_edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">EDIT REPAYMENT</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+	  
+		<div class="form-group ">
+			<input class="hidden" id="store_repay_id" value=""/>
+			<label class="control-label col-sm-4" for="first_name">Interest Paid Till:</label>
+			<div class="col-md-4">
+				<input type="text" class="form-control datepicker" id="modal_interest_paid_till" name="modal_interest_paid_till" placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd">
+			</div>
+		</div>
+	  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="button_save" data-dismiss="modal">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	$(".btn_edit").click(function() {
+		var repay_id = $(this).attr("data");
+		console.log("repay_id="+repay_id);
+		var int_date = $("#interest_paid_till_"+repay_id).html();
+		console.log(int_date);
+		if(int_date != "0000-00-00") {
+			$("#modal_interest_paid_till").val(int_date);
+		} else {
+			$("#modal_interest_paid_till").val("");
+		}
+		$("#store_repay_id").val(repay_id);
+	});
+</script>
+<script>
+	$("#button_save").click(function() {
+		console.log("save");
+		
+		var repay_id,int_date,loan_type;
+		loan_type = "PL";
+		repay_id = $("#store_repay_id").val();
+		int_date = $("#modal_interest_paid_till").val();
+		
+		$.ajax({
+			url:"save_repay_data",
+			type:"post",
+			data:"&loan_type="+loan_type+"&repay_id="+repay_id+"&int_date="+int_date,
+			success: function() {
+				console.log("save_repay_data: done");
+				$("#interest_paid_till_"+repay_id).html(int_date);
+			}
+		});
+		
+	});
+</script>
+
+<script>
+	$('.datepicker').datepicker().on('changeDate',function(e){
+		$(this).datepicker('hide');
+	});
+</script>

@@ -216,14 +216,15 @@
 	$("#button_save").click(function() {
 		console.log("save");
 		
-		var repay_id,int_date;
+		var repay_id,int_date,loan_type;
+		loan_type = "JL";
 		repay_id = $("#store_repay_id").val();
 		int_date = $("#modal_interest_paid_till").val();
 		
 		$.ajax({
 			url:"save_repay_data",
 			type:"post",
-			data:"&repay_id="+repay_id+"&int_date="+int_date,
+			data:"&loan_type="+loan_type+"&repay_id="+repay_id+"&int_date="+int_date,
 			success: function() {
 				console.log("save_repay_data: done");
 				$("#interest_paid_till_"+repay_id).html(int_date);
