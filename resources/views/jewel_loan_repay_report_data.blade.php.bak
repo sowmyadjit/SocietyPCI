@@ -168,6 +168,57 @@
                 <td>--</td>*/?>
             </tr>
         </table>
+		<div>
+		<h2>POTTERS COTTAGE INDUSTRIAL CO-OP SOCIETY LTD.</h2>
+		<h3>CHAKRASOUDHA, KULAI.</h3>
+		        <div>
+            <h2>Customer Details</h2>    
+        <table class="table table-striped bootstrap-datatable datatable responsive">
+            <tr>
+                <th>
+                    Customer Name:
+                </th>
+                <td>
+					Djitsoft
+                </td>
+                <th>
+                    Customer ID:
+                </th>
+                <td>
+					12345
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Customer Address:
+                </th>
+                <td>
+				asdd
+                </td>
+                <th>
+                    Customer Ph No:
+                </th>
+                <td>
+                    decc
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Guarantor :
+                </th>
+                <td>
+                  qwerty
+                </td>
+                <th>
+                    Guarantor Ph No:
+                </th>
+                <td>
+                  1452365
+                </td>
+            </tr>
+        </table>
+        </div>
+		</div>
         </div>
 </div>
 
