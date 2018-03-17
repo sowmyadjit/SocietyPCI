@@ -910,8 +910,4 @@
 		
 		
 		
-<<<<<<< HEAD
-	});				//group 'prefix' => '/' function end pratheek										
-=======
-	});				//group 'prefix' => '/' function ends arthik										
->>>>>>> d5b3ae57bdce79ee8e87974e67294525da3adca3
+	});				//group 'prefix' => '/' function end 									
