@@ -299,6 +299,7 @@
 				Route::match(["get","post"],'/repay_report_data','LoanController@repay_report_data');
 				Route::match(["get","post"],'/save_repay_data','LoanController@save_repay_data');
 				Route::match(["get","post"],'/calculate_jewel_interest','LoanController@calculate_jewel_interest');
+				Route::match(["get","post"],'/interest_calc_pl','LoanController@interest_calc_pl');
 				
 				Route::get('/add_charges_index','LoanController@add_charges_index');
 				Route::get('/add_charges','LoanController@add_charges');

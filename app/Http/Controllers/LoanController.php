@@ -1254,7 +1254,7 @@
 			$in_data = array();
 			$data = array();
 			$in_data["loan_category"] = "PL";$request->input("loan_category");//PL,JL,...
-			$in_data["loan_allocation_id"] = 204;$request->input("loan_allocation_id");
+			$in_data["loan_allocation_id"] = $request->input("loan_allocation_id");//204;
 			
 			switch($in_data["loan_category"]) {
 				case "PL":	
@@ -1268,10 +1268,17 @@
 		public function save_repay_data(Request $request)
 		{
 			$in_data = array();
+			$in_data["loan_type"] = $request->input("loan_type");
 			$in_data["repay_id"] = $request->input("repay_id");
 			$in_data["int_date"] = $request->input("int_date");
-			$this->loan->save_repay_data($in_data);
-			return;
+			
+			switch($in_data["loan_type"]) {
+				case "JL":	$this->loan->save_repay_data_jl($in_data);
+							break;
+				case "PL":	$this->loan->save_repay_data_pl($in_data);
+							break;
+			}
+			return "done";
 		}
 		
 		public function calculate_jewel_interest(Request $request)
@@ -1281,6 +1288,15 @@
 			$in_data["interest_upto"] = $request->input("interest_upto",date("Y-m-d"));
 			$this->loan->calculate_jewel_interest($in_data);
 			return;
+		}
+		
+		public function interest_calc_pl(Request $request)
+		{
+			$in_data = array();
+			$in_data["loan_allocation_id"] = $request->input("loan_allocation_id");//424;//
+			$in_data["interest_upto"] = $request->input("interest_upto",date("Y-m-d"));
+			$ret_data = $this->loan->interest_calc_pl($in_data);
+			return $ret_data;
 		}
 		
 	}

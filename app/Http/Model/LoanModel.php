@@ -2259,7 +2259,8 @@
 							"{$table}.PLRepay_Date",
 							"{$table}.PLRepay_PaidAmt",
 							"{$table}.PLRepay_Amtpaidtoprincpalamt",
-							"{$table}.PLRepay_PaidInterest"
+							"{$table}.PLRepay_PaidInterest",
+							"{$table}.interest_paid_upto"
 						)
 				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_PLAllocID")
 				->where("personalloan_allocation.PersLoanAllocID","=",$allocation->PersLoanAllocID)
@@ -2277,6 +2278,7 @@
 				$ret_data["repayments"][$i]["repayment_total_paid_amount"] = $row_repay->PLRepay_PaidAmt;
 				$ret_data["repayments"][$i]["repayment_paid_principle_amount"] = $row_repay->PLRepay_Amtpaidtoprincpalamt;
 				$ret_data["repayments"][$i]["repayment_paid_interest_amount"] = $row_repay->PLRepay_PaidInterest;
+				$ret_data["repayments"][$i]["interest_paid_upto"] = $row_repay->interest_paid_upto;
 				
 				$table = "charges_tran";
 				$charges = array();
@@ -2317,7 +2319,7 @@
 			
 		}
 		
-		public function save_repay_data($data)
+		public function save_repay_data_jl($data)
 		{
 			DB::table("jewelloan_repay")
 				->where("JLRepay_Id","=",$data["repay_id"])
@@ -2337,6 +2339,15 @@
 			DB::table("jewelloan_allocation")
 				->where("JewelLoanId","=",$JewelLoanId)
 				->update(["JewelLoan_lastpaiddate"=>$date]);
+		}
+		
+		public function save_repay_data_pl($data)
+		{
+			$table = "personalloan_repay";
+			$p_key = "PLRepay_Id";
+			DB::table($table)
+				->where($p_key,"=",$data["repay_id"])
+				->update(["interest_paid_upto"=>$data["int_date"]]);
 		}
 		
 		public function calculate_jewel_interest($data)
@@ -2375,6 +2386,15 @@
 			/**************** GET JL DETAILS END ********************/
 			
 			
+			
+			/********** CHECK FOR 1ST REPAY **********/
+			$fn_data["jlaccid"] = $loan_allocation_id;
+			$is_jl_first_repay_done = $this->is_jl_first_repay_done($fn_data);//true/false
+			unset($fn_data);
+			var_dump($is_jl_first_repay_done);exit();
+			/********** CHECK FOR 1ST REPAY END **********/
+			
+			
 			/********** get interest paid upto **********/
 			if($is_jl_first_repay_done) {
 				$jewelloan_repay = DB::table("jewelloan_repay")
@@ -2388,14 +2408,6 @@
 			echo "last_date: $last_date <br />"; exit();
 			/********** get interest paid upto END **********/
 			
-			
-			
-			/********** CHECK FOR 1ST REPAY **********/
-			$fn_data["jlaccid"] = $loan_allocation_id;
-			$is_jl_first_repay_done = $this->is_jl_first_repay_done($fn_data);//true/false
-			unset($fn_data);
-			var_dump($is_jl_first_repay_done);exit();
-			/********** CHECK FOR 1ST REPAY END **********/
 			
 			
 			$days = 0;
@@ -2448,10 +2460,11 @@
 			
 			$fn_data["days"] = $days;
 			$fn_data["interest_rate"] = $interest_in_number;
-			$fn_data["balance_amount"] = $due_interest_in_number;
+			$fn_data["balance_amount"] = $balance_amount;
 			$normal_interest = $this->interest_calc($fn_data);
 			
 			$fn_data["days"] = $due_days;
+			$fn_data["interest_rate"] = $due_interest_in_number;
 			$due_interest = $this->interest_calc($fn_data);
 			echo "***** end ******<br />";
 			
@@ -2504,20 +2517,286 @@
 			return $days;
 		}
 		
-		public function interest_calc($data)
+		//used for jl and pl
+		public function interest_calc($data)//	_/
 		{
-			echo "************interest_calc***************<br />";exit();
+//			echo "<br />\n************interest_calc***************<br />\n";//exit();
+			if(isset($data['msg']))
+//				echo "msg: {$data['msg']} <br />\n";//exit();
 			$days = $data["days"];
-			echo "days=$days <br />";
+//			echo "days=$days <br />\n";
 			$years = $days / 365;
 			$interest_rate_in_number = $data["interest_rate"];
 			$interest_rate = $interest_rate_in_number / 100;
-			echo "interest_rate=$interest_rate <br />";
+//			echo "interest_rate=$interest_rate <br />\n";
 			$balance_amount = $data["balance_amount"];
-			echo "balance_amount=$balance_amount <br />";
-			$interest_amount = $balance_amount * $years * $interest_rate;
-			echo "interest_amount=$interest_amount <br />";
+//			echo "balance_amount=$balance_amount <br />\n";
+			$interest_amount = round($balance_amount * $years * $interest_rate,2);
+//			echo "interest_amount=$interest_amount <br />\n";
+//			echo "<br />\n************interest_calc end***************<br />\n";//exit();
 			return $interest_amount;
 		}
+		
+		public function interest_calc_pl($data)
+		{
+			$this->cl_clear();
+			$loan_allocation_id = $data["loan_allocation_id"];
+			$loan_allocation_id_field = "PersLoanAllocID";
+			$interest_upto = $data["interest_upto"];//not related to due interest
+			$today = date("Y-m-d");
+			$normal_interest = 0;
+			$due_interest = 0;
+			
+			//print_r($data);exit();//check for today's date and old date
+			
+			/**************** GET PL DETAILS ********************/
+			$table = "personalloan_allocation";
+			$allocation = DB::table($table)
+				->select(
+							"{$table}.{$loan_allocation_id_field}",
+							"{$table}.StartDate",
+							"{$table}.EndDate",
+							"{$table}.LoanAmt",
+							"{$table}.caldate",
+							"{$table}.EMI_Amount",
+							"{$table}.RemainingLoan_Amt",
+							"members.Uid",
+							"loan_type.LoanType_Interest",
+							"loan_type.loan_due_interest"
+						)
+				->join("members","members.Memid","=","personalloan_allocation.MemId")
+				->join("loan_type","loan_type.LoanType_ID","=","personalloan_allocation.LoanType_ID")
+				->where($loan_allocation_id_field,"=",$loan_allocation_id)
+				->first();
+			//print_r($allocation); exit();
+			
+			$user_id = $allocation->Uid;
+			$start_date = $allocation->StartDate;
+			$end_date = $allocation->EndDate;
+			$loan_amount = $allocation->LoanAmt;
+			$balance_amount = $loan_amount - $this->paid_installment_amt(["loan_allocation_id"=>$loan_allocation_id]);
+//			$balance_amount = $allocation->RemainingLoan_Amt;
+			$interest_in_number = $allocation->LoanType_Interest;
+			$due_interest_in_number = $allocation->loan_due_interest;
+			$emi = $allocation->EMI_Amount;
+			//echo "balance amount: {$balance_amount}<br />\n";exit();
+			/**************** GET PL DETAILS END ********************/
+			
+			
+			/********** CHECK FOR 1ST REPAY **********/
+			$fn_data["loan_allocation_id"] = $loan_allocation_id;
+			$is_first_repay_done = $this->is_pl_first_repay_done($fn_data);//true/false
+			unset($fn_data);
+			//var_dump($is_first_repay_done);exit();
+			/********** CHECK FOR 1ST REPAY END **********/
+			
+			/********** get interest paid upto **********/
+			if($is_first_repay_done) {
+				$personalloan_repay = DB::table("personalloan_repay")
+					->where("PLRepay_PLAllocID","=",$loan_allocation_id)
+					->where("PL_ChequeStatus","=",0)
+					->orderBy("PLRepay_Date","desc")
+					->first();
+				$last_date = $personalloan_repay->interest_paid_upto;
+			} else {
+				$last_date = $start_date;
+			}
+			if($last_date == "0000-00-00") {
+//				echo "last paid date is not valid(0000-00-00) <br />\n";return;
+			}
+//			echo "last_date: $last_date <br />\n"; exit();
+			/********** get interest paid upto END **********/
+			
+			/********** get interest paid upto **********/
+			if(!$is_first_repay_done) {
+				$last_pricliple_paid_date = $start_date;
+			} else {
+				$personalloan_repay = DB::table("personalloan_repay")
+					->where("PLRepay_PLAllocID","=",$loan_allocation_id)
+					->where("PL_ChequeStatus","=",0)
+					->where("PLRepay_Amtpaidtoprincpalamt","!=",0)
+					->orderBy("PLRepay_Date","desc")
+					->first();
+				$last_pricliple_paid_date = $personalloan_repay->PLRepay_Date;
+			}
+//			echo "last_pricliple_paid_date: $last_pricliple_paid_date <br />\n"; //exit();
+			/********** get interest paid upto END **********/
+			
+			
+			
+			/********** Normal interest calculation (due int not included) **********/
+			$fn_data["first"] = $last_date;
+			$fn_data["second"] = $interest_upto;
+			$this->cl($fn_data);
+				$days = $this->dateDiff($fn_data);
+			unset($fn_data);
+//			print_r($fn_data);
+//			echo "days: $days <br />\n"; exit();
+			
+			if(!$is_first_repay_done) {
+				$days++;
+			}
+//			echo "days: $days <br />\n"; //exit();
+			
+			$fn_data["msg"] = "normal interest calculation";
+			$fn_data["days"] = $days;
+			$fn_data["interest_rate"] = $interest_in_number;
+			$fn_data["balance_amount"] = $balance_amount;
+//			print_r($fn_data); //exit();
+				$normal_interest = $this->interest_calc($fn_data);
+			unset($fn_data);
+//			echo "normal_interest: $normal_interest <br />\n"; exit();
+			/********** Normal interest calculation (due int not included) **********/
+			
+			/********** Due interest calculation **********/
+			if($is_first_repay_done) {
+				$fn_data["loan_allocation_id"] = $loan_allocation_id;
+					$paid_installment_amt = $this->paid_installment_amt($fn_data);
+				unset($fn_data);
+			} else {
+				$paid_installment_amt = 0;
+			}
+//			echo "paid_installment_amt: $paid_installment_amt <br />\n"; exit();
+			$fn_data["start_date"] = $start_date;
+			$fn_data["end_date"] = $end_date;
+			$fn_data["today"] = $today;
+//			print_r($fn_data);//exit();
+				$current_installment_no = $this->current_installment_no($fn_data);
+			unset($fn_data);
+//			echo "current_installment_no: $current_installment_no <br />\n"; //exit();
+			$installment_amt_till_today = $current_installment_no * $emi;
+//			echo "installment_amt_till_today: $installment_amt_till_today <br />\n"; exit();
+			
+			$min_emi_diff = $emi * 2;
+			$emi_diff = $installment_amt_till_today - $paid_installment_amt;
+//			echo "min_emi_diff(Not more than 2 installments): $min_emi_diff <br />\n"; //exit();
+//			echo "emi_diff: $emi_diff <br />\n"; //exit();
+			
+			if($emi_diff > $min_emi_diff) {//CONSIDER DUE INTEREST
+//				echo "<br />\n****CONSIDER DUE INTEREST****<br />\n\n";//exit();
+				$fn_data["first"] = $last_pricliple_paid_date;
+				$fn_data["second"] = $today;
+					$due_days = $this->dateDiff($fn_data);
+				unset($fn_data);
+				if(!$is_first_repay_done) {
+					$due_days++;
+				}
+//				echo "due_days: {$due_days} <br />\n";//exit();
+				$total_due_interest_in_number = $interest_in_number + $due_interest_in_number;
+//				echo "total_due_interest_in_number: {$total_due_interest_in_number} <br />\n";//exit();
+				
+				$fn_data["msg"] = "due interest calculation";
+				$fn_data["days"] = $due_days;
+				$fn_data["interest_rate"] = $total_due_interest_in_number;
+				$fn_data["balance_amount"] = $emi_diff;
+//				print_r($fn_data);//exit();
+				$due_interest = $this->interest_calc($fn_data);
+//				echo "*****due_interest_amount: {$due_interest} <br />\n<br />\n<br />\n";exit();
+			} else {
+//				echo "<br />\n**** 0  DUE INTEREST ****<br />\n";
+			}
+			/********** Due interest calculation End **********/
+			return $normal_interest + $due_interest;
+		}
+		
+		public function is_pl_first_repay_done($data)//		_/
+		{
+			//echo "****is_pl_first_repay_done****<br />\n";
+			$n = 0;
+			$loan_allocation_id = $data['loan_allocation_id'];
+			$table = "personalloan_repay";
+			$cmp_key = "PLRepay_PLAllocID";
+			
+			$repay = DB::table($table)
+				->select()
+				->where($cmp_key,'=',$loan_allocation_id)
+				->where("PL_ChequeStatus",'=',0)
+				->get();
+			$n = count($repay);
+			if($n > 0) {
+				//echo "true <br />\n";//exit();
+				//echo "****is_pl_first_repay_done end****<br />\n";
+				return true;
+			} else {
+				//echo "false <br />\n";//exit();
+				//echo "****is_pl_first_repay_done end****<br />\n";
+				return false;
+			}
+		}
+		
+		public function paid_installment_amt($data)//	_/
+		{
+			//echo "****paid_installment_amt****<br />\n";
+			$loan_allocation_id = $data['loan_allocation_id'];
+			$table = "personalloan_repay";
+			$cmp_key = "PLRepay_PLAllocID";
+			$sum = 0;//paid to principle amt
+			
+			if($this->is_pl_first_repay_done(["loan_allocation_id"=>$loan_allocation_id])) {
+				$repay = DB::table($table)
+					->select()
+					->where($cmp_key,'=',$loan_allocation_id)
+					->where("PL_ChequeStatus",'=',0)//*cheque cleared
+					->get();
+				foreach($repay as $key_repay => $row_repay) {
+					$sum += $row_repay->PLRepay_Amtpaidtoprincpalamt;
+				}
+			}
+			//echo "sum: {$sum}<br />\n";
+			//echo "****paid_installment_amt end****<br />\n";
+			return $sum;
+		}
+		
+		public function current_installment_no($data)//verify this function for all cases
+		{
+			$start_date = $data["start_date"];
+			$end_date = $data["end_date"];
+			$today = $data["today"];
+			
+			$st_arr = explode("-",$start_date);
+			$st_d = $st_arr[2];
+			$st_m = $st_arr[1];
+			$st_y = $st_arr[0];
+			
+			$temp_date = $start_date;
+			$temp_arr = explode("-",$temp_date);
+			$temp_d = $temp_arr[2];
+			$temp_m = $temp_arr[1];
+			$temp_y = $temp_arr[0];
+			
+			$installment_no = 0; // |----|----|----|					time
+								//	ST 1    2    3 ED				installment_nos for repayment
+			
+			while($temp_date < $today && $temp_date < $end_date) {//test this section
+				$installment_no++;
+				$temp_m++;
+				if($temp_m == 13) {
+					$temp_m = 1;
+					$temp_y++;
+				}
+				$temp_time_string = "{$temp_y}-{$temp_m}-{$temp_d}";
+				$temp_date = date("Y-m-d",strtotime($temp_time_string));
+//				echo "<br />\ntemp_date: {$temp_date} ";
+			}
+//			echo "<br />\n";
+			return $installment_no;
+		}
+		
+		public function cl($var)
+		{	
+			$file = fopen("a.txt","w");
+			$content = "\n" . json_encode($var);
+			fwrite($file,$content);
+		}
+		
+		public function cl_clear()
+		{	
+			$file = fopen("a.txt","w");
+			fwrite($file,"");
+		}
+		
+		
+		
+		
 	}
 	

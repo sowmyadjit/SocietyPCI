@@ -664,12 +664,34 @@
 					</div>
 					<!--FD SECTION ENDS HERE-->
 					
-					<!--personal loan SECTION STARTS HERE-->
+					<!--PL SECTION STARTS HERE-->
 					<div class="personal_loan">
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Branch Name :</label>
 							<div id="the-basics" class="col-sm-4">
 								<input class="BranchTypeAheadPL form-control"  type="text" placeholder="SELECT BRANCH" id="plBranch">  
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4" for="first_name">Receipt Date :</label>
+							<div class="input-group input-append date col-sm-4" id="">
+								<input type="text" class="form-control datepicker" name="rec_date_pl" id="rec_date_pl"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
+								<span class="input-group-addon add-on">
+									<span class="glyphicon glyphicon-calendar">
+									</span>
+								</span> 
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4" for="first_name">Interest upto :</label>
+							<div class="input-group input-append date col-sm-4" id="">
+								<input type="text" class="form-control datepicker" name="interest_upto_pl" id="interest_upto_pl"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
+								<span class="input-group-addon add-on">
+									<span class="glyphicon glyphicon-calendar">
+									</span>
+								</span> 
 							</div>
 						</div>
 						
@@ -2529,6 +2551,21 @@ console.log("remaining_interest = "+remaining_interest);
 						$('#plremtotamt').val(totbal);
 						$('#balamt').val(bal);
 //						$('#plpendemi').val(pending_emi);
+						
+						
+						
+						
+						//NEW INT
+						$interest_upto_pl = $("#interest_upto_pl").val();
+						$.ajax({
+							url:'/interest_calc_pl',
+							type:'post',
+							data:'&loan_allocation_id='+placcid+'&interest_upto_pl='+interest_upto_pl,
+							success:function(data){
+								$("#plintamt").val(data);
+							}
+						});
+						//NEW INT END
 						
 						//REPAY REPORT
 						$.ajax({
