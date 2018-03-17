@@ -26,13 +26,10 @@
 		
 		public function pigmiDLPigmy()
 		{
-		$Url="pigmiDLPigmy";	
-		//$chargeslist['module']=$this->Modules->GetAnyMid($Url);
-		$chargeslist=$this->pigmtDLrepay->chargeslist();
-		return view('DLRepayment',compact('chargeslist'));
+		return view('jewel_loan_repay_report_data_print',compact(''));
 		}
 		public function DLReceipt(){
-		return view('jewel_loan_repay_report_data_print',compact(''));
+		
 			}
 		public function GetDLDetail(Request $request)
 		{

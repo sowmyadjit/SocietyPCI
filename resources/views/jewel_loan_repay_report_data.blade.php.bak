@@ -168,6 +168,57 @@
                 <td>--</td>*/?>
             </tr>
         </table>
+		<div>
+		<h2>POTTERS COTTAGE INDUSTRIAL CO-OP SOCIETY LTD.</h2>
+		<h3>CHAKRASOUDHA, KULAI.</h3>
+		        <div>
+            <h2>Customer Details</h2>    
+        <table class="table table-striped bootstrap-datatable datatable responsive">
+            <tr>
+                <th>
+                    Customer Name:
+                </th>
+                <td>
+					Djitsoft
+                </td>
+                <th>
+                    Customer ID:
+                </th>
+                <td>
+					12345
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Customer Address:
+                </th>
+                <td>
+				asdd
+                </td>
+                <th>
+                    Customer Ph No:
+                </th>
+                <td>
+                    decc
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Guarantor :
+                </th>
+                <td>
+                  qwerty
+                </td>
+                <th>
+                    Guarantor Ph No:
+                </th>
+                <td>
+                  1452365
+                </td>
+            </tr>
+        </table>
+        </div>
+		</div>
         </div>
 </div>
 
@@ -218,15 +269,14 @@
 	$("#button_save").click(function() {
 		console.log("save");
 		
-		var repay_id,int_date,loan_type;
-		loan_type = "JL";
+		var repay_id,int_date;
 		repay_id = $("#store_repay_id").val();
 		int_date = $("#modal_interest_paid_till").val();
 		
 		$.ajax({
 			url:"save_repay_data",
 			type:"post",
-			data:"&loan_type="+loan_type+"&repay_id="+repay_id+"&int_date="+int_date,
+			data:"&repay_id="+repay_id+"&int_date="+int_date,
 			success: function() {
 				console.log("save_repay_data: done");
 				$("#interest_paid_till_"+repay_id).html(int_date);
