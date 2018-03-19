@@ -192,7 +192,7 @@
 			->select('user.FirstName','user.MiddleName','user.LastName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','pigmiallocation.old_pigmiaccno','pigmiallocation.Total_Amount','user.Uid')
 			->where('pigmiallocation.Bid','=',$bid)
 			->where('Status','=',"AUTHORISED")
-			->get();
+			->paginate(10);
 		}
 		
 		
