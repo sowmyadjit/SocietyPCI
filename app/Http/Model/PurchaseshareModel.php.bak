@@ -87,7 +87,7 @@
 			$id = DB::table('purchaseshare')->select('PURSH_Pid','PURSH_Memid','Memid','FirstName','MiddleName','LastName','PURSH_Shrclass','PURSH_Shareamt','PURSH_Noofshares','PURSH_Totalamt','PURSH_Memshareid','PURSH_Certfid','purchaseshare.Status')
 			->leftJoin('members', 'members.Memid', '=' , 'purchaseshare.PURSH_Memid')
 			
-			->get();
+			->paginate(10);
 			
 			return $id;
 		}

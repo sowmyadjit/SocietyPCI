@@ -130,6 +130,7 @@
 								
 								@foreach ($ps['PurchaseShares'] as $purchaseshare)
 								<tr>
+									<td class="hidden">{{ $purchaseshare-> PURSH_Pid}}</td>
 									<td>{{ $purchaseshare->FirstName}}</td>
 									<td>{{ $purchaseshare->MiddleName }}</td>
 									<td>{{ $purchaseshare->LastName }}</td>
