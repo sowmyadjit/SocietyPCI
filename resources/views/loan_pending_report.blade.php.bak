@@ -192,24 +192,5 @@ console.log("ajax success");
 	});
 	
 </script>
-<script src="js/jQuery.print.js"></script>
-<script>
-	
-	$(function() {
-		$(".print").click(function() {
-			var divContents = $("#toprint").html();
-            var printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(divContents);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-			//$("#toprint").print();
-            printWindow.print(); 
-		});
-	});
-	
-	
-</script>
 
 

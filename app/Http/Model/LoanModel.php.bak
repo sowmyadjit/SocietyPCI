@@ -1367,7 +1367,7 @@
 			->where('JewelLoan_Closed','=','NO')
 			->where('JewelLoan_Bid','=',$BID)
 			->where('auction_status','=','0')
-			->get();
+			->paginate(10);
 		//	->get();
 			return $result;
 			

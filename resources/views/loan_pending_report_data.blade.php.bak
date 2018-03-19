@@ -49,7 +49,7 @@
 							</tbody>
 						</table>
 						</div>
-<script src="js/jQuery.print.js"></script>
+						<script src="js/jQuery.print.js"></script>
 <script>
 	
 	$(function() {
