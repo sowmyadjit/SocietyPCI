@@ -909,5 +909,5 @@
 		Route::get('change_branch','UserController@change_branch');
 		
 		
-		
-	});				//group 'prefix' => '/' function end 									
+		 
+	});				//group 'prefix' => '/' function end end  end 
