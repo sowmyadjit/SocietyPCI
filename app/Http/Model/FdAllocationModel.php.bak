@@ -418,7 +418,7 @@
 			->where('fdallocation.Bid','=',$BID)
 			->where('FDkcc','=',"KCC")
 			->orderby('Fdid','desc')
-			->get();
+			->paginate(15);
 		}
 		public function fdrenew($id)
 		{
