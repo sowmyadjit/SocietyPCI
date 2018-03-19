@@ -2347,7 +2347,7 @@
 			$p_key = "PLRepay_Id";
 			DB::table($table)
 				->where($p_key,"=",$data["repay_id"])
-				->update(["interest_paid_upto"=>$data["int_date"]]);
+				->update(["PLRepay_Amtpaidtoprincpalamt"=>$data["principle_amount"],"PLRepay_PaidInterest"=>$data["interest_amount"],"interest_paid_upto"=>$data["int_date"]]);
 		}
 		
 		public function calculate_jewel_interest($data)
@@ -2520,20 +2520,20 @@
 		//used for jl and pl
 		public function interest_calc($data)//	_/
 		{
-//			echo "<br />\n************interest_calc***************<br />\n";//exit();
+			echo "<br />\n************interest_calc***************<br />\n";//exit();
 			if(isset($data['msg']))
-//				echo "msg: {$data['msg']} <br />\n";//exit();
+				echo "msg: {$data['msg']} <br />\n";//exit();
 			$days = $data["days"];
-//			echo "days=$days <br />\n";
+			echo "days=$days <br />\n";
 			$years = $days / 365;
 			$interest_rate_in_number = $data["interest_rate"];
 			$interest_rate = $interest_rate_in_number / 100;
-//			echo "interest_rate=$interest_rate <br />\n";
+			echo "interest_rate=$interest_rate <br />\n";
 			$balance_amount = $data["balance_amount"];
-//			echo "balance_amount=$balance_amount <br />\n";
+			echo "balance_amount=$balance_amount <br />\n";
 			$interest_amount = round($balance_amount * $years * $interest_rate);
-//			echo "interest_amount=$interest_amount <br />\n";
-//			echo "<br />\n************interest_calc end***************<br />\n";//exit();
+			echo "interest_amount=$interest_amount <br />\n";
+			echo "<br />\n************interest_calc end***************<br />\n";//exit();
 			return $interest_amount;
 		}
 		

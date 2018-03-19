@@ -1271,6 +1271,8 @@
 			$in_data["loan_type"] = $request->input("loan_type");
 			$in_data["repay_id"] = $request->input("repay_id");
 			$in_data["int_date"] = $request->input("int_date");
+			$in_data["principle_amount"] = $request->input("principle_amount");
+			$in_data["interest_amount"] = $request->input("interest_amount");
 			
 			switch($in_data["loan_type"]) {
 				case "JL":	$this->loan->save_repay_data_jl($in_data);
