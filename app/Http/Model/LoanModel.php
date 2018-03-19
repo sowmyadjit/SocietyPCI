@@ -2520,20 +2520,27 @@
 		//used for jl and pl
 		public function interest_calc($data)//	_/
 		{
-			echo "<br />\n************interest_calc***************<br />\n";//exit();
+//			echo "<br />\n************interest_calc***************<br />\n";//exit();
+			$this->cl("<br />\n************interest_calc***************<br />\n");
 			if(isset($data['msg']))
-				echo "msg: {$data['msg']} <br />\n";//exit();
+//				echo "msg: {$data['msg']} <br />\n";//exit();
+			$this->cl("msg: {$data['msg']} <br />\n");
 			$days = $data["days"];
-			echo "days=$days <br />\n";
+//			echo "days=$days <br />\n";
+			$this->cl("days=$days <br />\n");
 			$years = $days / 365;
 			$interest_rate_in_number = $data["interest_rate"];
 			$interest_rate = $interest_rate_in_number / 100;
-			echo "interest_rate=$interest_rate <br />\n";
+//			echo "interest_rate=$interest_rate <br />\n";
+			$this->cl("interest_rate=$interest_rate <br />\n");
 			$balance_amount = $data["balance_amount"];
-			echo "balance_amount=$balance_amount <br />\n";
+//			echo "balance_amount=$balance_amount <br />\n";
+			$this->cl("balance_amount=$balance_amount <br />\n");
 			$interest_amount = round($balance_amount * $years * $interest_rate);
-			echo "interest_amount=$interest_amount <br />\n";
-			echo "<br />\n************interest_calc end***************<br />\n";//exit();
+//			echo "interest_amount=$interest_amount <br />\n";
+			$this->cl("interest_amount=$interest_amount <br />\n");
+//			echo "<br />\n************interest_calc end***************<br />\n";//exit();
+			$this->cl("<br />\n************interest_calc end***************<br />\n");
 			return $interest_amount;
 		}
 		
@@ -2602,23 +2609,27 @@
 				$last_date = $start_date;
 			}
 			if($last_date == "0000-00-00") {
-				echo "last paid date is not valid (0000-00-00)\n";return;
+				echo "last paid date is not valid (0000-00-00)\n";
+				$this->cl("last paid date is not valid (0000-00-00)\n");
+				return;
 			}
 //			echo "last_date: $last_date <br />\n"; exit();
 			/********** get interest paid upto END **********/
 			
 			/********** get interest paid upto **********/
-			if(!$is_first_repay_done) {
-				$last_pricliple_paid_date = $start_date;
-			} else {
-				$personalloan_repay = DB::table("personalloan_repay")
-					->where("PLRepay_PLAllocID","=",$loan_allocation_id)
-					->where("PL_ChequeStatus","=",0)
-					->where("PLRepay_Amtpaidtoprincpalamt","!=",0)
-					->orderBy("PLRepay_Date","desc")
-					->first();
+			$personalloan_repay = DB::table("personalloan_repay")
+				->where("PLRepay_PLAllocID","=",$loan_allocation_id)
+				->where("PL_ChequeStatus","=",0)
+				->where("PLRepay_Amtpaidtoprincpalamt",">",0)
+				->orderBy("PLRepay_Date","desc")
+				->first();
+					
+			if($personalloan_repay) {
 				$last_pricliple_paid_date = $personalloan_repay->PLRepay_Date;
+			} else {
+				$last_pricliple_paid_date = $start_date;
 			}
+			$this->cl("last_pricliple_paid_date = {$last_pricliple_paid_date}\n");
 //			echo "last_pricliple_paid_date: $last_pricliple_paid_date <br />\n"; //exit();
 			/********** get interest paid upto END **********/
 			
@@ -2628,7 +2639,7 @@
 			$fn_data["first"] = $last_date;
 			$fn_data["second"] = $interest_upto;
 //			print_r($fn_data);
-			$this->cl($fn_data);
+//			$this->cl($fn_data);
 				$days = $this->dateDiff($fn_data);
 			unset($fn_data);
 //			echo "days: $days <br />\n"; exit();
@@ -2649,6 +2660,15 @@
 			/********** Normal interest calculation (due int not included) **********/
 			
 			/********** Due interest calculation **********/
+				
+			$fn_data["start_date"] = $start_date;
+			$fn_data["end_date"] = $end_date;
+				$total_no_of_installments = $this->total_no_of_installments($fn_data);
+				$total_emi_amount = $total_no_of_installments * $emi;
+				$extra_emi_amount = $total_emi_amount - $loan_amount;//EXTRA EMI AMOUNT
+				$this->cl("extra_emi_amount: $extra_emi_amount <br />\n");
+			unset($fn_data);
+			
 			if($is_first_repay_done) {
 				$fn_data["loan_allocation_id"] = $loan_allocation_id;
 					$paid_installment_amt = $this->paid_installment_amt($fn_data);
@@ -2656,7 +2676,7 @@
 			} else {
 				$paid_installment_amt = 0;
 			}
-			echo "paid_installment_amt: $paid_installment_amt <br />\n"; //exit();
+//			echo "paid_installment_amt: $paid_installment_amt <br />\n"; //exit();
 			$this->cl("paid_installment_amt: $paid_installment_amt <br />\n");
 			$fn_data["start_date"] = $start_date;
 			$fn_data["end_date"] = $end_date;
@@ -2664,9 +2684,19 @@
 //			print_r($fn_data);//exit();
 				$current_installment_no = $this->current_installment_no($fn_data);
 			unset($fn_data);
-			echo "current_installment_no: $current_installment_no <br />\n"; //exit();
+//			echo "current_installment_no: $current_installment_no <br />\n"; //exit();
+			$this->cl("current_installment_no: $current_installment_no <br />\n");
+			
 			$installment_amt_till_today = $current_installment_no * $emi;
-			echo "installment_amt_till_today: $installment_amt_till_today <br />\n";// exit();
+			if($current_installment_no == $total_no_of_installments-1) {
+				$this->cl("current_installment_no == total_no_of_installments-1<br />\n");
+				$installment_amt_till_today -= $extra_emi_amount / 2;
+			} elseif($current_installment_no == $total_no_of_installments) {
+				$installment_amt_till_today -= $extra_emi_amount;
+				$this->cl("current_installment_no == total_no_of_installments<br />\n");
+			}
+//			echo "installment_amt_till_today: $installment_amt_till_today <br />\n";// exit();
+			$this->cl("installment_amt_till_today: $installment_amt_till_today <br />\n");
 			
 			$min_emi_diff = $emi * 2;
 			$emi_diff = $installment_amt_till_today - $paid_installment_amt;
@@ -2685,7 +2715,7 @@
 //				echo "due_days: {$due_days} <br />\n";//exit();
 				
 				$fn_data["msg"] = "due interest calculation";
-				$fn_data["days"] = $due_days;
+				$fn_data["days"] = $days;//$due_days;
 				$fn_data["interest_rate"] = $due_interest_in_number;
 				$fn_data["balance_amount"] = $emi_diff;
 //				print_r($fn_data);//exit();
@@ -2695,6 +2725,7 @@
 //				echo "<br />\n**** 0  DUE INTEREST ****<br />\n";
 			}
 			/********** Due interest calculation End **********/
+			$this->cl($normal_interest + $due_interest);
 			return $normal_interest + $due_interest;
 		}
 		
@@ -2777,13 +2808,37 @@
 				$temp_date = date("Y-m-d",strtotime($temp_time_string));
 //				echo "<br />\ntemp_date: {$temp_date} ";
 			}
+			
 //			echo "<br />\n";
-			return $installment_no - 1;
+			if($temp_date < $end_date) {
+				return $installment_no - 1;
+			} else {
+				return $installment_no;
+			}
+		}
+		
+		public function total_no_of_installments($data)
+		{
+			$start_date = $data["start_date"];
+			$end_date = $data["end_date"];
+			
+			$st_arr = explode("-",$start_date);
+			$st_d = $st_arr[2];
+			$st_m = $st_arr[1];
+			$st_y = $st_arr[0];
+			$en_arr = explode("-",$end_date);
+			$en_d = $en_arr[2];
+			$en_m = $en_arr[1];
+			$en_y = $en_arr[0];
+			
+			$months = $en_m - $st_m + ($en_y - $st_y) * 12;
+//			$this->cl(var_dump($months));exit();
+			return $months;
 		}
 		
 		public function cl($var)
 		{	
-			$file = fopen("a.txt","w");
+			$file = fopen("a.txt","a");
 			$content = "\n" . json_encode($var);
 			fwrite($file,$content);
 		}

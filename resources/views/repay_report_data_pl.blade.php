@@ -1,3 +1,5 @@
+
+
 <div>
         <link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
         <link href="css/bootstrap-cerulean.min.css" rel='stylesheet' type="text/css" media="all">
@@ -94,68 +96,115 @@
         </table>
         </div>
         <div>
-        <h2>Repayment Details</h2>    
-        <table class="table table-striped bootstrap-datatable datatable responsive">
-            <tr>
-                <th>
-                    Serial No.
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Principal Amount
-                </th>
-                <th>
-                    Interest Paid Till
-                </th>
-                <th>
-                    Interest
-                </th>
-                <th>
-                    Charges
-                </th>
-            </tr>
-			<?php $i = 0; ?>
-			@foreach($data["repayments"] as $key_repay => $row_repay)
+			<h2>Repayment Details</h2>    
+			<table class="table table-striped bootstrap-datatable datatable responsive">
 				<tr>
-					<td>
-						{{++$i}}
-					</td>
-					<td>
-						{{$row_repay["repayment_date"]}}
-					</td>
-					<td>
-						{{$row_repay["repayment_paid_principle_amount"]}}
-					</td>
-					<td>
-						<span id="interest_paid_till_{{$row_repay["repayment_id"]}}">{{$row_repay["interest_paid_upto"]}}</span>
-					</td>
-					<td>
-						{{$row_repay["repayment_paid_interest_amount"]}}
-					</td>
-					<td>
-						{{$row_repay["charges_sum"]}}
-					</td>
-					<td>
-						<button type="button" class="btn btn-primary btn-sm btn_edit" data-toggle="modal" data-target="#modal_repay_edit" data="{{$row_repay["repayment_id"]}}">
-						  <span class="glyphicon glyphicon-pencil" ></span>
-						</button>
-					</td>
+					<th>
+						Serial No.
+					</th>
+					<th>
+						Date
+					</th>
+					<th>
+						Principal Amount
+					</th>
+					<th>
+						Interest Paid Till
+					</th>
+					<th>
+						Interest
+					</th>
+					<th>
+						Charges
+					</th>
 				</tr>
-			@endforeach
-        </table>
-        <table>
-            <tr>
-                <th>Total :</th>
-                <td>{{$data["allocation_details"]["sanctioned_amount"]}}</td>
-                <th>Balance :</th>
-                <td>{{$data["allocation_details"]["balance"]}}</td>
-            <tr>
- <?php /*               <th>Balance Interest :</th>
-                <td>--</td>*/?>
-            </tr>
-        </table>
+				<?php $i = 0; ?>
+				@foreach($data["repayments"] as $key_repay => $row_repay)
+					<tr>
+						<td>
+							{{++$i}}
+						</td>
+						<td>
+							{{$row_repay["repayment_date"]}}
+						</td>
+						<td>
+							<span id="principle_amount_{{$row_repay["repayment_id"]}}">{{$row_repay["repayment_paid_principle_amount"]}}</span>
+						</td>
+						<td>
+							<span id="interest_paid_till_{{$row_repay["repayment_id"]}}">{{$row_repay["interest_paid_upto"]}}</span>
+						</td>
+						<td>
+							<span id="interest_amount_{{$row_repay["repayment_id"]}}">{{$row_repay["repayment_paid_interest_amount"]}}</span>
+						</td>
+						<td>
+							{{$row_repay["charges_sum"]}}
+						</td>
+						<td>
+							<button type="button" class="btn btn-primary btn-sm btn_edit" data-toggle="modal" data-target="#modal_repay_edit" data="{{$row_repay["repayment_id"]}}">
+							  <span class="glyphicon glyphicon-pencil" ></span>
+							</button>
+						</td>
+					</tr>
+				@endforeach
+			</table>
+			<table>
+				<tr>
+					<th>Total :</th>
+					<td>{{$data["allocation_details"]["sanctioned_amount"]}}</td>
+					<th>Balance :</th>
+					<td>{{$data["allocation_details"]["balance"]}}</td>
+				<tr>
+				</tr>
+			</table>
+        </div>
+		
+		
+		<?php 
+			
+		?>
+		
+		
+		
+		
+		
+		
+		
+        <div>
+			<h2>EMI Details</h2>    
+			<table class="table table-striped bootstrap-datatable datatable responsive">
+				<tr>
+					<th>
+						Serial No.
+					</th>
+					<th>
+						Date
+					</th>
+				</tr>
+				<?php
+			
+					$start_date = $data["allocation_details"]["start_date"];
+					$end_date = $data["allocation_details"]["end_date"];
+					
+					$temp_date = $start_date;
+					$temp_arr = explode("-",$temp_date);
+					$temp_d = $temp_arr[2];
+					$temp_m = $temp_arr[1];
+					$temp_y = $temp_arr[0];
+				/*	
+					while($temp_date < $end_date) {
+						
+						$temp_m++;
+						if($temp_m == 13) {
+							$temp_m = 1;
+							$temp_y++;
+						}
+						$temp_time_string = "{$temp_y}-{$temp_m}-{$temp_d}";
+						$temp_date = date("Y-m-d",strtotime($temp_time_string));
+					}*/
+					
+					
+				?>
+			</table>
         </div>
 </div>
 
@@ -173,9 +222,21 @@
 	  
 		<div class="form-group ">
 			<input class="hidden" id="store_repay_id" value=""/>
-			<label class="control-label col-sm-4" for="first_name">Interest Paid Till:</label>
+			<label class="control-label col-sm-4" for="modal_interest_paid_till">Interest Paid Till:</label>
 			<div class="col-md-4">
-				<input type="text" class="form-control datepicker" id="modal_interest_paid_till" name="modal_interest_paid_till" placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd">
+				<input type="text" class="form-control datepicker" id="modal_interest_paid_till" name="modal_interest_paid_till" placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" autofocus>
+			</div>
+		</div>
+		<div class="form-group ">
+			<label class="control-label col-sm-4" for="modal_principle_amount">Principle Amount:</label>
+			<div class="col-md-4">
+				<input type="text" class="form-control" id="modal_principle_amount" name="modal_principle_amount" >
+			</div>
+		</div>
+		<div class="form-group ">
+			<label class="control-label col-sm-4" for="modal_interest_amount">Interest Amount:</label>
+			<div class="col-md-4">
+				<input type="text" class="form-control" id="modal_interest_amount" name="modal_interest_amount" >
 			</div>
 		</div>
 	  
@@ -193,12 +254,17 @@
 		var repay_id = $(this).attr("data");
 		console.log("repay_id="+repay_id);
 		var int_date = $("#interest_paid_till_"+repay_id).html();
+		var principle_amount = $("#principle_amount_"+repay_id).html();
+		var interest_amount = $("#interest_amount_"+repay_id).html();
 		console.log(int_date);
 		if(int_date != "0000-00-00") {
 			$("#modal_interest_paid_till").val(int_date);
 		} else {
 			$("#modal_interest_paid_till").val("");
 		}
+		$("#modal_principle_amount").val(principle_amount);
+		$("#modal_interest_amount").val(interest_amount);
+		
 		$("#store_repay_id").val(repay_id);
 	});
 </script>
@@ -206,18 +272,21 @@
 	$("#button_save").click(function() {
 		console.log("save");
 		
-		var repay_id,int_date,loan_type;
-		loan_type = "PL";
-		repay_id = $("#store_repay_id").val();
-		int_date = $("#modal_interest_paid_till").val();
+		var loan_type = "PL";
+		var repay_id = $("#store_repay_id").val();
+		var int_date = $("#modal_interest_paid_till").val();
+		var principle_amount = $("#modal_principle_amount").val();
+		var interest_amount = $("#modal_interest_amount").val();
 		
 		$.ajax({
 			url:"save_repay_data",
 			type:"post",
-			data:"&loan_type="+loan_type+"&repay_id="+repay_id+"&int_date="+int_date,
+			data:"&loan_type="+loan_type+"&repay_id="+repay_id+"&int_date="+int_date+"&principle_amount="+principle_amount+"&interest_amount="+interest_amount,
 			success: function() {
 				console.log("save_repay_data: done");
 				$("#interest_paid_till_"+repay_id).html(int_date);
+				$("#principle_amount_"+repay_id).html(principle_amount);
+				$("#interest_amount_"+repay_id).html(interest_amount);
 			}
 		});
 		
