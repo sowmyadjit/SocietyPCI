@@ -148,7 +148,7 @@
 				->join("purchaseshare","purchaseshare.PURSH_Memid","=","members.Memid")
 				->groupBy("purchaseshare.PURSH_Memid")
 				->orderBy('Memid', 'desc')
-				->get();
+				->paginate(10);
 			
 			return $id;
 		}
