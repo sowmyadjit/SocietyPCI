@@ -2531,7 +2531,7 @@
 //			echo "interest_rate=$interest_rate <br />\n";
 			$balance_amount = $data["balance_amount"];
 //			echo "balance_amount=$balance_amount <br />\n";
-			$interest_amount = round($balance_amount * $years * $interest_rate,2);
+			$interest_amount = round($balance_amount * $years * $interest_rate);
 //			echo "interest_amount=$interest_amount <br />\n";
 //			echo "<br />\n************interest_calc end***************<br />\n";//exit();
 			return $interest_amount;
@@ -2602,7 +2602,7 @@
 				$last_date = $start_date;
 			}
 			if($last_date == "0000-00-00") {
-//				echo "last paid date is not valid(0000-00-00) <br />\n";return;
+				echo "last paid date is not valid (0000-00-00)\n";return;
 			}
 //			echo "last_date: $last_date <br />\n"; exit();
 			/********** get interest paid upto END **********/
@@ -2627,10 +2627,10 @@
 			/********** Normal interest calculation (due int not included) **********/
 			$fn_data["first"] = $last_date;
 			$fn_data["second"] = $interest_upto;
+//			print_r($fn_data);
 			$this->cl($fn_data);
 				$days = $this->dateDiff($fn_data);
 			unset($fn_data);
-//			print_r($fn_data);
 //			echo "days: $days <br />\n"; exit();
 			
 			if(!$is_first_repay_done) {
@@ -2656,7 +2656,7 @@
 			} else {
 				$paid_installment_amt = 0;
 			}
-//			echo "paid_installment_amt: $paid_installment_amt <br />\n"; exit();
+//			echo "paid_installment_amt: $paid_installment_amt <br />\n"; //exit();
 			$fn_data["start_date"] = $start_date;
 			$fn_data["end_date"] = $end_date;
 			$fn_data["today"] = $today;
@@ -2665,7 +2665,7 @@
 			unset($fn_data);
 //			echo "current_installment_no: $current_installment_no <br />\n"; //exit();
 			$installment_amt_till_today = $current_installment_no * $emi;
-//			echo "installment_amt_till_today: $installment_amt_till_today <br />\n"; exit();
+//			echo "installment_amt_till_today: $installment_amt_till_today <br />\n";// exit();
 			
 			$min_emi_diff = $emi * 2;
 			$emi_diff = $installment_amt_till_today - $paid_installment_amt;
@@ -2682,12 +2682,10 @@
 					$due_days++;
 				}
 //				echo "due_days: {$due_days} <br />\n";//exit();
-				$total_due_interest_in_number = $interest_in_number + $due_interest_in_number;
-//				echo "total_due_interest_in_number: {$total_due_interest_in_number} <br />\n";//exit();
 				
 				$fn_data["msg"] = "due interest calculation";
 				$fn_data["days"] = $due_days;
-				$fn_data["interest_rate"] = $total_due_interest_in_number;
+				$fn_data["interest_rate"] = $due_interest_in_number;
 				$fn_data["balance_amount"] = $emi_diff;
 //				print_r($fn_data);//exit();
 				$due_interest = $this->interest_calc($fn_data);
@@ -2779,7 +2777,7 @@
 //				echo "<br />\ntemp_date: {$temp_date} ";
 			}
 //			echo "<br />\n";
-			return $installment_no;
+			return $installment_no - 1;
 		}
 		
 		public function cl($var)

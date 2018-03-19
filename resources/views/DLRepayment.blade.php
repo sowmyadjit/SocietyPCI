@@ -240,7 +240,7 @@
 								<div class="col-sm-12">
 									<input type="button" value="CREATE" class="btn btn-success btn-sm sbmbtn"/>
 									
-									<input type="button" value="RENEW" class="btn btn-success btn-sm sbmbtn_renew" data-toggle="modal" data-target="#myModal"/>
+								<?php /*	<input type="button" value="RENEW" class="btn btn-success btn-sm sbmbtn_renew" data-toggle="modal" data-target="#myModal"/> */?>
 									<input type="button" value="CANCEL" class="btn btn-danger btn-sm cnclbtn"/>
 									<input type="reset" value="CLEAR" class="btn btn-info btn-sm resetbtn"/>
 								</div>
@@ -446,7 +446,7 @@
 							<div class="form-group">
 								<div class="col-sm-12">
 									<input type="button" value="CREATE" class="btn btn-success btn-sm sbmbtn"/>
-									<input type="button" value="RENEW" class="btn btn-success btn-sm sbmbtn_renew" data-toggle="modal" data-target="#myModal"/>
+								<?php /*	<input type="button" value="RENEW" class="btn btn-success btn-sm sbmbtn_renew" data-toggle="modal" data-target="#myModal"/>*/?>
 									<input type="button" value="CANCEL" class="btn btn-danger btn-sm cnclbtn"/>
 									<input type="reset" value="CLEAR" class="btn btn-info btn-sm resetbtn"/>
 								</div>
@@ -654,7 +654,7 @@
 							<div class="form-group">
 								<div class="col-sm-12">
 									<input type="button" value="CREATE" class="btn btn-success btn-sm sbmbtn"/>
-									<input type="button" value="RENEW" class="btn btn-success btn-sm sbmbtn_renew" data-toggle="modal" data-target="#myModal"/>
+							<?php /*		<input type="button" value="RENEW" class="btn btn-success btn-sm sbmbtn_renew" data-toggle="modal" data-target="#myModal"/>*/?>
 									<input type="button" value="CANCEL" class="btn btn-danger btn-sm cnclbtn"/>
 									<input type="reset" value="CLEAR" class="btn btn-info btn-sm resetbtn"/>
 								</div>
@@ -2444,7 +2444,7 @@ console.log("amt="+bal);
 	$('.PLAccNumTypeAhead').change(function(e)
 	{
 console.log("\n\nPL\n");
-		placcid=$('.PLAccNumTypeAhead').data('value');
+		placcid=$('.PLAccNumTypeAhead').attr('data-value');
 		
 		$.ajax({
 			url:'/GetplDetail',
@@ -2475,7 +2475,7 @@ console.log("EMIremaining="+EMIremaining);
 				if(isNaN(remaining_interest)) {
 					remaining_interest = 0.0;
 				}
-				alert('pid ='+pid);
+			//	alert('pid ='+pid);
 				
 				
 				$.ajax({
