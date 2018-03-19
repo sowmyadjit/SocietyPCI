@@ -33,15 +33,16 @@
 					</div>
 				</div>
 				<div class="box-content">
+				<script src="js/FileSaver.js"/>			
+				<script src="js/tableExport.js"/>
 					<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
 					<div class="alert alert-info">
 						
 						<!-- <a href="crtloanallocation" class="btn btn-default crtlal">LOAN ALLOCATION</a>-->
 						<a href="crtloanalloc" class="btn btn-default crtlal">LOAN </a>
+						<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
 						<div class="col-md-5 pull-right">
-							<input class="SearchTypeahead form-control" id="SearchFd" type="text" name="SearchFd" placeholder="SEARCH DL ACCOUNT">
-							
-							
+							<input class="SearchTypeahead form-control" id="SearchFd" type="text" name="SearchFd" placeholder="SEARCH DL ACCOUNT">	
 						</div>
 						
 						
@@ -157,13 +158,43 @@
 												</tr>
 												@endforeach
 											</tbody>
-										</table>
+										</table>						
+							<div id="toprint" style="position:fixed;opacity:0;">	
+								<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+									<thead>
+										<tr>
+											<th>Customer ID</th>
+											<th>Loan Type</th>
+											<th>Loan Number</th>
+											<th>Account Number</th>
+											<th>Name</th>
+											<th>Loan Amount</th>
+											<th>Start Date</th>
+											<th>End Date</th>
+											<th>Pending Amount</th>
+										</tr>
+									</thead>
+									<tbody>
 										
-										<div id='pagei'>
-											{!! $loanalc['data']->render() !!}
-										</div>
-										
-									</div>
+											@foreach ($loanalc['data'] as $loan_allocation)
+											<tr>
+												<td>{{ $loan_allocation->DepLoan_Uid }}</td>
+												<td>{{ $loan_allocation->DepLoan_DepositeType }}</td>
+												<td>{{ $loan_allocation->DepLoan_LoanNum }}/{{ $loan_allocation->Old_loan_number }}</td>
+													<td>{{ $loan_allocation->DepLoan_AccNum }}/{{ $loan_allocation->Old_Accnum }}</td>
+													<td>{{ $loan_allocation->FirstName }}.{{ $loan_allocation->MiddleName }}.{{ $loan_allocation->LastName }}</td>	
+													
+													<td>{{ $loan_allocation->DepLoan_LoanAmount}}</td>
+													<td>{{ $loan_allocation->DepLoan_LoanStartDate}}</td>
+													<td>{{$loan_allocation->DepLoan_LoanEndDate}}</td>
+													<td>{{$loan_allocation->DepLoan_RemailningAmt}}</td>
+												</tr>
+												@endforeach
+											</tbody>
+								</table>
+							</div>
+							</div>
+					</div>
 								</div>
 							</div>
 							<script>
@@ -259,4 +290,23 @@
 									
 									$('#content').load($(this).attr('href'));
 								});
-							</script>																																		
+							</script>	
+<script src="js/jQuery.print.js"></script>
+<script>
+	
+	$(function() {
+		$(".print").click(function() {
+			var divContents = $("#toprint").html();
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+			//$("#toprint").print();
+            printWindow.print(); 
+		});
+	});
+	
+	
+</script>
