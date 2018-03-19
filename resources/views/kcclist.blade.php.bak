@@ -128,9 +128,9 @@
 									<td>{{ $fdallocation->FdInterest }}</td>
 									<td>{{ $fdallocation->Fd_DepositAmt }}</td>	
 									<td>{{$fdallocation->Fd_StartDate}}
-									<td>{{ $fdallocation->Fd_MatureDate}}</td>
-									<td>{{ $fdallocation->Fd_TotalAmt}}</td>
-									<td>{{ $fdallocation->Fd_Remarks}}</td>	
+										<td>{{ $fdallocation->Fd_MatureDate}}</td>
+										<td>{{ $fdallocation->Fd_TotalAmt}}</td>
+										<td>{{ $fdallocation->Fd_Remarks}}</td>	
 									</tr>
 									@endforeach
 								</tbody>

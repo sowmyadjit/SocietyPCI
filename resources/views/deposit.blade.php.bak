@@ -75,7 +75,7 @@
 							</tr>
 						</thead>
 						
-						<tbody>
+						<tbody>  
 							
 							@foreach ($depo['deposits'] as $deposit)
 							<tr>

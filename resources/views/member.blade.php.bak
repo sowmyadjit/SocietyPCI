@@ -127,6 +127,7 @@
 									<th>No. of Shares</th>
 									<th>Total Share Amt</th>
 									<th>Remarks</th>
+									<th>ACTION</th>
 								</tr>
 								
 							</thead>
@@ -135,10 +136,11 @@
 								
 								@foreach ($m['members'] as $members)
 								<tr>
+									<td class="hidden">{{ $members->Memid }}</td>
 									<td>{{ $members->Memid }}/{{ $members->Member_no }}</td>
 									<td>{{ $members->classtype }}</td>
 									
-									<td>{{ $members->FirstName }}.{{ $members->MiddleName }}.{{ $members->LastName }}</td>
+									<td><a  href="memberdetails/{{ $members->Memid }}" class="memdet">{{ $members->FirstName }}.{{ $members->MiddleName }}.{{ $members->LastName }}</a></td>
 									<td>{{ $members->FatherName }}</td>
 									<td><?php $crdate=date("d-m-Y",strtotime($members->CreatedDate)); echo $crdate; ?> </td>
 									
@@ -147,6 +149,13 @@
 									<td>{{$members->total_share_amt}}</td>
 									
 									<td>{{$members->Remarks}}</td>
+									<td>
+										<div class="form-group">
+											<div class="col-sm-12">
+												<input type="button" value="EDIT" class="btn btn-info btn-sm edtbtn" href="memberdetails/{{ $members->Memid }}/edit"/>
+											</div>
+										</div>
+									</td>
 								</tr>
 								@endforeach
 								

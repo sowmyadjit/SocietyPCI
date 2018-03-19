@@ -88,6 +88,7 @@
 							
 							@foreach ($ex as $expence)
 							<tr>
+								<td class="hidden">{{ $expence->Income_id }}</td>
 								<td>{{ $expence->Income_date }}</td>
 								
 								<td>{{ $expence->lname }}</td>

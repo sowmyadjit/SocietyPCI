@@ -69,7 +69,7 @@ class DepositModel extends Model
 		public function GetDepositData()
 		{
 			$id= DB::table('deposit')->select('d_id','depo_bank','Branch','amount','date','d_date','depo_bank_id','reason','pay_mode','cheque_no','cheque_date','bank_name','paid','cd')
-			->get();
+			->paginate(10);
 			
 			
 			return $id;
