@@ -2656,16 +2656,17 @@
 			} else {
 				$paid_installment_amt = 0;
 			}
-//			echo "paid_installment_amt: $paid_installment_amt <br />\n"; //exit();
+			echo "paid_installment_amt: $paid_installment_amt <br />\n"; //exit();
+			$this->cl("paid_installment_amt: $paid_installment_amt <br />\n");
 			$fn_data["start_date"] = $start_date;
 			$fn_data["end_date"] = $end_date;
 			$fn_data["today"] = $today;
 //			print_r($fn_data);//exit();
 				$current_installment_no = $this->current_installment_no($fn_data);
 			unset($fn_data);
-//			echo "current_installment_no: $current_installment_no <br />\n"; //exit();
+			echo "current_installment_no: $current_installment_no <br />\n"; //exit();
 			$installment_amt_till_today = $current_installment_no * $emi;
-//			echo "installment_amt_till_today: $installment_amt_till_today <br />\n";// exit();
+			echo "installment_amt_till_today: $installment_amt_till_today <br />\n";// exit();
 			
 			$min_emi_diff = $emi * 2;
 			$emi_diff = $installment_amt_till_today - $paid_installment_amt;

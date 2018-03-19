@@ -20,13 +20,52 @@
 		}
 		public function GetDLDetail($id)
 		{
-			return DB::table('depositeloan_allocation')->select('DepLoan_LoanNum','DepLoanAllocId','DepLoan_RemailningAmt','FirstName','MiddleName','LastName','DepLoan_lastpaiddate','partpayment_amount','DepLoan_LoanAmount','LoanType_Interest','loan_due_interest','EMI_Amount')
+			
+			$deposite_type = DB::table("depositeloan_allocation")
+				->where("depositeloan_allocation.DepLoanAllocId","=",$id)
+				->value("DepLoan_DepositeType");
+				
+			switch($deposite_type) {
+				case "FD":	$interest_rate = $this->fddl_interest($id);
+							break;
+				case "RD":	//$interest_rate = $this->rddl_interest($id);
+							break;
+				case "PIGMY":	$interest_rate = 12;
+								break;
+			}
+			
+			$depositeloan_allocation = DB::table('depositeloan_allocation')->select('DepLoan_LoanNum','DepLoanAllocId','DepLoan_RemailningAmt','FirstName','MiddleName','LastName','DepLoan_lastpaiddate','partpayment_amount','DepLoan_LoanAmount','LoanType_Interest','loan_due_interest','EMI_Amount')
 			//->leftJoin('pigmiallocation','pigmiallocation.PigmiAcc_No','=','depositeloan_allocation.DepLoan_AccNum')
 			->leftJoin('user','user.Uid','=','depositeloan_allocation.DepLoan_Uid')
 			->leftJoin('loan_type','loan_type.LoanType_ID','=','depositeloan_allocation.DepLoan_LoanTypeID')
 			->where('DepLoanAllocId','=',$id)
 			->first();
+			
+			if(isset($interest_rate)) {
+				$depositeloan_allocation->LoanType_Interest = $interest_rate;
+			}
+			
+//			var_dump($depositeloan_allocation);			exit();
+			return $depositeloan_allocation;
 		}
+		
+		public function fddl_interest($id)
+		{
+			$DepLoan_AccNum = DB::table("depositeloan_allocation")
+				->where("depositeloan_allocation.DepLoanAllocId","=",$id)
+				->value("DepLoan_AccNum");
+				
+			$fd_allocation = DB::table("fdallocation")
+				->select()
+				->join("fdtype","fdtype.FdTid","=","fdallocation.FdTid")
+				->where("fdallocation.Fd_CertificateNum","=",$DepLoan_AccNum)
+				->first();
+				
+			$interest = $fd_allocation->FdInterest;
+//			var_dump($interest);exit();
+			return $interest + 3;
+		}
+		
 		public function GetFDDetail($fdid)
 		{
 			return DB::table('fdallocation')->select('Fdid','Fd_CertificateNum','Fd_TotalAmt','Fd_Withdraw')
