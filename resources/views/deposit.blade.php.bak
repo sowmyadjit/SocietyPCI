@@ -79,6 +79,7 @@
 							
 							@foreach ($depo['deposits'] as $deposit)
 							<tr>
+								<td class="hidden">{{ $deposit->d_id }}</td>
 								<td>{{ $deposit->d_date }}</td>
 								<td>{{ $deposit->depo_bank }}</td>
 								<td>{{ $deposit->amount }}</td>
