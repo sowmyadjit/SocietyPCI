@@ -201,7 +201,6 @@
 										<td>{{$loan_allocation->JewelLoan_Closed}}</td>
 										<td>{{$loan_allocation->JewelLoan_lastpaiddate}}</td>
 										<td>{{$loan_allocation->jewelloan_Description}}</td>
-										<td>{{$loan_allocation->jewelloan_Net_weight}} </td>
 									</tr>
 									@endforeach
 								</tbody>
