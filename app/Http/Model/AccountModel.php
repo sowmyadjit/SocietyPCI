@@ -276,7 +276,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('AccNum','like','%SB%')
-			->where('createaccount.JointUid','=',"")
+//			->where('createaccount.JointUid','=',"")
 			->where('createaccount.Bid','=',$BID)
 			->get();
 			
