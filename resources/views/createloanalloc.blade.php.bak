@@ -1163,7 +1163,7 @@
 			type:'post',
 			data:'&acc_id='+accnum,
 			success:function(data){
-			$("#DepSBAvail").val(data);
+			$("$DepSBAvail").val(data);
 			}
 			});
 			}
