@@ -793,7 +793,7 @@
 					$('#JewelSBAccountNum').val(data['acnum']);
 					$('#JewelSBAcNum').val(data['acnum']);
 					//$('#JewelSBAvailReadOnly').val(data['totamt']);
-					$('#JewelSBAvail').val(data['totamt']);
+					//$('#JewelSBAvail').val(data['totamt']);
 					AvailBal=$('#JewelSBAvail').val();
 					
 					LoanAmt=$('#JewelPayAmountAfter').val();
@@ -806,6 +806,7 @@
 					data:'&acc_id='+AccNum,
 					success:function(data)	{
 					$("#JewelSBAvailReadOnly").val(data);
+					$('#JewelSBAvail').val(data);
 					}
 					});
 						
