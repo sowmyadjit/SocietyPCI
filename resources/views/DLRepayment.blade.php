@@ -969,7 +969,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="comment">Interest Amount:</label>
 							<div class="col-md-4">
-								<input type="text" class="form-control" id="jlintamt" name="jlintamt" placeholder="INTEREST AMOUNT"/>
+								<input type="text" class="form-control" id="jlintamt" name="jlintamt" placeholder="INTEREST AMOUNT" readonly />
 							</div>
 						</div>
 						
@@ -2441,18 +2441,17 @@ console.log("amt="+bal);
 	
 	
 /********************PL********************/
-	$('.PLAccNumTypeAhead').change(function(e)
-	{
-console.log("\n\nPL\n");
-		placcid=$('.PLAccNumTypeAhead').attr('data-value');
-		
+	$('.PLAccNumTypeAhead, #interest_upto_pl').change(interest_calc_pl);
+	
+	function interest_calc_pl() {
+		placcid =$('.PLAccNumTypeAhead').attr('data-value');
+		console.log("\n\nPL\n");
 		$.ajax({
 			url:'/GetplDetail',
 			type:'post',
 			data:'&plAlcID='+placcid,
 			success:function(data)
 			{
-				
 				$('#plremamt').val(data['reamt']);
 				fullname=data['FN']+" . "+data['MN']+" . "+data['LN'];
 				$('#plcustname').val(fullname);
@@ -2462,136 +2461,42 @@ console.log("\n\nPL\n");
 				//$('#plemi').val(data['emi']);
 				$('#plemi').val(emi);
 				sdate=$('#plStdate').val();
-				//bal=$('#plremamt').val();
-				sdate=data['StDte'];
-				bal=data['reamt'];
-				pid = data['pid'];
-				LoanType_Interest=data['LoanType_Interest'];
-				loan_due_interest=data['loan_due_interest'];
-				emi=data['emi'];
-				remaining_interest=parseFloat(data['remaining_interest']);
-				EMIremaining = parseFloat(data['EMIremaining']);
-console.log("EMIremaining="+EMIremaining);
-				if(isNaN(remaining_interest)) {
-					remaining_interest = 0.0;
-				}
-			//	alert('pid ='+pid);
 				
-				
+				//NEW INT
+				var interest_upto_pl = $("#interest_upto_pl").val();
 				$.ajax({
-					url:'/CalcDayDiff',
+					url:'/interest_calc_pl',
 					type:'post',
-					data:'&dlsdate='+sdate+'&pid='+pid,
-					success:function(data)
-					{
-						
-						//alert(data);
-						daydiff=data;
-						//daydiff++;
-						
-						
-						/*interest*/
-								var totbal,int_total,due_total,yeardiff,daydiff,due_days,due_years,inerest,pend_inst,due_interest;
-console.log("days = "+daydiff);
-								yeardiff = daydiff / 365;
-								inerest=(parseFloat(LoanType_Interest))/100;
-console.log("inerest % = "+inerest);
-console.log("bal = "+bal);
-								int_total = Math.round((bal * yeardiff * inerest),2);
-								if(daydiff > 90) {
-console.log(">90days");
-									pend_inst = Math.floor(daydiff / 30);//no_of_installments_pending
-									//alert("pend_inst = "+pend_inst);
-									pending_emi = emi * pend_inst + parseFloat(EMIremaining);
-									due_days = daydiff - 90;
-									due_years = daydiff/365;
-console.log("due_days="+due_days);
-console.log("emi="+emi);
-console.log("pend_inst="+pend_inst);
-console.log("pending_emi="+pending_emi);
-									
-									due_interest = (parseFloat(loan_due_interest)) /100;
-console.log("due_interest="+due_interest);
-									
-									due_total = Math.round((pending_emi * due_years * due_interest),2);
-									//alert("\ndue_total = "+due_total+"\npending_emi = "+pending_emi+"\ndue_days = "+due_days+"/365 \ndue_interest ="+due_interest);
-								}else{
-									due_total = 0;
-								}
-console.log("int_total = "+int_total);
-console.log("due_total = "+due_total);
-console.log("remaining_interest = "+remaining_interest);
-								totbal = int_total + due_total + remaining_interest;
-						/*interest*/
-						
-						
-						/*if(daydiff>90)
-						{
-							inerest=(parseFloat(LoanType_Interest))/100;
-						}
-						else
-						{
-							
-							inerest=(parseFloat(LoanType_Interest))/100;
-						}
-						
-						days=daydiff/365;
-						
-						//bal=round($bal,2);
-						totbal=days*inerest*bal;*/
-						totbal=Math.round(totbal);
-						bal=Math.round(bal);
-						//totbal=+totbal.toFixed(2);
-						//totbal=round($totbal1,2);
-						$('#plintamt').val(totbal);
-						//totamt=(parseFloat(totbal)+parseFloat(bal));
-						//totamt=round($totamt1,2);
-						
-						//alert(bal+" "+totbal+" "+totamt);
-						$('#plremtotamt').val(totbal);
-						$('#balamt').val(bal);
-//						$('#plpendemi').val(pending_emi);
-						
-						
-						
-						
-						//NEW INT
-						$interest_upto_pl = $("#interest_upto_pl").val();
-						$.ajax({
-							url:'/interest_calc_pl',
-							type:'post',
-							data:'&loan_allocation_id='+placcid+'&interest_upto_pl='+interest_upto_pl,
-							success:function(data){
-								$("#plintamt").val(data);
-							}
-						});
-						//NEW INT END
-						
-						//REPAY REPORT
-						$.ajax({
-							url:'/repay_report_data',
-							type:'post',
-							data:'&loan_allocation_id='+placcid+'&loan_category=PL',
-							success:function(data){
-								$("#jewel_repayment").html(data);
-							}
-						});
-						//REPAY REPORT END
-						
+					data:'&loan_allocation_id='+placcid+'&interest_upto_pl='+interest_upto_pl,
+					success:function(data){
+						$("#plintamt").val(data["int"]);
+						$("#plpendemi").val(data["pending_emi"]);
+						$("#plremamt").val(data["remaining_amount"]);
 					}
 				});
+				//NEW INT END
 				
+				//REPAY REPORT
+				$.ajax({
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+placcid+'&loan_category=PL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
+				});
+				//REPAY REPORT END
 			}
 		});
 		
-	});
+	}
 	
 
 /********************JL********************/
 	//$('#JLAccNum').change(function(e)
 	$('.JLAccNumTypeAhead, #interest_upto').change(function(e)
 	{
-		jlaccid=$('.JLAccNumTypeAhead').data('value');
+		jlaccid=$('.JLAccNumTypeAhead').attr('data-value');
 		
 		$.ajax({
 			url:'/GetjlDetail',

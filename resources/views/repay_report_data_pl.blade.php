@@ -1,4 +1,9 @@
-
+<style type="text/css" >
+	#emi_details_table {
+		max-height: 500px;
+		overflow: scroll;
+	}
+</style>
 
 <div>
         <link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
@@ -67,6 +72,9 @@
                     Due Date
                 </th>
                 <th>
+                    EMI Amount
+                </th>
+                <th>
                     Interest Rate
                 </th>
                 <th>
@@ -87,6 +95,9 @@
 					{{$data["allocation_details"]["end_date"]}}
                 </td>
                 <td>
+					{{$data["allocation_details"]["emi"]}}
+                </td>
+                <td>
 					{{$data["allocation_details"]["interest_rate"]}}
                 </td>
                 <td>
@@ -95,7 +106,7 @@
             </tr>
         </table>
         </div>
-        <div>
+        <div id="repayment_details_table">
 			<h2>Repayment Details</h2>    
 			<table class="table table-striped bootstrap-datatable datatable responsive">
 				<tr>
@@ -169,19 +180,23 @@
 		
 		
 		
-        <div>
+        <div id="emi_details_table" >
 			<h2>EMI Details</h2>    
 			<table class="table table-striped bootstrap-datatable datatable responsive">
 				<tr>
 					<th>
-						Serial No.
+						Installment no.
 					</th>
 					<th>
 						Date
 					</th>
+					<th>
+						Paid EMI
+					</th>
 				</tr>
 				<?php
-			
+					$emi = $data["allocation_details"]["emi"];
+					$repay_principle_sum = $data["allocation_details"]["repay_principle_sum"];
 					$start_date = $data["allocation_details"]["start_date"];
 					$end_date = $data["allocation_details"]["end_date"];
 					
@@ -190,9 +205,10 @@
 					$temp_d = $temp_arr[2];
 					$temp_m = $temp_arr[1];
 					$temp_y = $temp_arr[0];
-				/*	
+					$installment_no = 0;
+					
 					while($temp_date < $end_date) {
-						
+						++$installment_no;
 						$temp_m++;
 						if($temp_m == 13) {
 							$temp_m = 1;
@@ -200,7 +216,21 @@
 						}
 						$temp_time_string = "{$temp_y}-{$temp_m}-{$temp_d}";
 						$temp_date = date("Y-m-d",strtotime($temp_time_string));
-					}*/
+						
+						if($repay_principle_sum > $emi) {
+							$paid_emi = $emi;
+							$repay_principle_sum -= $emi;
+						} else {
+							$paid_emi = $repay_principle_sum;
+							$repay_principle_sum = 0;
+						}
+						
+						echo "<tr>
+								<td>{$installment_no}</td>
+								<td>{$temp_date}</td>
+								<td>{$paid_emi}</td>
+							</tr>";
+					}
 					
 					
 				?>
@@ -287,6 +317,7 @@
 				$("#interest_paid_till_"+repay_id).html(int_date);
 				$("#principle_amount_"+repay_id).html(principle_amount);
 				$("#interest_amount_"+repay_id).html(interest_amount);
+				interest_calc_pl();
 			}
 		});
 		
@@ -296,5 +327,11 @@
 <script>
 	$('.datepicker').datepicker().on('changeDate',function(e){
 		$(this).datepicker('hide');
+	});
+</script>
+
+<script>
+	$("#repayment_details_table").change(function() {
+		//$("#").val("0");
 	});
 </script>

@@ -495,7 +495,7 @@
 	
 	$('#account').change( function(e) {
 	
-	memidsb=$('#account').data('value');
+	memidsb=$('#account').attr('data-value');
 			$.ajax({
 				url:'/GetMemSBDetailView',
 				type:'post',
@@ -504,7 +504,7 @@
 				{
 					$('#PersLoanSBAccountNum').val(data['sbacno']);
 					$('#PersLoanSBAcNum').val(data['sbacno']);
-					$('#PersSBAvail').val(data['sbtot']);
+					//$('#PersSBAvail').val(data['sbtot']);
 					$('#PersSBAvailhidn').val(data['sbtot']);
 					$('#PersLoanSBAccid').val(data['sbaccid']);
 					$('#PersLoanSBAccTid').val(data['sbactid']);
@@ -519,6 +519,16 @@
 					sbavailamt1=parseFloat(sbavailamt);
 					$('#PersLoanSBtotal').val(sbavailamt1);
 					$('#PersLoanSBtotalhidn').val(sbavailamt1);
+					
+					$.ajax({
+						url:'/get_account_balance',
+						type:'post',
+						data:'&acc_id='+memidsb,
+						success:function(data)
+						{
+							$('#PersSBAvail').val(data);
+						}
+					});
 				}
 			});
 	});
