@@ -792,7 +792,7 @@
 					{
 					$('#JewelSBAccountNum').val(data['acnum']);
 					$('#JewelSBAcNum').val(data['acnum']);
-					//$('#JewelSBAvailReadOnly').val(data['totamt']);
+					$('#JewelSBAvailReadOnly').val(data['totamt']);
 					$('#JewelSBAvail').val(data['totamt']);
 					AvailBal=$('#JewelSBAvail').val();
 					
@@ -801,11 +801,10 @@
 					$('#JewelSBtotal').val(TotalAmt);
 					$('#JewelSBtotalReadOnly').val(TotalAmt);
 					$.ajax({
-					url:'/get_account_balance',
+					url:'/DLRepayGetSBDetails',
 					type:'post',
-					data:'&acc_id='+AccNum,
+					data:'&sbAcNo='+AccNum,
 					success:function(data)	{
-					$("#JewelSBAvailReadOnly").val(data);
 					}
 					});
 						
