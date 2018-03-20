@@ -41,11 +41,10 @@
 							</div>
 							<div>
 								<a href="crtpigmiallocation" class="btn btn-default crtpal<?php echo $pa['module']->Mid; ?>">PIGMI ALLOCATION</a>
+								<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
+								<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
 								<div class="col-md-5 pull-right">
 									<input class="SearchTypeahead form-control" id="SearchPigmy" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
-									
-									<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
-						<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
 								</div>
 							</div>
 						</div>

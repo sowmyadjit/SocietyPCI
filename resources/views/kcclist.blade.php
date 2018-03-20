@@ -182,7 +182,7 @@
 			});
 			
 			$('.SearchTypeahead').change(function(e){
-				searchvalue=$('#SearchFd').data('value');
+				searchvalue=$('#SearchFd').attr('data-value');
 				//$('SearchTypeahead').typeahead('destroy');
 				e.preventDefault();
 				$.ajax({

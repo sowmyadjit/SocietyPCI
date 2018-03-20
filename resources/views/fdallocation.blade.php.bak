@@ -309,7 +309,7 @@
 					});
 					
 					$('.SearchTypeahead').change(function(e){
-						searchvalue=$('#SearchFd').attr('data-value');
+						searchvalue=$('#SearchFd').data('value');
 						//$('SearchTypeahead').typeahead('destroy');
 						e.preventDefault();
 						$.ajax({
