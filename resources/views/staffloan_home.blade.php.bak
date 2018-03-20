@@ -207,9 +207,6 @@
 			
 			$('#content').load($(this).attr('href'));
 		});
-	$('#excel').click(function(e){
-	$('#expense_details').tableExport({type:'excel',escape:'false'});
-	});	
 	</script>		
 <script src="js/jQuery.print.js"></script>
 <script>

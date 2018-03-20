@@ -81,6 +81,9 @@
 								<td>{{ $jew->JewelLoan_LoanRemainingAmount }}</td>
 							</tr>
 							@endforeach
+							<tr>
+								<input class="" id="repay_all" type="button" value="Send to Auction" />
+							</tr>
 						</tbody>
 					</table>
 					</div>

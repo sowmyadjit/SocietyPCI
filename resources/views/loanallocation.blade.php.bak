@@ -172,15 +172,17 @@
 											<th>Start Date</th>
 											<th>End Date</th>
 											<th>Pending Amount</th>
+											<th>Action</th>
 										</tr>
 									</thead>
 									<tbody>
 										
 											@foreach ($loanalc['data'] as $loan_allocation)
 											<tr>
+												<td class="hidden">{{ $loan_allocation->DepLoanAllocId }}</td>
 												<td>{{ $loan_allocation->DepLoan_Uid }}</td>
 												<td>{{ $loan_allocation->DepLoan_DepositeType }}</td>
-												<td>{{ $loan_allocation->DepLoan_LoanNum }}/{{ $loan_allocation->Old_loan_number }}</td>
+												<td><a  href="userdetailscust/{{ $loan_allocation->DepLoan_Uid }}" class="custdet">{{ $loan_allocation->DepLoan_LoanNum }}/{{ $loan_allocation->Old_loan_number }}</td>
 													<td>{{ $loan_allocation->DepLoan_AccNum }}/{{ $loan_allocation->Old_Accnum }}</td>
 													<td>{{ $loan_allocation->FirstName }}.{{ $loan_allocation->MiddleName }}.{{ $loan_allocation->LastName }}</td>	
 													
@@ -188,6 +190,13 @@
 													<td>{{ $loan_allocation->DepLoan_LoanStartDate}}</td>
 													<td>{{$loan_allocation->DepLoan_LoanEndDate}}</td>
 													<td>{{$loan_allocation->DepLoan_RemailningAmt}}</td>
+													<td>
+														<div class="form-group">
+															<div class="col-sm-12">
+																<input type="button" value="Receipt" class="btn btn-info btn-sm edtbtn" href="dlloanrecepit/{{ $loan_allocation->DepLoanAllocId }}"/>
+															</div>
+														</div>
+													</td>
 												</tr>
 												@endforeach
 											</tbody>

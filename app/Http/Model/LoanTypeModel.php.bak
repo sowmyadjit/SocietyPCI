@@ -91,7 +91,7 @@
 		{
 			return DB::table('personalloan_allocation')->select('PersLoanAllocID','PersLoan_Number','Old_PersLoan_Number','LoanAmt','PayableAmt','StartDate','EndDate','RemainingLoan_Amt','EMI_Amount','FirstName','MiddleName','LastName','Uid')
 			->join('members','members.Memid','=','personalloan_allocation.MemId')
-			->get();
+			->paginate(10);
 		}
 		
 		public function show_Persnloanalloc1_all()
