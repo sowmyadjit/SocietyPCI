@@ -501,6 +501,21 @@
 			
 			$perslid = DB::table('personalloan_allocation')->insertGetId(['PersLoan_Number'=> $count_inc,'Bid'=> $id['PLBranchID'],'DocId'=>$docid,'MemId'=>$id['PLMembID'],'LoanAmt'=>$id['PersLoanAmt'],'otherCharges'=>$id['PersOthrChrges'],'Book_FormCharges'=>$id['PersBkfrmChrg'],'AjustmentCharges'=>$id['PersAdjChrg'],'ShareCharges'=>$id['PersShrChrg'],'PayableAmt'=>$id['PersPayAmt'],'LoandurationYears'=>$id['LoanDurationYears'],'FirstSurety'=>$id['PLSurety1ID'],'SecondSurety'=>$id['PLSurety2ID'],'StartDate'=>$id['PersLoanStartDate'],'EndDate'=>$coneDate,'PayMode'=>$id['PersLoanPayMode'],'accid'=>$id['PersLoanSBAccid'],'CreadtedBY'=>$UID,'BankID'=>$id['PersLoanBankID'],'ChequeDate'=>$id['PersLoanChequeDte'],'ChequeNumber'=>$id['PersLoanChequeNum'],'EMI_Amount'=>$id['PersEMIAmt'],'RemainingLoan_Amt'=>$id['PersLoanAmt'],'caldate'=>$id['PersLoanStartDate'],'Insurance'=>$id['Insurance'],'partpayment_amount'=>$pay,'LoanType_ID'=>$Persloantypeid]);
 			
+			
+			$ln_amt = $id['PersLoanAmt'];
+			$ln_type = $Persloantypeid;
+			$subhead = DB::table("loan_type")->where("LoanType_ID","=",$ln_type)->value("SubLedgerId");
+			DB::table('personalloan_payment')->insertGetId([
+																	"pl_payment_date"=>date("Y-m-d"),
+																	"pl_allocation_id"=>$perslid,
+																	"paid_amount"=>$ln_amt,
+																	"paid_status"=>"1",
+																	"payment_mode"=>$paymode,
+																	"particulars"=>"PL PAYMENT",
+																	"SubLedgerId"=>$subhead,
+																	"deleted"=>"0",
+																]);
+			
 			$membertyp1=DB::table('members')->select('agent_member')->where('Memid','=',$id['PLMembID'])->first();
 			$membertyp=$membertyp1->agent_member;
 			if($membertyp=="1")
