@@ -1,5 +1,6 @@
+
 <style type="text/css" >
-	#emi_details_table {
+	#emi_details_table, #repayment_details_table {
 		max-height: 500px;
 		overflow: scroll;
 	}
@@ -106,8 +107,14 @@
             </tr>
         </table>
         </div>
+		
+		
         <div id="repayment_details_table">
 			<h2>Repayment Details</h2>    
+<?php
+	$principle_balance_amount = $data["allocation_details"]["sanctioned_amount"];
+?>
+			
 			<table class="table table-striped bootstrap-datatable datatable responsive">
 				<tr>
 					<th>
@@ -127,6 +134,9 @@
 					</th>
 					<th>
 						Charges
+					</th>
+					<th>
+						Principle Balance
 					</th>
 				</tr>
 				<?php $i = 0; ?>
@@ -150,6 +160,12 @@
 						<td>
 							{{$row_repay["charges_sum"]}}
 						</td>
+						<?php 
+							$principle_balance_amount -= $row_repay["repayment_paid_principle_amount"];
+						?>
+						<td>
+							{{$principle_balance_amount}}
+						</td>
 						<td>
 							<button type="button" class="btn btn-primary btn-sm btn_edit" data-toggle="modal" data-target="#modal_repay_edit" data="{{$row_repay["repayment_id"]}}">
 							  <span class="glyphicon glyphicon-pencil" ></span>
@@ -169,10 +185,6 @@
 			</table>
         </div>
 		
-		
-		<?php 
-			
-		?>
 		
 		
 		

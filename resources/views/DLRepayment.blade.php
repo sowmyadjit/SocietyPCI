@@ -685,17 +685,6 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="first_name">Interest upto :</label>
-							<div class="input-group input-append date col-sm-4" id="">
-								<input type="text" class="form-control datepicker" name="interest_upto_pl" id="interest_upto_pl"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
-								<span class="input-group-addon add-on">
-									<span class="glyphicon glyphicon-calendar">
-									</span>
-								</span> 
-							</div>
-						</div>
-						
-						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">PL Account Number :</label>
 							<div id="the-basics" class="col-sm-4">
 								<input class="PLAccNumTypeAhead form-control"  type="text" placeholder="SELECT PL ACCOUNT NUMBER" id="PLAccNum">  
@@ -715,6 +704,17 @@
 							<label class="control-label col-sm-4" for="comment">Remaining Amount:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control" id="plremamt" name="plremamt" placeholder="REMAINING AMOUNT"/>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4" for="first_name">Interest upto :</label>
+							<div class="input-group input-append date col-sm-4" id="">
+								<input type="text" class="form-control datepicker" name="interest_upto_pl" id="interest_upto_pl"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
+								<span class="input-group-addon add-on">
+									<span class="glyphicon glyphicon-calendar">
+									</span>
+								</span> 
 							</div>
 						</div>
 						
@@ -3186,13 +3186,15 @@ console.log("amt="+bal);
 			adid=$('.adjustmentTypeAheadPL').data('value');
 			plAccNo=$('.PlAccNumTypeAhead').val();
 			bank_pl=$('#creditbank_pl').data('value');
+			var interest_upto_pl = $('#interest_upto_pl').val();
+			var rec_date_pl = $('#rec_date_pl').val();
 			//dl=$('#dl').val();
 			
 			e.preventDefault();
 			$.ajax({
 				url: 'PersonalLoanRepay',
 				type: 'post',
-				data: $('#form_dlrepay').serialize()+'&plAlloc='+plAlocID+'&branch='+Bidpl+'&plloanno='+plAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+x+'&bank_pl='+bank_pl+'&adid='+adid,
+				data: $('#form_dlrepay').serialize()+'&plAlloc='+plAlocID+'&branch='+Bidpl+'&plloanno='+plAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+x+'&bank_pl='+bank_pl+'&adid='+adid+'&interest_upto_pl='+interest_upto_pl+'&rec_date_pl='+rec_date_pl,
 				success: function(data) {
 					alert('success');
 					$('.pigmidlrepayclassid').click();

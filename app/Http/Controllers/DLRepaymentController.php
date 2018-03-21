@@ -389,6 +389,8 @@
 			$plall['bankbranch_pl']=$request->input('bankbranch_pl');
 			$plall['ifsccode_pl']=$request->input('ifsccode_pl');
 			$plall['adid']=$request->input('adid');
+			$plall['interest_upto_pl']=$request->input('interest_upto_pl');
+			$plall['rec_date_pl']=$request->input('rec_date_pl');//receipt date
 			$id=$this->pigmtDLrepay->PersonalLoanRepay($plall);
 			return redirect('/');
 		}
