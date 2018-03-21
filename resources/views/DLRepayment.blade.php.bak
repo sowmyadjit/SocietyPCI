@@ -934,7 +934,7 @@
 						
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Interest upto :</label>
-							<div class="input-group input-append date col-sm-4" id="datePicker" style="padding-left:15px;padding-right:15px;">
+							<div class="input-group input-append date col-sm-4" id="datePicker">
 								<input type="text" class="form-control datepicker" name="interest_upto" id="interest_upto"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
 								<span class="input-group-addon add-on">
 									<span class="glyphicon glyphicon-calendar">
