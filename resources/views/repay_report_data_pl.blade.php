@@ -1,8 +1,18 @@
-
+<?php
+	$loan_allocation_id = $data["allocation_details"]["loan_allocation_id"];
+?>
 <style type="text/css" >
 	#emi_details_table, #repayment_details_table {
 		max-height: 500px;
 		overflow: scroll;
+	}
+	
+	[id^='charges_sum_'] {
+		color: rgba(0,0,200,1);
+	}
+	
+	[id^='charges_sum_']:hover {
+		cursor: pointer;
 	}
 </style>
 
@@ -146,7 +156,7 @@
 							{{++$i}}
 						</td>
 						<td>
-							{{$row_repay["repayment_date"]}}
+							<span id="repay_dtae_{{$row_repay["repayment_id"]}}">{{$row_repay["repayment_date"]}}</span>
 						</td>
 						<td>
 							<span id="principle_amount_{{$row_repay["repayment_id"]}}">{{$row_repay["repayment_paid_principle_amount"]}}</span>
@@ -158,7 +168,9 @@
 							<span id="interest_amount_{{$row_repay["repayment_id"]}}">{{$row_repay["repayment_paid_interest_amount"]}}</span>
 						</td>
 						<td>
-							{{$row_repay["charges_sum"]}}
+							<span id="charges_sum_{{$row_repay["repayment_id"]}}" data-toggle="modal" data-target="#modal_charges_transaction">
+								{{$row_repay["charges_sum"]}}
+							</span>
 						</td>
 						<?php 
 							$principle_balance_amount -= $row_repay["repayment_paid_principle_amount"];
@@ -188,65 +200,64 @@
 		
 		
 		
-		
-		
-		
-		
-        <div id="emi_details_table" >
-			<h2>EMI Details</h2>    
-			<table class="table table-striped bootstrap-datatable datatable responsive">
-				<tr>
-					<th>
-						Installment no.
-					</th>
-					<th>
-						Date
-					</th>
-					<th>
-						Paid EMI
-					</th>
-				</tr>
-				<?php
-					$emi = $data["allocation_details"]["emi"];
-					$repay_principle_sum = $data["allocation_details"]["repay_principle_sum"];
-					$start_date = $data["allocation_details"]["start_date"];
-					$end_date = $data["allocation_details"]["end_date"];
-					
-					$temp_date = $start_date;
-					$temp_arr = explode("-",$temp_date);
-					$temp_d = $temp_arr[2];
-					$temp_m = $temp_arr[1];
-					$temp_y = $temp_arr[0];
-					$installment_no = 0;
-					
-					while($temp_date < $end_date) {
-						++$installment_no;
-						$temp_m++;
-						if($temp_m == 13) {
-							$temp_m = 1;
-							$temp_y++;
-						}
-						$temp_time_string = "{$temp_y}-{$temp_m}-{$temp_d}";
-						$temp_date = date("Y-m-d",strtotime($temp_time_string));
+        <div>
+			<h2>EMI Details</h2>  
+			<div id="emi_details_table">
+				<table class="table table-striped bootstrap-datatable datatable responsive">
+					<tr>
+						<th>
+							Installment no.
+						</th>
+						<th>
+							Date
+						</th>
+						<th>
+							Paid EMI
+						</th>
+					</tr>
+					<div 
+					<?php
+						$emi = $data["allocation_details"]["emi"];
+						$repay_principle_sum = $data["allocation_details"]["repay_principle_sum"];
+						$start_date = $data["allocation_details"]["start_date"];
+						$end_date = $data["allocation_details"]["end_date"];
 						
-						if($repay_principle_sum > $emi) {
-							$paid_emi = $emi;
-							$repay_principle_sum -= $emi;
-						} else {
-							$paid_emi = $repay_principle_sum;
-							$repay_principle_sum = 0;
+						$temp_date = $start_date;
+						$temp_arr = explode("-",$temp_date);
+						$temp_d = $temp_arr[2];
+						$temp_m = $temp_arr[1];
+						$temp_y = $temp_arr[0];
+						$installment_no = 0;
+						
+						while($temp_date < $end_date) {
+							++$installment_no;
+							$temp_m++;
+							if($temp_m == 13) {
+								$temp_m = 1;
+								$temp_y++;
+							}
+							$temp_time_string = "{$temp_y}-{$temp_m}-{$temp_d}";
+							$temp_date = date("Y-m-d",strtotime($temp_time_string));
+							
+							if($repay_principle_sum > $emi) {
+								$paid_emi = $emi;
+								$repay_principle_sum -= $emi;
+							} else {
+								$paid_emi = $repay_principle_sum;
+								$repay_principle_sum = 0;
+							}
+							
+							echo "<tr>
+									<td>{$installment_no}</td>
+									<td>{$temp_date}</td>
+									<td>{$paid_emi}</td>
+								</tr>";
 						}
 						
-						echo "<tr>
-								<td>{$installment_no}</td>
-								<td>{$temp_date}</td>
-								<td>{$paid_emi}</td>
-							</tr>";
-					}
-					
-					
-				?>
-			</table>
+						
+					?>
+				</table>
+			</div>
         </div>
 </div>
 
@@ -290,6 +301,29 @@
     </div>
   </div>
 </div>
+<!-- Modal End -->
+
+<!-- Modal charges tran-->
+<div class="modal fade" id="modal_charges_transaction" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">CHARGES TRANSACTIONS</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<div id="charges_transaction_report"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal charges tran End -->
+
 
 <script>
 	$(".btn_edit").click(function() {
@@ -345,5 +379,30 @@
 <script>
 	$("#repayment_details_table").change(function() {
 		//$("#").val("0");
+	});
+</script>
+
+<script>
+/*********** CHARGES TRANSACTIONS************/
+	$("[id^='charges_sum_']").click(function() {
+		
+		var this_id = $(this).attr("id");
+		var prefix = "charges_sum_";
+		var prefix_length = prefix.length;
+		var repay_id = this_id.substr(prefix_length);
+		var charges_date = $("#repay_dtae_"+repay_id).html();
+		var loan_category = "PL";
+		var loan_allocation_id = {{$loan_allocation_id}};
+		
+		$.ajax({
+			url:"charges_transaction_report",
+			type:"post",
+			data:"&loan_allocation_id="+loan_allocation_id+"&loan_category="+loan_category+"&charges_date="+charges_date,
+			success: function(data) {
+				console.log("charges_transaction_report: done");
+				$("#charges_transaction_report").html(data);
+			}
+		});
+		
 	});
 </script>

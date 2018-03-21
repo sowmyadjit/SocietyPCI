@@ -1302,4 +1302,13 @@
 			return $ret_data;
 		}
 		
+		public function charges_transaction_report(Request $request)
+		{
+			$in_data["loan_allocation_id"] = $request->input("loan_allocation_id");
+			$in_data["loan_category"] = $request->input("loan_category");
+			$in_data["charges_date"] = $request->input("charges_date");
+			$data["charges"] = $this->loan->charges_transaction_report($in_data);
+			return view("repay_report_data_charges",compact('data'));
+		}
+		
 	}

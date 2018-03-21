@@ -300,6 +300,7 @@
 				Route::match(["get","post"],'/save_repay_data','LoanController@save_repay_data');
 				Route::match(["get","post"],'/calculate_jewel_interest','LoanController@calculate_jewel_interest');
 				Route::match(["get","post"],'/interest_calc_pl','LoanController@interest_calc_pl');
+				Route::match(["get","post"],'/charges_transaction_report','LoanController@charges_transaction_report');
 				
 				Route::get('/add_charges_index','LoanController@add_charges_index');
 				Route::get('/add_charges','LoanController@add_charges');

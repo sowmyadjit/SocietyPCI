@@ -2308,7 +2308,6 @@
 					->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
 					->where("{$table}.loanid","=",$allocation->PersLoanAllocID)
 					->where("{$table}.loantype","=",$loan_category)
-					->where("{$table}.loantype","=",$loan_category)
 					->where("{$table}.charg_tran_date","=",$row_repay->PLRepay_Date)
 					->get();
 				//print_r($charges); exit();
@@ -2999,6 +2998,32 @@
 		{	
 			$file = fopen("a.txt","w");
 			fwrite($file,"");
+		}
+		
+		public function charges_transaction_report($data)
+		{
+			$ret_data = array();
+			$table = "charges_tran";
+			$charges_tran = DB::table($table)
+				->select(
+							"{$table}.amount",
+							"{$table}.charg_tran_date",
+							"chareges.charges_name"
+						)
+				->join("chareges","chareges.charges_id","=","{$table}.charges_id")
+				->where("loanid","=",$data["loan_allocation_id"])
+				->where("loantype","=",$data["loan_category"])
+				->where("charg_tran_date","=",$data["charges_date"])
+				->where("repay_through_auction","=",0)
+				->get();
+			$i = -1;
+			
+			foreach($charges_tran as $key_ch => $row_ch) {
+				$ret_data[++$i]["charg_tran_date"] = $row_ch->charg_tran_date;
+				$ret_data[$i]["charges_name"] = $row_ch->charges_name;
+				$ret_data[$i]["amount"] = $row_ch->amount;
+			}
+			return $ret_data;
 		}
 		
 		

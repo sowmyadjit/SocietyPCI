@@ -9,7 +9,7 @@
 		<div class="box col-md-12">
 			<div class="box-inner">
 				<div class="box-header well" data-original-title="">
-					<h2><i class="glyphicon glyphicon-globe"></i>Deposit Loan Repayment</h2>
+					<h2><i class="glyphicon glyphicon-globe"></i>Loan Repayment</h2>
 					
 					<div class="box-icon">
 						<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
