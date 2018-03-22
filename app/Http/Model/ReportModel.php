@@ -2716,11 +2716,131 @@
 		
 		public function pigmy_report($data)
 		{
-			/*if($data["allocation_id"]) {
+			$ret_data = array();
+			$ret_data["pg_tr"] = array();//pigmy transactions
+			$ret_data["dates"] = array();// From Date   to   To Date
 			
+			if(empty($data["to_date"])) {
+				$data["to_date"] = $data["from_date"];
+			}
+			$j = -1;
+			$tran_date = $data["from_date"];
+			while($tran_date <= $data["to_date"]) {
+				$ret_data["dates"][++$j] = $tran_date;
+				$tran_date = $this->next_date(["date"=>$tran_date]);
+			}
+//			print_r($ret_data);exit();
+			
+/****** all pigmy allocation ******/
+
+			$table="pigmiallocation";
+			if(!empty($data["allocation_id"])) {
+				$pigmiallocation = DB::table($table)
+					->select(
+								DB::raw("fake_value as prev_amt"),
+								"{$table}.PigmiAllocID",
+								"{$table}.old_pigmiaccno",
+								"{$table}.PigmiAcc_No",
+								"user.FirstName",
+								"user.MiddleName",
+								"user.LastName"
+							)
+					->join("user","user.Uid","=","{$table}.UID")
+					->where("Closed","=","NO")
+					->where("PigmiAllocID","=",$data["allocation_id"])
+					->get();
+			} else {
+				$pigmiallocation = DB::table($table)
+					->select(
+								DB::raw("fake_value as prev_amt"),
+								"{$table}.PigmiAllocID",
+								"{$table}.old_pigmiaccno",
+								"{$table}.PigmiAcc_No",
+								"user.FirstName",
+								"user.MiddleName",
+								"user.LastName"
+							)
+					->join("user","user.Uid","=","{$table}.UID")
+					->where("Closed","=","NO")
+				//	->limit(5)
+					->get();
+			}
+				
+			
+/****** all pigmy transactions ******/
+			$table = "pigmi_transaction";
+			$all_pigmi_transaction = DB::table($table)
+				->select(
+							"PigmiAllocID",
+							"PigReport_TranDate",
+							"Amount",
+							"Transaction_Type"
+						)
+				->where("{$table}.tran_reversed","=","NO")
+			//	->where("{$table}.PigReport_TranDate","<",$data["from_date"])
+				->get();
+			foreach($all_pigmi_transaction as $row_all_tran) {
+				$all_pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"][] = $row_all_tran;
+
+				
+				
+				if(isset($pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"])) {
+					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] += $row_all_tran->Amount;
+				} else {
+					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] = $row_all_tran->Amount;
+				}
 			}
 			
-			$table="";
-			DB::table($table)*/
+/********* process each entry ***********/
+			$i = -1;
+			foreach($pigmiallocation as $key_alloc => $row_alloc) {
+				$ret_data["pg_tr"][++$i]["allocation_id"] = $row_alloc->PigmiAllocID;
+				$ret_data["pg_tr"][$i]["pigmy_no"] = "{$row_alloc->old_pigmiaccno}/{$row_alloc->PigmiAcc_No}";
+				$ret_data["pg_tr"][$i]["customer_name"] = "{$row_alloc->FirstName} {$row_alloc->MiddleName} {$row_alloc->LastName}";
+				
+				$credit_amount = 0;
+				$debit_amount = 0;
+				$total_credit_amount = 0;
+				$total_debit_amount = 0;
+				if(!empty($all_pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"])) {
+					foreach($all_pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"] as $row) {
+						if($row->PigReport_TranDate < $data["from_date"]) {
+							if($row->Transaction_Type) {
+								$credit_amount += $row->Amount;
+								
+							} else {
+								$debit_amount += $row->Amount;
+							}
+						}
+						if($row->Transaction_Type) {
+							$total_credit_amount += $row->Amount;
+							
+						} else {
+							$total_debit_amount += $row->Amount;
+						}
+					}
+				}
+				$ret_data["pg_tr"][$i]["prev_amt"] = $credit_amount - $debit_amount;
+				$ret_data["pg_tr"][$i]["total_amt"] = $total_credit_amount - $total_debit_amount;
+				foreach($ret_data["dates"] as $tran_date) {
+					$day_amt = 0;
+					if(!empty($pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"]["{$tran_date}"])) {
+						$day_amt = $pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"]["{$tran_date}"];
+					}
+					$ret_data["pg_tr"][$i]["{$tran_date}"] = $day_amt;
+				}
+			}
+			return $ret_data;
 		}
+		
+		public function next_date($data){
+			return date("Y-m-d", strtotime("+1 day",strtotime($data["date"])));
+		}
+		
+		public function dmy($data)
+		{
+			return date("d-m-Y",strtotime($data["date"]));
+		}
+		
+		
 	}
