@@ -456,20 +456,15 @@
 				Route::get('/pigmiagenttotalamt','ReportController@pigmiagenttotalamt');
 				
 				Route::get('/alltranreport','ReportController@alltranreport');
-				
 				Route::get('/alltotalamt','ReportController@alltotalamt');
-				
 				Route::get('/allreport_headoff','ReportController@allreport_headoff');
-				
 				Route::get('/getallamount','ReportController@getallamount');
-				
 				Route::get('/closeaccount','ReportController@closeaccount');
-				
 				Route::get('/getallaccount','ReportController@getallaccount');
-				
 				Route::get('/pigmidirectclose/{id}','ReportController@pigmidirectclose');
-				
 				Route::get('/pigmidirectDelete/{id}','ReportController@pigmidirectDelete');
+				
+				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');
 				
 				
 				

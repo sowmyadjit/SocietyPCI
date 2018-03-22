@@ -759,4 +759,17 @@
 		    $view['fontdata']=$this->Report_model->closedStaffJLD($data);
 		    return view('ClosedJlANDSL',compact('view'));
 		}
+		
+		public function pigmy_report(Request $request)
+		{
+			$in_data["from_date"] = $request->input("from_date");
+			$in_data["to_date"] = $request->input("to_date");
+			$in_data["allocation_id"] = $request->input("allocation_id");
+			if(empty($in_data["from_date"])) {
+				return view("pigmy_report");
+			} else {
+				$data = $this->Report_model->pigmy_report($in_data);
+				return view('pigmy_report_data',compact('data'));
+			}
+		}
 	}

@@ -2713,4 +2713,14 @@
 			
 			return $ret_data;
 		}
+		
+		public function pigmy_report($data)
+		{
+			/*if($data["allocation_id"]) {
+			
+			}
+			
+			$table="";
+			DB::table($table)*/
+		}
 	}
