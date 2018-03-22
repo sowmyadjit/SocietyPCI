@@ -1,0 +1,34 @@
+
+
+<noscript>
+	<div class="alert alert-block col-md-12">
+		<h4 class="alert-heading">Warning!</h4>
+		
+	</div>
+</noscript>
+
+<div id="content class="col-lg-10 col-sm-10">
+	
+	<div class="row">
+		<div class="box col-md-12">
+			<div class="bdy_<?php echo $p['module']->Mid; ?> box-inner">
+				<div class="box-header well" data-original-title="">
+					<h2><i class="glyphicon glyphicon-user"></i> PIGMI Report</h2>
+					
+					
+				</div>
+				<div class="box-content">
+					<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
+					<div class="alert alert-info">	
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+<script>
+</script>
