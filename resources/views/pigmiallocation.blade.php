@@ -180,7 +180,7 @@ $('.crtpal').hide();
 	});
 	
 	$('.SearchTypeahead').change(function(e){
-		searchvalue=$('#SearchPigmy').attr('data-value');;
+		searchvalue=$('#SearchPigmy').attr('data-value');
 		e.preventDefault();
 		$.ajax({
 			url:'/PigmySearchView',

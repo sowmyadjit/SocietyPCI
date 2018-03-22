@@ -2789,7 +2789,7 @@
 				} else {
 					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] = $row_all_tran->Amount;
 				}
-			}//return 'show';
+			}return 'show';
 			
 /********* process each entry ***********/
 			$i = -1;

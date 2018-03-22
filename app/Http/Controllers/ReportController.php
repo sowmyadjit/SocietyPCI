@@ -770,7 +770,7 @@
 			if(empty($in_data["from_date"])) {
 				return view("pigmy_report",compact('m'));
 			} else {
-				$data = $this->Report_model->pigmy_report($in_data);
+				$data = $this->Report_model->pigmy_report($in_data);//return 11;
 				return view('pigmy_report_data',compact('data'));
 			}
 		}

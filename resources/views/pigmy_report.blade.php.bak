@@ -6,6 +6,7 @@
 		
 	</div>
 </noscript>
+<script src="js/bootstrap-typeahead.js"></script>
 <script src="js/jquery.validate.min.js"></script>
 <script src="js/bootstrap-typeahead.js"></script>
 <link href="css/datepicker.css" rel='stylesheet'>
@@ -49,8 +50,13 @@
 								</span> 
 							</div>
 						</div>
+						<div class="col-md-5 pull-right">
+									<input class="SearchTypeahead form-control" id="SearchPigmy" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
+						</div>
 						<div>
 						<button style="margin-left:1000px;" id="view">View</button>
+						</div>
+						<div id="report">
 						</div>
 				</div>
 		</div>
@@ -66,16 +72,26 @@
 		$(this).datepicker('hide');
 	});
 	$("#view").click(function(){
+	console.log("hai");
 	from_date=$("#from_date").val();
 	to_date=$("#to_date").val();
+	searchvalue=$('#SearchPigmy').attr('data-value');
 	$.ajax({
 					url:'/pigmy_report',
 					type:'post',
-					data:'&from_date='+from_date+'&to_date='+to_date,
+					data:'&from_date='+from_date+'&to_date='+to_date+'&allocation_id='+searchvalue,
 					success:function(data)
-					{
+					{console.log("hai");
+					$("#report").html(data);
 					}
 	});
 		}
 	);
+	
+		$('input.SearchTypeahead').typeahead({
+		//ajax: '/SearchPigmy'
+        source:SearchPigmy
+	});
+	
+	
 </script>
