@@ -26,11 +26,17 @@
 		
 		public function pigmiDLPigmy()
 		{
-		return view('jewel_loan_repay_report_data_print',compact(''));
+		$Url="pigmiDLPigmy";	
+		//$chargeslist['module']=$this->Modules->GetAnyMid($Url);
+		$chargeslist=$this->pigmtDLrepay->chargeslist();
+		return view('DLRepayment',compact('chargeslist'));
 		}
-		public function DLReceipt(){
-		
-			}
+		public function Receipt(){
+			return view('jewel_loan_repay_report_data_print',compact(''));
+		}
+		public function Receipt(){
+			return view('pl_loan_repay_report_data_print',compact(''));
+		}
 		public function GetDLDetail(Request $request)
 		{
 			$Url="pigmiDLPigmy";	
@@ -386,6 +392,8 @@
 			$plall['bankbranch_pl']=$request->input('bankbranch_pl');
 			$plall['ifsccode_pl']=$request->input('ifsccode_pl');
 			$plall['adid']=$request->input('adid');
+			$plall['interest_upto_pl']=$request->input('interest_upto_pl');
+			$plall['rec_date_pl']=$request->input('rec_date_pl');//receipt date
 			$id=$this->pigmtDLrepay->PersonalLoanRepay($plall);
 			return redirect('/');
 		}

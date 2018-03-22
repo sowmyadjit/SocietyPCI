@@ -31,9 +31,9 @@
 		$chargeslist=$this->pigmtDLrepay->chargeslist();
 		return view('DLRepayment',compact('chargeslist'));
 		}
-		public function DLReceipt(){
-		return view('jewel_loan_repay_report_data_print',compact(''));
-			}
+		public function Receipt(){
+			return view('jewel_loan_repay_report_data_print',compact(''));
+		}
 		public function GetDLDetail(Request $request)
 		{
 			$Url="pigmiDLPigmy";	

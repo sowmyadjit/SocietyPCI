@@ -422,5 +422,6 @@
 				$('.box-inner').hide();
 				$('.receipt_print').show();
 				$('.receipt_print').load($(this).attr('href'));
+				
 		});
 </script>
