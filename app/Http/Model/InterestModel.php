@@ -821,13 +821,38 @@
 			
 			$accid=$accnid->Accid;
 			
-			return DB::table('rd_transaction')
+			$rd_transaction = DB::table('rd_transaction')
 			->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 			->where('rd_transaction.Accid','=',$accid)
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$dte."'")
 			->groupBy('rd_transaction.RD_Month')
 			->selectRaw('sum(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')
 			->lists('sum','rd_transaction.RD_Month');
+/****edit***/
+			$temp = date("m",strtotime($sdate));
+			$start_month = (int)$temp;
+			$i = (int)$temp;
+			if(++$i == 13){
+				$i = 1;
+			}
+			while($i != $start_month ) {//echo "$i";
+				if(isset($rd_transaction[$i])) {
+					//echo "true<br>\n";
+				} else {
+					//echo "false";
+					$j = $i-1;
+					if($j == 0) {
+						$j = 12;
+					}//echo "$rd_transaction[$j]<br>\n";
+					$rd_transaction[$i] = $rd_transaction[$j];
+				}
+				if(++$i == 13){
+					$i = 1;
+				}
+			}
+//			print_r($rd_transaction);//exit();
+/****edit***/
+			return $rd_transaction;
 		}
 		
 		function FDwithdraw($id)

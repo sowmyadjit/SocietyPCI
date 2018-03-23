@@ -20,6 +20,10 @@
 			<th>Duration</th>
 			<td>{{$rdsr['RdDet']->Duration}}</td>
 		</tr>
+		<tr>
+			<th>Start Date</th>
+			<td>{{$rdsr['RdDet']->Created_on}}</td>
+		</tr>
 	</table>
 	<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 		
@@ -29,7 +33,6 @@
 				<th>Transaction Type</th>
 				<th>Perticulars</th>
 				<th>Amount</th>
-				<th>Current Blance</th>
 				<th>Total Blance</th>
 				
 			</tr>
@@ -43,7 +46,6 @@
 				<td>{{ $rd_transaction->RD_Trans_Type }}</td>
 				<td>{{ $rd_transaction->RD_Particulars }}</td>
 				<td>{{ $rd_transaction->RD_Amount }}</td>
-				<td>{{ $rd_transaction->RD_CurrentBalance }}</td>
 				<td>{{ $rd_transaction->RD_Total_Bal }}</td>
 			</tr>
 			@endforeach
