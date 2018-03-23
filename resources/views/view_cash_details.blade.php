@@ -11,14 +11,31 @@
 		</tr>
 	</thead>
 	<tbody>
+	@foreach($data as $row) 
 		<tr>
 			<td>
-				Kulai
+			{{$row->Branch}}
 			</td>
 			<td>
-				10000000
+				<input class="cash_inhand" id="{{$row->cashId}}" value="{{$row->InHandCash}}"/>
 			</td>
 		</tr>
+	@endforeach
 	</tbody>
 	</table>
 </div>
+<script>
+$(".cash_inhand").change(function(){
+		id=$(this).attr('id');
+		amount=$(this).val();
+		$.ajax({
+					url:'/edit_cash_details',
+					type:'post',
+					data:'&cash_id='+id+'&amount='+amount,
+					success:function(data)
+					{
+					console.log(data);
+					}
+	});
+});
+</script>

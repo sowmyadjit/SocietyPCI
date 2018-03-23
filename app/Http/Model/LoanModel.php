@@ -2249,9 +2249,12 @@
 							"{$table}.MiddleName",
 							"{$table}.LastName",
 							"address.Address",
-							"address.MobileNo"
+							"address.MobileNo",
+							"members.Member_no"
 						)
 				->join("address","address.Aid","=","user.Aid")
+				->join("members","members.Uid","=","user.Uid")
+				->join("personalloan_allocation","personalloan_allocation.MemId","=","members.Memid")
 				->where("Uid","=",$allocation->Uid)
 				->first();
 				
@@ -2259,8 +2262,12 @@
 			$ret_data["customer_details"]["name"] = "{$user->FirstName} {$user->MiddleName} {$user->LastName}";
 			$ret_data["customer_details"]["address"] = $user->Address;
 			$ret_data["customer_details"]["mobile"] = $user->MobileNo;
-			$ret_data["customer_details"]["guarantor"] = "N/A";//JL
-			$ret_data["customer_details"]["guarantor_mobile"] = "N/A";//JL
+			$ret_data["customer_details"]["member_no"] = $user->Member_no;
+			
+			//query
+			
+			$ret_data["customer_details"]["guarantor_name"] = "N/A";//PL
+			$ret_data["customer_details"]["guarantor_mobile"] = "N/A";//PL
 			//print_r($ret_data); exit();
 //		CUSTOMER DETAILS END
 

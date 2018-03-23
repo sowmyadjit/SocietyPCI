@@ -24,7 +24,6 @@
 						<a href="viewdailybal1" style="margin-right:50px;" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>" id="daily_transaction" >Daily Transaction</a>
 						<a href="fdinterstmonthly" style="margin-right:10px;" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>">FD Month Pay</a>
 						<a href="viewFDInterest" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>">View FD Interest</a>
-						<button id="cash_details" class="btn btn-info DailyTranBtn">View Cash Details</button>
 						<a href="viewclosebal" style="margin-left:15px;" class="btn btn-danger pull-right ClsBalBtn<?php echo $OpCls['module']->Mid; ?>">Day Close</a>
 						<a href="viewbal"  class="btn btn-success pull-right OpenBalBtn<?php echo $OpCls['module']->Mid; ?>" >Day Open</a>
 					</div>

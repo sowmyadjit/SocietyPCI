@@ -2503,9 +2503,9 @@
 			return DB::table("cash")
 				->select(
 							"cashId",
-							"InHandCash",
-							"Branch",
-							"BID"
+							"InHandCash"
+							,"Branch",
+							,"BID"
 						)
 				->get();
 		}

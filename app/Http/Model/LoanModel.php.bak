@@ -501,6 +501,21 @@
 			
 			$perslid = DB::table('personalloan_allocation')->insertGetId(['PersLoan_Number'=> $count_inc,'Bid'=> $id['PLBranchID'],'DocId'=>$docid,'MemId'=>$id['PLMembID'],'LoanAmt'=>$id['PersLoanAmt'],'otherCharges'=>$id['PersOthrChrges'],'Book_FormCharges'=>$id['PersBkfrmChrg'],'AjustmentCharges'=>$id['PersAdjChrg'],'ShareCharges'=>$id['PersShrChrg'],'PayableAmt'=>$id['PersPayAmt'],'LoandurationYears'=>$id['LoanDurationYears'],'FirstSurety'=>$id['PLSurety1ID'],'SecondSurety'=>$id['PLSurety2ID'],'StartDate'=>$id['PersLoanStartDate'],'EndDate'=>$coneDate,'PayMode'=>$id['PersLoanPayMode'],'accid'=>$id['PersLoanSBAccid'],'CreadtedBY'=>$UID,'BankID'=>$id['PersLoanBankID'],'ChequeDate'=>$id['PersLoanChequeDte'],'ChequeNumber'=>$id['PersLoanChequeNum'],'EMI_Amount'=>$id['PersEMIAmt'],'RemainingLoan_Amt'=>$id['PersLoanAmt'],'caldate'=>$id['PersLoanStartDate'],'Insurance'=>$id['Insurance'],'partpayment_amount'=>$pay,'LoanType_ID'=>$Persloantypeid]);
 			
+			
+			$ln_amt = $id['PersLoanAmt'];
+			$ln_type = $Persloantypeid;
+			$subhead = DB::table("loan_type")->where("LoanType_ID","=",$ln_type)->value("SubLedgerId");
+			DB::table('personalloan_payment')->insertGetId([
+																	"pl_payment_date"=>date("Y-m-d"),
+																	"pl_allocation_id"=>$perslid,
+																	"paid_amount"=>$ln_amt,
+																	"paid_status"=>"1",
+																	"payment_mode"=>$paymode,
+																	"particulars"=>"PL PAYMENT",
+																	"SubLedgerId"=>$subhead,
+																	"deleted"=>"0",
+																]);
+			
 			$membertyp1=DB::table('members')->select('agent_member')->where('Memid','=',$id['PLMembID'])->first();
 			$membertyp=$membertyp1->agent_member;
 			if($membertyp=="1")
@@ -1367,7 +1382,7 @@
 			->where('JewelLoan_Closed','=','NO')
 			->where('JewelLoan_Bid','=',$BID)
 			->where('auction_status','=','0')
-			->paginate(10);
+			->get();
 		//	->get();
 			return $result;
 			
@@ -2195,6 +2210,7 @@
 							"{$table}.EndDate",
 							"{$table}.LoanAmt",
 							"{$table}.caldate",
+							"{$table}.EMI_Amount",
 //							"request_loan.Request_Date",
 							"members.Uid",
 							"loan_type.LoanType_Interest",
@@ -2217,6 +2233,7 @@
 			$ret_data["allocation_details"]["sanctioned_amount"] = $allocation->LoanAmt;
 			$ret_data["allocation_details"]["interest_rate"] = $allocation->LoanType_Interest . "%";
 			$ret_data["allocation_details"]["post_due_date_interest_rate"] = $allocation->loan_due_interest . "%";
+			$ret_data["allocation_details"]["emi"] = $allocation->EMI_Amount;
 			//print_r($ret_data);exit();
 //		ALLOCATION DETAILS END
 
@@ -2233,8 +2250,11 @@
 							"{$table}.LastName",
 							"address.Address",
 							"address.MobileNo"
+							"members.Member_no"
 						)
 				->join("address","address.Aid","=","user.Aid")
+				->join("members","members.Uid","=","user.Uid")
+				->join("personalloan_allocation","personalloan_allocation.MemId","=","members.Memid")
 				->where("Uid","=",$allocation->Uid)
 				->first();
 				
@@ -2242,8 +2262,12 @@
 			$ret_data["customer_details"]["name"] = "{$user->FirstName} {$user->MiddleName} {$user->LastName}";
 			$ret_data["customer_details"]["address"] = $user->Address;
 			$ret_data["customer_details"]["mobile"] = $user->MobileNo;
-			$ret_data["customer_details"]["guarantor"] = "N/A";//JL
-			$ret_data["customer_details"]["guarantor_mobile"] = "N/A";//JL
+			$ret_data["customer_details"]["member_no"] = $user->Member_no;
+			
+			//query
+			
+			$ret_data["customer_details"]["guarantor_name"] = "N/A";//PL
+			$ret_data["customer_details"]["guarantor_mobile"] = "N/A";//PL
 			//print_r($ret_data); exit();
 //		CUSTOMER DETAILS END
 
@@ -2264,7 +2288,7 @@
 						)
 				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_PLAllocID")
 				->where("personalloan_allocation.PersLoanAllocID","=",$allocation->PersLoanAllocID)
-				->orderBy("PLRepay_Id","desc")
+//				->orderBy("PLRepay_Id","desc")
 				->get();
 			//print_r($repayment); exit();
 			$i = -1;
@@ -2291,7 +2315,6 @@
 					->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
 					->where("{$table}.loanid","=",$allocation->PersLoanAllocID)
 					->where("{$table}.loantype","=",$loan_category)
-					->where("{$table}.loantype","=",$loan_category)
 					->where("{$table}.charg_tran_date","=",$row_repay->PLRepay_Date)
 					->get();
 				//print_r($charges); exit();
@@ -2312,6 +2335,7 @@
 			}
 //		REPAYMENT DETAILS END
 			$ret_data["allocation_details"]["balance"] = $allocation->LoanAmt - $repay_principle_sum;
+			$ret_data["allocation_details"]["repay_principle_sum"] = $repay_principle_sum;
 			
 			
 			//print_r($ret_data);exit();
@@ -2550,9 +2574,12 @@
 			$loan_allocation_id = $data["loan_allocation_id"];
 			$loan_allocation_id_field = "PersLoanAllocID";
 			$interest_upto = $data["interest_upto"];//not related to due interest
+			$this->cl("interest_upto: $interest_upto\n");
 			$today = date("Y-m-d");
 			$normal_interest = 0;
 			$due_interest = 0;
+			
+			
 			
 			//print_r($data);exit();//check for today's date and old date
 			
@@ -2590,6 +2617,10 @@
 			/**************** GET PL DETAILS END ********************/
 			
 			
+			
+			
+			
+			
 			/********** CHECK FOR 1ST REPAY **********/
 			$fn_data["loan_allocation_id"] = $loan_allocation_id;
 			$is_first_repay_done = $this->is_pl_first_repay_done($fn_data);//true/false
@@ -2609,9 +2640,9 @@
 				$last_date = $start_date;
 			}
 			if($last_date == "0000-00-00") {
-				echo "last paid date is not valid (0000-00-00)\n";
+//				echo "last paid date is not valid (0000-00-00)\n";
 				$this->cl("last paid date is not valid (0000-00-00)\n");
-				return;
+				return ["int"=>"last paid date is not valid (0000-00-00)","remaining_amount"=>$balance_amount];
 			}
 //			echo "last_date: $last_date <br />\n"; exit();
 			/********** get interest paid upto END **********/
@@ -2634,32 +2665,156 @@
 			/********** get interest paid upto END **********/
 			
 			
+/***************PART PAYMENT****************/
+			$total_interest = 0;
+			$part_pay_interest = 0;
+			$personalloan_payment = DB::table("personalloan_payment")
+				->select()
+				->where("pl_allocation_id","=",$loan_allocation_id)
+				->get();
+				
+			$count = count($personalloan_payment);
 			
-			/********** Normal interest calculation (due int not included) **********/
-			$fn_data["first"] = $last_date;
-			$fn_data["second"] = $interest_upto;
-//			print_r($fn_data);
-//			$this->cl($fn_data);
-				$days = $this->dateDiff($fn_data);
-			unset($fn_data);
-//			echo "days: $days <br />\n"; exit();
-			
-			if(!$is_first_repay_done) {
-				$days++;
+			if($count > 1) {//consider part payment
+				if(!empty($personalloan_repay)) {//atleast 1 repay done
+					$personalloan_repay = DB::table("personalloan_repay")
+						->select()
+						->where("PLRepay_PLAllocID","=",$loan_allocation_id)
+						->where("PL_ChequeStatus","=",0)
+						->orderBy("PLRepay_Date","desc")
+						->first();
+					$last_repay_date = $personalloan_repay->PLRepay_Date;
+					$total_repay_amount = DB::table("personalloan_repay")
+						->where("PLRepay_PLAllocID","=",$loan_allocation_id)
+						->where("PL_ChequeStatus","=",0)
+						->sum("PLRepay_Amtpaidtoprincpalamt");
+						
+					$total_paid_before_last_repayment = DB::table("personalloan_payment")
+						->where("pl_allocation_id","=",$loan_allocation_id)
+						->where("pl_payment_date","<",$last_repay_date)
+						->where("paid_status","=",1)
+						->where("deleted","=",0)
+						->sum("paid_amount");
+						
+					$fn_data["first"] = $last_repay_date;
+					$fn_data["second"] = $interest_upto;
+					$days = $this->dateDiff($fn_data);
+					unset($fn_data);
+					
+					$fn_data["msg"] = "part payment 1";
+					$fn_data["days"] = $days;
+					$fn_data["interest_rate"] = $interest_in_number;
+					$fn_data["balance_amount"] = $total_paid_before_last_repayment - $total_repay_amount;
+					
+					$old_amount_interest = $this->interest_calc($fn_data);
+					$total_interest += $old_amount_interest;
+					unset($fn_data);
+					//------------------------------------------------------------------------
+					$personalloan_payment_after_last_repay = DB::table("personalloan_payment")
+						->select(DB::raw('sum(paid_amount) as paid_amount_on_date'),'pl_payment_date')
+						->where("pl_allocation_id","=",$loan_allocation_id)
+						->where("pl_payment_date",">",$last_repay_date)
+						->where("paid_status","=",1)
+						->where("deleted","=",0)
+						->groupBy("pl_payment_date")
+						->orderBy("pl_payment_date","asc")
+						->first();
+					
+					while(!empty($personalloan_payment_after_last_repay)) {
+						$prev_payment_date = $personalloan_payment_after_last_repay->pl_payment_date;
+						
+						$fn_data["first"] = $personalloan_payment_after_last_repay->pl_payment_date;
+						$fn_data["second"] = $interest_upto;
+						$days = $this->dateDiff($fn_data);
+						unset($fn_data);
+						$fn_data["msg"] = "part payment 2";
+						$fn_data["days"] = $days + 1;//1st repayment for this amount
+						$fn_data["interest_rate"] = $interest_in_number;
+						$fn_data["balance_amount"] = $personalloan_payment_after_last_repay->paid_amount_on_date;
+						$total_interest += $this->interest_calc($fn_data);
+						unset($fn_data);
+						
+						$personalloan_payment_after_last_repay = DB::table("personalloan_payment")
+							->select()
+							->where("pl_allocation_id","=",$loan_allocation_id)
+							->where("pl_payment_date",">",$prev_payment_date)
+							->where("paid_status","=",1)
+							->where("deleted","=",0)
+							->groupBy("pl_payment_date")
+							->orderBy("pl_payment_date","asc")
+							->first();
+						//return $total_interest;
+					}//end of while
+				} else {//no repayments
+					$personalloan_payment = DB::table("personalloan_payment")
+						->select(DB::raw('sum(paid_amount) as paid_amount_on_date'),'pl_payment_date')
+						->where("pl_allocation_id","=",$loan_allocation_id)
+						->where("paid_status","=",1)
+						->where("deleted","=",0)
+						->groupBy("pl_payment_date")
+						->orderBy("pl_payment_date","asc")
+						->first();
+					
+				//	print_r($personalloan_payment);
+					
+					while(!empty($personalloan_payment)) {
+//						print_r($personalloan_payment);
+						$prev_payment_date = $personalloan_payment->pl_payment_date;
+						
+						$fn_data["first"] = $personalloan_payment->pl_payment_date;
+						$fn_data["second"] = $interest_upto;
+						$days = $this->dateDiff($fn_data);
+						unset($fn_data);
+						$fn_data["msg"] = "part payment 3";
+						$fn_data["days"] = $days + 1;//first repayment
+						$fn_data["interest_rate"] = $interest_in_number;
+						$fn_data["balance_amount"] = $personalloan_payment->paid_amount_on_date;
+						$total_interest += $this->interest_calc($fn_data);
+						unset($fn_data);
+						
+						$personalloan_payment = DB::table("personalloan_payment")
+							->select(DB::raw('sum(paid_amount) as paid_amount_on_date'),'pl_payment_date')
+							->where("pl_allocation_id","=",$loan_allocation_id)
+							->where("pl_payment_date",">",$prev_payment_date)
+							->where("paid_status","=",1)
+							->where("deleted","=",0)
+							->groupBy("pl_payment_date")
+							->orderBy("pl_payment_date","asc")
+							->first();
+//						return $total_interest;
+					}
+				}//no repayments
+				$part_pay_interest = $total_interest;
+			}//CONSIDER PART PAYMENT END
+/***************PART PAYMENT END***************/
+			else
+/********** Normal interest calculation (due int not included) **********/
+			{
+				$fn_data["first"] = $last_date;
+				$fn_data["second"] = $interest_upto;
+//				print_r($fn_data);
+//				$this->cl($fn_data);
+					$days = $this->dateDiff($fn_data);
+				unset($fn_data);
+//				echo "days: $days <br />\n"; exit();
+				
+				if(!$is_first_repay_done) {
+					$days++;
+				}
+//				echo "days: $days <br />\n"; //exit();
+				
+				$fn_data["msg"] = "normal interest calculation";
+				$fn_data["days"] = $days;
+				$fn_data["interest_rate"] = $interest_in_number;
+				$fn_data["balance_amount"] = $balance_amount;
+//				print_r($fn_data); //exit();
+					$normal_interest = $this->interest_calc($fn_data);
+				unset($fn_data);
+//				echo "normal_interest: $normal_interest <br />\n"; exit();
 			}
-//			echo "days: $days <br />\n"; //exit();
+/********** Normal interest calculation (due int not included) **********/
 			
-			$fn_data["msg"] = "normal interest calculation";
-			$fn_data["days"] = $days;
-			$fn_data["interest_rate"] = $interest_in_number;
-			$fn_data["balance_amount"] = $balance_amount;
-//			print_r($fn_data); //exit();
-				$normal_interest = $this->interest_calc($fn_data);
-			unset($fn_data);
-//			echo "normal_interest: $normal_interest <br />\n"; exit();
-			/********** Normal interest calculation (due int not included) **********/
-			
-			/********** Due interest calculation **********/
+/********** Due interest calculation **********/
 				
 			$fn_data["start_date"] = $start_date;
 			$fn_data["end_date"] = $end_date;
@@ -2688,6 +2843,7 @@
 			$this->cl("current_installment_no: $current_installment_no <br />\n");
 			
 			$installment_amt_till_today = $current_installment_no * $emi;
+			$this->cl("emi: $emi \n");
 			if($current_installment_no == $total_no_of_installments-1) {
 				$this->cl("current_installment_no == total_no_of_installments-1<br />\n");
 				$installment_amt_till_today -= $extra_emi_amount / 2;
@@ -2724,9 +2880,12 @@
 			} else {
 //				echo "<br />\n**** 0  DUE INTEREST ****<br />\n";
 			}
-			/********** Due interest calculation End **********/
-			$this->cl($normal_interest + $due_interest);
-			return $normal_interest + $due_interest;
+/********** Due interest calculation End **********/
+			$this->cl($normal_interest + $due_interest + $part_pay_interest);
+			$ret_data["int"] = $normal_interest + $due_interest + $part_pay_interest;
+			$ret_data["pending_emi"] = $emi_diff;
+			$ret_data["remaining_amount"] = $balance_amount;
+			return $ret_data;
 		}
 		
 		public function is_pl_first_repay_done($data)//		_/
@@ -2847,6 +3006,32 @@
 		{	
 			$file = fopen("a.txt","w");
 			fwrite($file,"");
+		}
+		
+		public function charges_transaction_report($data)
+		{
+			$ret_data = array();
+			$table = "charges_tran";
+			$charges_tran = DB::table($table)
+				->select(
+							"{$table}.amount",
+							"{$table}.charg_tran_date",
+							"chareges.charges_name"
+						)
+				->join("chareges","chareges.charges_id","=","{$table}.charges_id")
+				->where("loanid","=",$data["loan_allocation_id"])
+				->where("loantype","=",$data["loan_category"])
+				->where("charg_tran_date","=",$data["charges_date"])
+				->where("repay_through_auction","=",0)
+				->get();
+			$i = -1;
+			
+			foreach($charges_tran as $key_ch => $row_ch) {
+				$ret_data[++$i]["charg_tran_date"] = $row_ch->charg_tran_date;
+				$ret_data[$i]["charges_name"] = $row_ch->charges_name;
+				$ret_data[$i]["amount"] = $row_ch->amount;
+			}
+			return $ret_data;
 		}
 		
 		
