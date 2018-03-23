@@ -26,6 +26,8 @@
 					
 				</div>
 				<div class="box-content">
+				<script src="js/FileSaver.js"/>			
+				<script src="js/tableExport.js"/>	
 					<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
 					<div class="alert alert-info">
 					
@@ -75,13 +77,21 @@
 	console.log("bai");
 	from_date=$("#from_date").val();
 	to_date=$("#to_date").val();
+	if($('#SearchPigmy').val()=='')
+	{
+		console.log('haiaaaaaaaaaaaaaa');
+		$('#SearchPigmy').attr('data-value', 0);
+	}
 	searchvalue=$('#SearchPigmy').attr('data-value');
+	//$('#SearchPigmy').attr('data-value', 0);
 	$.ajax({
 					url:'/pigmy_report',
 					type:'post',
 					data:'&from_date='+from_date+'&to_date='+to_date+'&allocation_id='+searchvalue,
 					success:function(data)
-					{console.log("hai");
+					{
+					console.log("hai");
+					$("#report").html('');
 					$("#report").html(data);
 					}
 	});
@@ -93,5 +103,26 @@
         source:SearchPigmy
 	});
 	
+	$('#excel').click(function(e){
+	alert("excel");
+	$('#expense_details').tableExport({type:'excel',escape:'false'});
+	});	
+</script>
+<script src="js/jQuery.print.js"></script>
+<script>
 	
+	$(function() {
+		$(".print").click(function() {
+			alert("print");
+			var divContents = $("#toprint").html();
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+			//$("#toprint").print();
+            printWindow.print(); 
+		});
+	});	
 </script>

@@ -757,8 +757,7 @@
 				Route::post('/dateComp','DLRepaymentController@dateComp');
 				Route::post('/dateDiff','DLRepaymentController@dateDiff');
 /*****************************/
-				Route::get('/DLReceipt','DLRepaymentController@DLReceipt');
-				Route::get('/PLReceipt','DLRepaymentController@PLReceipt');
+				Route::get('/Receipt','DLRepaymentController@Receipt');
 				
 				//Expense Head
 				Route::get('/ExpenseHead','ExLedgerController@show_led');
