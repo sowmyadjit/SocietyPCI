@@ -769,4 +769,7 @@
 				return view('pigmy_report_data',compact('data'));
 			}
 		}
+		public function common_report(Request $request){
+			return view("commmon_report");
+		}
 	}

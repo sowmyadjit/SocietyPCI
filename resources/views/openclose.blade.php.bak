@@ -28,24 +28,13 @@
 						<a href="viewclosebal" style="margin-left:15px;" class="btn btn-danger pull-right ClsBalBtn<?php echo $OpCls['module']->Mid; ?>">Day Close</a>
 						<a href="viewbal"  class="btn btn-success pull-right OpenBalBtn<?php echo $OpCls['module']->Mid; ?>" >Day Open</a>
 					</div>
-					<div id="cash_details">
-					</div>
+					
 			</div>
 		</div>
 	</div>
 
 <script>
-	$(document).ready(function(){
-		$.ajax({
-					url:'/view_cash_details',
-					type:'post',
-					data:'',
-					success:function(data)
-					{
-					$("#cash_details").html(data);
-					}
-	});
-	});
+	  
 	$('.clickme').click(function(e){
 		$('.custclassid').click();
 	});

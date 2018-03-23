@@ -891,6 +891,8 @@
 		
 		Route::post('edit_jl_net_wt','LoanController@edit_jl_net_wt');
 /*******************************/
+//common report
+		Route::post('common_report','ReportController@common_report');
 
 //	CLEAR CACHE
 		Route::get('/cache', function() {

@@ -194,9 +194,6 @@
 			$sbsr['module']=$this->Report_model->GetSBReportModule();
 			$sbsr['SbPerData']=$this->Report_model->GetSbPerReport($accsear);
 			return view('sbperreport',compact('sbsr'));
-			
-			
-			
 		}
 		
 		public function GetRdPerReport(Request $request)
@@ -207,13 +204,11 @@
 			
 			$rdsr['module']=$this->Report_model->GetRDReportModule();
 			$rdsr['RdPerData']=$this->Report_model->GetRdPerReport($accsear);
+			$rdsr['RdDet']=$this->Report_model->GetRdDetails($accsear);
 			//$rdsr['startdate']=$accsear['startdate'];
 			//$rdsr['enddate']=$accsear['enddate'];
 			//$rdsr['SearchAccId']=$accsear['SearchAccId'];
 			return view('RdPerReport',compact('rdsr'));
-			
-			
-			
 		}
 		
 		public function GetLoanPerReport(Request $request)
@@ -770,8 +765,11 @@
 			if(empty($in_data["from_date"])) {
 				return view("pigmy_report",compact('m'));
 			} else {
-				$data = $this->Report_model->pigmy_report($in_data);return 11;
+				$data = $this->Report_model->pigmy_report($in_data);//return 11;
 				return view('pigmy_report_data',compact('data'));
 			}
+		}
+		public function common_report(Request $request){
+			return view("common_report");
 		}
 	}
