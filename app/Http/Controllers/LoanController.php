@@ -1296,7 +1296,7 @@
 		{
 			$in_data = array();
 			$in_data["loan_allocation_id"] = $request->input("loan_allocation_id");//424;//
-			$in_data["interest_upto"] = $request->input("interest_upto",date("Y-m-d"));
+			$in_data["interest_upto"] = $request->input("interest_upto_pl",date("Y-m-d"));
 			$ret_data = $this->loan->interest_calc_pl($in_data);
 //			var_dump($ret_data);exit();
 			return $ret_data;

@@ -2567,6 +2567,7 @@
 			$loan_allocation_id = $data["loan_allocation_id"];
 			$loan_allocation_id_field = "PersLoanAllocID";
 			$interest_upto = $data["interest_upto"];//not related to due interest
+			$this->cl("interest_upto: $interest_upto\n");
 			$today = date("Y-m-d");
 			$normal_interest = 0;
 			$due_interest = 0;
