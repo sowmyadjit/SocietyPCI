@@ -2498,6 +2498,25 @@
 			return $jewel_auction_account;
 		}
 		
+		public function view_cash_details()
+		{
+			return DB::table("cash")
+				->select(
+							"cashId",
+							"InHandCash"
+							,"Branch",
+							,"BID"
+						)
+				->get();
+		}
+		
+		public function edit_cash_details($data)
+		{
+			return DB::table("cash")
+				->where("cashId","=",$data["cash_id"])
+				->update(["InHandCash"=>$data["amount"]]);
+		}
+		
 		
 		
 	}

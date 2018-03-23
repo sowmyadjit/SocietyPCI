@@ -656,6 +656,29 @@
 			DB::table('sb_int')->where('sb_int','=',$sdid)->delete();
 		}
 		
+		public function view_cash_details(Request $request)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$Branchid=$uname->Bid;
+			if($Branchid == 6){
+				$data = array();
+				$data = $this->op->view_cash_details();
+				return view("view_cash_details",compact('data'));
+			} else {
+				return "--";
+			}
+		}
+		
+		public function edit_cash_details(Request $request)
+		{
+			$in_data = array();
+			$in_data["cash_id"] = $request->input("cash_id");
+			$in_data["amount"] = $request->input("amount");
+			return $this->op->edit_cash_details($in_data);
+		}
+		
 		
 		
 		

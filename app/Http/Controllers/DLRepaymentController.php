@@ -422,6 +422,7 @@
 			$jlall['bankbranch_jl']=$request->input('bankbranch_jl');
 			$jlall['ifsccode_jl']=$request->input('ifsccode_jl');
 			$jlall['interest_upto']=$request->input('interest_upto');
+			$jlall['rec_date_jl']=$request->input('rec_date_jl');
 												  
 			$jlall['auc_amt']=$request->input('auc_amt');
 			$id=$this->pigmtDLrepay->JewelLoanRepay($jlall);
@@ -429,7 +430,7 @@
 			$auc_amt=$request->input('auc_amt');
 			$pay_amt=$jlall['jlpayamt'];
 			$jlAlloc = $jlall['jlAlloc'];
-			var_dump($auc_amt);
+			//var_dump($auc_amt);
 			if($auc_amt != '') {
 				print_r($auc_amt);echo "**";
 				$this->pigmtDLrepay->JewelAuctionRepay($auc_amt,$pay_amt,$jlAlloc);

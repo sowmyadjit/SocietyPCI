@@ -924,7 +924,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Receipt Date :</label>
 							<div class="input-group input-append date col-sm-4" id="datePicker" style="padding-left:15px;padding-right:15px;">
-								<input type="text" class="form-control datepicker" name="rec_date" id="rec_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
+								<input type="text" class="form-control datepicker" name="rec_date_jl" id="rec_date_jl"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
 								<span class="input-group-addon add-on">
 									<span class="glyphicon glyphicon-calendar">
 									</span>
@@ -3281,12 +3281,13 @@ console.log("amt="+bal);
 			bank_jl=$('#creditbank_jl').data('value');
 			jlAccNo=$('.JlAccNumTypeAhead').val();
 			var interest_upto = $("#interest_upto").val();
+			var rec_date_jl = $("#rec_date_jl").val();
 			
 			e.preventDefault();
 			$.ajax({
 				url: 'JewelLoanRepay',
 				type: 'post',
-				data: $('#form_dlrepay').serialize()+'&jlAlloc='+jlAlocID+'&branch='+Bidjl+'&jlloanno='+jlAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+xjl+'&bank_jl='+bank_jl+'&interest_upto='+interest_upto,
+				data: $('#form_dlrepay').serialize()+'&jlAlloc='+jlAlocID+'&branch='+Bidjl+'&jlloanno='+jlAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+xjl+'&bank_jl='+bank_jl+'&interest_upto='+interest_upto+'&rec_date_jl='+rec_date_jl,
 				success: function(data) {
 					alert('success');
 				//	$('.pigmidlrepayclassid').click();
