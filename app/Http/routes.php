@@ -350,6 +350,8 @@
 				Route::post('/edit_Sb_data','OpenCloseBalanceController@edit_Sb_data');
 				Route::post('/create_SB_data','OpenCloseBalanceController@create_SB_data');
 				Route::post('/delete_Sb_data','OpenCloseBalanceController@delete_Sb_data');
+				Route::post('/view_cash_details','OpenCloseBalanceController@view_cash_details');
+				Route::post('/edit_cash_details','OpenCloseBalanceController@edit_cash_details');
 				
 				
 				//PermissionController
