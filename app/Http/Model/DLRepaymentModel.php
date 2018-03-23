@@ -757,9 +757,9 @@
 		public function PersonalLoanRepay($id)
 		{
 			
-			$RepayDte=date('Y-m-d');
-			$mnt=date('m');
-			$year=date('Y');
+			$RepayDte=date('Y-m-d',strtotime($id["rec_date_pl"]));
+			$mnt=date('m',strtotime($id["rec_date_pl"]));
+			$year=date('Y',strtotime($id["rec_date_pl"]));
 			$tme=date('h:i:s');
 			
 			
@@ -952,9 +952,9 @@
 		public function JewelLoanRepay($id)
 		{
 			
-			$RepayDte=date('Y-m-d');
-			$mnt=date('m');
-			$year=date('Y');
+			$RepayDte=date('Y-m-d',strtotime($id["rec_date_jl"]));
+			$mnt=date('m',strtotime($id["rec_date_jl"]));
+			$year=date('Y',strtotime($id["rec_date_jl"]));
 			$tme=date('h:i:s');
 			
 			
