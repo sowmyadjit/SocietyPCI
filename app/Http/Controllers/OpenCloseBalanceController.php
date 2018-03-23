@@ -665,7 +665,7 @@
 			if($Branchid == 6){
 				$data = array();
 				$data = $this->op->view_cash_details();
-				return view("",compact('data'));
+				return view("view_cash_details",compact('data'));
 			} else {
 				return "--";
 			}
