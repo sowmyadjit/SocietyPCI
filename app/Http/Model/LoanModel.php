@@ -2281,7 +2281,7 @@
 						)
 				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_PLAllocID")
 				->where("personalloan_allocation.PersLoanAllocID","=",$allocation->PersLoanAllocID)
-				->orderBy("PLRepay_Id","desc")
+//				->orderBy("PLRepay_Id","desc")
 				->get();
 			//print_r($repayment); exit();
 			$i = -1;
