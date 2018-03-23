@@ -4,12 +4,28 @@
 	<!--this css should be inside the toprint div , for printing the table borders-->   
 	
 	<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+		<tr>
+			<th>Name</th>
+			<td>{{ $rdsr['RdPerData'][0]->FirstName }}.{{ $rdsr['RdPerData'][0]->MiddleName }}.{{ $rdsr['RdPerData'][0]->LastName }}</td>
+		</tr>
+		<tr>
+			<th>Account Number</th>
+			<td>{{ $rdsr['RdPerData'][0]->AccNum }}</td>
+		</tr>
+		<tr>
+			<th>Interest Rate</th>
+			<td>{{$rdsr['RdDet']->Intrest}}%</td>
+		</tr>
+		<tr>
+			<th>Duration</th>
+			<td>{{$rdsr['RdDet']->Duration}}</td>
+		</tr>
+	</table>
+	<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 		
 		<thead>
 			<tr>
 				<th>Date</th>
-				<th>Name</th>
-				<th>Account Number</th>
 				<th>Transaction Type</th>
 				<th>Perticulars</th>
 				<th>Amount</th>
@@ -24,8 +40,6 @@
 			<tr>
 				<td class="hidden">{{ $rd_transaction->RD_TransID }}</td>
 				<td><?php $trandate=date("d-m-Y",strtotime($rd_transaction->RDReport_TranDate)); echo $trandate; ?></td>
-				<td>{{ $rd_transaction->FirstName }}.{{ $rd_transaction->MiddleName }}.{{ $rd_transaction->LastName }}</td>
-				<td>{{ $rd_transaction->AccNum }}</td>
 				<td>{{ $rd_transaction->RD_Trans_Type }}</td>
 				<td>{{ $rd_transaction->RD_Particulars }}</td>
 				<td>{{ $rd_transaction->RD_Amount }}</td>

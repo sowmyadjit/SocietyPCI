@@ -171,9 +171,22 @@
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
 			->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
-			->paginate(10);
+			->paginate(20);
 			
 			return $id;
+		}
+		
+		public function GetRdDetails($id) 
+		{
+			$rdaid=$id['SearchAccId'];
+			
+			$ret_data = DB::table('createaccount')
+				->select()
+				->leftJoin('accounttype','accounttype.AccTid','=','createaccount.AccTid')
+				->where('createaccount.Accid','=',$rdaid)
+				->first();
+			
+			return $ret_data;
 		}
 		
 		public function GetLoanPerReport($id) //PENDING TO EDIT
