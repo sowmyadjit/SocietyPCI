@@ -147,7 +147,7 @@
 						<button type="button" class="btn btn-primary btn-sm btn_edit" data-toggle="modal" data-target="#modal_repay_edit" data="{{$row_repay["repayment_id"]}}">
 						  <span class="glyphicon glyphicon-pencil" ></span>
 						</button>
-						<button type="button" class="btn btn-primary btn-sm btn_edit ReceiptPrint" href="DLReceipt">
+						<button type="button" class="btn btn-primary btn-sm btn_edit ReceiptPrint" href="Receipt">
 						  Print
 						</button>
 					</td>
@@ -243,6 +243,9 @@
 	$('.ReceiptPrint').click(function(e){
 				e.preventDefault();
 				//alert($(this).attr('href'));
-				$('.box-inner').load($(this).attr('href'));
+				//$('.box-inner').load($(this).attr('href'));
+				$('.box-inner').hide();
+				$('.receipt_print').show();
+				$('.receipt_print').load($(this).attr('href'));
 			});
 </script>

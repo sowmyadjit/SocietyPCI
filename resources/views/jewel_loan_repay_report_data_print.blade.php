@@ -8,7 +8,7 @@
         <link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
         <link href="css/bootstrap-cerulean.min.css" rel='stylesheet' type="text/css" media="all"> 
 		<input type="button" value="Back" class="btn btn-info btn-sm back" style="float:right;margin:15px;" href="pigmiDLPigmy">
-		<input type="button" value="Print" class="btn btn-info btn-sm print back" style="float:right;margin:15px;" id="print">
+		<input type="button" value="Print" class="btn btn-info btn-sm print" style="float:right;margin:15px;" id="print">
 		<div id="toprint">
 			<h2 style="text-align:center;">POTTERS COTTAGE INDUSTRIAL CO-OP SOCIETY LTD.</h2>
 			<h3 style="text-align:center;">CHAKRASOUDHA, KULAI.</h3>
@@ -124,10 +124,12 @@
             printWindow.print(); 
 		});
 	});
-		$('.back').click(function(e){
+		$('.back').click(function(e)
+		{
 				e.preventDefault();
-				//alert($(this).attr('href'));
-				$('.box-inner').load($(this).attr('href'));
-			});
+				//alert($(this).attr('href'));       
+				$('.box-inner').show();
+				$('.receipt_print').hide();
+		});
 	
 </script>			

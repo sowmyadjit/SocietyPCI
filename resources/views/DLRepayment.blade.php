@@ -1290,6 +1290,8 @@
 				{!! Form::open() !!}
 				
 			</div>
+			<div class="receipt_print">			
+			</div>
 		</div>
 	</div>
 </div>

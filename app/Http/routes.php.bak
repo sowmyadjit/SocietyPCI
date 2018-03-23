@@ -300,6 +300,7 @@
 				Route::match(["get","post"],'/save_repay_data','LoanController@save_repay_data');
 				Route::match(["get","post"],'/calculate_jewel_interest','LoanController@calculate_jewel_interest');
 				Route::match(["get","post"],'/interest_calc_pl','LoanController@interest_calc_pl');
+				Route::match(["get","post"],'/charges_transaction_report','LoanController@charges_transaction_report');
 				
 				Route::get('/add_charges_index','LoanController@add_charges_index');
 				Route::get('/add_charges','LoanController@add_charges');
@@ -455,20 +456,15 @@
 				Route::get('/pigmiagenttotalamt','ReportController@pigmiagenttotalamt');
 				
 				Route::get('/alltranreport','ReportController@alltranreport');
-				
 				Route::get('/alltotalamt','ReportController@alltotalamt');
-				
 				Route::get('/allreport_headoff','ReportController@allreport_headoff');
-				
 				Route::get('/getallamount','ReportController@getallamount');
-				
 				Route::get('/closeaccount','ReportController@closeaccount');
-				
 				Route::get('/getallaccount','ReportController@getallaccount');
-				
 				Route::get('/pigmidirectclose/{id}','ReportController@pigmidirectclose');
-				
 				Route::get('/pigmidirectDelete/{id}','ReportController@pigmidirectDelete');
+				
+				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');
 				
 				
 				
@@ -762,6 +758,7 @@
 				Route::post('/dateDiff','DLRepaymentController@dateDiff');
 /*****************************/
 				Route::get('/DLReceipt','DLRepaymentController@DLReceipt');
+				Route::get('/PLReceipt','DLRepaymentController@PLReceipt');
 				
 				//Expense Head
 				Route::get('/ExpenseHead','ExLedgerController@show_led');
@@ -910,4 +907,4 @@
 		
 		
 		 
-	});				//group 'prefix' => '/' function end end  end
+	});				//group 'prefix' => '/' function end end  end 
