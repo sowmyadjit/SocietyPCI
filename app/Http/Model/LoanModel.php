@@ -2250,24 +2250,38 @@
 							"{$table}.LastName",
 							"address.Address",
 							"address.MobileNo",
-							"members.Member_no"
+							"members.Member_no",
+							"members.Memid",
+							"personalloan_allocation.MEMBER_NO_FirstSurety"
 						)
 				->join("address","address.Aid","=","user.Aid")
 				->join("members","members.Uid","=","user.Uid")
 				->join("personalloan_allocation","personalloan_allocation.MemId","=","members.Memid")
-				->where("Uid","=",$allocation->Uid)
+				->where("user.Uid","=",$allocation->Uid)
 				->first();
-				
+			$guarantor_mem_no=$user->MEMBER_NO_FirstSurety;
+			$table1 = "members";
+			$guarantor=DB::table($table1)
+						->select(
+									"{$table1}.FirstName",
+									"address.Address",
+									"address.MobileNo"
+								)
+						->join("address","address.Aid","=","members.Aid")
+						->where("members.Memid","=",$guarantor_mem_no)
+						->first();
 			$ret_data["customer_details"]["user_id"] = $user->Uid;
 			$ret_data["customer_details"]["name"] = "{$user->FirstName} {$user->MiddleName} {$user->LastName}";
 			$ret_data["customer_details"]["address"] = $user->Address;
 			$ret_data["customer_details"]["mobile"] = $user->MobileNo;
 			$ret_data["customer_details"]["member_no"] = $user->Member_no;
-			
+							//->join("members","members.Uid","=","user.Uid")
+				//->join("personalloan_allocation","personalloan_allocation.MemId","=","members.Memid")
 			//query
 			
-			$ret_data["customer_details"]["guarantor_name"] = "N/A";//PL
-			$ret_data["customer_details"]["guarantor_mobile"] = "N/A";//PL
+			$ret_data["customer_details"]["guarantor_name"] = $guarantor->FirstName;//PL
+			$ret_data["customer_details"]["guarantor_mobile"] = $guarantor->MobileNo;//PL
+			$ret_data["customer_details"]["guarantor_address"] = $guarantor->Address;//PL
 			//print_r($ret_data); exit();
 //		CUSTOMER DETAILS END
 

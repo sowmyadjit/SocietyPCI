@@ -49,18 +49,38 @@
                     {{$data["customer_details"]["mobile"]}}
                 </td>
             </tr>
+			<tr>
+				<th>
+                    Member No :
+                </th>
+                <td>
+					{{$data["customer_details"]["member_no"]}}
+                </td>
+				<th>
+                </th>
+                <td>
+                </td>
+			</tr>
             <tr>
                 <th>
                     Guarantor :
                 </th>
                 <td>
-                    {{$data["customer_details"]["guarantor"]}}
+					{{$data["customer_details"]["guarantor_name"]}}
                 </td>
                 <th>
                     Guarantor Ph No:
                 </th>
                 <td>
-                    {{$data["customer_details"]["guarantor_mobile"]}}
+					{{$data["customer_details"]["guarantor_mobile"]}}
+                </td>
+            </tr>
+			<tr>
+                <th>
+                    Guarantor Address:
+                </th>
+                <td  colspan="3">
+					{{$data["customer_details"]["guarantor_address"]}}
                 </td>
             </tr>
         </table>
