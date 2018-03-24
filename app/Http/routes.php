@@ -1,4 +1,5 @@
 <?php
+	ini_set('memory_limit', '500M');
 	Route::group(['prefix' => '/'], function()
 	{
 		Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);

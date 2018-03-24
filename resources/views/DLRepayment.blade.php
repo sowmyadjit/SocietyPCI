@@ -3,7 +3,15 @@
 <script src="js/bootstrap-typeahead.js"></script>
 <link href="css/datepicker.css" rel='stylesheet'>
 <script src="js/bootstrap-datepicker.js"/>
+<style TYPE="text/css">
+.highlite{
+	color: red;
+    font-weight: 1000;
+    font-size: 19px;
+}	
+</style>
 <div id="content" class="col-md-10">
+	
 	<!-- content starts -->
     <div class="row">
 		<div class="box col-md-12">
@@ -88,7 +96,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="comment">Interest Amount:</label>
+							<label class="control-label col-sm-4 highlite" for="comment">Interest Amount:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control" id="pgintamt" name="pgintamt" placeholder="INTEREST AMOUNT"/>
 							</div>
@@ -291,7 +299,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="comment">Interest Amount:</label>
+							<label class="control-label col-sm-4 highlite" for="comment">Interest Amount:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control" id="rdintamt" name="rdintamt" placeholder="INTEREST AMOUNT"/>
 							</div>
@@ -498,7 +506,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="comment">Interest Amount:</label>
+							<label class="control-label col-sm-4 highlite" for="comment">Interest Amount:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control" id="fdintamt" name="fdintamt" placeholder="INTEREST AMOUNT"/>
 							</div>
@@ -708,7 +716,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="first_name">Interest upto :</label>
+							<label class="control-label col-sm-4 highlite" for="first_name">Interest upto :</label>
 							<div class="input-group input-append date col-sm-4" id="" style="padding-left:15px;padding-right:15px;">
 								<input type="text" class="form-control datepicker" name="interest_upto_pl" id="interest_upto_pl"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
 								<span class="input-group-addon add-on">
@@ -719,7 +727,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="comment">Interest Amount:</label>
+							<label class="control-label col-sm-4 highlite" for="comment">Interest Amount:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control" id="plintamt" name="plintamt" placeholder="INTEREST AMOUNT"/>
 							</div>
@@ -933,7 +941,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="first_name">Interest upto :</label>
+							<label class="control-label col-sm-4 highlite" for="first_name">Interest upto :</label>
 							<div class="input-group input-append date col-sm-4" id="datePicker" style="padding-left:15px;padding-right:15px;">
 								<input type="text" class="form-control datepicker" name="interest_upto" id="interest_upto"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
 								<span class="input-group-addon add-on">
@@ -967,7 +975,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="comment">Interest Amount:</label>
+							<label class="control-label col-sm-4 highlite" for="comment">Interest Amount:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control" id="jlintamt" name="jlintamt" placeholder="INTEREST AMOUNT" readonly />
 							</div>
@@ -1145,7 +1153,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="control-label col-sm-4" for="comment">Interest Amount:</label>
+							<label class="control-label col-sm-4 highlite" for="comment">Interest Amount:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control" id="slintamt" name="slintamt" placeholder="INTEREST AMOUNT"/>
 							</div>
@@ -1427,7 +1435,9 @@
 		{
 			$('.dloan').hide();
 			$('.personal_loan').show();
+			$('.jewel_loan').hide();
 			$('.adjustmentcarg').hide();
+			$('.staff_loan').hide();
 		}
 		else if(repay1=="JEWEL LOAN")
 		{
@@ -1435,6 +1445,7 @@
 			$('.personal_loan').hide();
 			$('.jewel_loan').show();
 			$('.adjustmentcarg').hide();
+			$('.staff_loan').hide();
 		}
 		else if(repay1=="STAFF LOAN")
 		{
@@ -1451,6 +1462,10 @@
 		dl=$('#dl').val();
 		if(dl=="pygmy DL")
 		{
+			$('.personal_loan').hide();
+			$('.jewel_loan').hide();
+			$('.staff_loan').hide();
+			
 			$('.pygmy').show();
 			$('.RD').hide();
 			$('.FD').hide();
@@ -1458,6 +1473,10 @@
 		}
 		else if(dl=="RD DL")
 		{
+			$('.personal_loan').hide();
+			$('.jewel_loan').hide();
+			$('.staff_loan').hide();
+			
 			$('.RD').show();
 			$('.pygmy').hide();
 			$('.FD').hide();
@@ -1465,6 +1484,10 @@
 		}
 		else if(dl=="FD DL")
 		{
+			$('.personal_loan').hide();
+			$('.jewel_loan').hide();
+			$('.staff_loan').hide();
+			
 			$('.RD').hide();
 			$('.pygmy').hide();
 			$('.FD').show();
@@ -1516,7 +1539,6 @@
 					type:'post',
 					data:'&sbAcNo='+AccNum,
 					success:function(data)
-					
 					{
 						$('#Pgacid').val(data['acid']);
 						$('#PgSBAccountNum').val(data['acnum']);

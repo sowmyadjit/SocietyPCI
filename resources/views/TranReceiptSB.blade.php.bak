@@ -178,7 +178,7 @@ function inWords (num) {
 	return(str);
 }
 $(document).ready(function(){
-//console.log(inWords(100));
+//console.log(inWords($ReceiptData->Amount));
 });
 	
 </script>

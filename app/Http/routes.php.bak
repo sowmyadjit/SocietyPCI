@@ -1,4 +1,5 @@
 <?php
+	
 	Route::group(['prefix' => '/'], function()
 	{
 		Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
@@ -350,6 +351,8 @@
 				Route::post('/edit_Sb_data','OpenCloseBalanceController@edit_Sb_data');
 				Route::post('/create_SB_data','OpenCloseBalanceController@create_SB_data');
 				Route::post('/delete_Sb_data','OpenCloseBalanceController@delete_Sb_data');
+				Route::post('/view_cash_details','OpenCloseBalanceController@view_cash_details');
+				Route::post('/edit_cash_details','OpenCloseBalanceController@edit_cash_details');
 				
 				
 				//PermissionController
@@ -892,7 +895,7 @@
 		Route::post('edit_jl_net_wt','LoanController@edit_jl_net_wt');
 /*******************************/
 //common report
-		Route::post('common_report','ReportController@common_report');
+		Route::get('common_report','ReportController@common_report');
 
 //	CLEAR CACHE
 		Route::get('/cache', function() {
