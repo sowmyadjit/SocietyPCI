@@ -223,7 +223,7 @@
 		{
 			
 			return DB::table('user')
-			->select(DB::raw('Uid as id, CONCAT(`Uid`,"-",user.`FirstName`,"-",user.`MiddleName`,"-",user.`LastName`,"-",`Address`) as name'))
+			->select(DB::raw('Uid as Uid, CONCAT(`Uid`,"-",user.`FirstName`,"-",user.`MiddleName`,"-",user.`LastName`,"-",`Address`) as name'))
 			->join('address','address.Aid','=','user.Aid')
 			->get();
 		

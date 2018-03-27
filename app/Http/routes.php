@@ -467,7 +467,9 @@
 				Route::get('/pigmidirectclose/{id}','ReportController@pigmidirectclose');
 				Route::get('/pigmidirectDelete/{id}','ReportController@pigmidirectDelete');
 				
-				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');
+				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');\
+				
+				Route::post('/user_details','ReportController@user_details');
 				
 				
 				
@@ -538,6 +540,7 @@
 				Route::get('/GetMembersForPersLoan','SearchController@GetMembersForPersLoan');
 				Route::get('/GetSuretyName','SearchController@GetSuretyName');
 				Route::get('/SearchCustomer','SearchController@SearchCustomer');//M 19-04-16 For Customer.blade
+				Route::get('/SearchCustomer_usertable','SearchController@SearchCustomer_usertable');
 				Route::get('/SearchFdAllocation','SearchController@SearchFdAllocation');//M 19-04-16 For fdallocation.blade
 				Route::get('/SearchMember','SearchController@SearchMember');//M 19-04-16 For member.blade
 				Route::get('/SearchPurchaseShare','SearchController@SearchPurchaseShare');//M 19-04-16 For member.blade

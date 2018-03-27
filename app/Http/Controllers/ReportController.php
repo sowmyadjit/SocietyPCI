@@ -772,4 +772,9 @@
 		public function common_report(Request $request){
 			return view("commmon_report");
 		}
+		public function user_details(Request $request){
+			$in_data["user_id"]=$request->input("user_id");
+			$return_data=$this->Report_model->user_details($in_data);
+			return view('user_details_data',compact('return_data'));
+		}
 	}

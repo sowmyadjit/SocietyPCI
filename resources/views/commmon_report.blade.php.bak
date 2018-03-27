@@ -29,44 +29,15 @@
 					<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
 					<div class="alert alert-info">
 							<input type="button" value="Print" class="btn btn-info btn-sm print" style="float:right;margin:15px;" id="print">
+					<label>Search Customer</label>
+					<input class="SearchCustomer_usertable form-control" id="SearchCust_table" type="text" name="SearchCust" placeholder="SEARCH CUSTOMER">
 					</div>
 					<div id="toprint">
 						<h2 style="text-align:center;">POTTERS COTTAGE INDUSTRIAL CO-OP SOCIETY LTD.</h2>
 						<h3 style="text-align:center;">CHAKRASOUDHA, KULAI.</h3>
 						<h3 style="text-align:center;">Report</h3>
-						<div style="padding:15px;">
-							<h2>Customer Details</h2>    
-							<table class="table table-striped bootstrap-datatable datatable responsive" style="width:100%;">
-								<tr>
-									<th style="width:20%;text-align: left;">
-										Customer Name:
-									</th>
-									<td style="width:30%;text-align: left;">
-										Djitsoft
-									</td>
-									<th style="width:20%;text-align: left;">
-										Customer ID:
-									</th>
-									<td style="width:30%;text-align: left;">
-										12345
-									</td>
-								</tr>
-								<tr>
-									<th style="width:20%;text-align: left;">
-										Customer Address:
-									</th>
-									<td style="width:30%;text-align: left;">
-										Kodialbail,Mangalore
-									</td>
-									<th style="width:20%;text-align: left;">
-										Customer Ph No:
-									</th>
-									<td style="width:30%;text-align: left;">
-										9852369871
-									</td>
-								</tr>
-							</table>
-						</div>
+						<div id="user_details_division">
+							</div>
 						<div id="loan_report">
 						<div style="padding:15px;">
 							<h2>Loan Details</h2>    
@@ -231,7 +202,7 @@
 							</table>
 						</div>
 						<div style="padding:15px;">
-							<h2>Deposit Transaction Details</h2>    
+							<h2>Surety Details</h2>    
 							<table class="table table-striped bootstrap-datatable datatable responsive" style="width:100%;">
 								<tr>
 									<th>
@@ -303,6 +274,24 @@
 
 
 <script>
+		$('input.SearchCustomer_usertable').typeahead({
+		ajax: '/SearchCustomer_usertable' 
+		//source:SearchCustomer
+		//SearchCustomer_usertable
+	});
+	$('.SearchCustomer_usertable').change(function(){
+	user_id=$('#SearchCust_table').attr('data-value');
+	console.log(user_id);
+		$.ajax({
+					url:'/user_details',
+					type:'post',
+					data:'&user_id='+user_id,
+					success:function(data)
+					{
+						("#user_details_division").html(data);
+					}
+	});
+	});
 	$report_type='DEPOSIT';
 	//$report_type='LOAN';
 	if($report_type=='DEPOSIT'){
@@ -361,7 +350,7 @@
 			$ac_no=10;
 			var divContents = $("#toprint").html();
             var printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>POTTERS COTTAGE INDUSTRIAL CO-OP SOCIETY LTD &nbsp; AC No-'+$ac_no+'</title>');
+            printWindow.document.write('<html><head><title>POTTERS COTTAGE INDUSTRIAL CO-OP SOCIETY LTD &nbsp;&nbsp;&nbsp;&nbsp; AC No-'+$ac_no+'</title>');
             printWindow.document.write('</head><body>');
             printWindow.document.write(divContents);
             printWindow.document.write('</body></html>');

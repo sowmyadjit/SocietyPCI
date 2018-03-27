@@ -2854,6 +2854,16 @@
 		{
 			return date("d-m-Y",strtotime($data["date"]));
 		}
+		public function user_details($in_data){
+			//$in_data["user_id"]
+			
+			$return_data=DB::table('user')
+				->select('user.Uid','user.FirstName','address.Address','address.PhoneNo')
+				->where('user.Uid','=',$in_data["user_id"])
+				->join('address','address.Aid',"=",'user.Aid')
+				->first();
+				return $return_data;
 		
+		}
 		
 	}
