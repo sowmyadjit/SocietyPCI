@@ -26,6 +26,14 @@
 			$sb=$this->interest_model->sbinterest_cal($interst);
 		} 
 		
+		public function sbinterest_cal2(Request $request)
+		{
+			$data["int_month"] = 9;//$request->input("int_month");
+			$data["int_year"] = 2017;//$request->input("int_year");
+			$data['acctype'] = 1;//$request->input('acctype');
+			$sb=$this->interest_model->sbinterest_cal2($data);//sbinterest_cal()
+		}
+		
 		public function pigmiInterest()
 		{
 			$Url="pigmiinterest";
@@ -118,6 +126,19 @@
 			$amt=$sd['sdi']+$tot;
 			DB::table('sb_transaction')->insert(['Accid'=>$sd['accnum'],'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"SD INTEREST",'Amount'=>$sd['sdi'],'CurrentBalance'=>$tot,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$m,'Year'=>$y,'Total_Bal'=>$amt,'Bid'=>$Bid,'Payment_Mode'=>"SD"]);
 			DB::table('createaccount')->where('Accid',$sd['accnum'])->update(['Total_Amount'=>$amt]);
+		}
+		
+		public function calc_service_charge_sb(Request $request)
+		{
+			$fn_data["acc_type"] = "1";
+			$this->interest_model->calc_service_charge_sb($fn_data);
+			unset($fn_data);
+			
+		}
+		
+		public function calc_service_charge_pg(Request $request)
+		{
+			
 		}
 		
 	}

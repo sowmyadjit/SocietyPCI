@@ -6,6 +6,7 @@
 	use DB;
 	use Auth;
 	use App\Http\Model\RoundModel;
+	use App\Http\Model\AccountModel;
 	class InterestModel extends Model
 	{
 		
@@ -14,6 +15,7 @@
 		public function __construct()
 		{
 			$this->roundamt=new RoundModel;
+			$this->acc=new AccountModel;
 		}
 		//Pigmi Interest Calculation
 		var $detail;
@@ -925,6 +927,231 @@
 			->update(['Interest_Amt'=>$intestamt,'Amount_Payable'=>$totamt1]);
 			return DB::table('rd_transaction')->where('RD_TransID',$rdmaxid)
 			->update(['RD_Amount'=>$intestamt,'RD_Total_Bal'=>$totamt1]);
+		}
+		
+		
+		//SB INTEREST CALCULATIONS GOES BELOW//
+		function sbinterest_cal2($data)
+		{
+			$int_year = $data["int_year"];
+			$int_month = date("m",strtotime("{$data["int_year"]}-{$data["int_month"]}"));
+//			echo "int_month=$int_month";//exit();
+			
+			$interest_calculation_date = "{$int_year}-{$int_month}-01";
+//			var_dump($interest_calculation_date);exit();
+
+			$interest_calculated_till = date("Y-m-t",strtotime("+5 months",strtotime("{$int_year}-{$int_month}")));
+//			var_dump($interest_calculated_till);exit();
+			
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
+			$calamt=0;
+			$i=0;
+			$intrst = 0;
+			$count=DB::table('createaccount')->count('AccNum');
+			$accno=DB::table('createaccount')
+				->select('AccNum','Accid','AccTid','Created_on','Total_Amount')
+				->where('createaccount.AccTid','=',$data["acctype"])
+				->where('Bid','=',$BID)
+				->where('Accid','=',"1509")
+				->where('last_interest_calculated_till','<',$interest_calculation_date)
+				->limit(5)
+				->get();
+			print_r($accno);//exit();
+			
+			foreach($accno as $ac)
+			{
+				$fn_data["acc_id"] = $ac->Accid;
+				$balance = $this->acc->get_account_balance($fn_data);
+//				echo "balance=$balance";
+					
+				if($balance > 250)
+				{
+					echo "accid={$ac->Accid}<br>";
+					$acno=$ac->AccNum;
+					$Accid=$ac->Accid;
+					
+					$monthly_min = $this->get_month_min_bal($fn_data);
+//					print_r($monthly_min);continue;
+					
+					$monthly_min_sum = 0;
+					$temp_date = "{$int_year}-{$int_month}";
+					for($i=1; $i<=6; $i++) {
+//						echo "temp_date=$temp_date<br>";//exit();
+						if(isset($monthly_min["{$temp_date}"])) {
+							$monthly_min_sum += $monthly_min["{$temp_date}"];
+	//						var_dump($monthly_min["{$temp_date}"]);
+						}
+						$temp_date = date("Y-m",strtotime("+1 month",strtotime($temp_date)));
+					}
+//					echo "monthly_min_sum=$monthly_min_sum<br>";//exit();
+					
+					$inter = $this->getinterest($acno);
+					$interest_rate = $inter->Intrest;
+					$interest_amount = round($monthly_min_sum * $interest_rate / 100 / 12);
+//					echo "interest_amount=$interest_amount<br>";exit();
+					
+					$a=DB::table('sb_int')->insert(['accno'=>$acno,'int_'=>$interest_amount,'total'=>$monthly_min_sum,'Bid'=>$BID,"sb_int_date"=>$interest_calculated_till]);
+					DB::table("createaccount")
+						->where("Accid","=",$Accid)
+						->update(["last_interest_calculated_till"=>$interest_calculated_till]);
+				}
+			}
+		}
+		
+		public function get_month_min_bal($data)
+		{
+			
+			$today = date("Y-m");
+			$monthly_min = array();
+			
+			$mar_31_entry = DB::table("sb_transaction") 
+				->where("Accid","=",$data["acc_id"])
+				->where("particulars","=","Balance on 31-03-2017")
+				->first();
+				
+			if(!empty($mar_31_entry)) {
+				$temp_date = date("Y-m",strtotime("2017-03-31"));
+				$first_bal = $mar_31_entry->Amount;
+			} else {
+				$created_date = DB::table("createaccount")
+					->where("Accid","=",$data["acc_id"])
+					->value("Created_on");
+				$start_month = date("m",strtotime($created_date));
+				$start_year = date("Y",strtotime($created_date));
+				$temp_date = "{$start_year}-{$start_month}";
+				$first_bal = DB::table("sb_transaction")
+					->where("Accid","=",$data["acc_id"])
+					->where("particulars","=","Opening Balance")
+					->value("Amount");
+			}
+			
+			$first_flag = true;
+			$cur_bal = 0;
+			while($temp_date <= $today) {
+				if($first_flag) {
+					$monthly_min["{$temp_date}"] = $first_bal;
+					$first_flag = false;
+				} else {
+					$monthly_min["{$temp_date}"] = $cur_bal;
+				}
+				
+//				echo "temp_date = $temp_date";//continue;
+				$trans = DB::table('sb_transaction')
+					->select('sb_transaction.Accid','SBReport_TranDate','TransactionType','Amount','Total_Bal','Tranid','particulars','CurrentBalance','Cleared_State','CurrentBalance','Uncleared_Bal')
+					->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
+					->leftJoin('accounttype','accounttype.AccTid','=','sb_transaction.AccTid')
+					->where('sb_transaction.Accid',$data["acc_id"])
+					->where("tran_reversed","=","NO")
+					->where("SBReport_TranDate","like","%{$temp_date}%")
+					->orderBy('SBReport_TranDate','asc')
+					->orderBy('Tranid','asc')
+					->get();
+//				print_r($trans);//exit();
+				
+				foreach($trans as $row) {
+					if(strcasecmp($row->TransactionType, "CREDIT") == 0) {
+						if($row->Cleared_State != "UNCLEARED" && !($row->Uncleared_Bal > 0)) {
+							$cur_bal += $row->Amount;
+						}
+					} else {
+						if($row->Cleared_State != "UNCLEARED" && !($row->Uncleared_Bal > 0)) {
+							$cur_bal -= $row->Amount;
+						}
+					}
+					if($cur_bal < $monthly_min["{$temp_date}"]) {
+						$monthly_min["{$temp_date}"] = $cur_bal;
+					}
+				}
+//				echo "cur_bal = $cur_bal<br>";//continue;
+				$temp_date = date("Y-m",strtotime('+1 month',strtotime("{$temp_date}-01")));
+				
+			}
+			print_r($monthly_min);//exit();
+			return $monthly_min;
+		}
+		
+		public function calc_service_charge_sb($data)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
+			$caculation_date = "2018-03-31";
+			
+			$createaccount = DB::table('createaccount')
+				->select(
+							'AccNum',
+							'Accid',
+							'AccTid',
+							'Created_on',
+							'Total_Amount'
+						)
+				->where('createaccount.AccTid','=',$data["acc_type"])
+				->where('Bid','=',$BID)
+				->where('Closed','=',"NO")
+				->limit(5)
+				->get();
+				
+			foreach($createaccount as $row) {
+				$last_tran = DB::table('sb_transaction')
+					->select('SBReport_TranDate')
+					->where('sb_transaction.Accid',$row->Accid)
+					->where("tran_reversed","=","NO")
+					->orderBy('SBReport_TranDate','desc')
+					->orderBy('Tranid','desc')
+					->first();
+					
+				print_r($last_tran);//exit();
+				echo "Accid:".$row->Accid;
+				
+				$last_tran_date = $last_tran->SBReport_TranDate;
+				$diff = date_diff(date_create($last_tran_date),date_create($caculation_date));
+				$diff_y = $diff->y;
+				
+				if($diff_y > 0) {
+					$fn_data["acc_id"] = $row->Accid;
+					$balance = $this->acc->get_account_balance($fn_data);
+					if($balance > 25) {
+						DB::table("createaccount")->where("Accid","=",$row->Accid)->update(["Closed"=>"YES"]);
+					} else {
+					
+						$insert_data1["Accid"] = $row->Accid;
+						$insert_data1["AccTid"] = $row->AccTid;
+						$insert_data1["TransactionType"] = "DEBIT";
+						$insert_data1["particulars"] = "SERVICE CHARGE";
+						$insert_data1["Amount"] = 10;
+						//$insert_data1["CurrentBalance"] = $credit_acc["CurrentBalance"];
+						$insert_data1["tran_Date"] = $this->dmy($caculation_date);
+						$insert_data1["SBReport_TranDate"] = $caculation_date;
+						$insert_data1["Time"] = date("Y-m-d H:i:s",strtotime($caculation_date));
+						$insert_data1["Month"] = date("d",strtotime($caculation_date));
+						$insert_data1["Year"] = date("Y",strtotime($caculation_date));
+						//$insert_data1["Total_Bal"] = $credit_acc["Total_Bal"];
+						$insert_data1["Bid"] = $BID;
+						$insert_data1["Payment_Mode"] = "ADJUSTMENT";
+						$insert_data1["CreatedBy"] = $UID;
+						$insert_data1["tran_reversed"] = "no";
+						$insert_data1["LedgerHeadId"] = 38;
+						$insert_data1["SubLedgerId"] = 42;
+						DB::table("sb_transaction")
+							->insertGetId($insert_data1);
+					}
+					
+				}
+				
+			}
+		}
+		
+		public function dmy($date)
+		{
+			return date("d-m-Y",strtotime($date));
 		}
 		
 		
