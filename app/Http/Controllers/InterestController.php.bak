@@ -23,8 +23,6 @@
 		{
 			
 			$interst['acctyp_11']=$request->input('acctyp_11');
-			$interst['calculation_month_value']=$request->input('calculation_month_value');
-			$interst['interest_year']=$request->input('interest_year');
 			$sb=$this->interest_model->sbinterest_cal($interst);
 		} 
 		
