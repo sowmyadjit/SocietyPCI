@@ -30,9 +30,9 @@
 		
 		public function sbinterest_cal2(Request $request)
 		{
-			$data["int_month"] = 9;//$request->input("int_month");
-			$data["int_year"] = 2017;//$request->input("int_year");
-			$data['acctype'] = 1;//$request->input('acctype');
+			$data["int_month"] = 9;//$request->input('calculation_month_value');
+			$data["int_year"] = 2017;//$request->input('interest_year');
+			$data['acctype'] = 1;//$request->input('acctyp_11');
 			$sb=$this->interest_model->sbinterest_cal2($data);//sbinterest_cal()
 		}
 		
