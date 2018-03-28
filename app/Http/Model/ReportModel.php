@@ -2865,5 +2865,8 @@
 				return $return_data;
 		
 		}
+		public function loan_details(){
+			print_r('testing');
+		}
 		
 	}

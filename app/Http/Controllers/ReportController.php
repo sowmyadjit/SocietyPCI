@@ -777,4 +777,8 @@
 			$return_data=$this->Report_model->user_details($in_data);
 			return view('user_details_data',compact('return_data'));
 		}
+		public function loan_details(Request $request)
+		{
+			$return_data=$this->Report_model->loan_details();
+		}
 	}

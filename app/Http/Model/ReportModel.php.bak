@@ -2862,8 +2862,11 @@
 				->where('user.Uid','=',$in_data["user_id"])
 				->join('address','address.Aid',"=",'user.Aid')
 				->first();
-				return response()->json($return_data);
+				return $return_data;
 		
+		}
+		public function loan_details(){
+			print_r('test');
 		}
 		
 	}
