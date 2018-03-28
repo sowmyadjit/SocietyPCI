@@ -222,7 +222,7 @@
 				Route::post('/pigmiInterestCalc','InterestController@pigmiInterestCalc');
 				Route::get('/sbinterest','InterestController@index');
 				//Route::post('/sb_interest','InterestController@sbinterest_cal');
-				Route::match(["get","post"],'/sb_interest','InterestController@sbinterest_cal2');
+				Route::match(["post"],'/sb_interest','InterestController@sbinterest_cal2');
 				Route::post('/rd_interest','InterestController@rdinterest_cal');
 				Route::post('/FDwithdraw','InterestController@FDwithdraw');
 				Route::post('/editrdInterestCalc','InterestController@editrdInterestCalc');
