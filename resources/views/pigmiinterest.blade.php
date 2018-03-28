@@ -87,7 +87,7 @@
 							<select class="form-control" id="calculation_month" name="calculation_month"> 
 								<option value="">--Select Type--</option>
 								<option>March-August</option>
-								<option>September-April</option>
+								<option>September-February</option>
 							</select>
 						</div>
 						</div>

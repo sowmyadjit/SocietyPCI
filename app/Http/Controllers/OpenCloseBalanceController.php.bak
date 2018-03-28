@@ -637,7 +637,7 @@
 			$Branchid=$uname->Bid;
 			
 			$data=DB::table('sb_int')
-			->where('sb_int.Bid','=',$Branchid)
+			->where('Bid','=',$Branchid)
 			->join('createaccount','createaccount.AccNum','=','sb_int.accno')
 			->get();
 			return view('Sb_int',compact('data'));

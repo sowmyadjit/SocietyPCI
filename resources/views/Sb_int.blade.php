@@ -17,17 +17,20 @@
 			</div>
 			
 			<div class="box-content">
-				
+				<script src="js/FileSaver.js"/>			
+				<script src="js/tableExport.js"/>	
 				<div class="alert alert-info">
-					
+				<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
 				</div>
 				
-				<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+				<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="expense_details">
 					
 					<thead>
 						<tr>
 							<th> SB ACCOUNT</th>
+							<th>Old Account No</th>
 							<th>SB Account Intrest</th>
+							<th>Intrest Total</th>
 							<th>Action</th>
 						</tr>
 					</thead>
@@ -38,7 +41,9 @@
 						<tr>
 							
 							<td>{{ $d->accno }}</td>
+							<td>{{$d->Old_AccNo}}</td>
 							<td>{{ $d->int_ }}</td>
+							<td>{{$d->sb_int}}</td>
 							<td><div class="form-group">
 							<span>
 									<button class="btn btn-info btn-sm" onclick="editNum({{ $d->sb_int }},{{ $d->int_ }})" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-pencil"></i></button>	
@@ -99,8 +104,12 @@
 		
 	</div>
 </div>		
+<script src="js/jQuery.print.js"></script>
 <!--- model close--->
 <script>
+	$('#excel').click(function(e){
+	$('#expense_details').tableExport({type:'excel',escape:'false'});
+	});	
 	function delete1(a)
 	{
 	del=a;
