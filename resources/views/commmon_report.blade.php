@@ -37,9 +37,11 @@
 						<h3 style="text-align:center;">CHAKRASOUDHA, KULAI.</h3>
 						<h3 style="text-align:center;">Report</h3>
 						<div id="user_details_division">
-							</div>
+						</div>
+						<div id="loan_details">
+						</div>
 						<div id="loan_report">
-						<div style="padding:15px;">
+							<div style="padding:15px;">
 							<h2>Loan Details</h2>    
 							<table class="table table-striped bootstrap-datatable datatable responsive" style="width:100%;">
 								<tr>
@@ -71,7 +73,7 @@
 									</td>
 								</tr>
 							</table>
-						</div>
+							</div>
 						<div style="padding:15px;">
 							<h2>Loan Allocation Details</h2>    
 							<table class="table table-striped bootstrap-datatable datatable responsive" style="width:100%;">

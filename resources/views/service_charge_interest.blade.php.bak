@@ -26,13 +26,25 @@
 					<button class="btn btn-info btn-sm" id="already_calculated_btn">Already Calculated Service Charge</button>
 					<button class="btn btn-info btn-sm" id="calculte_btn">Calculate Value</button>
 					</div>
-					<div>
-					<div style="height:500px;" id="already_calculated">
+					<div id="already_calculated_main_div">
+					<div class="form-group">
+						<label class="control-label col-sm-4">Select Account Type:</label>
+						<div class="col-md-4">
+							<select class="form-control" id="account_type_alrdy_cal" name="calculation_month"> 
+								<option value="">--Select Type--</option>
+								<option value="SB">SB</option>
+								<option value="PIGMY">PIGMY</option>
+							</select>
+						</div>
+						<br>
+						<br>
+					</div>
+					<div style="height:1500px;" id="already_calculated">
 					</div>
 					</div>
 					<div id="calculte">
 					<div class="form-group">
-						<label class="control-label col-sm-4">Select Interest Duration:</label>
+						<label class="control-label col-sm-4">Select Account Type:</label>
 						<div class="col-md-4">
 							<select class="form-control" id="account_type" name="calculation_month"> 
 								<option value="">--Select Type--</option>
@@ -69,22 +81,25 @@
 
 <script>
 	$('#calculte').hide();
-	$('#already_calculated').hide();
+	$('#already_calculated_main_div').hide();
 	$('#already_calculated_btn').click(function(){
 		$('#calculte').hide();
+		$('#already_calculated_main_div').show();
+		});
+	});
+	$('#account_type_alrdy_cal').change(function(){
+		type=$('#account_type_alrdy_cal').val();
 		$.ajax({
 		url: 'calc_service_charge_alrdy_cal',
 		type: 'post',
-		data:'',
+		data:'&type='+type,
 		success: function(data) {
-			$('#already_calculated').show();
 			$("#already_calculated").html(data);
-		}
-		
-	});
+			}
+		});
 	});
 	$('#calculte_btn').click(function(){
-		$('#already_calculated').hide();
+		$('#already_calculated_main_div').hide();
 		$('#calculte').show();
 	});
 	$('.clickme').click(function(e){
