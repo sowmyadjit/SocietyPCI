@@ -152,4 +152,9 @@
 			return view('service_charge_interest');	
 		}
 		
+		public function calc_service_charge_alrdy_cal(Request $request){
+			$return_data=$this->interest_model->calc_service_charge_alrdy_cal();
+			return view('calc_service_charge_alrdy_cal',compact('return_data'));
+		}
+		
 	}

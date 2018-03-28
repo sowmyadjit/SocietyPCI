@@ -1,0 +1,84 @@
+<noscript>
+	<div class="alert alert-block col-md-12">
+		<h4 class="alert-heading">Warning!</h4>
+		
+	</div>
+</noscript>
+
+<div id="content" class="col-lg-10 col-sm-10">
+<table>
+	<thead>
+	<tr>
+	<th>
+		service_charge_id
+	</th>
+	<th>
+		service_charge_date
+	</th>
+	<th>
+		bid
+	</th>
+	<th>
+		acc_type
+	</th>
+	<th>
+		acc_id
+	</th>
+	<th>
+		service_charge_amount
+	</th>
+	<th>
+		acc_balance
+	</th>
+	<th>
+		last_transaction_date
+	</th>
+	<th>
+		charge_collected
+	</th>
+	<th>
+			deleted
+	</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+	@foreach ($return_data as $data)
+	<td>
+	{{$data->service_charge_id}}
+	</td>
+	<td>
+	{{$data->service_charge_date}}
+	</td>
+	<td>
+	{{$data->bid}}
+	</td>
+	<td>
+	{{$data->acc_type}}
+	</td>
+	<td>
+	{{$data->acc_id}}
+	</td>
+	<td>
+	{{$data->service_charge_amount}}
+	</td>
+	<td>
+	{{$data->acc_balance}}
+	</td>
+	<td>
+	{{$data->last_transaction_date}}
+	</td>
+	<td>
+	{{$data->charge_collected}}
+	</td>
+	<td>
+	{{$data->deleted}}
+	</td>
+	@endforeach
+	</tr>
+	</tbody>
+	
+</table>
+</div>
+</div>
+</div>
