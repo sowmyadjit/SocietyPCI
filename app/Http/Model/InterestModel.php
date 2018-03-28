@@ -962,7 +962,16 @@
 				->where('last_interest_calculated_till','<',$interest_calculation_date)
 //				->limit(5)
 				->get();
-			print_r($accno);//exit();
+//			print_r($accno);//exit();
+			$fn_data["acc_id"] = $data["acctype"];
+			$normal_interest_rate = $this->get_interest_rate($fn_data);
+			unset($fn_data);
+			$interest_rate_with_fdacc = $normal_interest_rate - 1;
+			$acc_with_fd = array();
+			$acc_with_fd = DB::table("fdallocation")
+				->where("Bid","=",$BID)
+				->lists("Accid");
+//			print_r($acc_with_fd);
 			
 			foreach($accno as $ac)
 			{
@@ -991,8 +1000,11 @@
 					}
 //					echo "monthly_min_sum=$monthly_min_sum<br>";//exit();
 					
-					$inter = $this->getinterest($acno);
-					$interest_rate = $inter->Intrest;
+					if(in_array($Accid,$acc_with_fd)) {
+						$interest_rate = $interest_rate_with_fdacc;
+					} else {
+						$interest_rate = $normal_interest_rate;
+					}
 					$interest_amount = round($monthly_min_sum * $interest_rate / 100 / 12);
 //					echo "interest_amount=$interest_amount<br>";exit();
 					
@@ -1002,6 +1014,13 @@
 						->update(["last_interest_calculated_till"=>$interest_calculated_till]);
 				}
 			}
+		}
+		
+		public function get_interest_rate($data)
+		{
+			return DB::table("accounttype")
+				->where("AccTid","=",$data["acc_id"])
+				->value("Intrest");
 		}
 		
 		public function get_month_min_bal($data)
@@ -1084,7 +1103,10 @@
 			$UID=$uname->Uid;
 			$BID=$uname->Bid;
 			
-			$caculation_date = "2018-03-31";
+			$calculation_year = $data["year"];
+			$type = $data["type"];
+			
+			$caculation_date = "{$calculation_year}-03-31";
 			
 			$createaccount = DB::table('createaccount')
 				->select(
@@ -1094,10 +1116,11 @@
 							'Created_on',
 							'Total_Amount'
 						)
-				->where('createaccount.AccTid','=',$data["acc_type"])
+				->where('createaccount.AccTid','=',1)
 				->where('Bid','=',$BID)
 				->where('Closed','=',"NO")
-				->limit(5)
+				->where('last_service_charge_calculated_till','<',$caculation_date)
+//				->limit(5)
 				->get();
 				
 			foreach($createaccount as $row) {
@@ -1105,12 +1128,13 @@
 					->select('SBReport_TranDate')
 					->where('sb_transaction.Accid',$row->Accid)
 					->where("tran_reversed","=","NO")
+					->where("particulars","=","SB INTEREST")
 					->orderBy('SBReport_TranDate','desc')
 					->orderBy('Tranid','desc')
 					->first();
 					
-				print_r($last_tran);//exit();
-				echo "Accid:".$row->Accid;
+//				print_r($last_tran);//exit();
+//				echo "Accid:".$row->Accid;
 				
 				$last_tran_date = $last_tran->SBReport_TranDate;
 				$diff = date_diff(date_create($last_tran_date),date_create($caculation_date));
@@ -1119,34 +1143,84 @@
 				if($diff_y > 0) {
 					$fn_data["acc_id"] = $row->Accid;
 					$balance = $this->acc->get_account_balance($fn_data);
-					if($balance > 25) {
-						DB::table("createaccount")->where("Accid","=",$row->Accid)->update(["Closed"=>"YES"]);
+					
+					$insert_arr = array(
+											"service_charge_date"=>$caculation_date,
+											"bid"=>$BID,
+											"acc_type"=>1,
+											"acc_id"=>$row->Accid,
+											"acc_balance"=>$balance,
+											"last_transaction_date"=>$last_tran_date
+										);
+					if($balance < 25) {
+						$insert_arr["service_charge_amount"] = 25;
 					} else {
-					
-						$insert_data1["Accid"] = $row->Accid;
-						$insert_data1["AccTid"] = $row->AccTid;
-						$insert_data1["TransactionType"] = "DEBIT";
-						$insert_data1["particulars"] = "SERVICE CHARGE";
-						$insert_data1["Amount"] = 10;
-						//$insert_data1["CurrentBalance"] = $credit_acc["CurrentBalance"];
-						$insert_data1["tran_Date"] = $this->dmy($caculation_date);
-						$insert_data1["SBReport_TranDate"] = $caculation_date;
-						$insert_data1["Time"] = date("Y-m-d H:i:s",strtotime($caculation_date));
-						$insert_data1["Month"] = date("d",strtotime($caculation_date));
-						$insert_data1["Year"] = date("Y",strtotime($caculation_date));
-						//$insert_data1["Total_Bal"] = $credit_acc["Total_Bal"];
-						$insert_data1["Bid"] = $BID;
-						$insert_data1["Payment_Mode"] = "ADJUSTMENT";
-						$insert_data1["CreatedBy"] = $UID;
-						$insert_data1["tran_reversed"] = "no";
-						$insert_data1["LedgerHeadId"] = 38;
-						$insert_data1["SubLedgerId"] = 42;
-						DB::table("sb_transaction")
-							->insertGetId($insert_data1);
+						$insert_arr["service_charge_amount"] = 10;
 					}
-					
+					DB::table("service_charge")
+						->insertGetId($insert_arr);
 				}
+				DB::table("createaccount")
+					->where("Accid","=",$row->Accid)
+					->update(["last_service_charge_calculated_till"=>$caculation_date]);
+			}
+		}
+		
+		public function create_service_charge($data)
+		{
+			$type = "";//$data["type"];
+			$type_no = 0;
+			
+			$tran_date = date("Y-m-d");
+			
+			switch($type) {
+				case "SB":	$type_no = 1;breakl;
+				case "PIGMY":	$type_no = 2;breakl;
+			}
+			
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
+			$service_charge = DB::table("service_charge")
+				->where("charge_collected","=","0")
+				->where("bid","=",$BID)
+				->where("acc_type","=",$type_no)
+				->get();
 				
+			
+			switch($type) {
+				case "SB":	
+							foreach($service_charge as $row) {
+								if($row->acc_balance < 25) {
+									DB::table("createaccount")->where("Accid","=",$row->Accid)->update(["Closed"=>"YES"]);
+								} else {
+									$insert_data1["Accid"] = $row->acc_id;
+									$insert_data1["AccTid"] = "1";
+									$insert_data1["TransactionType"] = "DEBIT";
+									$insert_data1["particulars"] = "SERVICE CHARGE";
+									$insert_data1["Amount"] = $row->service_charge_amount;
+									//$insert_data1["CurrentBalance"] = $credit_acc["CurrentBalance"];
+									$insert_data1["tran_Date"] = $this->dmy($tran_date);
+									$insert_data1["SBReport_TranDate"] = $tran_date;
+									$insert_data1["Time"] = date("Y-m-d H:i:s",strtotime($tran_date));
+									$insert_data1["Month"] = date("d",strtotime($tran_date));
+									$insert_data1["Year"] = date("Y",strtotime($tran_date));
+									//$insert_data1["Total_Bal"] = $credit_acc["Total_Bal"];
+									$insert_data1["Bid"] = $BID;
+									$insert_data1["Payment_Mode"] = "ADJUSTMENT";
+									$insert_data1["CreatedBy"] = $UID;
+									$insert_data1["tran_reversed"] = "no";
+									$insert_data1["LedgerHeadId"] = 38;
+									$insert_data1["SubLedgerId"] = 42;
+									DB::table("sb_transaction")
+										->insertGetId($insert_data1);
+								}
+							}
+							break;
+				case "PIGMY":	$type_no = 2;breakl;
 			}
 		}
 		

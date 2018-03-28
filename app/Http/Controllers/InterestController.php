@@ -132,20 +132,22 @@
 		
 		public function calc_service_charge(Request $request)
 		{
-			$in_data["type"] = $request->input("");
-			$in_data["year"] = $request->input("");
+			$in_data["type"] = $request->input("type");
+			$in_data["year"] = $request->input("year");
 //			var_dump($in_data);exit();
 			if(!empty($in_data["type"]) && !empty($in_data["year"])) {
 				switch($in_data["type"]) {
-					case "SB":	$this->interest_model->calc_service_charge_sb($fn_data);
+					case "SB":	$this->interest_model->calc_service_charge_sb($in_data);
 								break;
-					case "PIGMY":	$this->interest_model->calc_service_charge_pg($fn_data);
+					case "PIGMY":	$this->interest_model->calc_service_charge_pg($in_data);
 								break;
-					return;
+					return 11;
 				}
 			}
 			
-		}public function calc_service_charge_initial(Request $request)
+		}
+		
+		public function calc_service_charge_initial(Request $request)
 		{
 			return view('service_charge_interest');	
 		}
