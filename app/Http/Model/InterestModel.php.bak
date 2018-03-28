@@ -1155,12 +1155,6 @@
 			return date("d-m-Y",strtotime($date));
 		}
 		
-		public function calc_service_charge_alrdy_cal(){
-			$return_data=DB::table('service_charge')
-			->get();
-			return($return_data);
-		}
-		
 		
 	}
 ?>

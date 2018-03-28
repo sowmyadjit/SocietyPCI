@@ -222,7 +222,7 @@
 				Route::post('/pigmiInterestCalc','InterestController@pigmiInterestCalc');
 				Route::get('/sbinterest','InterestController@index');
 				//Route::post('/sb_interest','InterestController@sbinterest_cal');
-				Route::match(["get","post"],'/sb_interest','InterestController@sbinterest_cal2');
+				Route::match(["post"],'/sb_interest','InterestController@sbinterest_cal2');
 				Route::post('/rd_interest','InterestController@rdinterest_cal');
 				Route::post('/FDwithdraw','InterestController@FDwithdraw');
 				Route::post('/editrdInterestCalc','InterestController@editrdInterestCalc');
@@ -235,6 +235,7 @@
 				Route::match(["get","post"],'/calc_service_charge_sb','InterestController@calc_service_charge_sb');
 				Route::match(["get","post"],'/calc_service_charge_pg','InterestController@calc_service_charge_pg');
 				Route::match(["get","post"],'/calc_service_charge','InterestController@calc_service_charge');
+				Route::match(["get","post"],'/calc_service_charge_initial','InterestController@calc_service_charge_initial');
 				
 				//LoanType Controller
 				Route::get('/Loantype','LoanTypeController@show_loantypedetail');
