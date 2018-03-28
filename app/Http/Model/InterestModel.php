@@ -1332,17 +1332,40 @@
 			switch($type) {
 				case "SB":	
 							$return_data = DB::table('service_charge')
+								->select(
+												"service_charge_date as date",
+												"AccNum as acc_no",
+												"service_charge_amount",
+												"last_transaction_date",
+												"charge_collected"
+										)
 								->join("createaccount","createaccount.Accid","=","service_charge.acc_id")
 								->where("acc_type","=",1)
 								->get();
 							break;
 				case "PIGMY":	
 							$return_data = DB::table('service_charge')
+								->select(
+												"service_charge_date as date",
+												"PigmiAcc_No as acc_no",
+												"service_charge_amount",
+												"last_transaction_date",
+												"charge_collected"
+										)
 								->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","service_charge.acc_id")
 								->where("acc_type","=",2)
 								->get();
 							break;
 			}
+			
+			foreach($return_data as $key => $row) {
+				if($row->charge_collected == 1) {
+					$return_data[$key]->charge_collected = "YES";
+				} else {
+					$return_data[$key]->charge_collected = "NO";
+				}
+			}
+			
 			return($return_data);
 		}
 		

@@ -1,9 +1,4 @@
-<noscript>
-	<div class="alert alert-block col-md-12">
-		<h4 class="alert-heading">Warning!</h4>
-		
-	</div>
-</noscript>
+
 
 <div id="content" class="col-lg-10 col-sm-10">
 <script src="js/bootstrap-table.js"/>
@@ -42,7 +37,10 @@
 		@foreach ($return_data as $data)
 			<tr>
 				<td>
-					{{$data->service_charge_date}}
+					{{$data->date}}
+				</td>
+				<td>
+					{{$data->acc_no}}
 				</td>
 				<td>
 					{{$data->service_charge_amount}}
