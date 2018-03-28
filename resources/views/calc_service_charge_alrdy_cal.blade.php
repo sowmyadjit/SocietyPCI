@@ -28,9 +28,6 @@
 			<th>
 				last_transaction_date
 			</th>
-			<th>
-				charge_collected
-			</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -48,14 +45,32 @@
 				<td>
 					{{$data->last_transaction_date}}
 				</td>
-				<td>
-					{{$data->charge_collected}}
-				</td>
 			</tr>
 		@endforeach
 	</tbody>
 	
 </table>
+<button class="btn btn-info btn-sm" id="Create">Create</button>
 </div>
 </div>
 </div>
+
+
+<script>
+$("#Create").click(function(){
+	x = confirm("Are You Sure ?");
+	var type = "{{$in_data["type"]}}";
+	if(x)
+	{
+		$.ajax({
+			url: 'create_service_charge',
+			type: 'post',
+			data:'&type='+type,
+			success: function(data) {
+				alert('success');
+				//$('.bankclassid').click();
+			}
+		});
+	}
+});
+</script>
