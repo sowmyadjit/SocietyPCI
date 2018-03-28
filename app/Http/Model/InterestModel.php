@@ -956,8 +956,9 @@
 			$accno=DB::table('createaccount')
 				->select('AccNum','Accid','AccTid','Created_on','Total_Amount')
 				->where('createaccount.AccTid','=',$data["acctype"])
+				->where('Closed','=',"NO")
 				->where('Bid','=',$BID)
-//				->where('Accid','=',"1913")
+//				->where('Accid','=',"4095")
 				->where('last_interest_calculated_till','<',$interest_calculation_date)
 //				->limit(5)
 				->get();
@@ -969,7 +970,7 @@
 				$balance = $this->acc->get_account_balance($fn_data);
 //				echo "balance=$balance";
 					
-				if($balance > 250)
+				if($balance >= 250)
 				{
 					echo "accid={$ac->Accid}<br>";
 					$acno=$ac->AccNum;
