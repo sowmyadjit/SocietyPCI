@@ -43,7 +43,7 @@
 							<td>{{ $d->accno }}</td>
 							<td>{{$d->Old_AccNo}}</td>
 							<td>{{ $d->int_ }}</td>
-							<td>{{$d->sb_int}}</td>
+							<td>{{$d->total}}</td>
 							<td><div class="form-group">
 							<span>
 									<button class="btn btn-info btn-sm" onclick="editNum({{ $d->sb_int }},{{ $d->int_ }})" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-pencil"></i></button>	
