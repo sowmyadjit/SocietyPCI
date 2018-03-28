@@ -1128,7 +1128,7 @@
 					->select('SBReport_TranDate')
 					->where('sb_transaction.Accid',$row->Accid)
 					->where("tran_reversed","=","NO")
-					->where("particulars","=","SB INTEREST")
+					->where("particulars","!=","SB INTEREST")
 					->orderBy('SBReport_TranDate','desc')
 					->orderBy('Tranid','desc')
 					->first();
@@ -1229,9 +1229,23 @@
 			return date("d-m-Y",strtotime($date));
 		}
 		
-		public function calc_service_charge_alrdy_cal(){
-			$return_data=DB::table('service_charge')
-			->get();
+		public function calc_service_charge_alrdy_cal($data){
+			$type = $data["type"];
+			switch($type) {
+				case "SB":	
+							$return_data = DB::table('service_charge')
+								->join("createaccount","createaccount.Accid","=","service_charge.acc_id")
+								->where("acc_type","=",1)
+								->get();
+							break;
+				case "PIGMY":	
+							$return_data = DB::table('service_charge')
+								->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","service_charge.acc_id")
+								->where("acc_type","=",2)
+								->get();
+							break;
+							
+			}
 			return($return_data);
 		}
 		

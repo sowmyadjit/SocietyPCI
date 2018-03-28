@@ -20,74 +20,41 @@
 <link href="css/bootstrap-cerulean.min.css" rel='stylesheet' type="text/css" media="all">
 <table class="table table-striped table-bordered bootstrap-datatable datatable responsive bootstrapTable">
 	<thead>
-	<tr>
-	<th>
-		service_charge_id
-	</th>
-	<th>
-		service_charge_date
-	</th>
-	<th>
-		bid
-	</th>
-	<th>
-		acc_type
-	</th>
-	<th>
-		acc_id
-	</th>
-	<th>
-		service_charge_amount
-	</th>
-	<th>
-		acc_balance
-	</th>
-	<th>
-		last_transaction_date
-	</th>
-	<th>
-		charge_collected
-	</th>
-	<th>
-			deleted
-	</th>
-	</tr>
+		<tr>
+			<th>
+				Date
+			</th>
+			<th>
+				Account Number
+			</th>
+			<th>
+				Service Charge Amount
+			</th>
+			<th>
+				last_transaction_date
+			</th>
+			<th>
+				charge_collected
+			</th>
+		</tr>
 	</thead>
 	<tbody>
-	@foreach ($return_data as $data)
-	<tr>
-	<td>
-	{{$data->service_charge_id}}
-	</td>
-	<td>
-	{{$data->service_charge_date}}
-	</td>
-	<td>
-	{{$data->bid}}
-	</td>
-	<td>
-	{{$data->acc_type}}
-	</td>
-	<td>
-	{{$data->acc_id}}
-	</td>
-	<td>
-	{{$data->service_charge_amount}}
-	</td>
-	<td>
-	{{$data->acc_balance}}
-	</td>
-	<td>
-	{{$data->last_transaction_date}}
-	</td>
-	<td>
-	{{$data->charge_collected}}
-	</td>
-	<td>
-	{{$data->deleted}}
-	</td>
-	</tr>
-	@endforeach
+		@foreach ($return_data as $data)
+			<tr>
+				<td>
+					{{$data->service_charge_date}}
+				</td>
+				<td>
+					{{$data->service_charge_amount}}
+				</td>
+				<td>
+					{{$data->last_transaction_date}}
+				</td>
+				<td>
+					{{$data->charge_collected}}
+				</td>
+			</tr>
+		@endforeach
 	</tbody>
 	
 </table>
