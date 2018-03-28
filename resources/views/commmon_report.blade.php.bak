@@ -38,7 +38,9 @@
 						<h3 style="text-align:center;">Report</h3>
 						<div id="user_details_division">
 						</div>
-						<div id="laon-details">
+						<div id="loan_details">
+						</div>
+						<div id="loan_individual_details">
 						</div>
 						<div id="loan_report">
 							<div style="padding:15px;">
@@ -291,9 +293,21 @@
 					success:function(data)
 					{
 						$("#user_details_division").html(data);
+						$.ajax({
+						url:'/loan_details',
+						type:'post',
+						data:'&user_id='+user_id,
+						success:function(data)
+						{
+							$("#loan_details").html(data);	
+						}
+						});
 					}
 	});
 	});
+	$('#view_jl').click(function(){
+		alert('hai');
+		});
 	$report_type='DEPOSIT';
 	//$report_type='LOAN';
 	if($report_type=='DEPOSIT'){

@@ -2865,8 +2865,12 @@
 				return $return_data;
 		
 		}
-		public function loan_details(){
-			print_r('testing');
+		public function loan_details($data){
+		$return_data=DB::table('jewelloan_allocation')
+		->select('JewelLoanId','JewelLoan_LoanNumber')
+		->where('JewelLoan_Uid','=',$data['uid'])
+		->get();
+		return($return_data);
 		}
 		
 	}

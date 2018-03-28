@@ -40,6 +40,8 @@
 						</div>
 						<div id="loan_details">
 						</div>
+						<div id="loan_individual_details">
+						</div>
 						<div id="loan_report">
 							<div style="padding:15px;">
 							<h2>Loan Details</h2>    
@@ -291,6 +293,15 @@
 					success:function(data)
 					{
 						$("#user_details_division").html(data);
+						$.ajax({
+						url:'/loan_details',
+						type:'post',
+						data:'&user_id='+user_id,
+						success:function(data)
+						{
+							$("#loan_details").html(data);	
+						}
+						});
 					}
 	});
 	});

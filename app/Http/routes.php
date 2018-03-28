@@ -905,7 +905,7 @@
 /*******************************/
 //common report
 		Route::get('common_report','ReportController@common_report');
-		Routr::get('loan_details','ReportController@loan_details');
+		Route::post('loan_details','ReportController@loan_details');
 
 //	CLEAR CACHE
 		Route::get('/cache', function() {
