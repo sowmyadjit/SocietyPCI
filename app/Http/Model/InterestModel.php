@@ -1104,7 +1104,7 @@
 			$BID=$uname->Bid;
 			
 			$calculation_year = $data["year"];
-			$type = $data["type"];
+			//$type = $data["type"];
 			
 			$caculation_date = "{$calculation_year}-03-31";
 			
@@ -1153,7 +1153,7 @@
 											"last_transaction_date"=>$last_tran_date
 										);
 					if($balance < 25) {
-						$insert_arr["service_charge_amount"] = 25;
+						$insert_arr["service_charge_amount"] = $balance;
 					} else {
 						$insert_arr["service_charge_amount"] = 10;
 					}
@@ -1166,16 +1166,83 @@
 			}
 		}
 		
+		public function calc_service_charge_pg($data)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
+			$calculation_year = $data["year"];
+			//$type = $data["type"];
+			
+			$caculation_date = "{$calculation_year}-03-31";
+			
+			$pigmiallocation = DB::table('pigmiallocation')
+				->select(
+							'PigmiAllocID'
+						)
+				->where('Bid','=',$BID)
+				->where('Closed','=',"NO")
+				->where('last_service_charge_calculated_till','<',$caculation_date)
+				->get();
+				
+			foreach($pigmiallocation as $row) {
+				$last_tran = DB::table('pigmi_transaction')
+					->select('PigReport_TranDate')
+					->where('pigmi_transaction.PigmiAllocID',$row->PigmiAllocID)
+					->where("tran_reversed","=","NO")
+//					->where("particulars","!=","SB INTEREST")
+					->orderBy('PigReport_TranDate','desc')
+					->orderBy('PigmiTrans_ID','desc')
+					->first();
+					
+//				print_r($last_tran);//exit();
+//				echo "Accid:".$row->PigmiAllocID;
+				
+				$last_tran_date = $last_tran->PigReport_TranDate;
+				$diff = date_diff(date_create($last_tran_date),date_create($caculation_date));
+				$diff_y = $diff->y;
+				
+				if($diff_y > 0) {
+					$balance = DB::table("pigmiallocation")
+						->where("PigmiAllocID","=",$row->PigmiAllocID)
+						->value("Total_Amount");
+					
+					$insert_arr = array(
+											"service_charge_date"=>$caculation_date,
+											"bid"=>$BID,
+											"acc_type"=>1,
+											"acc_id"=>$row->PigmiAllocID,
+											"acc_balance"=>$balance,
+											"last_transaction_date"=>$last_tran_date
+										);
+					if($balance < 25) {
+						$insert_arr["service_charge_amount"] = $balance;
+					} else {
+						$insert_arr["service_charge_amount"] = 10;
+					}
+					DB::table("service_charge")
+						->insertGetId($insert_arr);
+				}
+				DB::table("pigmiallocation")
+					->where("PigmiAllocID","=",$row->PigmiAllocID)
+					->update(["last_service_charge_calculated_till"=>$caculation_date]);
+			}
+		}
+		
 		public function create_service_charge($data)
 		{
-			$type = "";//$data["type"];
+			$type = $data["type"];
 			$type_no = 0;
 			
 			$tran_date = date("Y-m-d");
+			$tran_time = date("H:i:s");
 			
 			switch($type) {
-				case "SB":	$type_no = 1;breakl;
-				case "PIGMY":	$type_no = 2;breakl;
+				case "SB":	$type_no = 1;break;
+				case "PIGMY":	$type_no = 2;break;
 			}
 			
 			$uname='';
@@ -1195,32 +1262,63 @@
 				case "SB":	
 							foreach($service_charge as $row) {
 								if($row->acc_balance < 25) {
-									DB::table("createaccount")->where("Accid","=",$row->Accid)->update(["Closed"=>"YES"]);
-								} else {
-									$insert_data1["Accid"] = $row->acc_id;
-									$insert_data1["AccTid"] = "1";
-									$insert_data1["TransactionType"] = "DEBIT";
-									$insert_data1["particulars"] = "SERVICE CHARGE";
-									$insert_data1["Amount"] = $row->service_charge_amount;
-									//$insert_data1["CurrentBalance"] = $credit_acc["CurrentBalance"];
-									$insert_data1["tran_Date"] = $this->dmy($tran_date);
-									$insert_data1["SBReport_TranDate"] = $tran_date;
-									$insert_data1["Time"] = date("Y-m-d H:i:s",strtotime($tran_date));
-									$insert_data1["Month"] = date("d",strtotime($tran_date));
-									$insert_data1["Year"] = date("Y",strtotime($tran_date));
-									//$insert_data1["Total_Bal"] = $credit_acc["Total_Bal"];
-									$insert_data1["Bid"] = $BID;
-									$insert_data1["Payment_Mode"] = "ADJUSTMENT";
-									$insert_data1["CreatedBy"] = $UID;
-									$insert_data1["tran_reversed"] = "no";
-									$insert_data1["LedgerHeadId"] = 38;
-									$insert_data1["SubLedgerId"] = 42;
-									DB::table("sb_transaction")
-										->insertGetId($insert_data1);
+									DB::table("createaccount")->where("Accid","=",$row->acc_id)->update(["Closed"=>"YES"]);
 								}
+								$insert_data1["Accid"] = $row->acc_id;
+								$insert_data1["AccTid"] = "1";
+								$insert_data1["TransactionType"] = "DEBIT";
+								$insert_data1["particulars"] = "SERVICE CHARGE";
+								$insert_data1["Amount"] = $row->service_charge_amount;
+								//$insert_data1["CurrentBalance"] = $credit_acc["CurrentBalance"];
+								$insert_data1["tran_Date"] = $this->dmy($tran_date);
+								$insert_data1["SBReport_TranDate"] = $tran_date;
+								$insert_data1["Time"] = date("Y-m-d H:i:s",strtotime($tran_date));
+								$insert_data1["Month"] = date("d",strtotime($tran_date));
+								$insert_data1["Year"] = date("Y",strtotime($tran_date));
+								//$insert_data1["Total_Bal"] = $credit_acc["Total_Bal"];
+								$insert_data1["Bid"] = $BID;
+								$insert_data1["Payment_Mode"] = "ADJUSTMENT";
+								$insert_data1["CreatedBy"] = $UID;
+								$insert_data1["tran_reversed"] = "no";
+								$insert_data1["LedgerHeadId"] = 38;
+								$insert_data1["SubLedgerId"] = 42;
+								DB::table("sb_transaction")
+									->insertGetId($insert_data1);
+									
 							}
 							break;
-				case "PIGMY":	$type_no = 2;breakl;
+				case "PIGMY":	
+							foreach($service_charge as $row) {
+								
+								if($row->acc_balance < 25) {
+									DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(["Closed"=>"YES"]);
+								}
+								$pigmiallocation = DB::table("pigmiallocation")
+									->select()
+									->where("PigmiAllocID","=",$row->acc_id)
+									->first();
+								$insert_data = array(
+														"PigmiTypeid"=>$pigmiallocation->PigmiTypeid,
+														"Trans_Date"=>$tran_date,
+														"PigReport_TranDate"=>$tran_date,
+														"Trans_Time"=>$tran_time,
+														"Agentid"=>$pigmiallocation->Agentid,
+														"PigmiAllocID"=>$pigmiallocation->PigmiAllocID,
+														"Transaction_Type"=>"DEBIT",
+														"Amount"=>$row->service_charge_amount,
+														"Particulars"=>"SERVICE CHARGE",
+														"PgmPayment_Mode"=>"ADJUSTMENT",
+														"Month"=>date("m",$tran_date),
+														"Year"=>date("Y",$tran_date),
+														"Bid"=>$row->bid,
+														"CreatedBy"=>$UID,
+														"LedgerHeadId"=>"",
+														"SubLedgerId"=>"",
+													);
+								DB::table("sb_transaction")
+									->insertGetId($insert_data);
+							}
+							break;
 			}
 		}
 		
@@ -1244,7 +1342,6 @@
 								->where("acc_type","=",2)
 								->get();
 							break;
-							
 			}
 			return($return_data);
 		}

@@ -158,4 +158,10 @@
 			return view('calc_service_charge_alrdy_cal',compact('return_data'));
 		}
 		
+		public function create_service_charge(Request $request)
+		{
+			$in_data["type"] = $request->input("type");
+			$this->interest_model->create_service_charge($in_data);
+		}
+		
 	}
