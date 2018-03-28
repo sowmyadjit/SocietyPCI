@@ -353,7 +353,7 @@
 		
 		
 		
-		
+		/*
 		//SB INTEREST CALCULATIONS GOES BELOW//
 		function sbinterest_cal($id)
 		{
@@ -502,7 +502,7 @@
 			
 			
 			//return $a;
-		}
+		}*/
 		
 		function cal_month_bal($acno,$m,$yr,$year1)
 		{
@@ -957,9 +957,9 @@
 				->select('AccNum','Accid','AccTid','Created_on','Total_Amount')
 				->where('createaccount.AccTid','=',$data["acctype"])
 				->where('Bid','=',$BID)
-				->where('Accid','=',"1509")
+//				->where('Accid','=',"1913")
 				->where('last_interest_calculated_till','<',$interest_calculation_date)
-				->limit(5)
+//				->limit(5)
 				->get();
 			print_r($accno);//exit();
 			
