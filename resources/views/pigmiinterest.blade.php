@@ -384,7 +384,7 @@
 				if(calculation_month=='March-August'){
 				calculation_month_value=3;
 				}
-				else if(calculation_month=='September-April'){
+				else if(calculation_month=='September-February'){
 				calculation_month_value=9;
 				}
 				console.log('check',calculation_month_value);
