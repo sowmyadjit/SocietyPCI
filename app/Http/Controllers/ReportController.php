@@ -778,7 +778,8 @@
 			return view('user_details_data',compact('return_data'));
 		}
 		public function loan_details(Request $request)
-		{
-			$return_data=$this->Report_model->loan_details();
+		{	$data['uid']=$request->input('user_id');
+			$return_data=$this->Report_model->loan_details($data);
+			return view('loan_details',compact('return_data'));
 		}
 	}
