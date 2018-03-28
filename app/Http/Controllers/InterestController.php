@@ -130,17 +130,24 @@
 			DB::table('createaccount')->where('Accid',$sd['accnum'])->update(['Total_Amount'=>$amt]);
 		}
 		
-		public function calc_service_charge_sb(Request $request)
+		public function calc_service_charge(Request $request)
 		{
-			$fn_data["acc_type"] = "1";
-			$this->interest_model->calc_service_charge_sb($fn_data);
-			unset($fn_data);
+			$in_data["type"] = $request->input("");
+			$in_data["year"] = $request->input("");
+//			var_dump($in_data);exit();
+			if(!empty($in_data["type"]) && !empty($in_data["year"])) {
+				switch($in_data["type"]) {
+					case "SB":	$this->interest_model->calc_service_charge_sb($fn_data);
+								break;
+					case "PIGMY":	$this->interest_model->calc_service_charge_pg($fn_data);
+								break;
+					return;
+				}
+			}
 			
-		}
-		
-		public function calc_service_charge_pg(Request $request)
+		}public function calc_service_charge_initial(Request $request)
 		{
-			
+			return view('service_charge_interest');	
 		}
 		
 	}

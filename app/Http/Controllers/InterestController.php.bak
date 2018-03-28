@@ -18,13 +18,23 @@
 			$this->Modules= new ModulesModel;
 			$this->OP_model=new OpenCloseModel;
 		}
-		
+/*		
 		public function sbinterest_cal(Request $request)
 		{
 			
 			$interst['acctyp_11']=$request->input('acctyp_11');
+			$interst['calculation_month_value']=$request->input('calculation_month_value');
+			$interst['interest_year']=$request->input('interest_year');
 			$sb=$this->interest_model->sbinterest_cal($interst);
-		} 
+		} */
+		
+		public function sbinterest_cal2(Request $request)
+		{
+			$data["int_month"] = $request->input('calculation_month_value');
+			$data["int_year"] = $request->input('interest_year');
+			$data['acctype'] = $request->input('acctyp_11');
+			$sb=$this->interest_model->sbinterest_cal2($data);//sbinterest_cal()
+		}
 		
 		public function pigmiInterest()
 		{
@@ -118,6 +128,26 @@
 			$amt=$sd['sdi']+$tot;
 			DB::table('sb_transaction')->insert(['Accid'=>$sd['accnum'],'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"SD INTEREST",'Amount'=>$sd['sdi'],'CurrentBalance'=>$tot,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$m,'Year'=>$y,'Total_Bal'=>$amt,'Bid'=>$Bid,'Payment_Mode'=>"SD"]);
 			DB::table('createaccount')->where('Accid',$sd['accnum'])->update(['Total_Amount'=>$amt]);
+		}
+		
+		public function calc_service_charge(Request $request)
+		{
+			$in_data["type"] = $request->input("");
+			$in_data["year"] = $request->input("");
+//			var_dump($in_data);exit();
+			if(!empty($in_data["type"]) && !empty($in_data["year"])) {
+				switch($in_data["type"]) {
+					case "SB":	$this->interest_model->calc_service_charge_sb($fn_data);
+								break;
+					case "PIGMY":	$this->interest_model->calc_service_charge_pg($fn_data);
+								break;
+					return;
+				}
+			}
+			
+		}public function calc_service_charge(Request $request)
+		{
+			return view('service_charge_interest');	
 		}
 		
 	}

@@ -234,7 +234,8 @@
 				Route::post('/SDINTERESTPAY','InterestController@SDINTERESTPAY');
 				Route::match(["get","post"],'/calc_service_charge_sb','InterestController@calc_service_charge_sb');
 				Route::match(["get","post"],'/calc_service_charge_pg','InterestController@calc_service_charge_pg');
-				
+				Route::match(["get","post"],'/calc_service_charge','InterestController@calc_service_charge');
+				Route::match(["get","post"],'/calc_service_charge_initial','InterestController@calc_service_charge_initial');
 				
 				//LoanType Controller
 				Route::get('/Loantype','LoanTypeController@show_loantypedetail');
