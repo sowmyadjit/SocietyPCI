@@ -17,12 +17,13 @@
 			</div>
 			
 			<div class="box-content">
-				
+				<script src="js/FileSaver.js"/>			
+				<script src="js/tableExport.js"/>	
 				<div class="alert alert-info">
-					
+				<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
 				</div>
 				
-				<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+				<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="expense_details">
 					
 					<thead>
 						<tr>
@@ -99,8 +100,12 @@
 		
 	</div>
 </div>		
+<script src="js/jQuery.print.js"></script>
 <!--- model close--->
 <script>
+	$('#excel').click(function(e){
+	$('#expense_details').tableExport({type:'excel',escape:'false'});
+	});	
 	function delete1(a)
 	{
 	del=a;
