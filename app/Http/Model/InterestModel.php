@@ -966,7 +966,7 @@
 			$fn_data["acc_id"] = $data["acctype"];
 			$normal_interest_rate = $this->get_interest_rate($fn_data);
 			unset($fn_data);
-			$interest_rate_with_fdacc = $normal_interest_rate - 1;
+			$interest_rate_with_fdacc = $normal_interest_rate;// - 1;
 			$acc_with_fd = array();
 			$acc_with_fd = DB::table("fdallocation")
 				->where("Bid","=",$BID)
