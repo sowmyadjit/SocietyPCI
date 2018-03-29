@@ -1284,7 +1284,9 @@
 								$insert_data1["SubLedgerId"] = 42;
 								DB::table("sb_transaction")
 									->insertGetId($insert_data1);
-									
+								DB::table("service_charge")
+									->where("service_charge_id","=",$row->service_charge_id)
+									->update(["charge_collected"=>1]);
 							}
 							break;
 				case "PIGMY":	
@@ -1317,6 +1319,9 @@
 													);
 								DB::table("sb_transaction")
 									->insertGetId($insert_data);
+								DB::table("service_charge")
+									->where("service_charge_id","=",$row->service_charge_id)
+									->update(["charge_collected"=>1]);
 							}
 							break;
 			}
@@ -1341,6 +1346,7 @@
 										)
 								->join("createaccount","createaccount.Accid","=","service_charge.acc_id")
 								->where("acc_type","=",1)
+								->where("charge_collected","=",0)
 								->get();
 							break;
 				case "PIGMY":	
@@ -1354,6 +1360,7 @@
 										)
 								->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","service_charge.acc_id")
 								->where("acc_type","=",2)
+								->where("charge_collected","=",0)
 								->get();
 							break;
 			}
