@@ -65,7 +65,7 @@ return [
         ],*/
 		'mysql' => [
             'driver'    => 'mysql',
-            'host'      => env('DB_HOST', 'localhost'),
+            'host'      => env('DB_HOST', '10.0.0.7'),
             'database'  => env('DB_DATABASE', 'society_server_copy'),
             'username'  => env('DB_USERNAME', 'root'),
             'password'  => env('DB_PASSWORD', ''),
