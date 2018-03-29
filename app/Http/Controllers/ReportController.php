@@ -778,8 +778,22 @@
 			return view('user_details_data',compact('return_data'));
 		}
 		public function loan_details(Request $request)
-		{	$data['uid']=$request->input('user_id');
-			$return_data=$this->Report_model->loan_details($data);
-			return view('loan_details',compact('return_data'));
+		{
+			$type = $request->input("type");
+			$data['uid']=$request->input('user_id');
+			
+			switch($type) {
+				case "JL":	
+							$return_data=$this->Report_model->loan_details_jl($data);
+							return view('loan_details',compact('return_data'));
+							break;
+				case "PL":	
+							$return_data=$this->Report_model->loan_details_pl($data);
+							return view('loan_details',compact('return_data'));
+							
+							break;
+			}
+			
+				
 		}
 	}

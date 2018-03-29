@@ -2865,12 +2865,29 @@
 				return $return_data;
 		
 		}
-		public function loan_details($data){
-		$return_data=DB::table('jewelloan_allocation')
-		->select('JewelLoanId','JewelLoan_LoanNumber')
-		->where('JewelLoan_Uid','=',$data['uid'])
-		->get();
-		return($return_data);
+		
+		public function loan_details_jl($data){
+			$return_data=DB::table('jewelloan_allocation')
+			->select(
+						'JewelLoanId as loan_id',
+						'JewelLoan_LoanNumber as loan_no'
+					)
+			->where('JewelLoan_Uid','=',$data['uid'])
+			->get();
+			return($return_data);
+		}
+		
+		public function loan_details_pl($data){
+			$return_data = DB::table('personalloan_allocation')
+			->select(
+						'PersLoanAllocID as loan_id',
+						'PersLoan_Number as loan_no'
+					)
+			->join("members","members.Memid","=","personalloan_allocation.MemId")
+			->join("user","user.Uid","=","members.Uid")
+			->where('user.Uid','=',$data['uid'])
+			->get();
+			return($return_data);
 		}
 		
 	}

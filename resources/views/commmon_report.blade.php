@@ -38,11 +38,19 @@
 						<h3 style="text-align:center;">Report</h3>
 						<div id="user_details_division">
 						</div>
-						<div id="loan_details">
+						
+						<h2> Jewel Loan Details</h2>
+						<div id="loan_details_jl">
 						</div>
+						
+						<h2> Personal Loan Details</h2>
+						<div id="loan_details_pl">
+						</div>
+						
 						<div id="loan_individual_details">
 						</div>
-						<div id="loan_report">
+						
+<?php /*						<div id="loan_report">
 							<div style="padding:15px;">
 							<h2>Loan Details</h2>    
 							<table class="table table-striped bootstrap-datatable datatable responsive" style="width:100%;">
@@ -266,7 +274,7 @@
 								</tr>
 							</table>
 						</div>
-						</div>
+						</div>*/?>
 					</div>
 				</div>
 		</div>
@@ -294,13 +302,23 @@
 					{
 						$("#user_details_division").html(data);
 						$.ajax({
-						url:'/loan_details',
-						type:'post',
-						data:'&user_id='+user_id,
-						success:function(data)
-						{
-							$("#loan_details").html(data);	
-						}
+							url:'/loan_details',
+							type:'post',
+							data:'&user_id='+user_id+"&type=JL",
+							success:function(data)
+							{
+								$("#loan_details_jl").html(data);	
+							}
+						});
+						
+						$.ajax({
+							url:'/loan_details',
+							type:'post',
+							data:'&user_id='+user_id+"&type=PL",
+							success:function(data)
+							{
+								$("#loan_details_pl").html(data);	
+							}
 						});
 					}
 	});
