@@ -1,5 +1,5 @@
 <?php
-	$type=$indata["type"]
+	$type=$in_data["type"]
 ?>
 <div id="content" class="col-lg-10 col-sm-10">
 <script src="js/bootstrap-table.js"/>

@@ -50,6 +50,7 @@
 				</td>
 		<?php 	if($type=="PIGMY"){ ?>
 				<td>
+				{{$data->old_acc_no}}
 				</td>
 		<?php } ?>
 				<td>
@@ -63,6 +64,7 @@
 				</td>
 		<?php	if($type=="PIGMY"){ ?>
 				<td>
+				{{$data->FirstName}}{{$data->MiddleName}}{{$data->LastName}}
 				</td>
 		<?php } ?>
 			</tr>
