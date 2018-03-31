@@ -64,14 +64,14 @@
 				</td>
 		<?php	if($type=="PIGMY"){ ?>
 				<td>
-				{{$data->FirstName}}{{$data->MiddleName}}{{$data->LastName}}
+				{{$data->FirstName}} {{$data->MiddleName}} {{$data->LastName}}
 				</td>
 		<?php } ?>
 			</tr>
 		@endforeach
 		<tr>
-			<td colspan="2" >Service Charge Total</td>
-			<td colspan="2" >{{$in_data["total_amount"]}}</td>
+			<td colspan="3" >Service Charge Total</td>
+			<td colspan="3" >{{$in_data["total_amount"]}}</td>
 		</tr>
 	</tbody>
 	
