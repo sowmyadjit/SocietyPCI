@@ -1160,7 +1160,7 @@
 										);
 					if($balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
 						$insert_arr["service_charge_amount"] = $balance;
-						if($balance == 0) {
+						if($balance <= 0) {
 							$insert_arr["deleted"] = 1;
 						}
 					} else {
@@ -1210,6 +1210,10 @@
 //				print_r($last_tran);//exit();
 //				echo "Accid:".$row->PigmiAllocID;
 				
+				if(empty($last_tran)) {
+					continue;
+				}
+				
 				$last_tran_date = $last_tran->PigReport_TranDate;
 				$diff = date_diff(date_create($last_tran_date),date_create($caculation_date));
 				$diff_y = $diff->y;
@@ -1229,7 +1233,7 @@
 										);
 					if($balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
 						$insert_arr["service_charge_amount"] = $balance;
-						if($balance == 0) {
+						if($balance <= 0) {
 							$insert_arr["deleted"] = 1;
 						}
 					} else {
@@ -1388,11 +1392,16 @@
 								->select(
 												"service_charge_date as date",
 												"PigmiAcc_No as acc_no",
+												"old_pigmiaccno as old_acc_no",
 												"service_charge_amount",
 												"last_transaction_date",
-												"charge_collected"
+												"charge_collected",
+												"FirstName",
+												"MiddleName",
+												"LastName"
 										)
 								->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","service_charge.acc_id")
+								->join("user","user.Uid","=","pigmiallocation.Agentid")
 								->where("acc_type","=",2)
 								->where("service_charge.bid","=",$BID)
 								->where("charge_collected","=",0)

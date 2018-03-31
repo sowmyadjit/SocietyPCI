@@ -738,13 +738,41 @@
 		{
 																		 
 			$jid=$id['jlAlcID'];
-			return DB::table('jewelloan_allocation')->select('JewelLoan_LoanRemainingAmount','JewelLoan_StartDate','JewelLoan_EndDate','FirstName','MiddleName','LastName','JewelLoan_lastpaiddate','partpayment_amount','JewelLoan_LoanAmount','LoanType_Interest','auction_status','loan_due_interest','JewelLoan_remaininginterest')
+			$jewelloan_allocation = DB::table('jewelloan_allocation')->select('JewelLoan_LoanRemainingAmount','JewelLoan_StartDate','JewelLoan_EndDate','FirstName','MiddleName','LastName','JewelLoan_lastpaiddate','partpayment_amount','JewelLoan_LoanAmount','LoanType_Interest','auction_status','loan_due_interest','JewelLoan_remaininginterest')
 			->leftJoin('user','user.Uid','=','jewelloan_allocation.JewelLoan_Uid')
 			->leftJoin('loan_type','loan_type.LoanType_ID','=','jewelloan_allocation.JewelLoan_LoanTypeId')
 			->where('JewelLoanId','=',$jid)
 			->first();
 			
+			
+			
+			
+				/********** CHECK FOR 1ST REPAY **********/
+				$fn_data["jlaccid"] = $jid;
+				$is_jl_first_repay_done = $this->is_jl_first_repay_done($fn_data);//true/false
+				unset($fn_data);
+//				var_dump($is_jl_first_repay_done);exit();
+				/********** CHECK FOR 1ST REPAY END **********/
+				
+				
+				/********** get interest paid upto **********/
+				if($is_jl_first_repay_done == 1) {
+					$jewelloan_repay = DB::table("jewelloan_repay")
+						->where("JLRepay_JLAllocID","=",$jid)
+						->orderBy("JLRepay_Date","desc")
+						->first();
+					$last_date = $jewelloan_repay->interest_paid_upto;
+				} else {
+					$last_date = $jewelloan_allocation->JewelLoan_StartDate;
+				}
+//				echo "last_date: $last_date <br />"; exit();
+				/********** get interest paid upto END **********/
+			$jewelloan_allocation->JewelLoan_lastpaiddate = $last_date;
+			
+			return $jewelloan_allocation;
+			
 		}
+		
 		public function GetslDetail($id)
 		{
 			return DB::table('staffloan_allocation')->select('StaffLoan_LoanRemainingAmount','LastPaidDate','FirstName','MiddleName','LastName','EMI_Amount','partpayment_amount','LoanAmt','loan_due_interest','EMI_Amount')
