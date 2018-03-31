@@ -37,16 +37,20 @@
   <div class="modal-dialog" style="width:90%;">
 
     <!-- Modal content-->
+	
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+	  <input type="button" value="Print" class="btn btn-info btn-sm print" style="float:right;margin:15px;" id="print">
+	  <div id="toprinta">
 		<h2 style="text-align:center;">POTTERS COTTAGE INDUSTRIAL CO-OP SOCIETY LTD.</h2>
 		<h3 style="text-align:center;">CHAKRASOUDHA, KULAI.</h3>
 		<h3 style="text-align:center;">Report</h3>
-      </div>
-      <div class="modal-body">
         <div id="loan_individual_details_modal"></div>
       </div>
+	  </div>
     </div>
 
   </div>
@@ -66,4 +70,23 @@
 					}
 	});
 	});
+</script>
+<script src="js/jQuery.print.js"></script>
+<script>
+	
+	$(function() {
+		$(".print").click(function() {
+			alert("print");
+			$ac_no=10;
+			var divContents = $("#toprinta").html();
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>POTTERS COTTAGE INDUSTRIAL CO-OP SOCIETY LTD &nbsp;&nbsp;&nbsp;&nbsp; AC No-'+$ac_no+'</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+			//$("#toprint").print();
+            printWindow.print(); 
+		});
+	});	
 </script>
