@@ -1,5 +1,6 @@
-
-
+<?php
+	$type=$indata["type"]
+?>
 <div id="content" class="col-lg-10 col-sm-10">
 <script src="js/bootstrap-table.js"/>
 <script src="js/FileSaver.js"/>			
@@ -20,6 +21,11 @@
 			<th>
 				Date
 			</th>
+		<?php if($type=="PIGMY"){ ?>
+			<th>
+				Old Account Number
+			</th>
+		<?php } ?>
 			<th>
 				Account Number
 			</th>
@@ -29,6 +35,11 @@
 			<th>
 				last_transaction_date
 			</th>
+		<?php if($type=="PIGMY"){	?>
+			<th>
+				Agent Name
+			</th>
+		<?php } ?>
 		</tr>
 	</thead>
 	<tbody>
@@ -37,6 +48,11 @@
 				<td>
 					{{$data->date}}
 				</td>
+		<?php 	if($type=="PIGMY"){ ?>
+				<td>
+				{{$data->old_acc_no}}
+				</td>
+		<?php } ?>
 				<td>
 					{{$data->acc_no}}
 				</td>
@@ -46,6 +62,11 @@
 				<td>
 					{{$data->last_transaction_date}}
 				</td>
+		<?php	if($type=="PIGMY"){ ?>
+				<td>
+				{{$data->FirstName}}{{$data->MiddleName}}{{$data->LastName}}
+				</td>
+		<?php } ?>
 			</tr>
 		@endforeach
 		<tr>
@@ -60,6 +81,12 @@
 </div>
 </div>
 <script>
+$( document).ready(function(){
+	if($type=='PIGMY'){
+	
+	}
+	
+});
 $('#excel').click(function(e){
 	$('#excel_export').tableExport({type:'excel',escape:'false'});
 });		
