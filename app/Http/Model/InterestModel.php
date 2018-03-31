@@ -1372,6 +1372,7 @@
 								->select(
 												"service_charge_date as date",
 												"AccNum as acc_no",
+												"Old_AccNo as old_acc_no",
 												"service_charge_amount",
 												"last_transaction_date",
 												"charge_collected"
