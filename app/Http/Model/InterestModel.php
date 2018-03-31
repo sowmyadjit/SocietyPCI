@@ -1392,11 +1392,16 @@
 								->select(
 												"service_charge_date as date",
 												"PigmiAcc_No as acc_no",
+												"old_pigmiaccno as old_acc_no",
 												"service_charge_amount",
 												"last_transaction_date",
-												"charge_collected"
+												"charge_collected",
+												"FirstName",
+												"MiddleName",
+												"LastName"
 										)
 								->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","service_charge.acc_id")
+								->join("user","user.Uid","=","pigmiallocation.Agentid")
 								->where("acc_type","=",2)
 								->where("service_charge.bid","=",$BID)
 								->where("charge_collected","=",0)
