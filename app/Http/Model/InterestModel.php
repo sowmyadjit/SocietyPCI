@@ -2,6 +2,8 @@
 	
 	namespace App\Http\Model;
 	
+	define("MIN_BAL_TO_NOT_TO_CLOSE_ACC",26);
+	
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
@@ -1152,8 +1154,11 @@
 											"acc_balance"=>$balance,
 											"last_transaction_date"=>$last_tran_date
 										);
-					if($balance < 25) {
+					if($balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
 						$insert_arr["service_charge_amount"] = $balance;
+						if($balance == 0) {
+							$insert_arr["deleted"] = 1;
+						}
 					} else {
 						$insert_arr["service_charge_amount"] = 10;
 					}
@@ -1213,16 +1218,20 @@
 					$insert_arr = array(
 											"service_charge_date"=>$caculation_date,
 											"bid"=>$BID,
-											"acc_type"=>1,
+											"acc_type"=>2,
 											"acc_id"=>$row->PigmiAllocID,
 											"acc_balance"=>$balance,
 											"last_transaction_date"=>$last_tran_date
 										);
-					if($balance < 25) {
+					if($balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
 						$insert_arr["service_charge_amount"] = $balance;
+						if($balance == 0) {
+							$insert_arr["deleted"] = 1;
+						}
 					} else {
 						$insert_arr["service_charge_amount"] = 10;
 					}
+					
 					DB::table("service_charge")
 						->insertGetId($insert_arr);
 				}
@@ -1255,15 +1264,13 @@
 				->where("charge_collected","=","0")
 				->where("bid","=",$BID)
 				->where("acc_type","=",$type_no)
+				->where("deleted","=",0)
 				->get();
 				
 			
 			switch($type) {
 				case "SB":	
 							foreach($service_charge as $row) {
-								if($row->acc_balance < 25) {
-									DB::table("createaccount")->where("Accid","=",$row->acc_id)->update(["Closed"=>"YES"]);
-								}
 								$insert_data1["Accid"] = $row->acc_id;
 								$insert_data1["AccTid"] = "1";
 								$insert_data1["TransactionType"] = "DEBIT";
@@ -1287,14 +1294,16 @@
 								DB::table("service_charge")
 									->where("service_charge_id","=",$row->service_charge_id)
 									->update(["charge_collected"=>1]);
+									
+								if($row->acc_balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
+									echo "acc_id:{$row->acc_id} - closed <br />\n";
+									DB::table("createaccount")->where("Accid","=",$row->acc_id)->update(["Closed"=>"YES"]);
+								}
 							}
+							
 							break;
 				case "PIGMY":	
 							foreach($service_charge as $row) {
-								
-								if($row->acc_balance < 25) {
-									DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(["Closed"=>"YES"]);
-								}
 								$pigmiallocation = DB::table("pigmiallocation")
 									->select()
 									->where("PigmiAllocID","=",$row->acc_id)
@@ -1310,19 +1319,24 @@
 														"Amount"=>$row->service_charge_amount,
 														"Particulars"=>"SERVICE CHARGE",
 														"PgmPayment_Mode"=>"ADJUSTMENT",
-														"Month"=>date("m",$tran_date),
-														"Year"=>date("Y",$tran_date),
+														"Month"=>date("m",strtotime($tran_date)),
+														"Year"=>date("Y",strtotime($tran_date)),
 														"Bid"=>$row->bid,
 														"CreatedBy"=>$UID,
 														"LedgerHeadId"=>"",
 														"SubLedgerId"=>"",
 													);
-								DB::table("sb_transaction")
+								DB::table("pigmi_transaction")
 									->insertGetId($insert_data);
 								DB::table("service_charge")
 									->where("service_charge_id","=",$row->service_charge_id)
 									->update(["charge_collected"=>1]);
+									
+								if($row->acc_balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
+									DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(["Closed"=>"YES"]);
+								}
 							}
+							
 							break;
 			}
 		}
@@ -1332,11 +1346,21 @@
 			return date("d-m-Y",strtotime($date));
 		}
 		
-		public function calc_service_charge_alrdy_cal($data){
+		public function calc_service_charge_alrdy_cal($data)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
 			$type = $data["type"];
+			
+			$return_data["service_charge"] = array();
+			$return_data["total_amount"] = 0;
 			switch($type) {
 				case "SB":	
-							$return_data = DB::table('service_charge')
+							$return_data["service_charge"] = DB::table('service_charge')
 								->select(
 												"service_charge_date as date",
 												"AccNum as acc_no",
@@ -1346,11 +1370,17 @@
 										)
 								->join("createaccount","createaccount.Accid","=","service_charge.acc_id")
 								->where("acc_type","=",1)
+								->where("service_charge.bid","=",$BID)
 								->where("charge_collected","=",0)
+								->where("service_charge.deleted","=",0)
 								->get();
+								
+							foreach($return_data["service_charge"] as $row) {
+								$return_data["total_amount"] += $row->service_charge_amount;
+							}
 							break;
 				case "PIGMY":	
-							$return_data = DB::table('service_charge')
+							$return_data["service_charge"] = DB::table('service_charge')
 								->select(
 												"service_charge_date as date",
 												"PigmiAcc_No as acc_no",
@@ -1360,17 +1390,15 @@
 										)
 								->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","service_charge.acc_id")
 								->where("acc_type","=",2)
+								->where("service_charge.bid","=",$BID)
 								->where("charge_collected","=",0)
+								->where("service_charge.deleted","=",0)
 								->get();
+								
+							foreach($return_data["service_charge"] as $row) {
+								$return_data["total_amount"] += $row->service_charge_amount;
+							}
 							break;
-			}
-			
-			foreach($return_data as $key => $row) {
-				if($row->charge_collected == 1) {
-					$return_data[$key]->charge_collected = "YES";
-				} else {
-					$return_data[$key]->charge_collected = "NO";
-				}
 			}
 			
 			return($return_data);

@@ -2278,10 +2278,15 @@
 							//->join("members","members.Uid","=","user.Uid")
 				//->join("personalloan_allocation","personalloan_allocation.MemId","=","members.Memid")
 			//query
-			
-			$ret_data["customer_details"]["guarantor_name"] = $guarantor->FirstName;//PL
-			$ret_data["customer_details"]["guarantor_mobile"] = $guarantor->MobileNo;//PL
-			$ret_data["customer_details"]["guarantor_address"] = $guarantor->Address;//PL
+			if(!empty($guarantor)) {
+				$ret_data["customer_details"]["guarantor_name"] = $guarantor->FirstName;//PL
+				$ret_data["customer_details"]["guarantor_mobile"] = $guarantor->MobileNo;//PL
+				$ret_data["customer_details"]["guarantor_address"] = $guarantor->Address;//PL
+			} else {
+				$ret_data["customer_details"]["guarantor_name"] = "";
+				$ret_data["customer_details"]["guarantor_mobile"] = "";
+				$ret_data["customer_details"]["guarantor_address"] = "";
+			}
 			//print_r($ret_data); exit();
 //		CUSTOMER DETAILS END
 

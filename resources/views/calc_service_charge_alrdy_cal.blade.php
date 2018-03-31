@@ -47,6 +47,10 @@
 				</td>
 			</tr>
 		@endforeach
+		<tr>
+			<td colspan="2" >Service Charge Total</td>
+			<td colspan="2" >{{$in_data["total_amount"]}}</td>
+		</tr>
 	</tbody>
 	
 </table>
