@@ -64,7 +64,7 @@
 				</td>
 		<?php	if($type=="PIGMY"){ ?>
 				<td>
-				{{$data->FirstName}}{{$data->MiddleName}}{{$data->LastName}}
+				{{$data->FirstName}} {{$data->MiddleName}} {{$data->LastName}}
 				</td>
 		<?php } ?>
 			</tr>

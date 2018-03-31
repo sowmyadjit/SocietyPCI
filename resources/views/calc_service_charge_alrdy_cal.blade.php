@@ -21,11 +21,9 @@
 			<th>
 				Date
 			</th>
-		<?php if($type=="PIGMY"){ ?>
 			<th>
 				Old Account Number
 			</th>
-		<?php } ?>
 			<th>
 				Account Number
 			</th>
@@ -48,12 +46,10 @@
 				<td>
 					{{$data->date}}
 				</td>
-		<?php 	if($type=="PIGMY"){ ?>
 				<td>
 				{{$data->old_acc_no}}
 				</td>
-		<?php } ?>
-				<td>
+			<td>
 					{{$data->acc_no}}
 				</td>
 				<td>
