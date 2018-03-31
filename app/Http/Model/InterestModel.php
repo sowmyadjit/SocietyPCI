@@ -1160,7 +1160,7 @@
 										);
 					if($balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
 						$insert_arr["service_charge_amount"] = $balance;
-						if($balance == 0) {
+						if($balance <= 0) {
 							$insert_arr["deleted"] = 1;
 						}
 					} else {
@@ -1233,7 +1233,7 @@
 										);
 					if($balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
 						$insert_arr["service_charge_amount"] = $balance;
-						if($balance == 0) {
+						if($balance <= 0) {
 							$insert_arr["deleted"] = 1;
 						}
 					} else {
