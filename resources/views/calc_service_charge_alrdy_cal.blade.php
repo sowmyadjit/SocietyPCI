@@ -21,11 +21,9 @@
 			<th>
 				Date
 			</th>
-		<?php if($type=="PIGMY"){ ?>
 			<th>
 				Old Account Number
 			</th>
-		<?php } ?>
 			<th>
 				Account Number
 			</th>
@@ -48,12 +46,10 @@
 				<td>
 					{{$data->date}}
 				</td>
-		<?php 	if($type=="PIGMY"){ ?>
 				<td>
 				{{$data->old_acc_no}}
 				</td>
-		<?php } ?>
-				<td>
+			<td>
 					{{$data->acc_no}}
 				</td>
 				<td>
@@ -64,14 +60,14 @@
 				</td>
 		<?php	if($type=="PIGMY"){ ?>
 				<td>
-				{{$data->FirstName}}{{$data->MiddleName}}{{$data->LastName}}
+				{{$data->FirstName}} {{$data->MiddleName}} {{$data->LastName}}
 				</td>
 		<?php } ?>
 			</tr>
 		@endforeach
 		<tr>
-			<td colspan="2" >Service Charge Total</td>
-			<td colspan="2" >{{$in_data["total_amount"]}}</td>
+			<td colspan="3" >Service Charge Total</td>
+			<td colspan="3" >{{$in_data["total_amount"]}}</td>
 		</tr>
 	</tbody>
 	
