@@ -1138,6 +1138,10 @@
 //				print_r($last_tran);//exit();
 //				echo "Accid:".$row->Accid;
 				
+				if(empty($last_tran)) {
+					continue;
+				}
+				
 				$last_tran_date = $last_tran->SBReport_TranDate;
 				$diff = date_diff(date_create($last_tran_date),date_create($caculation_date));
 				$diff_y = $diff->y;
