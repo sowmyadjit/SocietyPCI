@@ -8,12 +8,13 @@
 <script src="js/sprintf.js"/>
 <script src="js/jspdf.js"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.0.16/jspdf.plugin.autotable.js"></script>
-							
+									
 <script src="js/bootstrap-table-export.js"/>
 <link href="css/bootstrap-table.css" rel='stylesheet' type="text/css" media="all">
 <link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
 <link href="css/bootstrap-cerulean.min.css" rel='stylesheet' type="text/css" media="all">
-<table class="table table-striped table-bordered bootstrap-datatable datatable responsive bootstrapTable">
+<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
+<table class="table table-striped table-bordered bootstrap-datatable datatable responsive bootstrapTable" id="excel_export">
 	<thead>
 		<tr>
 			<th>
@@ -58,8 +59,11 @@
 </div>
 </div>
 </div>
-
-
+<script>
+$('#excel').click(function(e){
+	$('#excel_export').tableExport({type:'excel',escape:'false'});
+});		
+</script>
 <script>
 $("#Create").click(function(){
 	x = confirm("Are You Sure ?");
