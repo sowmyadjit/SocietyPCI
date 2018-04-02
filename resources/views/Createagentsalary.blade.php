@@ -275,9 +275,11 @@
 					<!--</form>-->
 					
 					
+					<div id="jewel_repayment"></div>
 				</div>
 			</div>
 		</div>
+		
 	</div>
 </div>
 
@@ -555,6 +557,10 @@
 		
 		placcid=$('.PLAccNumTypeAhead').data('value');
 		
+		
+		
+		
+		
 		$.ajax({
 			url:'/GetplDetail',
 			type:'post',
@@ -576,7 +582,7 @@
 				bal=data['reamt'];
 				
 				
-				$.ajax({
+		/*		$.ajax({
 					url:'/CalcDayDiff',
 					type:'post',
 					data:'&dlsdate='+sdate,
@@ -613,7 +619,33 @@
 						
 						
 					}
+				});*/
+				
+				
+				
+				//NEW INT
+				var interest_upto_pl = $("#interest_upto_pl").val();
+				$.ajax({
+					url:'/interest_calc_pl',
+					type:'post',
+					data:'&loan_allocation_id='+placcid,//+'&interest_upto_pl='+interest_upto_pl,
+					success:function(data){
+						$("#plintamt").val(data["int"]);
+						$("#plpendemi").val(data["pending_emi"]);
+						$("#plremamt").val(data["remaining_amount"]);
+					}
 				});
+				//NEW INT END
+				//REPAY REPORT
+				$.ajax({
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+placcid+'&loan_category=PL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
+				});
+				//REPAY REPORT END
 				
 				
 				
