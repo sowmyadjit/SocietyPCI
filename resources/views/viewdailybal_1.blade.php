@@ -308,6 +308,27 @@
 							<td>-</td>
 						</tr>
 					@endforeach
+					
+					@foreach ($trandaily['pigmy_service_charge'] as $pigmy)
+						<tr>
+							<td>{{ $pigmy->PigReport_TranDate }}</td>
+							<td>{{ $pigmy->PigmiAcc_No }}</td>
+							<td>{{ $pigmy->Particulars }}</td>
+							<td>-</td>
+							<td>-</td>
+							
+								<?php
+									$pigmy_adj_db = $pigmy->Amount;
+									$pigmy_adj_db_total += $pigmy_adj_db;
+								?>
+								<td><p class="text-center">-</p></td>
+								<td><p class="text-right"><?php echo $pigmy_adj_db; ?></p></td> 
+								
+							<td>{{ $pigmy->	Pigmy_resp_No}}</td>
+							<td>-</td>
+						</tr>
+					@endforeach
+					
 					<tr>
 						<th colspan =3>SB Total</th>
 						<td class="text-right"><?php echo $pigmy_cash_cr_total ?></td>

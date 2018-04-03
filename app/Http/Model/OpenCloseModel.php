@@ -504,6 +504,27 @@
 			->get();
 			return $id;
 		}
+		
+		public function show_pigmy_service_charge($dte)
+		{
+			//$pigtoday=date('Y-m-d');
+			$pigtoday=$dte;
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BranchId=$uname->Bid;
+			
+			$id = DB::table('pigmi_transaction')->select('PigReport_TranDate','Amount','Current_Balance','PigmiAcc_No','PigmiTrans_ID','Pigmi_Type','pigmi_transaction.Total_Amount','old_pigmiaccno','Trans_Date','Transaction_Type','Particulars','Pigmy_resp_No')
+			->leftJoin('pigmiallocation', 'pigmiallocation.PigmiAllocID', '=' , 'pigmi_transaction.PigmiAllocID')
+			->leftJoin('pigmitype','pigmiallocation.PigmiTypeid','=','pigmitype.PigmiTypeid')
+			->where('PigReport_TranDate','=',$pigtoday)
+			->where('pigmy_tran_type','=',1)
+			->where('pigmi_transaction.Bid','=',$BranchId)
+			->orderBy('PigReport_TranDate','desc')
+			->orderBy('PigmiTrans_ID','desc')
+			->get();
+			return $id;
+		}
 		//-------------------Pigmy details End-------------------
 		
 		//-------------------Pigmy payamount details start-------------------
@@ -2517,8 +2538,6 @@
 				->where("cashId","=",$data["cash_id"])
 				->update(["InHandCash"=>$data["amount"]]);
 		}
-		
-		
 		
 	}
 

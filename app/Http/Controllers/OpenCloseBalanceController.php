@@ -75,6 +75,7 @@
 			$trandaily['pigmycash']=$this->op->show_dailypigmybalance_cash($dte);
 			$trandaily['pigmycashcredit']=$this->op->show_dailypigmybalance_cash_credit($dte);
 			$trandaily['pigmycashdebit']=$this->op->show_dailypigmybalance_cash_debit($dte);
+			$trandaily['pigmy_service_charge']=$this->op->show_pigmy_service_charge($dte);
 			//pigmi paid amount
 			$trandaily['pigmypayamt']=$this->op->show_dailypigmypayamtbalance($dte);
 			$trandaily['pigmypayamttot']=$this->op->show_dailypigmypayamttotbalance($dte);
@@ -438,6 +439,7 @@
 			$trandaily['pigmycash']=$this->op->show_dailypigmybalance_cash($dte);
 			$trandaily['pigmycashcredit']=$this->op->show_dailypigmybalance_cash_credit($dte);
 			$trandaily['pigmycashdebit']=$this->op->show_dailypigmybalance_cash_debit($dte);
+			$trandaily['pigmy_service_charge']=$this->op->show_pigmy_service_charge($dte);
 			//pigmi paid amount
 			$trandaily['pigmypayamt']=$this->op->show_dailypigmypayamtbalance($dte);
 			$trandaily['pigmypayamttot']=$this->op->show_dailypigmypayamttotbalance($dte);
