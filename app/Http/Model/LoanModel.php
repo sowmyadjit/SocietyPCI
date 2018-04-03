@@ -2307,6 +2307,7 @@
 						)
 				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_PLAllocID")
 				->where("personalloan_allocation.PersLoanAllocID","=",$allocation->PersLoanAllocID)
+				->where("PL_ChequeStatus",'=',0)//*cheque cleared
 //				->orderBy("PLRepay_Id","desc")
 				->get();
 			//print_r($repayment); exit();
