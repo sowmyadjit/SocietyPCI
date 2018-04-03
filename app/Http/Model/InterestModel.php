@@ -1131,6 +1131,7 @@
 					->where('sb_transaction.Accid',$row->Accid)
 					->where("tran_reversed","=","NO")
 					->where("particulars","!=","SB INTEREST")
+					->where('ignore_for_service_charge','=','0')
 					->orderBy('SBReport_TranDate','desc')
 					->orderBy('Tranid','desc')
 					->first();
@@ -1297,6 +1298,7 @@
 								$insert_data1["tran_reversed"] = "no";
 								$insert_data1["LedgerHeadId"] = 38;
 								$insert_data1["SubLedgerId"] = 42;
+								$insert_data1["ignore_for_service_charge"] = 1;
 								DB::table("sb_transaction")
 									->insertGetId($insert_data1);
 								DB::table("service_charge")

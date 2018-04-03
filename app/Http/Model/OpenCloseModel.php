@@ -2119,7 +2119,7 @@
 				$totamount=$sbtotamt+$totamt;
 				DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>$totamount]);
 				
-				$sbid=DB::table('sb_transaction')->insertGetId(['Accid'=>$accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"FD Interest",'Amount' =>$totamt,'CurrentBalance'=>$sbtotamt,'Total_Bal'=>$totamount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$month,'Year'=>$yer,'Payment_Mode'=>"FD Interest",'Bid'=>$Branchid,'CreatedBy'=>$UID]); 
+				$sbid=DB::table('sb_transaction')->insertGetId(['Accid'=>$accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"FD Interest",'Amount' =>$totamt,'CurrentBalance'=>$sbtotamt,'Total_Bal'=>$totamount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$month,'Year'=>$yer,'Payment_Mode'=>"FD Interest",'Bid'=>$Branchid,'CreatedBy'=>$UID,'ignore_for_service_charge'=>1]); 
 				
 				DB::table('fdallocation')->where('Fd_CertificateNum',$accno1)
 				->update(['lastinterestpaid'=>$dte]);
@@ -2159,7 +2159,7 @@
 				$Total_Amount=$a->Total_Amount;
 				$tot=$Total_Amount+$int_;
 				$Accid=$a->Accid;
-				DB::table('sb_transaction')->insert(['Accid'=>$Accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"SB INTEREST",'Amount'=>$int_,'CurrentBalance'=>$Total_Amount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$m,'Year'=>$y,'Total_Bal'=>$tot,'Bid'=>$Branchid,'Payment_Mode'=>"SB"]);
+				DB::table('sb_transaction')->insert(['Accid'=>$Accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"SB INTEREST",'Amount'=>$int_,'CurrentBalance'=>$Total_Amount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$m,'Year'=>$y,'Total_Bal'=>$tot,'Bid'=>$Branchid,'Payment_Mode'=>"SB",'ignore_for_service_charge'=>1]);
 				DB::table('createaccount')->where('AccNum','=',$acc)->update(['Total_Amount'=>$tot]);
 				DB::table('sb_int')->where('sb_int','=',$sb_int)->delete();
 				
