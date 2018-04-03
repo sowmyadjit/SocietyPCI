@@ -119,19 +119,12 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$Branchid=$uname->Bid;
-			$dte="2018-03-31";//date('Y-m-d');//REMOVE HARD CODED VALUE
+			$dte=date('Y-m-d');
 			//print_r($dte);
 			$xxx=DB::table('dailyopenclose')->where('Daily_Date',$dte)
 			->where('Daily_Status','=',"CLOSE")
 			->where('Daily_Bid','=',$Branchid)
 			->count('Dailyopenclose_Id');
-			
-			/**** DELETE IT ****/
-					DB::table("dailyopenclose")
-						->where("Daily_Date","=","2018-04-02")
-						->where('Daily_Bid','=',$Branchid)
-						->delete();
-			/**** DELETE IT ****/
 			
 			
 			//print_r($xxx);						
