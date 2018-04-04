@@ -3057,7 +3057,9 @@
 		public function account_list($data)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
-		
+			
+			$ret_data['loan_details'] = array();
+			$ret_data['loan_category'] = $data["category"];
 			$table = "jewelloan_allocation";
 			$closed_field = "JewelLoan_Closed";
 			$branch_id_field = "JewelLoan_Bid";
@@ -3083,6 +3085,25 @@
 				->where($closed_field,"=",$data['closed'])
 				->where($branch_id_field,"=",$BID)
 				->get();
+				
+			if(empty($account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($account_list as $row) {
+				$ret_data['loan_details'][++$i]['loan_id'] = $row->loan_id;
+				$ret_data['loan_details'][$i]['loan_no'] = $row->loan_no;
+				$ret_data['loan_details'][$i]['loan_old_no'] = $row->loan_old_no;
+				$ret_data['loan_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['loan_details'][$i]['loan_amount'] = $row->loan_amount;
+				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
+				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
+				$ret_data['loan_details'][$i]['closed'] = $row->closed;
+				$ret_data['loan_details'][$i]['jewel_description'] = $row->jewel_description;
+				$ret_data['loan_details'][$i]['net_weight'] = $row->net_weight;
+				
+			}
 		}
 		
 		
