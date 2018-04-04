@@ -81,19 +81,25 @@
 
 <script>
 	$(document).ready(function() {
-		account_list();
+		account_list("");
 	});
 	
 	$("#closed_status").change(function() {
-		account_list();
+		account_list("");
 	});
 	
-	function account_list() {
+	$("#search_loan_id").change(function() {
+		var loan_id = $(this).attr("data-value");
+		console.log(loan_id);
+		account_list(loan_id);
+	});
+	
+	function account_list(loan_id) {
 		var closed = $("#closed_status").val();
 		$.ajax({
 			url:"account_list",
 			type:"post",
-			data:"&category=JL&closed="+closed,
+			data:"&category=JL&closed="+closed+"&loan_id="+loan_id,
 			success: function(data) {
 				console.log("done");
 				$("#account_list_box").html(data);

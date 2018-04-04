@@ -3080,6 +3080,7 @@
 		
 		public function account_list_jl($data)
 		{
+			//print_r($data);exit();
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
 			$ret_data['loan_details'] = array();
@@ -3088,6 +3089,7 @@
 			$closed_field = "JewelLoan_Closed";
 			$branch_id_field = "JewelLoan_Bid";
 			$user_id_field = "JewelLoan_Uid";
+			$loan_id_field = "JewelLoanId";
 			$select_array = array(
 									"{$table}.JewelLoanId as loan_id",
 									"{$table}.JewelLoan_LoanNumber as loan_no",
@@ -3106,10 +3108,14 @@
 			$account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$table}.{$user_id_field}")
-				->where($closed_field,"=",$data['closed'])
-				->where($branch_id_field,"=",$BID)
-				->limit(20)
-				->get();
+				->where($branch_id_field,"=",$BID);
+			if(!empty($data['loan_id'])) {
+				$account_list = $account_list->where($loan_id_field,'=',$data['loan_id']);
+			} else {
+				$account_list = $account_list->where($closed_field,"=",$data['closed']);
+			}
+			$account_list = $account_list->limit(20)
+										->get();
 				
 			if(empty($account_list)) {
 				return $ret_data;
