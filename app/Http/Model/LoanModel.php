@@ -2628,7 +2628,7 @@
 			$start_date = $allocation->StartDate;
 			$end_date = $allocation->EndDate;
 			$loan_amount = $allocation->LoanAmt;
-			$balance_amount = $loan_amount - $this->paid_installment_amt(["loan_allocation_id"=>$loan_allocation_id]);
+			$balance_amount = $loan_amount - $this->paid_principle_amt(["loan_allocation_id"=>$loan_allocation_id,'loan_category'=>"PL"]);
 //			$balance_amount = $allocation->RemainingLoan_Amt;
 			$interest_in_number = $allocation->LoanType_Interest;
 			$due_interest_in_number = $allocation->loan_due_interest;
@@ -2847,7 +2847,8 @@
 			
 			if($is_first_repay_done) {
 				$fn_data["loan_allocation_id"] = $loan_allocation_id;
-					$paid_installment_amt = $this->paid_installment_amt($fn_data);
+				$fn_data["loan_category"] = "PL";
+					$paid_installment_amt = $this->paid_principle_amt($fn_data);
 				unset($fn_data);
 			} else {
 				$paid_installment_amt = 0;
@@ -2943,22 +2944,35 @@
 			}
 		}
 		
-		public function paid_installment_amt($data)//	_/
+		public function paid_principle_amt($data)//	_/
 		{
 			//echo "****paid_installment_amt****<br />\n";
 			$loan_allocation_id = $data['loan_allocation_id'];
-			$table = "personalloan_repay";
-			$cmp_key = "PLRepay_PLAllocID";
-			$sum = 0;//paid to principle amt
 			
-			if($this->is_first_repay_done(["loan_allocation_id"=>$loan_allocation_id])) {
+			switch($data['loan_category']) {
+				case "PL":
+							$table = "personalloan_repay";
+							$loan_id_field = "PLRepay_PLAllocID";
+							$cheque_cleared_status_field = "PL_ChequeStatus";
+							$principle_amount_field = "PLRepay_Amtpaidtoprincpalamt";
+							break;
+				case "JL":
+							$table = "jewelloan_repay";
+							$loan_id_field = "JLRepay_JLAllocID";
+							$cheque_cleared_status_field = "JL_Status";
+							$principle_amount_field = "JLRepay_paidtoprincipalamt";
+							break;
+			}
+			
+			$sum = 0;//paid to principle amt
+			if($this->is_first_repay_done(["loan_allocation_id"=>$loan_allocation_id,'loan_category'=>"PL"])) {
 				$repay = DB::table($table)
-					->select()
-					->where($cmp_key,'=',$loan_allocation_id)
-					->where("PL_ChequeStatus",'=',0)//*cheque cleared
+					->select("{$principle_amount_field} as principle_amount_paid")
+					->where($loan_id_field,'=',$loan_allocation_id)
+					->where($cheque_cleared_status_field,'=',0)//*cheque cleared
 					->get();
 				foreach($repay as $key_repay => $row_repay) {
-					$sum += $row_repay->PLRepay_Amtpaidtoprincpalamt;
+					$sum += $row_repay->principle_amount_paid;
 				}
 			}
 			//echo "sum: {$sum}<br />\n";
@@ -3112,30 +3126,65 @@
 				$ret_data['loan_details'][$i]['closed'] = $row->closed;
 				$ret_data['loan_details'][$i]['jewel_description'] = $row->jewel_description;
 				$ret_data['loan_details'][$i]['net_weight'] = $row->net_weight;
-				$ret_data['loan_details'][$i]['ramaining_amount'] = $this->
-				$fn_data[] = array(
+				$ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
+																								"loan_allocation_id"=>$row->loan_id,
+																								"loan_category"=>$data['category']
+																							]);
+				$ret_data['loan_details'][$i]['ramaining_amount'] = $row->loan_amount - $ret_data['loan_details'][$i]['paid_principle_amt'];
+				$fn_data = array(
 										'loan_id'=>$row->loan_id,
-										''=>
+										'loan_category'=>$data["category"];
+										'start_date'=>$row->start_date//optional
 									);
-				$ret_data['loan_details'][$i]['interest_paid_upto'] = $this->
+				$ret_data['loan_details'][$i]['interest_paid_upto'] = $this->get_interest_paid_upto($fn_data);
+				unset($fn_data);
 			}
 		}
 		
 		public function get_interest_paid_upto($data) {
-			
 			$is_first_repay_done = $this->is_first_repay_done(['loan_allocation_id'=>$data['loan_id'],'loan_category'=>$data['loan_category']]);
-			
+			switch($data['loan_category']) {
+				case "JL":
+							$table = "jewelloan_repay";
+							$loan_id_field = "JLRepay_JLAllocID";
+							$cheque_cleared_status_field = "JL_Status";
+							$date_field = "JLRepay_Date";
+							break;
+				case "PL":
+							$table = "personalloan_repay";
+							$loan_id_field = "PLRepay_PLAllocID";
+							$cheque_cleared_status_field = "PL_ChequeStatus";
+							$date_field = "PLRepay_Date";
+							break;
+			}
 			if($is_first_repay_done) {
-				$personalloan_repay = DB::table("personalloan_repay")
-					->where("PLRepay_PLAllocID","=",$loan_allocation_id)
-					->where("PL_ChequeStatus","=",0)
-					->orderBy("PLRepay_Date","desc")
+				$repay = DB::table($table)
+					->where($loan_id_field,"=",$data['loan_id'])
+					->where($cheque_cleared_status_field,"=",0)
+					->orderBy($date_field,"desc")
 					->first();
-				$interest_paid_upto = $personalloan_repay->interest_paid_upto;
-			} else {
+				$interest_paid_upto = $repay->interest_paid_upto;
+			} else {//$data['start_date'] is optional
+				if(!isset($data['start_date'])) {
+					switch($data['loan_category']) {
+						case "JL":
+									$table = "jewelloan_allocation";
+									$loan_id_field = "JewelLoanId";
+									$start_date_field = "JewelLoan_StartDate";
+									break;
+						case "PL":
+									$table = "personalloan_allocation";
+									$loan_id_field = "PersLoanAllocID";
+									$start_date_field = "StartDate";
+									break;
+					}
+					$start_date = DB::table($table)
+						->where($loan_id_field,"=",$data['loan_id'])
+						->value($start_date_field);
+				}
 				$interest_paid_upto = $start_date;
 			}
 		}
-		
+		return $interest_paid_upto;
 	}
 	
