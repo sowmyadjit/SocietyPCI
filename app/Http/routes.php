@@ -311,6 +311,7 @@
 				
 				Route::get('/add_charges_index','LoanController@add_charges_index');
 				Route::get('/add_charges','LoanController@add_charges');
+				Route::post('/account_list','LoanController@account_list');
 				
 				//ModulesController
 				Route::get('/modules','ModulesController@show_modules');

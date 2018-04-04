@@ -490,7 +490,8 @@
 		{
 			$jewelLoan['data']=$this->loan->jewelLoan1();
 			$jewelLoan['data_all']=$this->loan->jewelLoan1_all();
-			return view('jewelloanallocation',compact('jewelLoan'));
+		//	return view('jewelloanallocation',compact('jewelLoan'));
+			return view('jewelloanallocation_index',compact('jewelLoan'));
 		}
 		public function GetJewelDetail()
 		{
@@ -1309,6 +1310,22 @@
 			$in_data["charges_date"] = $request->input("charges_date");
 			$data["charges"] = $this->loan->charges_transaction_report($in_data);
 			return view("repay_report_data_charges",compact('data'));
+		}
+		
+		public function account_list(Request $request)
+		{
+			$in_data['category'] = $request->input("category");
+			$in_data['closed'] = $request->input("closed");
+			switch($in_data['category']) {
+				case "JL":	$ret_data = $this->loan->account_list_jl($in_data);
+							break;
+				case "PL":	$ret_data = $this->loan->account_list_pl($in_data);
+							break;
+			}
+			
+			return view("jewelloanallocation_data",compact("ret_data"));
+			
+			
 		}
 		
 	}

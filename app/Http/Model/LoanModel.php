@@ -3054,7 +3054,36 @@
 			return $ret_data;
 		}
 		
+		public function account_list($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 		
+			$table = "jewelloan_allocation";
+			$closed_field = "JewelLoan_Closed";
+			$branch_id_field = "JewelLoan_Bid";
+			$user_id_field = "JewelLoan_Uid";
+			$select_array = array(
+									"{$table}. as loan_id",
+									"{$table}. as loan_no",
+									"{$table}. as loan_old_no",
+									"user.Uid as as user_id",
+									"user.FirstName as first_name",
+									"uesr.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$table}. as loan_amount",
+									"{$table}. as start_date",
+									"{$table}. as end_date",
+									"{$table}. as closed",
+									"{$table}. as jewel_description",
+									"{$table}. as net_weight"
+								);
+			$account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$table}.{$user_id_field}")
+				->where($closed_field,"=",$data['closed'])
+				->where($branch_id_field,"=",$BID)
+				->get();
+		}
 		
 		
 	}

@@ -128,8 +128,8 @@
 									<th>Start Date</th>
 									<th>End Date</th>
 									<th>Pending Amount</th>
+									<th>Closed?</th>
 									<th>Last Paid Date</th>
-									<th>Interest Till Today</th>
 									<th>Jewel Description</th>
 									<th colspan="2">Net Weight</th>
 									<th>Action</th>
@@ -177,8 +177,8 @@
 									<th>Start Date</th>
 									<th>End Date</th>
 									<th>Pending Amount</th>
+									<th>Closed?</th>
 									<th>Last Paid Date</th>
-									<th>Interest Till Today</th>
 									<th>Jewel Description</th>
 									<th>Net Weight</th>
 			
