@@ -3078,7 +3078,7 @@
 			return $ret_data;
 		}
 		
-		public function account_list($data)
+		public function account_list_jl($data)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
@@ -3089,25 +3089,26 @@
 			$branch_id_field = "JewelLoan_Bid";
 			$user_id_field = "JewelLoan_Uid";
 			$select_array = array(
-									"{$table}. as loan_id",
-									"{$table}. as loan_no",
-									"{$table}. as loan_old_no",
-									"user.Uid as as user_id",
+									"{$table}.JewelLoanId as loan_id",
+									"{$table}.JewelLoan_LoanNumber as loan_no",
+									"{$table}.jewelloan_Oldloan_No as loan_old_no",
+									"user.Uid as user_id",
 									"user.FirstName as first_name",
-									"uesr.MiddleName as middle_name",
+									"user.MiddleName as middle_name",
 									"user.LastName as last_name",
-									"{$table}. as loan_amount",
-									"{$table}. as start_date",
-									"{$table}. as end_date",
-									"{$table}. as closed",
-									"{$table}. as jewel_description",
-									"{$table}. as net_weight"
+									"{$table}.JewelLoan_LoanAmount as loan_amount",
+									"{$table}.JewelLoan_StartDate as start_date",
+									"{$table}.JewelLoan_EndDate as end_date",
+									"{$table}.JewelLoan_Closed as closed",
+									"{$table}.jewelloan_Description as jewel_description",
+									"{$table}.jewelloan_Net_weight as net_weight"
 								);
 			$account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$table}.{$user_id_field}")
 				->where($closed_field,"=",$data['closed'])
 				->where($branch_id_field,"=",$BID)
+				->limit(20)
 				->get();
 				
 			if(empty($account_list)) {
@@ -3119,6 +3120,7 @@
 				$ret_data['loan_details'][++$i]['loan_id'] = $row->loan_id;
 				$ret_data['loan_details'][$i]['loan_no'] = $row->loan_no;
 				$ret_data['loan_details'][$i]['loan_old_no'] = $row->loan_old_no;
+				$ret_data['loan_details'][$i]['user_id'] = $row->user_id;
 				$ret_data['loan_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
 				$ret_data['loan_details'][$i]['loan_amount'] = $row->loan_amount;
 				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
@@ -3133,12 +3135,14 @@
 				$ret_data['loan_details'][$i]['ramaining_amount'] = $row->loan_amount - $ret_data['loan_details'][$i]['paid_principle_amt'];
 				$fn_data = array(
 										'loan_id'=>$row->loan_id,
-										'loan_category'=>$data["category"];
+										'loan_category'=>$data["category"],
 										'start_date'=>$row->start_date//optional
 									);
 				$ret_data['loan_details'][$i]['interest_paid_upto'] = $this->get_interest_paid_upto($fn_data);
 				unset($fn_data);
 			}
+			//print_r($ret_data);exit();
+			return $ret_data;
 		}
 		
 		public function get_interest_paid_upto($data) {
@@ -3178,13 +3182,14 @@
 									$start_date_field = "StartDate";
 									break;
 					}
-					$start_date = DB::table($table)
+					$interest_paid_upto = DB::table($table)
 						->where($loan_id_field,"=",$data['loan_id'])
 						->value($start_date_field);
+				} else {
+					$interest_paid_upto = $data['start_date'];
 				}
-				$interest_paid_upto = $start_date;
 			}
+			return $interest_paid_upto;
 		}
-		return $interest_paid_upto;
 	}
 	

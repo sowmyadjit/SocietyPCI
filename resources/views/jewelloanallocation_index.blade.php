@@ -9,7 +9,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.0.16/jspdf.plugin.autotable.js"></script>
 
 <script src="js/bootstrap-table-export.js"/>
-<link href="css/bootstrap-table.css" rel='stylesheet' type="text/css" media="all">
 <link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
 <link href="css/bootstrap-cerulean.min.css" rel='stylesheet' type="text/css" media="all">
 
@@ -50,7 +49,7 @@
 						<a href="jewelLoan" class="btn btn-default crtlal">LOAN ALLOCATION</a>
 						<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
 						<div class="col-md-5 pull-right">
-							<input class="SearchTypeahead form-control" id="SearchFd" type="text" name="SearchFd" placeholder="SEARCH jewel ACCOUNT">
+							<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH JEWEL ACCOUNT">
 						</div>
 						<div class="col-md-4">
 							<select class="form-control" id="ExportType" name="ExportType">
@@ -70,7 +69,7 @@
 						</div>
 					</div>
 							
-						<div id="table_data">---</div>
+						<div id="account_list_box">---</div>
 							
 				</div>
 				
@@ -82,15 +81,29 @@
 
 <script>
 	$(document).ready(function() {
+		account_list();
+	});
+	
+	$("#closed_status").change(function() {
+		account_list();
+	});
+	
+	function account_list() {
 		var closed = $("#closed_status").val();
 		$.ajax({
 			url:"account_list",
 			type:"post",
 			data:"&category=JL&closed="+closed,
-			success: function() {
+			success: function(data) {
 				console.log("done");
+				$("#account_list_box").html(data);
 			}
 		});
+	}
+</script>
+<script>
+	$('input.SearchTypeahead').typeahead({
+		ajax: '/getjlaccsearch'
 	});
 </script>
 
