@@ -3102,6 +3102,7 @@
 									"{$table}.JewelLoan_StartDate as start_date",
 									"{$table}.JewelLoan_EndDate as end_date",
 									"{$table}.JewelLoan_Closed as closed",
+									"{$table}.auction_status as auction_status",
 									"{$table}.jewelloan_Description as jewel_description",
 									"{$table}.jewelloan_Net_weight as net_weight"
 								);
@@ -3114,7 +3115,7 @@
 			} else {
 				$account_list = $account_list->where($closed_field,"=",$data['closed']);
 			}
-			$account_list = $account_list->limit(20)
+			$account_list = $account_list//->limit(20)
 										->get();
 				
 			if(empty($account_list)) {
@@ -3131,9 +3132,13 @@
 				$ret_data['loan_details'][$i]['loan_amount'] = $row->loan_amount;
 				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
 				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
-				$ret_data['loan_details'][$i]['closed'] = $row->closed;
 				$ret_data['loan_details'][$i]['jewel_description'] = $row->jewel_description;
 				$ret_data['loan_details'][$i]['net_weight'] = $row->net_weight;
+				if($row->auction_status == 1 || $row->auction_status == 2) {
+					$ret_data['loan_details'][$i]['closed'] = "Auctioned";
+				} else {
+					$ret_data['loan_details'][$i]['closed'] = $row->closed;
+				}
 				$ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
 																								"loan_allocation_id"=>$row->loan_id,
 																								"loan_category"=>$data['category']

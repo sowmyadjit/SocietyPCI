@@ -30,50 +30,52 @@
 		
 		
 			<div class="box-inner">
-				<div class="box-header well" data-original-title="">
-					<h2><i class="glyphicon glyphicon-user"></i> LOAN ALLOCATION DETAIL</h2>
+				<div id="loan_details_box">
+					<div class="box-header well" data-original-title="">
+						<h2><i class="glyphicon glyphicon-user"></i> LOAN ALLOCATION DETAIL</h2>
+						
+						<div class="box-icon">
+							<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+							<a href="#" class="btn btn-minimize btn-round btn-default"><i
+							class="glyphicon glyphicon-chevron-up"></i></a>
+							<a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+						</div>
+					</div>
 					
-					<div class="box-icon">
-						<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
-						<a href="#" class="btn btn-minimize btn-round btn-default"><i
-						class="glyphicon glyphicon-chevron-up"></i></a>
-						<a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+					<div class="box-content">
+						<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
+						<div class="alert alert-info">
+							
+							<!-- <a href="crtloanallocation" class="btn btn-default crtlal">LOAN ALLOCATION</a>-->
+							<a href="jewelLoan" class="btn btn-default crtlal">LOAN ALLOCATION</a>
+							<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
+							<div class="col-md-5 pull-right">
+								<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH JEWEL ACCOUNT">
+							</div>
+							<div class="col-md-4">
+								<select class="form-control" id="ExportType" name="ExportType">
+									<option value="">SELECT TYPE TO EXPORT</option>
+									<option value="word">WORD</option>
+									<option value="excel">EXCEL</option>
+									<option value="pdf">PDF</option>
+								</select>
+							</div>
+							
+							<div>
+								ACCOUNT TYPE:
+								<select id="closed_status">
+									<option value="NO">LIVE</option>
+									<option value="YES">CLOSED</option>
+								</select>
+							</div>
+						</div>
+								
+							<div id="account_list_box">Loading...</div>
+								
 					</div>
 				</div>
-				
-				<div class="box-content">
-					<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
-					<div class="alert alert-info">
-						
-						<!-- <a href="crtloanallocation" class="btn btn-default crtlal">LOAN ALLOCATION</a>-->
-						<a href="jewelLoan" class="btn btn-default crtlal">LOAN ALLOCATION</a>
-						<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
-						<div class="col-md-5 pull-right">
-							<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH JEWEL ACCOUNT">
-						</div>
-						<div class="col-md-4">
-							<select class="form-control" id="ExportType" name="ExportType">
-								<option value="">SELECT TYPE TO EXPORT</option>
-								<option value="word">WORD</option>
-								<option value="excel">EXCEL</option>
-								<option value="pdf">PDF</option>
-							</select>
-						</div>
-						
-						<div>
-							ACCOUNT TYPE:
-							<select id="closed_status">
-								<option value="NO">LIVE</option>
-								<option value="YES">CLOSED</option>
-							</select>
-						</div>
-					</div>
-							
-						<div id="account_list_box">---</div>
-							
-				</div>
-				
-				
+				<div id="receipt_box"></div>
+				<button id="back">BACK</button>
 			</div>
 		</div>
 	</div>
@@ -112,4 +114,64 @@
 		ajax: '/getjlaccsearch'
 	});
 </script>
+<script>
+	$("#back").click(function() {
+		$("#receipt_box").html("");
+		$("#loan_details_box").show();
+	})
+</script>
+
+
+<script>
+	$('.crtlal').click(function(e)
+	{
+		e.preventDefault();
+		$("#loan_details_box").hide();
+		$('#receipt_box').load($(this).attr('href'));
+	});
+</script>
+
+
+<script>
+	$(function() {
+		$(".print").click(function() {
+			//var divContents = $("#toprint").html();
+			var divContents = $("#account_list_box").html();
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+			//$("#toprint").print();
+            printWindow.print(); 
+		});
+	});
+</script>
+
+
+
+<script>
+	$('#ExportType').change( function(e) {
+		type=$('#ExportType').val();
+		
+		if(type=="word")
+		{
+			
+			$('#account_list_box').tableExport({type:'doc',escape:'false',fileName: 'tableExport'});
+		}
+		else if(type=="excel")
+		{
+			$('#account_list_box').tableExport({type:'excel',escape:'false'});
+		}
+		else if(type=="pdf")
+		{
+			//alert("Please Select Type For Export");
+			$('#account_list_box').tableExport({type:'pdf',escape:'false',fileName: 'tableExport'});
+			
+		}
+		
+	});
+</script>
+
 
