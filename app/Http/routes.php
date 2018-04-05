@@ -271,7 +271,8 @@
 				Route::get('/getbankdetails','LoanController@GetBankDetailsForPersLoan');
 				Route::post('/CreatePersLoanAllocation','LoanController@CreatePersLoanAllocation');
 				Route::get('/jewelLoan','LoanController@jewelLoan');
-				Route::get('/jewelLoan1','LoanController@jewelLoan1');
+				//Route::get('/jewelLoan1','LoanController@jewelLoan1');
+				Route::get('/jewelLoan1','LoanController@jewelLoan2');
 				Route::get('/GetJewelDetail','LoanController@GetJewelDetail');
 				Route::post('/CheckSBForJewel','LoanController@CheckSBForJewel');
 				Route::get('/getSBForJewel','LoanController@getSBForJewel');
