@@ -1345,6 +1345,10 @@
 								if($row->acc_balance < MIN_BAL_TO_NOT_TO_CLOSE_ACC) {
 									DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(["Closed"=>"YES"]);
 								}
+								
+								$new_total_amt = $pigmiallocation->Total_Amount - $row->service_charge_amount;
+								DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(['Total_Amount'=>$new_total_amt]);
+								
 							}
 							
 							break;
