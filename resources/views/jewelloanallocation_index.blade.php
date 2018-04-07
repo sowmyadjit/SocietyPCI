@@ -44,15 +44,20 @@
 					
 					<div class="box-content">
 						<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
-						<div class="alert alert-info">
+						<div class="alert alert-info" style="height:60px;">
 							
 							<!-- <a href="crtloanallocation" class="btn btn-default crtlal">LOAN ALLOCATION</a>-->
-							<a href="jewelLoan" class="btn btn-default crtlal">LOAN ALLOCATION</a>
-							<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
-							<div class="col-md-5 pull-right">
+							<div class="col-md-3">
 								<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH JEWEL ACCOUNT">
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3" style="height:38px;">
+								ACCOUNT TYPE:
+								<select id="closed_status" style="height:38px;">
+									<option value="NO">LIVE</option>
+									<option value="YES">CLOSED</option>
+								</select>
+							</div>
+							<div class="col-md-3">
 								<select class="form-control" id="ExportType" name="ExportType">
 									<option value="">SELECT TYPE TO EXPORT</option>
 									<option value="word">WORD</option>
@@ -60,14 +65,9 @@
 									<option value="pdf">PDF</option>
 								</select>
 							</div>
+							<a href="jewelLoan" class="btn btn-info btn-sm col-md-2">LOAN ALLOCATION</a>
 							
-							<div>
-								ACCOUNT TYPE:
-								<select id="closed_status">
-									<option value="NO">LIVE</option>
-									<option value="YES">CLOSED</option>
-								</select>
-							</div>
+							<input type="button" value="Print" class="btn btn-info btn-sm print col-md-1" id="print">
 						</div>
 								
 							<div id="account_list_box">Loading...</div>

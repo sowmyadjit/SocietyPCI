@@ -5,12 +5,12 @@
 									<th>SL NO.</th>
 									<th>Customer ID</th>
 									<th>Name</th>
-									<th>Loan Number</th>
+									<th style="width:50px;">Loan Number</th>
 									<th>Loan Amount</th>
 									<th>Start Date</th>
 									<th>End Date</th>
 									<th>Pending Amount</th>
-									<th>Closed?</th>
+									<th>Close</th>
 									<th>Interest Paid Till</th>
 									@if($ret_data['loan_category'] == "JL")
 										<th>Jewel Description</th>
@@ -28,7 +28,7 @@
 											<td>{{++$i}}</td>
 											<td>{{ $row['user_id'] }}</td>
 											<td>{{ $row['name'] }}</td>	
-											<td>{{ $row['loan_no'] }}/{{ $row['loan_old_no'] }}</td>
+											<td style="width:50px;">{{ $row['loan_no'] }}/{{ $row['loan_old_no'] }}</td>
 											<td>{{ $row['loan_amount']}}</td>
 											<td>{{ $row['start_date']}}</td>
 											<td>{{ $row['end_date']}}</td>
