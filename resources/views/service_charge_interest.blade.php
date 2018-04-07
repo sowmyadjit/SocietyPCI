@@ -38,6 +38,19 @@
 						</div>
 						<br>
 						<br>
+						<label class="control-label col-sm-4">Select Pid Status:</label>
+						<div class="col-md-4">
+							<select class="form-control" id="account_type_alrdy_cal_paid_status" name="calculation_month"> 
+								<option value="">--Select Type--</option>
+								<option value="1">Paid</option>
+								<option value="0">Un Paid</option>
+							</select>
+						</div>
+						<br>
+						<br>
+						<button class="btn btn-info btn-sm" id="account_type_alrdy_cal_view" style="margin-left: 47%;">View</button>
+						<br>
+						<br>
 					</div>
 					<div style="height:1500px;" id="already_calculated">
 					</div>
@@ -86,12 +99,13 @@
 		$('#calculte').hide();
 		$('#already_calculated_main_div').show();
 		});
-	$('#account_type_alrdy_cal').change(function(){
+	$('#account_type_alrdy_cal_view').click(function(){
 		type=$('#account_type_alrdy_cal').val();
+		paid_status=$('#account_type_alrdy_cal_paid_status').val();
 		$.ajax({
 		url: 'calc_service_charge_alrdy_cal',
 		type: 'post',
-		data:'&type='+type,
+		data:'&type='+type+'&paid_status='+paid_status,
 		success: function(data) {
 			$("#already_calculated").html(data);
 			}

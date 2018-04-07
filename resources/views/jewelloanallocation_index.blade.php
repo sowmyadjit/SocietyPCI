@@ -75,7 +75,7 @@
 					</div>
 				</div>
 				<div id="receipt_box"></div>
-				<button id="back">BACK</button>
+				<button class="btn btn-info btn-sm" id="back" style="margin-left:47.5%;margin-bottom:50px;">BACK</button>
 			</div>
 		</div>
 	</div>
@@ -83,6 +83,7 @@
 
 <script>
 	$(document).ready(function() {
+	$("#back").hide();
 		account_list("");
 	});
 	
@@ -104,6 +105,7 @@
 			data:"&category=JL&closed="+closed+"&loan_id="+loan_id,
 			success: function(data) {
 				console.log("done");
+				$("#back").show();
 				$("#account_list_box").html(data);
 			}
 		});
