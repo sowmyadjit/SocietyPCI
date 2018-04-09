@@ -89,7 +89,7 @@
 		}
 		public function show_Persnloanalloc1()
 		{
-			return DB::table('personalloan_allocation')->select('PersLoanAllocID','PersLoan_Number','Old_PersLoan_Number','LoanAmt','PayableAmt','StartDate','EndDate','RemainingLoan_Amt','EMI_Amount','FirstName','MiddleName','LastName','Uid')
+			return DB::table('personalloan_allocation')->select('PersLoanAllocID','PersLoan_Number','Old_PersLoan_Number','LoanAmt','PayableAmt','StartDate','EndDate','RemainingLoan_Amt','EMI_Amount','FirstName','MiddleName','LastName','Uid','EMI_Amount','LoanType_ID')
 			->join('members','members.Memid','=','personalloan_allocation.MemId')
 			->get();
 		}
@@ -105,6 +105,16 @@
 			return DB::table('staffloan_allocation')->select('StfLoanAllocID','StfLoan_Number','old_saffloan_no','LoanAmt','PayableAmt','StartDate','EndDate','StaffLoan_LoanRemainingAmount','EMI_Amount','FirstName','MiddleName','LastName','user.Uid','LastPaidDate','AjustmentCharges','ShareCharges')
 			->join('user','user.Uid','=','staffloan_allocation.Uid')
 			->get();
+		}
+		
+		public function edit_emi($data)
+		{
+			return DB::table("personalloan_allocation")->where("PersLoanAllocID","=",$data['id'])->update(["EMI_Amount"=>$data['value']]);
+		}
+		
+		public function edit_int_rate($data)
+		{
+			return DB::table("personalloan_allocation")->where("PersLoanAllocID","=",$data['id'])->update(["LoanType_ID"=>$data['value']]);
 		}
 	
 	}

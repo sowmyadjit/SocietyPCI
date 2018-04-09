@@ -1331,4 +1331,18 @@
 			return view("jewelloanallocation_data",compact("ret_data"));
 		}
 		
+		public function edit_emi(Request $request)
+		{
+			$fn_data['id'] = $request->input("id");
+			$fn_data['value'] = $request->input("value");
+			return $this->loantype->edit_emi($fn_data);
+		}
+		
+		public function edit_int_rate(Request $request)
+		{
+			$fn_data['id'] = $request->input("id");
+			$fn_data['value'] = $request->input("value");
+			return $this->loantype->edit_int_rate($fn_data);
+		}
+		
 	}

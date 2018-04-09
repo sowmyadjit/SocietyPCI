@@ -130,6 +130,8 @@
 									<th>Start Date</th>
 									<th>End Date</th>
 									<th>Pending Amount</th>
+									<th>EMI Amount</th>
+									<th>Loan Type</th>
 									<th>Action</th>
 								</tr>
 								</thead>
@@ -147,6 +149,8 @@
 											<td>{{ $loan_allocation->StartDate}}</td>
 											<td>{{$loan_allocation->EndDate}}</td>
 											<td>{{$loan_allocation->RemainingLoan_Amt}}</td>
+											<td><input value="{{$loan_allocation->EMI_Amount}}" class="edit_emi" data="{{ $loan_allocation->PersLoanAllocID }}" style="width: 50px;" /></td>
+											<td><input value="{{$loan_allocation->LoanType_ID}}" class="edit_int_rate" data="{{ $loan_allocation->PersLoanAllocID }}"  style="width: 50px;" /></td>
 											<td>
 												<div class="form-group">
 													<div class="col-sm-12">
@@ -305,3 +309,39 @@ console.log("data after ajax:"+searchFD_data);
 	
 	
 </script>
+
+
+<script>
+	$(".edit_emi").change(function() {
+		var id = $(this).attr("data");
+		var value = $(this).val();
+		console.log(value);
+		
+		$.ajax({
+			url:"edit_emi",
+			type:"post",
+			data:"&id="+id+"&value="+value,
+			success: function(data) {
+				console.log("edit_emi: done");
+			}
+		});
+	});
+	
+	$(".edit_int_rate").change(function() {
+		var id = $(this).attr("data");
+		var value = $(this).val();
+		console.log(value);
+		
+		$.ajax({
+			url:"edit_int_rate",
+			type:"post",
+			data:"&id="+id+"&value="+value,
+			success: function(data) {
+				console.log("edit_emi: done");
+			}
+		});
+	});
+</script>
+
+
+

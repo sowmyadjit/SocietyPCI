@@ -1018,7 +1018,7 @@
 			->select(DB::Raw('PersLoanAllocID as id, DepLoan_AccNo as name'))
 			->join('createaccount','createaccount.AccNum','=','request_loan.DepLoan_AccNo')
 			->where('Loan_Allocated','=',"NO")
-			->where('Closed','<>',"NO")
+			->where('Closed','=',"NO")
 			->where('DepLoan_AccNo','like','%RD%')
 			->get();
 		}

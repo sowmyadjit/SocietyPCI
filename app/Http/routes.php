@@ -264,6 +264,8 @@
 				Route::post('/GetEmployeeDetail','LoanController@Get_EmpDetails');
 				Route::get('/PersonalLoan','LoanController@show_Persnloanalloc');
 				Route::get('/PersonalLoan1','LoanController@show_Persnloanalloc1');
+				Route::post('/edit_emi','LoanController@edit_emi');
+				Route::post('/edit_int_rate','LoanController@edit_int_rate');
 				Route::post('/GetMemSBDetail','LoanController@GetMemSBDetail');
 				Route::get('/GetCharges','LoanController@GetCharges');
 				Route::post('/GetMemSBDetailView','LoanController@GetMemSBDetailView');
