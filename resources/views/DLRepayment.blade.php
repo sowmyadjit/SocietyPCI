@@ -2915,8 +2915,8 @@ console.log("amt="+bal);
 				$('#fdFDAvail').val(adj_amt);
 				$('#fdFDRem').val(parseFloat(adj_amt - amt_paid));
 /**********************/
-				//$('#fdFDAvail').val(Fd_TotalAmt);
-				//$('#fdFDRem').val(rem);
+				$('#fdFDAvail').val(Fd_TotalAmt);
+				$('#fdFDRem').val(rem);
 				$('#Fdid').val(data['Fdid']);
 			}
 		});
