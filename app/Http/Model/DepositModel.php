@@ -103,4 +103,82 @@ class DepositModel extends Model
 	
 		return $id;
 	}
+	
+		public function deposit_account_list_pg($data)
+		{
+			//print_r($data); exit();
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$ret_data['deposit_details'] = array();
+			$ret_data['deposit_category'] = $data["category"];
+			$table = "pigmiallocation";
+			$closed_field = "Closed";
+			$branch_id_field = "{$table}.Bid";
+			$user_id_field = "{$table}.UID";
+			$allocation_id_field = "{$table}.PigmiAllocID";
+			$select_array = array(
+									"{$table}.PigmiAllocID as allocation_id",
+									"{$table}.PigmiAcc_No as account_no",
+									"{$table}.old_pigmiaccno as old_account_no",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$table}.Total_Amount as total_amount",
+									"{$table}.AllocationDate as allocation_date",
+									"{$table}.StartDate as start_date",
+									"{$table}.EndDate as end_date",
+									"{$table}.Closed as closed",
+									"pigmitype.Pigmi_Type as pigmy_type"
+								);
+			$deposit_account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$user_id_field}")
+				->join("pigmitype","pigmitype.PigmiTypeid","=","{$table}.PigmiTypeid")
+				->where($branch_id_field,"=",$BID);
+			if(!empty($data['allocation_id'])) {
+				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
+			} else {
+				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data['closed']);
+			}
+			$deposit_account_list = $deposit_account_list//->limit(1)
+										->get();
+				
+			if(empty($deposit_account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($deposit_account_list as $row) {
+				$ret_data['deposit_details'][++$i]['allocation_id'] = $row->allocation_id;
+				$ret_data['deposit_details'][$i]['account_no'] = $row->account_no;
+				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
+				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
+				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['deposit_details'][$i]['total_amount'] = $row->total_amount;
+				$ret_data['deposit_details'][$i]['allocation_date'] = $row->allocation_date;
+				$ret_data['deposit_details'][$i]['start_date'] = $row->start_date;
+				$ret_data['deposit_details'][$i]['end_date'] = $row->end_date;
+				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
+				$ret_data['deposit_details'][$i]['pigmy_type'] = $row->pigmy_type;
+			}
+			//print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
+		public function deposit_account_edit_pg($data)
+		{
+			$table = "pigmiallocation";
+			$allocation_id_field = "{$table}.PigmiAllocID";
+			$closed_field = "Closed";
+			
+			$update_array = array(
+										"{$closed_field}"=>$data["closed"]
+								);
+			
+			DB::table($table)
+				->where($allocation_id_field,'=',$data['allocation_id'])
+				->update($update_array);
+		}
+		
 	}

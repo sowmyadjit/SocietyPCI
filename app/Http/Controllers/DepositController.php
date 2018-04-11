@@ -85,5 +85,33 @@
 		return redirect('/');
 	
 	}
+	
+		public function deposit_account_list(Request $request)
+		{
+			$in_data['category'] = $request->input("category");
+			$in_data['closed'] = $request->input("closed");
+			$in_data['allocation_id'] = $request->input("allocation_id");
+			switch($in_data['category']) {
+				case "PG":	$ret_data = $this->creadepositmodel->deposit_account_list_pg($in_data);
+							break;
+				case "FD":	$ret_data = $this->creadepositmodel->deposit_account_list_fd($in_data);
+							break;
+			}
+			return view("deposit_account_list_data",compact("ret_data"));
+		}
+	
+		public function deposit_account_edit(Request $request)
+		{
+			$in_data['category'] = $request->input("category");
+			$in_data['closed'] = $request->input("closed");
+			$in_data['allocation_id'] = $request->input("allocation_id");
+			switch($in_data['category']) {
+				case "PG":	$ret_data = $this->creadepositmodel->deposit_account_edit_pg($in_data);
+							break;
+				case "FD":	$ret_data = $this->creadepositmodel->deposit_account_edit_fd($in_data);
+							break;
+			}
+			return "deposit_account_edit: done";
+		}
 		
 	}

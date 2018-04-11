@@ -54,6 +54,13 @@
 			return view('pigmiallocation',compact('pa'));
 		}
 		
+		public function Show_PigmiAlloc2()
+		{
+			$Url="pigmiallocation";
+			$pa['module']=$this->Modules->GetAnyMid($Url);
+			return view('pigmiallocation_index',compact('pa'));
+		}
+		
 		public function PigmySearchView(Request $request) //M 20-4-16 For pigmiallocation
 		{
 			$id=$request->input('SearchAccId');
