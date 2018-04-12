@@ -1,5 +1,5 @@
 
-							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="toprint">
+							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >
 								<thead>
 									<tr>
 										<th>Sl. No.</th>
@@ -66,6 +66,48 @@
 									@endforeach
 								</tbody>
 							</table>
+							
+							<div id="toprint">
+							
+							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+								<thead>
+									<tr>
+										<th>Sl. No.</th>
+										<th>Cus ID</th>
+										@if($ret_data['deposit_category'] == "PG")
+											<th>PIGMI Type</th>
+										@endif
+										<th>Customer Name</th>
+										<th>Account Number</th>
+										<th>Start Date</th>
+										<th>End Date</th>
+										<th>Total Balance</th>
+										<th>Closed</th>
+									</tr>
+								</thead>
+							<tbody>
+								<?php $i=0;?>
+								<tr>
+									@foreach ($ret_data['deposit_details'] as $row)
+										<tr>
+											<td>{{++$i}}</td>
+											<td>{{ $row['user_id'] }}</td>
+											@if($ret_data['deposit_category'] == "PG")
+												<td>{{ $row['pigmy_type'] }}</td>
+											@endif
+											<td>{{ $row['name'] }}</td>	
+											<td style="width:50px;">{{ $row['account_no'] }}/{{ $row['old_account_no'] }}</td>
+											<td style="width:50px;">{{ $row['start_date']}}</td>
+											<td style="width:50px;">{{ $row['end_date']}}</td>
+											<td>{{ $row['total_amount']}}</td>
+											<td>{{ $row['closed'] }}</td>
+										</tr>
+									@endforeach
+								</tbody>
+							</table>
+							
+							
+							</div>
 							
 		
 <script>
