@@ -1327,6 +1327,8 @@
 							break;
 				case "PL":	$ret_data = $this->loan->account_list_pl($in_data);
 							break;
+				case "PG":	$ret_data = $this->loan->account_list_pg($in_data);
+							break;
 			}
 			return view("jewelloanallocation_data",compact("ret_data"));
 		}
