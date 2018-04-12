@@ -96,7 +96,7 @@
 </script>
 
 <script>
-	$('input.SearchTypeahead').typeahead({
+	$('#search_box').typeahead({
         source:SearchPigmy
 	});
 </script>
