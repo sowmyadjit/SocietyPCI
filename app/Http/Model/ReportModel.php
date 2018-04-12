@@ -2774,8 +2774,8 @@
 								"user.LastName"
 							)
 					->join("user","user.Uid","=","{$table}.UID")
-					->where("Closed","=","NO")
-					//->limit(5)
+					//->where("Closed","=","NO")
+					//->limit(500)
 					->get();
 			}
 				
@@ -2792,6 +2792,8 @@
 				->where("{$table}.tran_reversed","=","NO")
 			//	->where("{$table}.PigReport_TranDate","<",$data["from_date"])
 				->get();
+				
+				
 			foreach($all_pigmi_transaction as $row_all_tran) {
 				$all_pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"][] = $row_all_tran;
 
@@ -2807,6 +2809,30 @@
 /********* process each entry ***********/
 			$i = -1;
 			foreach($pigmiallocation as $key_alloc => $row_alloc) {
+			
+				$table = "pigmi_transaction";
+				$last_tran = DB::table($table)
+					->select("PigReport_TranDate")
+					->where("PigmiAllocID","=",$row_alloc->PigmiAllocID)
+					->orderBy("PigReport_TranDate","desc")
+					->first();
+					
+				
+				if(empty($last_tran_date)) {
+					echo " 1 ";
+					continue;
+				}
+				
+				$last_tran_date = $last_tran->PigReport_TranDate;
+				$day_before_one_month = date('Y-m-d', strtotime(' -30 day'));
+				
+				if($last_tran_date < $day_before_one_month) {
+					echo " 1 ";
+					continue;
+				}
+				
+				//var_dump($day_before_one_month);exit();
+			
 				$ret_data["pg_tr"][++$i]["allocation_id"] = $row_alloc->PigmiAllocID;
 				$ret_data["pg_tr"][$i]["pigmy_no"] = "{$row_alloc->old_pigmiaccno}/{$row_alloc->PigmiAcc_No}";
 				$ret_data["pg_tr"][$i]["customer_name"] = "{$row_alloc->FirstName} {$row_alloc->MiddleName} {$row_alloc->LastName}";
