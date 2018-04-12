@@ -1786,10 +1786,11 @@
 		{
 			$jewel_alloc_id = $data["jewel_alloc_id"];
 			$net_wt = $data["net_wt"];
-			
+			$closed_status = $data["closed_status"];
 			DB::table("jewelloan_allocation")
 				->where("JewelLoanId","=",$jewel_alloc_id)
-				->update(["jewelloan_Net_weight"=>$net_wt]);
+				->update(["jewelloan_Net_weight"=>$net_wt,"JewelLoan_Closed"=>$closed_status]);
+				
 			return;
 		}
 		

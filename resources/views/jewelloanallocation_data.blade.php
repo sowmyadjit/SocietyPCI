@@ -39,7 +39,7 @@
 												<td>{{$row['jewel_description']}}</td>
 												<td><span id="net_wt_{{$row['loan_id']}}">{{$row['net_weight']}}</span></td>
 												<td>
-													<span class="glyphicon glyphicon-pencil btn btn-info btn-xs" data-toggle="modal" data-target="#myModal" onclick="edit_net_wt('{{$row['net_weight']}}', '{{$row['loan_id']}}');" >
+													<span class="glyphicon glyphicon-pencil btn btn-info btn-xs" data-toggle="modal" data-target="#myModal" onclick="edit_net_wt('{{$row['net_weight']}}', '{{$row['loan_id']}}','{{ $row['closed']}}');" >
 													</span>
 												</td>
 												<td>
@@ -64,7 +64,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Edit Jewel Net Weight</h4>
+				<h4 class="modal-title">Edit Jewel</h4>
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
@@ -72,6 +72,14 @@
 					<div class="col-md-7">
 						<input type="text" id="net_wt" name="net_wt" class="form-control">
 						<input type="text" id="jewel_alloc_id" name="jewel_alloc_id" class="form-control hidden">
+					</div>
+					<label class="control-label col-sm-5">Closed Status:</label>
+					<div class="col-md-7">
+						<select class="form-control closed_drop" id="closed_drop" name="closed_drop">
+							<option selected disabled>SELECT STATUS</option>
+							<option value="NO">NO</option>		
+							<option value="YES">YES</option>					
+						</select>
 					</div>
 				</div>
 				<br>
@@ -91,19 +99,23 @@
 
 
 <script>
-function edit_net_wt(net_wt, jewel_alloc_id)
+function edit_net_wt(net_wt, jewel_alloc_id,closedstatus)
 {
 	$('#net_wt').val(net_wt);
 	$('#jewel_alloc_id').val(jewel_alloc_id);
+	$('#closed_drop option:selected').val("YES");
 }
 
 $('.save').click( function(e) {
 	net_wt=$('#net_wt').val();
 	jewel_alloc_id=$('#jewel_alloc_id').val();
+	 closed_status=$('#closed_drop option:selected').val();
+	 console.log(closed_status);
+	
 	$.ajax({
 		url: 'edit_jl_net_wt',
 		type: 'post',
-		data:'&net_wt='+net_wt+'&jewel_alloc_id='+jewel_alloc_id,
+		data:'&net_wt='+net_wt+'&jewel_alloc_id='+jewel_alloc_id+'&closed_status='+closed_status,
 		success: function(data) {
 			//alert('success');
 			$("#net_wt_"+jewel_alloc_id).html(net_wt);

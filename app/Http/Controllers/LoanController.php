@@ -1215,6 +1215,7 @@
 		{
 			$in_data["jewel_alloc_id"] = $request->input("jewel_alloc_id");
 			$in_data["net_wt"] = $request->input("net_wt");
+			$in_data["closed_status"] = $request->input("closed_status");
 			$this->loan->edit_jl_net_wt($in_data);
 			return;
 		}
