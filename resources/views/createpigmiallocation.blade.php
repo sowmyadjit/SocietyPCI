@@ -24,7 +24,7 @@
 					<div class="form-group">
 						<label class="control-label col-sm-4">Pigmi Type:</label>
 						<div class="col-md-4">
-							<input style="border-color:red" class="typeahead form-control"  type="text" name="pigmitype" placeholder="SELECT PIGMI TYPE"/>  
+							<input style="border-color:red" class="typeahead form-control" id="pigmitype"  type="text" name="pigmitype" placeholder="SELECT PIGMI TYPE"/>  
 						</div>
 					</div>
 					
@@ -223,11 +223,14 @@ p=0;
 			{ 
 				
 				//alert("hi");
-				pt=$('.typeahead').data('value');
+			//	pt=$('.typeahead').data('value');
+				pt=$('#pigmitype').attr('data-value');
 				ui=$('.typeahead2').data('value');
 				agi=$('.agenttypeahead').data('value');
 				bid=$('#bname').data('value');
-				alert(ui);
+				//alert(ui);
+				//alert(agi);
+				//alert(pt);
 				if(ui>0&&agi>0&&pt>0)
 				{
 					p++;
@@ -240,7 +243,7 @@ p=0;
 					type: 'post',
 					data: $('#form_pigmialloc').serialize() + '&pigmid=' + pt +'&uid='+ui+'&agid='+agi+'&branchid='+bid,
 					success: function(data) {
-						//alert('success');
+						alert('success');
 						$('.pigmiallocclassid').click();
 						//window.location.reload(true);
 					}

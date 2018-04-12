@@ -12,6 +12,7 @@
 									<th>Pending Amount</th>
 									<th>Close</th>
 									<th>Interest Paid Till</th>
+									<th>Paid Principle Amt.</th>
 									@if($ret_data['loan_category'] == "JL")
 										<th>Jewel Description</th>
 										<th>Net Weight</th>
@@ -35,6 +36,7 @@
 											<td>{{ $row['ramaining_amount']}}</td>
 											<td>{{ $row['closed']}}</td>
 											<td>{{ $row['interest_paid_upto']}}</td>
+											<td>{{ $row['paid_principle_amt']}}</td>
 											@if($ret_data['loan_category'] == "JL")
 												<td>{{$row['jewel_description']}}</td>
 												<td><span id="net_wt_{{$row['loan_id']}}">{{$row['net_weight']}}</span></td>
@@ -54,7 +56,6 @@
 									@endforeach
 								</tbody>
 							</table>
-							</div>
 							
 <!-- model--->
 <div id="myModal" class="modal fade" role="dialog">

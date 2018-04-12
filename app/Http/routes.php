@@ -148,6 +148,8 @@
 				Route::post('/depgetbankdetail','DepositController@GetBankDetailForDeposite');
 				Route::get('/depodetailbranch','DepositController@depodetailbranch');
 				Route::post('/crateaddeposittobranch','DepositController@crateaddeposittobranch');
+				Route::post('/deposit_account_list','DepositController@deposit_account_list');
+				Route::post('/deposit_account_edit','DepositController@deposit_account_edit');
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');
@@ -399,7 +401,8 @@
 				
 				
 				//PigmiAllocationController
-				Route::get('/pigmiallocation','PigmiAllocationController@Show_PigmiAlloc');
+			//	Route::get('/pigmiallocation','PigmiAllocationController@Show_PigmiAlloc');
+				Route::get('/pigmiallocation','PigmiAllocationController@Show_PigmiAlloc2');
 				Route::get('/crtpigmiallocation','PigmiAllocationController@show_crtpigmialloc');
 				Route::get('/RetrieveCommission','PigmiAllocationController@retrieve_comm');
 				Route::post('/crtpigmialloc','PigmiAllocationController@create_pigmialloc');
@@ -477,7 +480,7 @@
 				Route::get('/pigmidirectclose/{id}','ReportController@pigmidirectclose');
 				Route::get('/pigmidirectDelete/{id}','ReportController@pigmidirectDelete');
 				
-				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');\
+				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');
 				
 				Route::post('/user_details','ReportController@user_details');
 				

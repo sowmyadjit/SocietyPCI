@@ -2935,11 +2935,11 @@
 				->get();
 			$n = count($repay);
 			if($n > 0) {
-				//echo "true <br />\n";//exit();
+				//echo "*{$loan_allocation_id}-true* <br />\n";//exit();
 				//echo "****is_first_repay_done end****<br />\n";
 				return true;
 			} else {
-				//echo "false <br />\n";//exit();
+				//echo "*{$loan_allocation_id}-false* <br />\n";//exit();
 				//echo "****is_first_repay_done end****<br />\n";
 				return false;
 			}
@@ -2966,7 +2966,8 @@
 			}
 			
 			$sum = 0;//paid to principle amt
-			if($this->is_first_repay_done(["loan_allocation_id"=>$loan_allocation_id,'loan_category'=>"PL"])) {
+			if($this->is_first_repay_done(["loan_allocation_id"=>$loan_allocation_id,'loan_category'=>$data['loan_category']])) {
+				
 				$repay = DB::table($table)
 					->select("{$principle_amount_field} as principle_amount_paid")
 					->where($loan_id_field,'=',$loan_allocation_id)
@@ -3081,7 +3082,6 @@
 		
 		public function account_list_jl($data)
 		{
-			//print_r($data);exit();
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
 			$ret_data['loan_details'] = array();
@@ -3116,7 +3116,7 @@
 			} else {
 				$account_list = $account_list->where($closed_field,"=",$data['closed']);
 			}
-			$account_list = $account_list//->limit(20)
+			$account_list = $account_list//->limit(1)
 										->get();
 				
 			if(empty($account_list)) {

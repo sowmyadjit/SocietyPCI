@@ -45,8 +45,8 @@
 			->join('user','user.Uid','=','depositeloan_allocation.DepLoan_Uid')
 			//->join('customer','customer.Uid','=','depositeloan_allocation.DepLoan_Uid')
 			->where('DepLoan_Branch','=',$BID)
-			//->get();
-			->paginate(10);
+			->get();
+			//->paginate(10);
 		}
 		
 		public function getdetail_all()

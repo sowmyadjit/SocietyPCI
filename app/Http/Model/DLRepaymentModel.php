@@ -80,6 +80,17 @@
 			$did=$id['did'];
 			//$sdte=$('#PgStdate').val();
 			$dte=date('Y-m-d');
+			
+			$end_date = DB::table("depositeloan_allocation")
+				->where("DepLoanAllocId","=",$did)
+				->value("DepLoan_LoanEndDate");
+			
+			if(!empty($end_date)) {
+				if($end_date <= $dte) {
+					$dte = $end_date;
+				}
+			}
+			
 			$date1=date_create($dte);
 			$date2=date_create($sdate);
 			$difdate=date_diff($date1,$date2);
