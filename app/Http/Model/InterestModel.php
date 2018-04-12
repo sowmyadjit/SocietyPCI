@@ -1255,6 +1255,7 @@
 			$type = $data["type"];
 			$type_no = 0;
 			
+			//$tran_date = date("Y-m-d",strtotime("2018-03-31"));
 			$tran_date = date("Y-m-d");
 			$tran_time = date("H:i:s");
 			
@@ -1318,6 +1319,7 @@
 									->select()
 									->where("PigmiAllocID","=",$row->acc_id)
 									->first();
+								$new_total_amt = $pigmiallocation->Total_Amount - $row->service_charge_amount;
 								$insert_data = array(
 														"PigmiTypeid"=>$pigmiallocation->PigmiTypeid,
 														"Trans_Date"=>$tran_date,
@@ -1326,7 +1328,9 @@
 														"Agentid"=>$pigmiallocation->Agentid,
 														"PigmiAllocID"=>$pigmiallocation->PigmiAllocID,
 														"Transaction_Type"=>"DEBIT",
+														//"Current_Balance"=>$pigmiallocation->Total_Amount,
 														"Amount"=>$row->service_charge_amount,
+														//"Total_Amount"=>$new_total_amt,
 														"Particulars"=>"SERVICE CHARGE",
 														"PgmPayment_Mode"=>"ADJUSTMENT",
 														"Month"=>date("m",strtotime($tran_date)),
@@ -1346,8 +1350,7 @@
 									DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(["Closed"=>"YES"]);
 								}
 								
-								$new_total_amt = $pigmiallocation->Total_Amount - $row->service_charge_amount;
-								DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(['Total_Amount'=>$new_total_amt]);
+								//DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(['Total_Amount'=>$new_total_amt]);
 								
 							}
 							
@@ -1388,6 +1391,7 @@
 								->where("service_charge.bid","=",$BID)
 								->where("charge_collected","=",0)
 								->where("service_charge.deleted","=",0)
+								->orderBy("Accid","asc")
 								->get();
 								
 							foreach($return_data["service_charge"] as $row) {
