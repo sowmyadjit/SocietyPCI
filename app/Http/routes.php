@@ -590,6 +590,7 @@
 				Route::get('/getdlaccsearch','SearchController@getdlaccsearch');
 				Route::get('/getuser_forloan','SearchController@getuser_forloan');
 				Route::get('/FdClosedAcc_Unpaid','SearchController@FdClosedAcc_Unpaid');
+				Route::get('/search_agent','SearchController@search_agent');
 				
 				//SharesContoller
 				Route::get('/shares','ShareController@Show_Shares');

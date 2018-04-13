@@ -759,13 +759,17 @@
 		
 		public function pigmy_report(Request $request)
 		{
-			$in_data["from_date"] =$request->input("from_date");
+			$in_data["agent_uid"] = $request->input("agent_uid");//27939;//
+			$in_data["print"] = $request->input("print");
+			$in_data["from_date"] = $request->input("from_date");
 			$in_data["to_date"] = $request->input("to_date");
 			$in_data["allocation_id"] =$request->input("allocation_id");
 			if(empty($in_data["from_date"])) {
-				return view("pigmy_report",compact('m'));
+				$data['agent'] = $this->Report_model->get_agent_list([]);
+				return view("pigmy_report",compact('data'));
 			} else {
 				$data = $this->Report_model->pigmy_report($in_data);//return 11;
+				$data["print"] = $in_data["print"];
 				return view('pigmy_report_data',compact('data'));
 			}
 		}

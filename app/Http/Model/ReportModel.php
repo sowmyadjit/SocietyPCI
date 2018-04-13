@@ -2727,8 +2727,11 @@
 			return $ret_data;
 		}
 		
+		
 		public function pigmy_report($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $Bid=$uname->Bid;
+			
 			$ret_data = array();
 			$ret_data["pg_tr"] = array();//pigmy transactions
 			$ret_data["dates"] = array();// From Date   to   To Date
@@ -2759,7 +2762,8 @@
 								"user.LastName"
 							)
 					->join("user","user.Uid","=","{$table}.UID")
-					->where("Closed","=","NO")
+					//->where("Closed","=","NO")
+					->where("{$table}.Bid","=",$Bid)
 					->where("PigmiAllocID","=",$data["allocation_id"])
 					->get();
 			} else {
@@ -2775,62 +2779,67 @@
 							)
 					->join("user","user.Uid","=","{$table}.UID")
 					//->where("Closed","=","NO")
+					->where("Agentid","=",$data["agent_uid"])
+					->where("{$table}.Bid","=",$Bid)
 					//->limit(500)
 					->get();
 			}
-				
+//			print_r($pigmiallocation);exit();
 			
 /****** all pigmy transactions ******/
 			$table = "pigmi_transaction";
 			$all_pigmi_transaction = DB::table($table)
 				->select(
-							"PigmiAllocID",
+							"pigmiallocation.PigmiAllocID",
 							"PigReport_TranDate",
 							"Amount",
 							"Transaction_Type"
 						)
+				->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","{$table}.PigmiAllocID")
 				->where("{$table}.tran_reversed","=","NO")
-			//	->where("{$table}.PigReport_TranDate","<",$data["from_date"])
-				->get();
+				->where("{$table}.Bid","=",$Bid)
+				->where("{$table}.Agentid","=",$data["agent_uid"]);
+			if(!empty($data["allocation_id"])) {
+				$all_pigmi_transaction = $all_pigmi_transaction->where("pigmiallocation.PigmiAllocID","=",$data["allocation_id"]);
+			}
+			$all_pigmi_transaction = $all_pigmi_transaction->get();
+//			print_r($all_pigmi_transaction);exit();
 				
-				
+				$tran_date_arr = [];
+			$k = -1;
 			foreach($all_pigmi_transaction as $row_all_tran) {
+				$tran_date_arr[$row_all_tran->PigmiAllocID][] = $row_all_tran->PigReport_TranDate;
 				$all_pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"][] = $row_all_tran;
-
-				
-				
 				if(isset($pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"])) {
 					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] += $row_all_tran->Amount;
 				} else {
 					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] = $row_all_tran->Amount;
 				}
 			}//return 'show';
+//			print_r($tran_date_arr);exit();
+			foreach($tran_date_arr as $key_tran_date => $row_tran_date) {
+//				print_r($row_tran_date);exit();
+				$last_tran_date["{$key_tran_date}"] = max($row_tran_date);
+			}
+//			print_r($last_tran_date);//exit();
+			
 			
 /********* process each entry ***********/
 			$i = -1;
 			foreach($pigmiallocation as $key_alloc => $row_alloc) {
-			
-				$table = "pigmi_transaction";
-				$last_tran = DB::table($table)
-					->select("PigReport_TranDate")
-					->where("PigmiAllocID","=",$row_alloc->PigmiAllocID)
-					->orderBy("PigReport_TranDate","desc")
-					->first();
-					
-				
-				if(empty($last_tran_date)) {
-					echo " 1 ";
+				if(!isset($last_tran_date["{$row_alloc->PigmiAllocID}"])) {
+					//echo " 1 ";
 					continue;
 				}
 				
-				$last_tran_date = $last_tran->PigReport_TranDate;
+				$last_tran_date_pid = $last_tran_date["{$row_alloc->PigmiAllocID}"];
 				$day_before_one_month = date('Y-m-d', strtotime(' -30 day'));
+//				echo "$last_tran_date_pid < $day_before_one_month";exit();
 				
-				if($last_tran_date < $day_before_one_month) {
-					echo " 1 ";
+				if($last_tran_date_pid < $day_before_one_month) {
+					//echo " 1 ";
 					continue;
 				}
-				
 				//var_dump($day_before_one_month);exit();
 			
 				$ret_data["pg_tr"][++$i]["allocation_id"] = $row_alloc->PigmiAllocID;
@@ -2842,7 +2851,7 @@
 				$total_credit_amount = 0;
 				$total_debit_amount = 0;
 				if(!empty($all_pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"])) {
-					foreach($all_pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"] as $row) {
+					foreach($all_pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"] as $row) {//var_dump($row);exit();
 						if($row->PigReport_TranDate < $data["from_date"]) {
 							if($row->Transaction_Type) {
 								$credit_amount += $row->Amount;
@@ -2858,6 +2867,8 @@
 							$total_debit_amount += $row->Amount;
 						}
 					}
+				} else {
+					echo "empty";
 				}
 				$ret_data["pg_tr"][$i]["prev_amt"] = $credit_amount - $debit_amount;
 				$ret_data["pg_tr"][$i]["total_amt"] = $total_credit_amount - $total_debit_amount;
@@ -2869,8 +2880,10 @@
 					$ret_data["pg_tr"][$i]["{$tran_date}"] = $day_amt;
 				}
 			}
+			//print_r($ret_data);exit();
 			return $ret_data;
 		}
+		
 		
 		public function next_date($data){
 			return date("Y-m-d", strtotime("+1 day",strtotime($data["date"])));
@@ -2914,6 +2927,32 @@
 			->where('user.Uid','=',$data['uid'])
 			->get();
 			return($return_data);
+		}
+		
+		public function search_agent($data){
+			$return_data = DB::table('user')
+			->select(
+						'Uid as id',
+						'CONCAT("FirstName","MiddleName","LastName") as name'
+					)
+			->where('user.Did','=',"4")
+			->get();
+			return($return_data);
+		}
+		
+		public function get_agent_list($data){
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $Bid=$uname->Bid;
+			$ret_data = array();
+			$ret_data = DB::table('user')
+			->select(
+						'Uid as id',
+						DB::raw('CONCAT(FirstName, " ", MiddleName, " ", LastName) as name')
+					)
+			->where('user.Did','=',"4")
+			->where('user.Bid','=',$Bid)
+			->get();
+//			print_r($ret_data);exit();
+			return($ret_data);
 		}
 		
 	}
