@@ -3276,5 +3276,21 @@
 			//print_r($ret_data);exit();
 			return $ret_data;
 		}
+		
+		public function account_list_pl_edit($data)
+		{
+			$table = "personalloan_allocation";
+			$allocation_id_field = "{$table}.PersLoanAllocID";
+			$closed_field = "closed";
+			
+			$update_array = array(
+										"{$closed_field}"=>$data["closed"]
+								);
+			
+			DB::table($table)
+				->where($allocation_id_field,'=',$data['loan_id'])
+				->update($update_array);
+		}
+		
 	}
 	

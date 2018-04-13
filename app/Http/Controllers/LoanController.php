@@ -1355,6 +1355,24 @@
 							break;
 			}
 		}
+			
+			public function account_list_edit(Request $request)
+			{
+			$in_data['category'] = $request->input("category");
+			$in_data['closed'] = $request->input("closed");
+			$in_data['loan_id'] = $request->input("loan_id");
+			switch($in_data['category']) {
+				//case "JL":	$ret_data = $this->loan->account_list_jl($in_data);
+				//			return view("jewelloanallocation_data",compact("ret_data"));
+				//			break;
+				case "PL":	$ret_data = $this->loan->account_list_pl_edit($in_data);
+							break;
+				//case "PG":	$ret_data = $this->loan->account_list_pg($in_data);
+				//			break;
+				
+			}
+			return "deposit_account_edit: done";
+			}
 		
 		
 	}

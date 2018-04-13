@@ -15,6 +15,12 @@
 								<?php /*	<th>Paid Principle Amt.</th> */?>
 									<th>EMI Amount</th>
 									<th>Loan Type</th>
+									<th>
+										<div>
+											(editable<input id="closed_editable" type="checkbox" />)
+										</div>
+										Closed
+									</th>
 									<th>Action</th>
 								</tr>
 							</thead>
@@ -40,13 +46,31 @@
 											<td>
 												<input value="{{$row['loan_type_id']}}" class="edit_int_rate" data="{{ $row['loan_id'] }}"  style="width: 50px;" />
 											</td>
+											
+											<td>
+												<?php
+													$selected_yes = "";
+													$selected_no = "";
+													
+													if($row['closed'] == "YES") {
+														$selected_yes = "selected";
+													} else {
+														$selected_no = "selected";
+													}
+													//{{ $row['closed']}}
+												?>
+												<select class="closed_edit" data="{{$row['loan_id']}}">
+													<option {{$selected_no}}>NO</option>
+													<option {{$selected_yes}}>YES</option>
+												</select>
+											</td>
 											<td>
 												<div class="form-group">
 													<div class="col-sm-12">
 														<input type="button" value="Receipt" class="btn btn-info btn-sm edtbtn" href="plloanrecepit/{{ $row['loan_id'] }}"/>
 													</div>
 												</div>
-											</td>
+											</td>	
 										</tr>
 									@endforeach
 								</tbody>
@@ -98,4 +122,43 @@
 			}
 		});
 	});
+</script>
+<script>
+	$(document).ready(function() {
+		disable_closed_state_edit();
+	});
+	
+	$("#closed_editable").change(function() {
+		if($(this).prop("checked")) {
+			enable_closed_state_edit();
+		} else {
+			disable_closed_state_edit();
+		}
+	});
+	function enable_closed_state_edit() {
+		$('.closed_edit').prop("disabled",false);
+	}
+	
+	function disable_closed_state_edit() {
+		$('.closed_edit').prop("disabled",true);
+	}
+	
+	$(".closed_edit").change(function() {
+		var loan_id = $(this).attr("data");
+		var closed = $(this).val();
+		console.log("loan_id="+loan_id+"\n colsed="+closed);
+		deposit_account_edit(loan_id,closed);
+	});	
+		function deposit_account_edit(loan_id,closed) {
+		$.ajax({
+			url:"account_list_edit",
+			type:"post",
+			data:"&category=PL&closed="+closed+"&loan_id="+loan_id,
+			success: function(data) {
+				console.log("deposit_account_edit:done");
+			}
+		});
+	}
+	
+	
 </script>
