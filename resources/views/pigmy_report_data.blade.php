@@ -7,8 +7,8 @@
 <div>
 <script src="js/FileSaver.js"/>			
 <script src="js/tableExport.js"/>	
-<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
-<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
+<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="view_excel">
+<input type="button" value="Print" class="btn btn-info btn-sm print" id="view_print">
 <table  class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="expense_details">
 	<thead>
 		<tr>
@@ -64,15 +64,15 @@
 </div>
 </div>
 <script>
-$('#excel').click(function(e){
-	alert("excel");
+$('#view_excel').click(function(e){
+	//alert("excel");
 	$('#expense_details').tableExport({type:'excel',escape:'false'});
 	});	</script>
 <script src="js/jQuery.print.js"></script>
 <script>
 	
 	$(function() {
-		$(".print").click(function() {
+		$("#view_print").click(function() {
 			var divContents = $("#toprint").html();
             var printWindow = window.open('', '', 'height=600,width=800');
             printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
@@ -84,4 +84,13 @@ $('#excel').click(function(e){
             printWindow.print(); 
 		});
 	});	
-</script>	
+</script>
+<script>
+	$(document).ready(function() {
+		if({{$data["print"]}} == "print") {
+			$("#view_print").trigger("click");
+		} else {
+			$("#view_excel").trigger("click");	
+		}
+	});
+</script>

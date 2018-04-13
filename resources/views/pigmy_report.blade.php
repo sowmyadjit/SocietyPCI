@@ -25,7 +25,7 @@
 					</div>
 					
 				</div>
-				<div class="box-content">
+				<div class="box-content" style="height: 200px;">
 				<script src="js/FileSaver.js"/>			
 				<script src="js/tableExport.js"/>	
 					<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
@@ -52,14 +52,19 @@
 								</span> 
 							</div>
 						</div>
-						<div class="col-md-5 pull-right">
+						<div class="col-md-12" style="height:100px;">
+						<div class="col-md-6">
 									<input class="SearchTypeahead form-control" id="SearchPigmy" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
 						</div>
-						<div>
-						<button style="margin-left:1000px;" id="view">View</button>
+						<div class="col-md-1 pull-right" style='display:inline-block;'>
+						<button class="btn btn-info btn-sm"  id="print">Print</button>
 						</div>
-						<div id="report">
+						<div class="col-md-1 pull-right" style='display:inline-block;'>
+						<button class="btn btn-info btn-sm"  id="excel">Excel</button>
 						</div>
+						</div>
+						<div style="opacity:0;height:0; position: fixed;overflow-y:scroll" id="report">
+						</div> 
 				</div>
 		</div>
 	</div>
@@ -73,10 +78,11 @@
 	$('.datepicker').datepicker().on('changeDate',function(e){
 		$(this).datepicker('hide');
 	});
-	$("#view").click(function(){
+	$("#print,#excel").click(function(){
 	console.log("bai");
 	from_date=$("#from_date").val();
 	to_date=$("#to_date").val();
+	print=$(this).attr('id');
 	if($('#SearchPigmy').val()=='')
 	{
 		console.log('haiaaaaaaaaaaaaaa');
@@ -87,7 +93,7 @@
 	$.ajax({
 					url:'/pigmy_report',
 					type:'post',
-					data:'&from_date='+from_date+'&to_date='+to_date+'&allocation_id='+searchvalue,
+					data:'&from_date='+from_date+'&to_date='+to_date+'&allocation_id='+searchvalue+'&print='+print,
 					success:function(data)
 					{
 					console.log("hai");
@@ -103,7 +109,7 @@
         source:SearchPigmy
 	});
 	
-	$('#excel').click(function(e){
+	$('#excela').click(function(e){
 	alert("excel");
 	$('#expense_details').tableExport({type:'excel',escape:'false'});
 	});	
@@ -112,7 +118,7 @@
 <script>
 	
 	$(function() {
-		$(".print").click(function() {
+		$(".printa").click(function() {
 			alert("print");
 			var divContents = $("#toprint").html();
             var printWindow = window.open('', '', 'height=600,width=800');
