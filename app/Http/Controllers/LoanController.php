@@ -46,6 +46,7 @@
 			//$LoanCatCharge['LoanCat']=$this->loantype->GetLoanCategoryDropD();
 			return view('createstaffloan');
 		}
+		
 		public function show_Persnloanalloc()
 		{
 			//$loanalc=$this->loantype->getdetail();
@@ -494,10 +495,6 @@
 		//	return view('jewelloanallocation_index',compact('jewelLoan'));
 		}
 		
-		public function jewelLoan2()
-		{
-			return view('jewelloanallocation_index');
-		}
 		public function GetJewelDetail()
 		{
 			//$jewelloan['Jeweldurationdetails']=$request->input('Jeweldurationdetails');
@@ -1318,22 +1315,6 @@
 			return view("repay_report_data_charges",compact('data'));
 		}
 		
-		public function account_list(Request $request)
-		{
-			$in_data['category'] = $request->input("category");
-			$in_data['closed'] = $request->input("closed");
-			$in_data['loan_id'] = $request->input("loan_id");
-			switch($in_data['category']) {
-				case "JL":	$ret_data = $this->loan->account_list_jl($in_data);
-							break;
-				case "PL":	$ret_data = $this->loan->account_list_pl($in_data);
-							break;
-				case "PG":	$ret_data = $this->loan->account_list_pg($in_data);
-							break;
-			}
-			return view("jewelloanallocation_data",compact("ret_data"));
-		}
-		
 		public function edit_emi(Request $request)
 		{
 			$fn_data['id'] = $request->input("id");
@@ -1347,5 +1328,33 @@
 			$fn_data['value'] = $request->input("value");
 			return $this->loantype->edit_int_rate($fn_data);
 		}
+		
+		public function jewelLoan2()
+		{
+			return view('jewelloanallocation_index');
+		}
+		
+		public function show_Persnloanalloc2()
+		{
+			return view('personal_loanallocation_index');
+		}
+		
+		public function account_list(Request $request)
+		{
+			$in_data['category'] = $request->input("category");
+			$in_data['closed'] = $request->input("closed");
+			$in_data['loan_id'] = $request->input("loan_id");
+			switch($in_data['category']) {
+				case "JL":	$ret_data = $this->loan->account_list_jl($in_data);
+							return view("jewelloanallocation_data",compact("ret_data"));
+							break;
+				case "PL":	$ret_data = $this->loan->account_list_pl($in_data);
+							return view("personal_loanallocation_data",compact("ret_data"));
+							break;
+				case "PG":	$ret_data = $this->loan->account_list_pg($in_data);
+							break;
+			}
+		}
+		
 		
 	}
