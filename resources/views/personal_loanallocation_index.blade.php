@@ -46,7 +46,6 @@
 						<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
 						<div class="alert alert-info" style="height:60px;">
 							
-							<!-- <a href="crtloanallocation" class="btn btn-default crtlal">LOAN ALLOCATION</a>-->
 							<div class="col-md-3">
 								<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH JEWEL ACCOUNT">
 							</div>
@@ -65,7 +64,7 @@
 									<option value="pdf">PDF</option>
 								</select>
 							</div>
-							<a href="jewelLoan" class="btn btn-info btn-sm col-md-2 crtlal">LOAN ALLOCATION</a>
+							<a href="PersonalLoan" class="btn btn-info btn-sm col-md-2 crtlal">LOAN ALLOCATION</a>
 							
 							<input type="button" value="Print" class="btn btn-info btn-sm print col-md-1" id="print">
 						</div>
