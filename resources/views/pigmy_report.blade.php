@@ -6,6 +6,13 @@
 		
 	</div>
 </noscript>
+<style>
+	.right_text{
+	text-align: right;
+    vertical-align: middle;
+    margin-top: 10px;
+	}
+	</style>
 <script src="js/bootstrap-typeahead.js"></script>
 <script src="js/jquery.validate.min.js"></script>
 <script src="js/bootstrap-typeahead.js"></script>
@@ -25,15 +32,24 @@
 					</div>
 					
 				</div>
-				<div class="box-content" style="height: 200px;">
+				<div class="box-content" style="height: 365px;">
 				<script src="js/FileSaver.js"/>			
 				<script src="js/tableExport.js"/>	
 					<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
-					<div class="alert alert-info">
+					<div class="alert alert-info" style="height:340px;">
 					
-					</div>
-						<div class="form-group col-sm-6">
-							<label class="control-label col-sm-5" for="first_name">From Date :</label>
+						<div class="form-group col-sm-12">
+							<label class="control-label col-sm-5 right_text" ="" for="">Agent Name :</label>
+							<div class="col-sm-7">
+							<select class="form-control" id="agent_uid" name="agent_uid">
+								@foreach($data['agent'] as $row_agent)
+									<option value="{{$row_agent->id}}">{{$row_agent->name}}<option>
+								@endforeach
+							</select>
+							</div>
+						</div>
+						<div class="form-group col-sm-12">
+							<label class="control-label col-sm-5 right_text" for="first_name">From Date :</label>
 							<div class="input-group input-append date col-sm-7" id="" style="padding-left:15px;padding-right:15px;">
 								<input type="text" class="form-control datepicker" name="from_date" id="from_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
 								<span class="input-group-addon add-on">
@@ -42,8 +58,8 @@
 								</span> 
 							</div>
 						</div>
-						<div class="form-group col-sm-6">
-							<label class="control-label col-sm-5" for="first_name">To Date :</label>
+						<div class="form-group col-sm-12">
+							<label class="control-label col-sm-5 right_text" for="first_name">To Date :</label>
 							<div class="input-group input-append date col-sm-7" id="" style="padding-left:15px;padding-right:15px;">
 								<input type="text" class="form-control datepicker" name="to_date" id="to_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
 								<span class="input-group-addon add-on">
@@ -53,18 +69,22 @@
 							</div>
 						</div>
 						<div class="col-md-12" style="height:100px;">
-						<div class="col-md-6">
-									<input class="SearchTypeahead form-control" id="SearchPigmy" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
+						<label class="control-label col-sm-5 right_text" for="first_name">Pigmy Number/Name(Optional) :</label>
+						<div class="col-md-7 pull-right">
+									<input class="SearchTypeahead form-control" id="SearchPigmy" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY(Optional)">
 						</div>
-						<div class="col-md-1 pull-right" style='display:inline-block;'>
+						</div>
+						<div class="col-sm-12">
+						<div class="col-md-4 pull-right" style='display:inline-block;'>
 						<button class="btn btn-info btn-sm"  id="print">Print</button>
 						</div>
 						<div class="col-md-1 pull-right" style='display:inline-block;'>
 						<button class="btn btn-info btn-sm"  id="excel">Excel</button>
 						</div>
 						</div>
-						<div style="opacity:0;height:0; position: fixed;overflow-y:scroll" id="report">
-						</div> 
+					</div>
+					<div style="opacity:0;height:0; position: fixed;overflow-y:scroll" id="report">
+					</div> 
 				</div>
 		</div>
 	</div>
@@ -79,30 +99,30 @@
 		$(this).datepicker('hide');
 	});
 	$("#print,#excel").click(function(){
-	console.log("bai");
-	from_date=$("#from_date").val();
-	to_date=$("#to_date").val();
-	print=$(this).attr('id');
-	if($('#SearchPigmy').val()=='')
-	{
-		console.log('haiaaaaaaaaaaaaaa');
-		$('#SearchPigmy').attr('data-value', 0);
-	}
-	searchvalue=$('#SearchPigmy').attr('data-value');
-	//$('#SearchPigmy').attr('data-value', 0);
-	$.ajax({
-					url:'/pigmy_report',
-					type:'post',
-					data:'&from_date='+from_date+'&to_date='+to_date+'&allocation_id='+searchvalue+'&print='+print,
-					success:function(data)
-					{
-					console.log("hai");
-					$("#report").html('');
-					$("#report").html(data);
-					}
-	});
+		console.log("view clicked");
+		agent_uid=$("#agent_uid").val();
+		from_date=$("#from_date").val();
+		to_date=$("#to_date").val();
+		print=$(this).attr('id');
+		if($('#SearchPigmy').val()=='')
+		{
+			console.log('haiaaaaaaaaaaaaaa');
+			$('#SearchPigmy').attr('data-value', 0);
 		}
-	);
+		searchvalue=$('#SearchPigmy').attr('data-value');
+		//$('#SearchPigmy').attr('data-value', 0);
+		$.ajax({
+						url:'/pigmy_report',
+						type:'post',
+						data:'&from_date='+from_date+'&to_date='+to_date+'&allocation_id='+searchvalue+'&print='+print+'&agent_uid='+agent_uid,
+						success:function(data)
+						{
+						console.log("hai");
+						$("#report").html('');
+						$("#report").html(data);
+						}
+		});
+	});
 	
 		$('input.SearchTypeahead').typeahead({
 		//ajax: '/SearchPigmy'

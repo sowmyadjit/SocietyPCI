@@ -2779,7 +2779,7 @@
 							)
 					->join("user","user.Uid","=","{$table}.UID")
 					//->where("Closed","=","NO")
-					//->where("Agentid","=",$data["agent_uid"])
+					->where("Agentid","=",$data["agent_uid"])
 					->where("{$table}.Bid","=",$Bid)
 					//->limit(500)
 					->get();
@@ -2797,8 +2797,8 @@
 						)
 				->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","{$table}.PigmiAllocID")
 				->where("{$table}.tran_reversed","=","NO")
-				->where("{$table}.Bid","=",$Bid);
-				//->where("{$table}.Agentid","=",$data["agent_uid"]);
+				->where("{$table}.Bid","=",$Bid)
+				->where("{$table}.Agentid","=",$data["agent_uid"]);
 			if(!empty($data["allocation_id"])) {
 				$all_pigmi_transaction = $all_pigmi_transaction->where("pigmiallocation.PigmiAllocID","=",$data["allocation_id"]);
 			}
@@ -2927,6 +2927,32 @@
 			->where('user.Uid','=',$data['uid'])
 			->get();
 			return($return_data);
+		}
+		
+		public function search_agent($data){
+			$return_data = DB::table('user')
+			->select(
+						'Uid as id',
+						'CONCAT("FirstName","MiddleName","LastName") as name'
+					)
+			->where('user.Did','=',"4")
+			->get();
+			return($return_data);
+		}
+		
+		public function get_agent_list($data){
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $Bid=$uname->Bid;
+			$ret_data = array();
+			$ret_data = DB::table('user')
+			->select(
+						'Uid as id',
+						DB::raw('CONCAT(FirstName, " ", MiddleName, " ", LastName) as name')
+					)
+			->where('user.Did','=',"4")
+			->where('user.Bid','=',$Bid)
+			->get();
+//			print_r($ret_data);exit();
+			return($ret_data);
 		}
 		
 	}

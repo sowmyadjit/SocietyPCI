@@ -29,6 +29,7 @@
 	use App\Http\Model\PurchaseshareModel;
 	use App\Http\Model\RequestLoanModel;
 	use App\Http\Model\ShareModel;
+	use App\Http\Model\ReportModel;
 	
 	class SearchController extends Controller
 	{
@@ -76,6 +77,7 @@
 			$this->Loan_Req=new RequestLoanModel;
 			$this->Loan=new LoanModel;
 			$this->Getsharemodel=new ShareModel;
+			$this->rep_mdl=new ReportModel;
 		}
 		
 		public function GetBranch(Request $request)
@@ -559,6 +561,11 @@
 		public function FdClosedAcc_Unpaid(Request $request)
 		{
 			return($this->get_DL->FdClosedAcc_Unpaid($request->search));
+		}
+		
+		public function search_agent(Request $request)//M 20-4-16 Search For pigmiallocation
+		{
+			return ($this->rep_mdl->search_agent($request->search));
 		}
 	}
 	
