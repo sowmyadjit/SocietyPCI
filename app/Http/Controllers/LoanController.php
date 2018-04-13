@@ -1329,15 +1329,20 @@
 			return $this->loantype->edit_int_rate($fn_data);
 		}
 		
-		public function jewelLoan2()
+		public function jewelLoan2()//JEWEL LOAN
 		{
 			return view('jewelloanallocation_index');
 		}
 		
-		public function show_Persnloanalloc2()
+		public function show_Persnloanalloc2()//PERSONAL LOAN
 		{
 			return view('personal_loanallocation_index');
 		}
+		
+		public function show_loanalloc2()//DEPOSIT LOAN
+		{
+			return view('deposit_loanallocation_index');
+		} 
 		
 		public function account_list(Request $request)
 		{
@@ -1351,13 +1356,14 @@
 				case "PL":	$ret_data = $this->loan->account_list_pl($in_data);
 							return view("personal_loanallocation_data",compact("ret_data"));
 							break;
-				case "PG":	$ret_data = $this->loan->account_list_pg($in_data);
+				case "DL":	$ret_data = $this->loan->account_list_dl($in_data);
+							return view("deposit_loanallocation_data",compact("ret_data"));
 							break;
 			}
 		}
 			
-			public function account_list_edit(Request $request)
-			{
+		public function account_list_edit(Request $request)
+		{
 			$in_data['category'] = $request->input("category");
 			$in_data['closed'] = $request->input("closed");
 			$in_data['loan_id'] = $request->input("loan_id");
@@ -1367,12 +1373,12 @@
 				//			break;
 				case "PL":	$ret_data = $this->loan->account_list_pl_edit($in_data);
 							break;
-				//case "PG":	$ret_data = $this->loan->account_list_pg($in_data);
-				//			break;
+				case "DL":	$ret_data = $this->loan->account_list_dl_edit($in_data);
+							break;
 				
 			}
 			return "deposit_account_edit: done";
-			}
+		}
 		
 		
 	}

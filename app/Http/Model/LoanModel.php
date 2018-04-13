@@ -2927,6 +2927,11 @@
 							$loan_id_field = "JLRepay_JLAllocID";
 							$cheque_cleared_status_field = "JL_Status";
 							break;
+				case "DL":
+							$table = "depositeloan_repay";
+							$loan_id_field = "DLRepay_DepAllocID";
+							$cheque_cleared_status_field = "Dl_Cheque_Status";
+							break;
 			}
 			$repay = DB::table($table)
 				->select()
@@ -2962,6 +2967,12 @@
 							$loan_id_field = "JLRepay_JLAllocID";
 							$cheque_cleared_status_field = "JL_Status";
 							$principle_amount_field = "JLRepay_paidtoprincipalamt";
+							break;
+				case "DL":
+							$table = "depositeloan_repay";
+							$loan_id_field = "DLRepay_DepAllocID";
+							$cheque_cleared_status_field = "Dl_Cheque_Status";
+							$principle_amount_field = "DLRepay_PrincipalPaid";
 							break;
 			}
 			
@@ -3095,6 +3106,12 @@
 							$cheque_cleared_status_field = "PL_ChequeStatus";
 							$date_field = "PLRepay_Date";
 							break;
+		/*		case "DL":
+							$table = "depositeloan_repay";
+							$loan_id_field = "DLRepay_DepAllocID";
+							$cheque_cleared_status_field = "Dl_Cheque_Status";
+							$date_field = "DLRepay_Date";
+							break;*/
 			}
 			if($is_first_repay_done) {
 				$repay = DB::table($table)
@@ -3116,6 +3133,11 @@
 									$loan_id_field = "PersLoanAllocID";
 									$start_date_field = "StartDate";
 									break;
+				/*		case "DL":
+									$table = "personalloan_allocation";
+									$loan_id_field = "PersLoanAllocID";
+									$start_date_field = "StartDate";
+									break;*/
 					}
 					$interest_paid_upto = DB::table($table)
 						->where($loan_id_field,"=",$data['loan_id'])
@@ -3200,7 +3222,7 @@
 				$ret_data['loan_details'][$i]['interest_paid_upto'] = $this->get_interest_paid_upto($fn_data);
 				unset($fn_data);
 			}
-			//print_r($ret_data);exit();
+			print_r($ret_data);exit();
 			return $ret_data;
 		}
 		
@@ -3282,6 +3304,95 @@
 			$table = "personalloan_allocation";
 			$allocation_id_field = "{$table}.PersLoanAllocID";
 			$closed_field = "closed";
+			
+			$update_array = array(
+										"{$closed_field}"=>$data["closed"]
+								);
+			
+			DB::table($table)
+				->where($allocation_id_field,'=',$data['loan_id'])
+				->update($update_array);
+		}
+		
+		public function account_list_dl($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$ret_data['loan_details'] = array();
+			$ret_data['loan_category'] = $data["category"];
+			$table = "depositeloan_allocation";
+			$closed_field = "LoanClosed_State";
+			$branch_id_field = "{$table}.DepLoan_Branch";
+			$loan_id_field = "DepLoanAllocId";
+			$user_id_field = "DepLoan_Uid";
+			
+			$select_array = array(
+									"{$table}.DepLoanAllocId as loan_id",
+									"{$table}.DepLoan_LoanNum as loan_no",
+									"{$table}.Old_loan_number as loan_old_no",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$table}.DepLoan_LoanAmount as loan_amount",
+									"{$table}.DepLoan_LoanStartDate as start_date",
+									"{$table}.DepLoan_LoanEndDate as end_date",
+									"{$table}.LoanClosed_State as closed"
+								);
+			$account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$table}.{$user_id_field}")
+				->where($branch_id_field,"=",$BID);
+			if(!empty($data['loan_id'])) {
+				$account_list = $account_list->where($loan_id_field,'=',$data['loan_id']);
+			} else {
+				if($data['closed'] == "NO") {
+					$account_list = $account_list->whereIn($closed_field,[$data['closed'],""]);
+				} else {
+					$account_list = $account_list->where($closed_field,"=",$data['closed']);
+				}
+			}
+			$account_list = $account_list//->limit(1)
+										->get();
+//			print_r($account_list);exit();
+			
+			if(empty($account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($account_list as $row) {
+				$ret_data['loan_details'][++$i]['loan_id'] = $row->loan_id;
+				$ret_data['loan_details'][$i]['loan_no'] = $row->loan_no;
+				$ret_data['loan_details'][$i]['loan_old_no'] = $row->loan_old_no;
+				$ret_data['loan_details'][$i]['user_id'] = $row->user_id;
+				$ret_data['loan_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['loan_details'][$i]['loan_amount'] = $row->loan_amount;
+				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
+				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
+				$ret_data['loan_details'][$i]['closed'] = $row->closed;
+				$ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
+																								"loan_allocation_id"=>$row->loan_id,
+																								"loan_category"=>$data['category']
+																							]);
+				$ret_data['loan_details'][$i]['ramaining_amount'] = $row->loan_amount - $ret_data['loan_details'][$i]['paid_principle_amt'];
+			/*	$fn_data = array(
+										'loan_id'=>$row->loan_id,
+										'loan_category'=>$data["category"],
+										'start_date'=>$row->start_date//optional
+									);
+				$ret_data['loan_details'][$i]['interest_paid_upto'] = $this->get_interest_paid_upto($fn_data);
+				unset($fn_data);*/
+			}
+//			print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
+		public function account_list_dl_edit($data)
+		{
+			$table = "depositeloan_allocation";
+			$allocation_id_field = "{$table}.DepLoanAllocId";
+			$closed_field = "LoanClosed_State";
 			
 			$update_array = array(
 										"{$closed_field}"=>$data["closed"]

@@ -249,7 +249,8 @@
 				
 				
 				//LoanAllocation Controller
-				Route::get('/Loanallocation','LoanController@show_loanalloc');
+				//Route::get('/Loanallocation','LoanController@show_loanalloc');
+				Route::get('/Loanallocation','LoanController@show_loanalloc2');
 				Route::get('/crtloanalloc','LoanController@show_createaloanalloc');
 				Route::post('/retrieveaccname','LoanController@retrieve_acname');
 				Route::post('/crtloanallocation','LoanController@create_Loan');
