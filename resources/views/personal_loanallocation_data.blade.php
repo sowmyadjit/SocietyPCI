@@ -9,10 +9,10 @@
 									<th>Loan Amount</th>
 									<th>Start Date</th>
 									<th>End Date</th>
-									<th>Pending Amount</th>
+								<?php /*	<th>Pending Amount</th> */?>
 									<th>Close</th>
 									<th>Interest Paid Till</th>
-									<th>Paid Principle Amt.</th>
+								<?php /*	<th>Paid Principle Amt.</th> */?>
 									<th>EMI Amount</th>
 									<th>Loan Type</th>
 									<th>Action</th>
@@ -30,10 +30,10 @@
 											<td>{{ $row['loan_amount']}}</td>
 											<td>{{ $row['start_date']}}</td>
 											<td>{{ $row['end_date']}}</td>
-											<td>{{ $row['ramaining_amount']}}</td>
+										<?php /*	<td>{{ $row['ramaining_amount']}}</td> */?>
 											<td>{{ $row['closed']}}</td>
 											<td>{{ $row['interest_paid_upto']}}</td>
-											<td>{{ $row['paid_principle_amt']}}</td>
+										<?php /*	<td>{{ $row['paid_principle_amt']}}</td> */?>
 											<td>
 													<input value="{{$row["emi"]}}" class="edit_emi" data="{{ $row['loan_id'] }}" style="width: 50px;" />
 											</td>
