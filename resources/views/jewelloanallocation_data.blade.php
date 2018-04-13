@@ -16,7 +16,7 @@
 									@if($ret_data['loan_category'] == "JL")
 										<th>Jewel Description</th>
 										<th>Net Weight</th>
-										<th>Edit Net Weight</th>
+										<th>Edit</th>
 										<th></th>
 									@endif
 								</tr>
