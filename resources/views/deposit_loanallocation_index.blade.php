@@ -64,7 +64,7 @@
 									<option value="pdf">PDF</option>
 								</select>
 							</div>
-							<a href="" class="btn btn-info btn-sm col-md-2 crtlal">LOAN ALLOCATION</a>
+							<a href="crtloanalloc" class="btn btn-info btn-sm col-md-2 crtlal">LOAN ALLOCATION</a>
 							
 							<input type="button" value="Print" class="btn btn-info btn-sm print col-md-1" id="print">
 						</div>
@@ -112,7 +112,7 @@
 </script>
 <script>
 	$('input.SearchTypeahead').typeahead({
-		ajax: '/getplaccsearch'
+		ajax: '/getdlaccsearch'
 	});
 </script>
 <script>
