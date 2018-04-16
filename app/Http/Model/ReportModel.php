@@ -2835,10 +2835,10 @@
 				}
 				
 				$last_tran_date_pid = $last_tran_date["{$row_alloc->PigmiAllocID}"];
-				$day_before_one_month = date('Y-m-d', strtotime(' -30 day'));
+				//$day_before_one_month = date('Y-m-d', strtotime(' -30 day'));
 //				echo "$last_tran_date_pid < $day_before_one_month";exit();
 				
-				if($last_tran_date_pid < $day_before_one_month) {
+				if($last_tran_date_pid < $data["from_date"]) {
 					//echo " 1 ";
 					continue;
 				}
