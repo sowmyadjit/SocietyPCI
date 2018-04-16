@@ -3222,7 +3222,7 @@
 				$ret_data['loan_details'][$i]['interest_paid_upto'] = $this->get_interest_paid_upto($fn_data);
 				unset($fn_data);
 			}
-			print_r($ret_data);exit();
+			//print_r($ret_data);exit();
 			return $ret_data;
 		}
 		
