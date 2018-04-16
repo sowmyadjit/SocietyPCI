@@ -55,7 +55,7 @@
 											<td>
 												<div class="form-group">
 													<div class="col-sm-12">
-														<input type="button" value="Receipt" class="btn btn-info btn-sm edtbtn" href="plloanrecepit/{{ $row['loan_id'] }}"/>
+														<input type="button" value="Receipt" class="btn btn-info btn-sm edtbtn" href="dlloanrecepit/{{ $row['loan_id'] }}"/>
 													</div>
 												</div>
 											</td>	
