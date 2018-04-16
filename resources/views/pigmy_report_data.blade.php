@@ -9,7 +9,7 @@
 <script src="js/tableExport.js"/>	
 <input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="view_excel">
 <input type="button" value="Print" class="btn btn-info btn-sm print" id="view_print">
-<?php /*
+
 	<table  class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="expense_details">
 	<thead>
 		<tr>
@@ -20,7 +20,8 @@
 			@foreach($data["dates"] as $tran_date)
 			<th>{{dmy($tran_date)}}</th>
 			@endforeach
-			<th>Total Balance</th>
+		<th>Total</th>
+		<th>Grand Total</th>
 		</tr>
 	</thead>
 	@foreach($data["pg_tr"] as $key_det => $row_det)
@@ -32,11 +33,34 @@
 		@foreach($data["dates"] as $tran_date)
 			<td>{{$row_det["{$tran_date}"]}}</td>
 		@endforeach
-		<td>{{$row_det["total_amt"]}}</td>
+		<td>{{$row_det["day_sum_row"]}}</td>
+		<td>{{$row_det["col_sum"]}}</td>
 	</tr>
 	@endforeach
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		@foreach($data["dates"] as $tran_date)
+			<td></td>
+		@endforeach
+		<td>{{$data["dates_col_total_sum"]}}</td>
+	</tr>
+	<tr><td></td></tr>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		@foreach($data["dates_row_sum"] as $amt)
+			<td>{{$amt}}</td>
+		@endforeach
+		<td>{{$data["dates_row_total_sum"]}}</td>
+	</tr>
 </table>
-*/ ?>
+
+
 
 <div id="toprint" style="position:fixed;opacity:0;">
 <table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >
@@ -49,6 +73,7 @@
 			<th>{{dmy($tran_date)}}</th>
 		@endforeach
 		<th>Total</th>
+		<th>Grand Total</th>
 		<?php /*<th>Total Balance</th> */?>
 	</tr>
 	@foreach($data["pg_tr"] as $key_det => $row_det)
@@ -60,10 +85,32 @@
 		@foreach($data["dates"] as $tran_date)
 			<td>{{$row_det["{$tran_date}"]}}</td>
 		@endforeach
+		<td>{{$row_det["day_sum_row"]}}</td>
 		<td>{{$row_det["col_sum"]}}</td>
 		<?php /*<td>{{$row_det["total_amt"]}}</td> */?>
 	</tr>
 	@endforeach
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		@foreach($data["dates"] as $tran_date)
+			<td></td>
+		@endforeach
+		<td>{{$data["dates_col_total_sum"]}}</td>
+	</tr>
+	<tr><td></td></tr>
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		@foreach($data["dates_row_sum"] as $amt)
+			<td>{{$amt}}</td>
+		@endforeach
+		<td>{{$data["dates_row_total_sum"]}}</td>
+	</tr>
 </table>
 </div>
 </div>

@@ -2735,6 +2735,7 @@
 			$ret_data = array();
 			$ret_data["pg_tr"] = array();//pigmy transactions
 			$ret_data["dates"] = array();// From Date   to   To Date
+			$ret_data["dates_row_sum"] = array();// From Date   to   To Date
 			
 			if(empty($data["to_date"])) {
 				$data["to_date"] = $data["from_date"];
@@ -2826,6 +2827,7 @@
 			
 /********* process each entry ***********/
 			$i = -1;
+			$ret_data["dates_col_total_sum"] = 0;
 			foreach($pigmiallocation as $key_alloc => $row_alloc) {
 				if(!isset($last_tran_date["{$row_alloc->PigmiAllocID}"])) {
 					//echo " 1 ";
@@ -2871,6 +2873,7 @@
 					echo "empty";
 				}
 				
+				$ret_data["pg_tr"][$i]["day_sum_row"] = 0;
 				$ret_data["pg_tr"][$i]["col_sum"] = 0;
 				$ret_data["pg_tr"][$i]["prev_amt"] = $credit_amount - $debit_amount;
 				$ret_data["pg_tr"][$i]["col_sum"] = $credit_amount - $debit_amount;
@@ -2881,9 +2884,24 @@
 						$day_amt = $pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"]["{$tran_date}"];
 					}
 					$ret_data["pg_tr"][$i]["{$tran_date}"] = $day_amt;
-					$ret_data["pg_tr"][$i]["col_sum"] += $day_amt;
+					$ret_data["pg_tr"][$i]["day_sum_row"] += $day_amt;
 				}
+				$ret_data["pg_tr"][$i]["col_sum"] += $ret_data["pg_tr"][$i]["day_sum_row"];
+				$ret_data["dates_col_total_sum"] += $ret_data["pg_tr"][$i]["day_sum_row"];
 			}
+			
+			$i = -1;
+			$ret_data["dates_row_total_sum"] = 0;
+			foreach($ret_data["dates"] as $key=>$date) {
+				$temp = 0;
+				foreach($ret_data["pg_tr"] as $tran) {
+					$temp += $tran["{$date}"];
+				}
+				$ret_data["dates_row_sum"][$key] = $temp;
+				$ret_data["dates_row_total_sum"] += $temp;
+			}
+			
+			
 			//print_r($ret_data);exit();
 			return $ret_data;
 		}

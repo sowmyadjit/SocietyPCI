@@ -74,10 +74,10 @@
 									<input class="SearchTypeahead form-control" id="SearchPigmy" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY(Optional)">
 						</div>
 						</div>
-						<div class="col-sm-12">
-						<div class="col-md-4 pull-right" style='display:inline-block;'>
-						<button class="btn btn-info btn-sm"  id="print">Print</button>
-						</div>
+						<div class="col-sm-7">
+						<?php /*	<div class="col-md-4 pull-right" style='display:inline-block;'>
+							<button class="btn btn-info btn-sm"  id="print">Print</button>
+							</div> */?>
 						<div class="col-md-1 pull-right" style='display:inline-block;'>
 						<button class="btn btn-info btn-sm"  id="excel">Excel</button>
 						</div>
