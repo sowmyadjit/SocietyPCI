@@ -2870,7 +2870,10 @@
 				} else {
 					echo "empty";
 				}
+				
+				$ret_data["pg_tr"][$i]["col_sum"] = 0;
 				$ret_data["pg_tr"][$i]["prev_amt"] = $credit_amount - $debit_amount;
+				$ret_data["pg_tr"][$i]["col_sum"] = $credit_amount - $debit_amount;
 				$ret_data["pg_tr"][$i]["total_amt"] = $total_credit_amount - $total_debit_amount;
 				foreach($ret_data["dates"] as $tran_date) {
 					$day_amt = 0;
@@ -2878,6 +2881,7 @@
 						$day_amt = $pigmi_transaction_arr["{$row_alloc->PigmiAllocID}"]["{$tran_date}"];
 					}
 					$ret_data["pg_tr"][$i]["{$tran_date}"] = $day_amt;
+					$ret_data["pg_tr"][$i]["col_sum"] += $day_amt;
 				}
 			}
 			//print_r($ret_data);exit();

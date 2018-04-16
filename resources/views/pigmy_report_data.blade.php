@@ -9,7 +9,8 @@
 <script src="js/tableExport.js"/>	
 <input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="view_excel">
 <input type="button" value="Print" class="btn btn-info btn-sm print" id="view_print">
-<table  class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="expense_details">
+<?php /*
+	<table  class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="expense_details">
 	<thead>
 		<tr>
 			<th>allocation_id</th>
@@ -35,6 +36,7 @@
 	</tr>
 	@endforeach
 </table>
+*/ ?>
 
 <div id="toprint" style="position:fixed;opacity:0;">
 <table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >
@@ -46,7 +48,8 @@
 		@foreach($data["dates"] as $tran_date)
 			<th>{{dmy($tran_date)}}</th>
 		@endforeach
-		<th>Total Balance</th>
+		<th>Total</th>
+		<?php /*<th>Total Balance</th> */?>
 	</tr>
 	@foreach($data["pg_tr"] as $key_det => $row_det)
 	<tr>
@@ -57,7 +60,8 @@
 		@foreach($data["dates"] as $tran_date)
 			<td>{{$row_det["{$tran_date}"]}}</td>
 		@endforeach
-		<td>{{$row_det["total_amt"]}}</td>
+		<td>{{$row_det["col_sum"]}}</td>
+		<?php /*<td>{{$row_det["total_amt"]}}</td> */?>
 	</tr>
 	@endforeach
 </table>
