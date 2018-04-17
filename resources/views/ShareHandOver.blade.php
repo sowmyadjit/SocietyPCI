@@ -45,6 +45,7 @@
 		<thead>
 			<tr>
 				<th><input type="checkbox" id="select_all" />sel. all</th>
+				<th>Sl. No.</th>
 				<th>Share Number</th>
 				<th>Cetificate Number</th>
 				<th> Shares Amount</th>
@@ -57,11 +58,14 @@
 			
 			
 			
-			
+			<?php
+				$i = 0;
+			?>
 			@foreach ($shares['data2'] as $indvshares)
 			<tr>
 				<td ><input class="ck" type="checkbox" data_src="{{$indvshares->individual_share_ID}}" ></td>
 				
+				<td >{{ ++$i }}</td>
 				<td >{{ $indvshares->individual_share_ID }}</td>
 				
 				
