@@ -276,6 +276,21 @@
 			->get();
 		}
 		
+		public function SearchKCCAllocation($q)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+		
+			return DB::table('fdallocation')
+			->leftJoin('user','user.Uid','=','fdallocation.Uid')
+			->select(DB::raw('Fdid as id, CONCAT(`FirstName`,"-",`MiddleName`,"-",`LastName`," , ",`Fd_CertificateNum`," / ",`Fd_OldCertificateNum`) as name'))
+			->where('fdallocation.Bid',$BID)
+			->where('fdallocation.FdTid','1')
+			->get();
+		}
+		
 		public function FdCertStatUpdate($id)
 		{
 			$Fdid = $id['Fdid'];

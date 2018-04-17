@@ -200,7 +200,8 @@
 				
 				
 				//FdAllocationController
-				Route::get('/fdallocation','FdAllocationController@Show_FdAlloc');
+				//Route::get('/fdallocation','FdAllocationController@Show_FdAlloc');
+				Route::get('/fdallocation','FdAllocationController@Show_FdAlloc2');
 				Route::get('/crtfdallocation','FdAllocationController@show_crtfdalloc');
 				//Route::get('/RetrieveCommission','FdAllocationController@retrieve_comm');
 				Route::post('/crtfdalloc','FdAllocationController@create_fdalloc');
@@ -214,7 +215,8 @@
 				Route::post('/prefdwithdrawal','FdAllocationController@prefdwithdrawal');
 				Route::get('/FDSearchView','FdAllocationController@FDSearchView'); //M 13-4-16
 				Route::post('/FdCertStatUpdate','FdAllocationController@FdCertStatUpdate'); //M 22-6-16
-				Route::get('/kccallocation','FdAllocationController@kccallocation');
+				//Route::get('/kccallocation','FdAllocationController@kccallocation');
+				Route::get('/kccallocation','FdAllocationController@kccallocation2');
 				Route::post('/crtkccalloc','FdAllocationController@crtkccalloc');
 				Route::get('/crtkccallocation','FdAllocationController@crtkccallocation');
 				Route::post('/fdrenew','FdAllocationController@fdrenew');
@@ -559,6 +561,7 @@
 				Route::get('/SearchCustomer','SearchController@SearchCustomer');//M 19-04-16 For Customer.blade
 				Route::get('/SearchCustomer_usertable','SearchController@SearchCustomer_usertable');
 				Route::get('/SearchFdAllocation','SearchController@SearchFdAllocation');//M 19-04-16 For fdallocation.blade
+				Route::get('/SearchKCCAllocation','SearchController@SearchKCCAllocation');
 				Route::get('/SearchMember','SearchController@SearchMember');//M 19-04-16 For member.blade
 				Route::get('/SearchPurchaseShare','SearchController@SearchPurchaseShare');//M 19-04-16 For member.blade
 				Route::get('/SearchPigmy','SearchController@SearchPigmy');//M 20-04-16 For pigmyallocation.blade

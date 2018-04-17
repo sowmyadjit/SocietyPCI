@@ -50,6 +50,14 @@ public function Show_FdAlloc()
 			}
 			return view('fdallocation',compact('fda'));
 		}
+	
+		public function Show_FdAlloc2()
+		{
+			$Url="fdallocation";
+			$fda['module']=$this->Modules->GetAnyMid($Url);
+			return view('fd_allocation_index',compact('fda'));
+		}
+		
 		public function FDSearchView(Request $request) //M 19-4-16 for fdsearch
 		{
 			$id=$request->input('SearchAccId');
@@ -217,6 +225,13 @@ public function create_fdalloc(Request $request)
 				$fda['close']=1;
 			}
 			return view('kcclist',compact('fda'));
+		}
+		
+		public function kccallocation2(Request $request)
+		{
+			$Url="kccallocation";
+			$fda['module']=$this->Modules->GetAnyMid($Url);
+			return view('kcc_allocation_index',compact('fda'));
 		}
 			
 		

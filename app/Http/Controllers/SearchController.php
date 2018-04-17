@@ -398,6 +398,11 @@
 			return ($this->GetFdAllocation->SearchFdAllocation($request->search));
 		}
 		
+		public function SearchKCCAllocation(Request $request)//M 19-4-16 Comman Search For Fdallocation
+		{
+			return ($this->GetFdAllocation->SearchKCCAllocation($request->search));
+		}
+		
 		public function SearchMember(Request $request)//M 19-4-16 Search For member
 		{
 			return ($this->get_member->SearchMember($request->search));

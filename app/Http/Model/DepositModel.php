@@ -106,7 +106,6 @@ class DepositModel extends Model
 	
 		public function deposit_account_list_pg($data)
 		{
-			//print_r($data); exit();
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
 			$ret_data['deposit_details'] = array();
@@ -170,6 +169,94 @@ class DepositModel extends Model
 		{
 			$table = "pigmiallocation";
 			$allocation_id_field = "{$table}.PigmiAllocID";
+			$closed_field = "Closed";
+			
+			$update_array = array(
+										"{$closed_field}"=>$data["closed"]
+								);
+			
+			DB::table($table)
+				->where($allocation_id_field,'=',$data['allocation_id'])
+				->update($update_array);
+		}
+		
+		public function deposit_account_list_fd($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$ret_data['deposit_details'] = array();
+			$ret_data['deposit_category'] = $data["category"];
+			$table = "fdallocation";
+			$closed_field = "Closed";
+			$branch_id_field = "{$table}.Bid";
+			$user_id_field = "{$table}.Uid";
+			$allocation_id_field = "{$table}.Fdid";
+			$select_array = array(
+									"{$table}.Fdid as allocation_id",
+									"{$table}.Fd_CertificateNum as account_no",
+									"{$table}.Fd_OldCertificateNum as old_account_no",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$table}.Fd_DepositAmt as total_amount",
+									"{$table}.FdReport_StartDate as allocation_date",
+									"{$table}.FdReport_StartDate as start_date",
+									"{$table}.FdReport_MatureDate as end_date",
+									"{$table}.Closed as closed",
+									"{$table}.Days as days",
+									"{$table}.Fd_TotalAmt as maturity_amount",
+									"{$table}.Fd_Remarks as remarks",
+									"fdtype.FdInterest as interest_rate"
+								);
+								
+			$deposit_account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$user_id_field}")
+				->join("fdtype","fdtype.FdTid","=","{$table}.FdTid")
+				->where($branch_id_field,"=",$BID);
+			if($data["category"] == "FD") {//FD
+				$deposit_account_list = $deposit_account_list->where("fdtype.FdTid","!=",1);
+			} else {//KCC
+				$deposit_account_list = $deposit_account_list->where("fdtype.FdTid","=",1);
+			}
+			if(!empty($data['allocation_id'])) {
+				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
+			} else {
+				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data['closed']);
+			}
+			$deposit_account_list = $deposit_account_list//->limit(1)
+										->get();
+				
+			if(empty($deposit_account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($deposit_account_list as $row) {
+				$ret_data['deposit_details'][++$i]['allocation_id'] = $row->allocation_id;
+				$ret_data['deposit_details'][$i]['account_no'] = $row->account_no;
+				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
+				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
+				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['deposit_details'][$i]['total_amount'] = $row->total_amount;
+				$ret_data['deposit_details'][$i]['allocation_date'] = $row->allocation_date;
+				$ret_data['deposit_details'][$i]['start_date'] = $row->start_date;
+				$ret_data['deposit_details'][$i]['end_date'] = $row->end_date;
+				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
+				$ret_data['deposit_details'][$i]['days'] = $row->days;
+				$ret_data['deposit_details'][$i]['maturity_amount'] = $row->maturity_amount;
+				$ret_data['deposit_details'][$i]['remarks'] = $row->remarks;
+				$ret_data['deposit_details'][$i]['interest_rate'] = $row->interest_rate;
+			}
+			//print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
+		public function deposit_account_edit_fd($data)
+		{
+			$table = "fdallocation";
+			$allocation_id_field = "{$table}.Fdid";
 			$closed_field = "Closed";
 			
 			$update_array = array(

@@ -93,11 +93,15 @@
 			$in_data['allocation_id'] = $request->input("allocation_id");
 			switch($in_data['category']) {
 				case "PG":	$ret_data = $this->creadepositmodel->deposit_account_list_pg($in_data);
+							return view("deposit_account_list_data",compact("ret_data"));
 							break;
 				case "FD":	$ret_data = $this->creadepositmodel->deposit_account_list_fd($in_data);
+							return view("deposit_account_list_data_fd",compact("ret_data"));
+							break;
+				case "KCC":	$ret_data = $this->creadepositmodel->deposit_account_list_fd($in_data);
+							return view("deposit_account_list_data_kcc",compact("ret_data"));
 							break;
 			}
-			return view("deposit_account_list_data",compact("ret_data"));
 		}
 	
 		public function deposit_account_edit(Request $request)
@@ -108,7 +112,9 @@
 			switch($in_data['category']) {
 				case "PG":	$ret_data = $this->creadepositmodel->deposit_account_edit_pg($in_data);
 							break;
-				case "FD":	$ret_data = $this->creadepositmodel->deposit_account_edit_fd($in_data);
+				case "FD":	
+				case "KCC":	
+							$ret_data = $this->creadepositmodel->deposit_account_edit_fd($in_data);//SAME FN FOR FD AND KCC
 							break;
 			}
 			return "deposit_account_edit: done";
