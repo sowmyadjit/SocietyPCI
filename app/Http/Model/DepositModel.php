@@ -2,6 +2,8 @@
 
 namespace App\Http\Model;
 
+define("ACCOUNT_TYPE_PIGMY",2);
+
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Auth;
@@ -154,7 +156,7 @@ class DepositModel extends Model
 				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
 				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
 				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
-				$ret_data['deposit_details'][$i]['total_amount'] = $row->total_amount;
+				$ret_data['deposit_details'][$i]['total_amount'] = $this->get_pigmy_account_balance(["allocation_id"=>$row->allocation_id]);//$row->total_amount;
 				$ret_data['deposit_details'][$i]['allocation_date'] = $row->allocation_date;
 				$ret_data['deposit_details'][$i]['start_date'] = $row->start_date;
 				$ret_data['deposit_details'][$i]['end_date'] = $row->end_date;
@@ -266,6 +268,37 @@ class DepositModel extends Model
 			DB::table($table)
 				->where($allocation_id_field,'=',$data['allocation_id'])
 				->update($update_array);
+		}
+		
+		public function get_pigmy_account_balance($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$table = "pigmiallocation";
+			$allocation_id_field = "PigmiAllocID";
+			$total_amount_field = "Total_Amount";
+			
+			$total_amount = DB::table($table)
+				->where($allocation_id_field,"=",$data["allocation_id"])
+				->value($total_amount_field);
+				
+				
+			$table = "service_charge";
+			$account_type_field = "acc_type";
+			$allocation_id_field = "acc_id";
+			$branch_id_field = "bid";
+			$service_charge_amount_field = "service_charge_amount";
+			$deleted_field = "deleted";
+			
+			$total_service_charge_amount = DB::table($table)
+				->where($account_type_field,"=",ACCOUNT_TYPE_PIGMY)
+				->where($allocation_id_field,"=",$data["allocation_id"])
+				->where($branch_id_field,"=",$BID)
+				->where($deleted_field,"=",0)
+				->sum($service_charge_amount_field);
+			
+			$current_balance = $total_amount - $total_service_charge_amount;
+			return ($current_balance < 0)? 0 : $current_balance;
 		}
 		
 	}

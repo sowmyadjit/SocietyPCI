@@ -173,7 +173,7 @@
 			return DB::table('pigmiallocation')
 			->join('user','pigmiallocation.Uid','=','user.Uid')
 			->join('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
-			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.Total_Amount','pigmitype.PigmiTypeid')
+			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.Total_Amount','pigmitype.PigmiTypeid','pigmiallocation.PigmiAllocID')
 			->where('PigmiAllocID','=',$id)
 			->first();
 		}

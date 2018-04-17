@@ -14,6 +14,7 @@
 	use App\Http\Model\OpenCloseModel;
 use App\Http\Model\TransactionModel;
 	use App\Http\Model\ledgermodel;
+	use App\Http\Model\DepositModel;
 	
 	
 	class TransactionController extends Controller
@@ -29,6 +30,7 @@ use App\Http\Model\TransactionModel;
 			$this->TranModel=new TransactionModel;
 			$this->ledger = new ledgerModel;
 			$this->Modules= new ModulesModel;
+			$this->dep_mdl= new DepositModel;
 		}
 		public function index()
 		{
@@ -228,7 +230,7 @@ $trans['LedgerId']=$request->input('LedgerId');
 			$get=$this->pigmiallocation_model->getAcctholder($acchname);
 			$id['fstname']=$get->FirstName;
 			$id['pgmtype']=$get->Pigmi_Type;
-			$id['opbal']=$get->Total_Amount;
+			$id['opbal']=$this->dep_mdl->get_pigmy_account_balance(["allocation_id"=>$get->PigmiAllocID]);//$get->Total_Amount;
 			$id['ptid']=$get->PigmiTypeid;
 			return $id;
 		}
