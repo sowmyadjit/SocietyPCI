@@ -1,4 +1,10 @@
-
+<style>
+	.hide_it {
+		opacity: 0.5;
+		height: 1px;
+		overflow: scroll;
+	}
+</style>
 							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >
 								<thead>
 									<tr>
@@ -67,7 +73,7 @@
 								</tbody>
 							</table>
 							
-							<div id="toprint">
+							<div id="toprint" class="hide_it">
 							
 							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 								<thead>
