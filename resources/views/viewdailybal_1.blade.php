@@ -35,7 +35,7 @@
 			
 			
 			<td> <h5><b>Opening Balance:</b> <?php echo $trandaily['opbal']; ?> </h5></td>&nbsp&nbsp&nbsp&nbsp
-			<td> <h5><b>Running Balance:</b> <?php echo $trandaily['runningbal']; ?> </h5></td>
+			<td> <h5><b>Running Balance:</b> <span id="running_balance"><?php //echo $trandaily['runningbal']; ?> </span></h5></td>
 			
 			<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 				
@@ -2903,4 +2903,14 @@
 	});
 																										
 																									</script>
+
+<script>
+	<?php 
+		$opening_balance = $trandaily['opbal'];
+		$running_balance = $opening_balance + $gt_cash_cr - $gt_cash_db;
+	?>
+	var running_balance = {{$running_balance}};
+	console.log(running_balance);
+	$("#running_balance").html(running_balance);
+</script>
 
