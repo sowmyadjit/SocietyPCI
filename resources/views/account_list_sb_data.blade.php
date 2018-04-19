@@ -1,13 +1,19 @@
-
+<style>
+	.hide_it {
+		opacity: 0.5;
+		height: 1px;
+		overflow: scroll;
+	}
+</style>
 							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 							<thead>
 								<tr>
 									<th>SL NO.</th>
 									<th>Customer ID</th>
-									<th>Start Date</th>
+									<th>Name</th>
 									<th>Account Type</th>
 									<th>Account Number</th>
-									<th>Name</th>
+									<th>Start Date</th>
 									@if($ret_data["account_type"] == "RD")
 										<th>Mature Date</th>
 									@endif
@@ -70,7 +76,7 @@
 								</tbody>
 							</table>
 							
-							<div class="hide_it to_print">
+							<div class="hide_it to_print" >
 							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive ">
 							<thead>
 								<tr>
@@ -85,9 +91,6 @@
 									@endif
 									<th>Balance Amount</th>
 									<th>
-										<div>
-											(editable<input id="closed_editable" type="checkbox" />)
-										</div>
 										Close
 									</th>
 								</tr>
@@ -125,6 +128,7 @@
 		e.preventDefault();
 		$("#account_details_box").hide();
 		$('#temp_box').load($(this).attr('href'));
+		$("#back").show();
 	});
 </script>
 <script>
@@ -133,6 +137,7 @@
 		e.preventDefault();
 		$("#account_details_box").hide();
 		$('#temp_box').load($(this).attr('href'));
+		$("#back").show();
 	});
 </script>
 
