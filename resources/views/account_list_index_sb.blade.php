@@ -34,12 +34,8 @@
 					</div>
 					
 					<div class="box-content">
-						<div class="alert alert-info" style="height:160px;">
-							<div class="pull-right">
-								<a href="acccreation" class="btn btn-default CreateAcc<?php echo $a['module']->Mid; ?>">Create Account</a>
-								<a href="ViewCreateJointAcc" class="btn btn-default JointAcc<?php echo $a['module']->Mid; ?>">Create Joint Account</a>
-								<a href="ViewMinorAccHome" class="btn btn-default ViewMinAcc<?php echo $a['module']->Mid; ?>">Create Minor Account</a>
-							</div>
+						<div class="alert alert-info" style="height:123px;">
+						<div class="col-md-12">
 							<div class="col-md-3">
 								<select class="form-control" id="ExportType" name="ExportType">
 									<option value="">SELECT TYPE TO EXPORT</option>
@@ -48,28 +44,31 @@
 									<option value="pdf">PDF</option>
 								</select>
 							</div>
-							<input type="button" value="Print" class="btn btn-info btn-sm print col-md-1" id="print">
-							
-							<div class="col-md-12">
-								<div class="col-md-3" style="height:38px;">
-									ACCOUNT TYPE:
-									<select id="account_type" style="height:38px;">
-										<option value="1">SB</option>
-										<option value="2">RD</option>
-									</select>
-								</div>
-								<div class="col-md-3" style="height:38px;">
-									CLOSED TYPE:
-									<select id="closed_status" style="height:38px;">
-										<option value="NO">LIVE</option>
-										<option value="YES">CLOSED</option>
-									</select>
-								</div>
-								<div class="col-md-3">
-									<input class="SearchTypeahead form-control" id="search_acc" type="text" name="search_acc" placeholder="SEARCH ACCOUNT">
-								</div>
+							<div class="col-md-3" style="height:38px;">
+								ACCOUNT TYPE:
+								<select id="account_type" style="height:38px;">
+									<option value="1">SB</option>
+									<option value="2">RD</option>
+								</select>
 							</div>
-							
+							<div class="col-md-3" style="height:38px;">
+								CLOSED TYPE:
+								<select id="closed_status" style="height:38px;">
+									<option value="NO">LIVE</option>
+									<option value="YES">CLOSED</option>
+								</select>
+							</div>
+							<div class="col-md-3">
+								<input class="SearchTypeahead form-control" id="search_acc" type="text" name="search_acc" placeholder="SEARCH ACCOUNT">
+							</div>	
+						</div>
+						<div class="col-md-12" style="margin-top:15px;">
+								<a href="acccreation" class="col-md-3 btn btn-default CreateAcc<?php echo $a['module']->Mid; ?>">Create Account</a>
+								<a href="ViewCreateJointAcc" class="col-md-3 btn btn-default JointAcc<?php echo $a['module']->Mid; ?>">Create Joint Account</a>
+								<a href="ViewMinorAccHome" class="col-md-3 btn btn-default ViewMinAcc<?php echo $a['module']->Mid; ?>">Create Minor Account</a>
+								<input type="button" value="Print" class="col-md-3 btn btn-default  print" id="print">
+						</div>
+						</div>
 						</div>
 								
 							<div id="account_list_box">Loading...</div>
@@ -77,8 +76,10 @@
 					</div>
 				</div>
 				<div id="temp_box"></div>
-				<button class="btn btn-info btn-sm" id="back" style="margin-left:47.5%;margin-bottom:50px;">BACK</button>
+				<div style="margin-left: 44%;">
+				<button class="btn btn-info btn-sm" id="back" style="">BACK</button>
 				<a href="#top"><button class="btn btn-info btn-sm" id="back" >TOP</button></a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -115,7 +116,7 @@
 			data:"&account_type="+account_type+"&closed="+closed+"&account_id="+account_id,
 			success: function(data) {
 				console.log("done");
-				$("#back").show();
+				//$("#back").show();
 				$("#account_list_box").html(data);
 			}
 		});
@@ -130,6 +131,7 @@
 <script>
 	$(".CreateAcc{{$a['module']->Mid}}, .JointAcc{{$a['module']->Mid}}, .ViewMinAcc{{$a['module']->Mid}}").click(function(e) {
 		e.preventDefault();
+		$("#back").show();
 		$("#account_details_box").hide();
 		$('#temp_box').load($(this).attr('href'));
 	})
@@ -139,6 +141,7 @@
 	$("#back").click(function() {
 		$("#temp_box").html("");
 		$("#account_details_box").show();
+		$("#back").hide();
 	})
 </script>
 <script>
