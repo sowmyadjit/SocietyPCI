@@ -154,6 +154,7 @@
 		
 		public function calc_service_charge_alrdy_cal(Request $request){
 			$in_data["type"] = $request->input("type");
+			$in_data["paid_status"] = $request->input("paid_status");
 			$temp = $this->interest_model->calc_service_charge_alrdy_cal($in_data);
 			$return_data = $temp["service_charge"];
 			$in_data["total_amount"] = $temp["total_amount"];

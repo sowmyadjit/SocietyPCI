@@ -1372,6 +1372,7 @@
 			$BID=$uname->Bid;
 			
 			$type = $data["type"];
+			$paid_status = $data["paid_status"];
 			
 			$return_data["service_charge"] = array();
 			$return_data["total_amount"] = 0;
@@ -1389,7 +1390,7 @@
 								->join("createaccount","createaccount.Accid","=","service_charge.acc_id")
 								->where("acc_type","=",1)
 								->where("service_charge.bid","=",$BID)
-								->where("charge_collected","=",0)
+								->where("charge_collected","=",$paid_status)
 								->where("service_charge.deleted","=",0)
 								->orderBy("Accid","asc")
 								->get();
@@ -1415,7 +1416,7 @@
 								->join("user","user.Uid","=","pigmiallocation.Agentid")
 								->where("acc_type","=",2)
 								->where("service_charge.bid","=",$BID)
-								->where("charge_collected","=",0)
+								->where("charge_collected","=",$paid_status)
 								->where("service_charge.deleted","=",0)
 								->get();
 								
