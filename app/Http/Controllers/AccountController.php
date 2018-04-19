@@ -374,6 +374,29 @@ class AccountController extends Controller
 		return json_encode($out_data);
 	}
 	
+	public function show_account2()
+	{
+		$Url="AccountCreation";
+		$a['module']=$this->Modules->GetAnyMid($Url);
+        return view('account_list_index_sb',compact('a'));
+	}
+	
+	public function account_list_sb(Request $request)
+	{
+		$in_data["account_type"] = $request->input("account_type");
+		$in_data["closed"] = $request->input("closed");
+		$in_data["account_id"] = $request->input("account_id");
+		$ret_data = $this->acc->account_list_sb($in_data);
+        return view('account_list_sb_data',compact('ret_data'));
+	}
+	
+	public function account_edit_sb_rd(Request $request)
+	{
+		$in_data["account_type"] = $request->input("account_type");
+		$in_data["closed"] = $request->input("closed");
+		$in_data["account_id"] = $request->input("account_id");
+		return $this->acc->account_edit_sb_rd($in_data);
+	}
 
 	
 }

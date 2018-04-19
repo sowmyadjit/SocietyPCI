@@ -29,7 +29,10 @@
 				
 				
 				//AccountController
-				Route::get('/AccountCreation','AccountController@show_account');
+				//Route::get('/AccountCreation','AccountController@show_account');
+				Route::get('/AccountCreation','AccountController@show_account2');
+				Route::post('/account_list_sb','AccountController@account_list_sb');
+				Route::post('/account_edit_sb_rd','AccountController@account_edit_sb_rd');
 				Route::get('/sbacclist','AccountController@show_sbaccount');
 				Route::get('/sb_joint_acclist','AccountController@show_sbaccount_joint');
 				Route::get('/rdacclist','AccountController@show_rdaccount');

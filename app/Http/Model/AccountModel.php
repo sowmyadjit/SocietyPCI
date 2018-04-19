@@ -1304,6 +1304,99 @@ echo "pay = ";				print_r($pay); echo "<br />";
 			return $sb_tran_id;
 		}
 		
+		public function account_list_sb($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BranchId=$uname->Bid;
+			
+			$ret_data["account_list"] = array();
+			$ret_data["account_type"] = $data["account_type"];
+			$table = "createaccount";
+			$branch_id_field = "{$table}.Bid";
+			$account_type_field = "{$table}.AccTid";
+			$closed_field = "{$table}.Closed";
+			$account_id_field = "{$table}.Accid";
+			$select_array = array(
+									"{$table}.Accid as account_id",
+									"{$table}.AccNum as account_no",
+									"{$table}.Old_AccNo as old_account_no",
+									"{$table}.Created_on as start_date",
+									"{$table}.Maturity_Date as end_date",
+									"{$table}.AccountCategory as account_category",
+									"{$table}.JointUid as joint_user_ids",
+									"{$table}.Closed as closed",
+									"{$table}.Total_Amount as balance",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"accounttype.Acc_Type as account_type"
+								);
+			$account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$table}.Uid")
+				->join("accounttype","accounttype.AccTid","=","{$table}.AccTid")
+				->where($branch_id_field,"=",$BranchId);
+			if(!empty($data["account_id"])) {
+				$account_list = $account_list
+									->where($account_id_field,"=",$data["account_id"]);
+			} else {
+				$account_list = $account_list
+									->where($account_type_field,"=",$data["account_type"])
+									->where($closed_field,"=",$data["closed"]);
+			}
+			$account_list = $account_list
+								->get();
+							
+			$i = -1;
+			foreach($account_list as $row_acc_list) {
+				$ret_data["account_list"][++$i]["account_id"] = $row_acc_list->account_id;
+				$ret_data["account_list"][$i]["account_no"] = $row_acc_list->account_no;
+				$ret_data["account_list"][$i]["old_account_no"] = $row_acc_list->old_account_no;
+				$ret_data["account_list"][$i]["user_id"] = $row_acc_list->user_id;
+				//IF JOINT ACCOUNT
+				if($row_acc_list->account_category == "JOINTACCOUNT") {
+					$joint_user_ids = explode(",",$row_acc_list->joint_user_ids);
+					$ret_data["account_list"][$i]["name"] = "";
+					foreach($joint_user_ids as $joint_uid) {
+						$joint_user = DB::table("user")
+							->select(
+										"user.Uid as user_id",
+										"user.FirstName as first_name",
+										"user.Uid as middle_name",
+										"user.Uid as last_name"
+									)
+							->where("Uid","=",$joint_uid)
+							->first();
+						
+						$ret_data["account_list"][$i]["name"] .= "{$joint_user->first_name} {$joint_user->middle_name} {$joint_user->last_name}<br />";
+					}
+				} else {
+					$ret_data["account_list"][$i]["name"] = "{$row_acc_list->first_name} {$row_acc_list->middle_name} {$row_acc_list->last_name}";
+				}
+				//JOINT ACCOUNT END
+				$ret_data["account_list"][$i]["account_type"] = $row_acc_list->account_type;
+				$ret_data["account_list"][$i]["start_date"] = $row_acc_list->start_date;
+				$ret_data["account_list"][$i]["end_date"] = $row_acc_list->end_date;
+				if($row_acc_list->account_type == 1) {
+					$ret_data["account_list"][$i]["balance"] = $this->get_account_balance(["acc_id"=>$row_acc_list->account_id]);
+				} else {
+					$ret_data["account_list"][$i]["balance"] = $row_acc_list->balance;
+				}
+				$ret_data["account_list"][$i]["closed"] = $row_acc_list->closed;
+			}
+			
+			//print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
+		public function account_edit_sb_rd($data)
+		{
+			$table = "createaccount";
+			return DB::table($table)
+				->where("Accid","=",$data["account_id"])
+				->update(["Closed"=>$data["closed"]]);
+		}
+		
 	}
 
 	
