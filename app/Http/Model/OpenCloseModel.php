@@ -6,6 +6,7 @@
 	use DB;
 	use Auth;
 	use App\Http\Model\RoundModel;
+	use App\Http\Controllers\LogController;
 	class OpenCloseModel extends Model
 	{
 		//
@@ -14,6 +15,7 @@
 		public function __construct()
 		{
 			$this->roundamt=new RoundModel;
+			$this->log_ctr= new LogController;
 		}
 		
 		public function getbal()
@@ -2534,10 +2536,20 @@
 		
 		public function edit_cash_details($data)
 		{
+			$log_data = array(
+									"table_name"	=>	"cash",
+									"pk_name"		=>	"cashId",
+									"pk_value"		=>	$data["cash_id"],
+									"field_name"	=>	"InHandCash",
+									"updated_to"	=>	$data["amount"]
+								);
+			$this->log_ctr->insert_log($log_data);
+			
 			return DB::table("cash")
 				->where("cashId","=",$data["cash_id"])
 				->update(["InHandCash"=>$data["amount"]]);
 		}
+		
 		
 	}
 

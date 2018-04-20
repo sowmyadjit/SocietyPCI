@@ -925,6 +925,10 @@
 		Route::get('common_report','ReportController@common_report');
 		Route::post('loan_details','ReportController@loan_details');
 
+//LogController
+		Route::get("aa","LogController@aa");
+		
+
 //	CLEAR CACHE
 		Route::get('/cache', function() {
 			return view('cache');
