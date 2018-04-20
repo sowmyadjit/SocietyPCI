@@ -7,6 +7,7 @@
 	use DateTime;
 	use Auth;
 	use App\Http\Model\RoundModel;
+	use App\Http\Model\DepositModel;
 	class prewithdrawalModel extends Model
 	{
 		protected $table = 'pigmiallocation';
@@ -15,6 +16,7 @@
 		public function __construct()
 		{
 			$this->roundamt=new RoundModel;
+			$this->dep_mdl = new DepositModel;
 		}
 		
 		public function Getpigmyacct()
@@ -82,6 +84,12 @@
 			//$detailcount=$this->getdtlcount($acno,$sdate,$edate);
 			//$getinterestdtl=$this->getinterestdetail($acno,$sdate,$edate);
 			//$withdrawid=$getinterestdtl->PgmPrewithdraw_ID;
+			
+/************/
+			$total_service_charge_amount = $this->dep_mdl->total_service_charge_amount(["allocation_id"=>$id['pigmyaccount']]);
+			//var_dump($total_service_charge_amount);exit();
+/************/
+
 			if($pgmdifmnthfirst<6)
 			{
 				
@@ -93,7 +101,7 @@
 					$totcommission=($total*$commission);
 					$totcommission=$this->roundamt->Roundall($totcommission);
 					$pretot=$totcommission+$deduct;
-					$totalamtpay=($total-$pretot);
+					$totalamtpay=($total-$pretot) - $total_service_charge_amount;
 				}
 				else
 				{
@@ -104,7 +112,7 @@
 					$totcommission=($total*$commission);
 					$totcommission=$this->roundamt->Roundall($totcommission);
 					$pretot=$totcommission+$deduct;
-					$totalamtpay=($total-$pretot);
+					$totalamtpay=($total-$pretot) - $total_service_charge_amount;
 				}
 				
 				$id = DB::table('pigmi_prewithdrawal')->insertGetId(['PigmiAcc_No'=>$acno,'PgmTotal_Amt'=>$total,'TotalAmt_Payable'=>$totalamtpay,'Withdraw_Date'=>$dte,'Particulars'=>"Withdrawal Between 1 to 6 Months",'Deduct_Commission'=>$totcommission,'Deduct_Amount'=>$deduct]);
@@ -127,12 +135,12 @@
 				if($total>1000)
 				{
 					$deduct=25;
-					$totalamtpay=($total-$deduct);
+					$totalamtpay=($total-$deduct) - $total_service_charge_amount;
 				}
 				else
 				{
 					$deduct=10;
-					$totalamtpay=($total-$deduct);
+					$totalamtpay=($total-$deduct) - $total_service_charge_amount;
 				}
 				//if($detailcount==0)
 				//{
@@ -156,7 +164,7 @@
 			{
 				
 					
-					$totalamtpay=$total;
+					$totalamtpay=$total - $total_service_charge_amount;
 				$deduct=0;
 				
 				$id = DB::table('pigmi_prewithdrawal')->insertGetId(['PigmiAcc_No'=>$acno,'PgmTotal_Amt'=>$total,'TotalAmt_Payable'=>$totalamtpay,'Withdraw_Date'=>$dte,'Particulars'=>"Withdrawal Between 9 to 12 Months",'Deduct_Amount'=>$deduct]);

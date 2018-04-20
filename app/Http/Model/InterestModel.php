@@ -9,6 +9,7 @@
 	use Auth;
 	use App\Http\Model\RoundModel;
 	use App\Http\Model\AccountModel;
+	use App\Http\Model\DepositModel;
 	class InterestModel extends Model
 	{
 		
@@ -18,6 +19,7 @@
 		{
 			$this->roundamt=new RoundModel;
 			$this->acc=new AccountModel;
+			$this->dep_mdl = new DepositModel;
 		}
 		//Pigmi Interest Calculation
 		var $detail;
@@ -137,7 +139,12 @@
 			
 			$detailcount=$this->getdtlcount($acno,$sdate);
 			
-			$amtpay=$totalamount+$totamt;
+/************/
+			$total_service_charge_amount = $this->dep_mdl->total_service_charge_amount(["allocation_id"=>$id['acc11']]);
+			//var_dump($total_service_charge_amount);exit();
+/************/
+			
+			$amtpay=$totalamount+$totamt-$total_service_charge_amount;
 			$amtpay=$this->roundamt->Roundall($amtpay);
 			
 			$reportdte=date('Y-m-d');

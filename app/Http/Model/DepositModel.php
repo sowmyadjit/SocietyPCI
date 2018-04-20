@@ -272,8 +272,6 @@ class DepositModel extends Model
 		
 		public function get_pigmy_account_balance($data)
 		{
-			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
-			
 			$table = "pigmiallocation";
 			$allocation_id_field = "PigmiAllocID";
 			$total_amount_field = "Total_Amount";
@@ -282,23 +280,43 @@ class DepositModel extends Model
 				->where($allocation_id_field,"=",$data["allocation_id"])
 				->value($total_amount_field);
 				
-				
+			$total_service_charge_amount = $this->total_service_charge_amount($data);
+			
+			$current_balance = $total_amount - $total_service_charge_amount;
+			return ($current_balance < 0)? 0 : $current_balance;
+		}
+		
+/*		public function total_service_charge_amount($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
 			$table = "service_charge";
 			$account_type_field = "acc_type";
 			$allocation_id_field = "acc_id";
 			$branch_id_field = "bid";
 			$service_charge_amount_field = "service_charge_amount";
 			$deleted_field = "deleted";
+			$paid_state = "charge_collected";
 			
-			$total_service_charge_amount = DB::table($table)
+			return DB::table($table)
 				->where($account_type_field,"=",ACCOUNT_TYPE_PIGMY)
 				->where($allocation_id_field,"=",$data["allocation_id"])
 				->where($branch_id_field,"=",$BID)
 				->where($deleted_field,"=",0)
+				->where($paid_state,"=",0)
 				->sum($service_charge_amount_field);
+		}*/
+		
+		public function total_service_charge_amount($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
-			$current_balance = $total_amount - $total_service_charge_amount;
-			return ($current_balance < 0)? 0 : $current_balance;
+			return DB::table("pigmi_transaction")
+				->where("PigmiAllocID","=",$data["allocation_id"])
+				->where("Bid","=",$BID)
+				->where("tran_reversed","=","NO")
+				->where("pigmy_tran_type","=",1)
+				->sum("Amount");
 		}
 		
 	}
