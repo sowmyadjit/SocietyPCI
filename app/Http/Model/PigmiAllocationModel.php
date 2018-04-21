@@ -442,6 +442,7 @@
 			->leftJoin('user','user.Uid','=','pigmiallocation.Uid')
 			
 			->where('user.Bid','=',$BranchId)
+			->where('pigmiallocation.Closed','=',"NO")
 			//->where('EndDate','<',$dte)
 			->get();
 			

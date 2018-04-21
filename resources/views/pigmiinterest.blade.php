@@ -110,9 +110,12 @@
 								<div class="col-sm-12">
 									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnsbint"/>
 									
-									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnpigmiint"/>
-									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnrdint"/>
-									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnFDint"/>
+									<input type="button" value="PREVIEW" class="btn btn-success btn-sm sbmbtnpigmiint" id="pg_preview" />
+									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnpigmiint" id="pg_calc" />
+									<input type="button" value="PREVIEW" class="btn btn-success btn-sm sbmbtnrdint" id="rd_preview" />
+									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnrdint" id="rd_calc" />
+								<?php /*	<input type="button" value="PREVIEW" class="btn btn-success btn-sm sbmbtnFDint" id="fd_preview" />*/?>
+									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnFDint" id="fd_calc" />
 								</div>
 							</div>
 						</center></br></br>
@@ -140,10 +143,10 @@
 					</br>
 					<center>
 						<div class="form-group">
-							<input type="button" value="Edit" class="btn btn-success btn-sm editint"/>
+							<input type="button" value="SAVE" class="btn btn-success btn-sm editint"/>
 						</div>
 						<div class="form-group">
-							<input type="button" value="Edit" class="btn btn-success btn-sm editintrd"/>
+							<input type="button" value="SAVE" class="btn btn-success btn-sm editintrd"/>
 						</div>
 					</center>
 			</div>
@@ -222,6 +225,7 @@
 			$('.sbmbtnsbint').hide();
 			$('.sbmbtnpigmiint').show();
 			$('.tran').hide();
+			$('.sbmbtnrdint').hide();
 			$('.sbmbtnFDint').hide();
 			$('.pigmytypehead').show();
 			$('.FDtypehead').hide();
@@ -264,13 +268,14 @@
 	
 	//Pigmi Interest Calculation
 	pigmiindex=0;
-	$('.sbmbtnpigmiint').click(function(e)
+	$('#pg_calc').click(function(e)
 	{
+		console.log("pg_calc");
 		if(pigmiindex==0)
 		{
 			
 			pigmiindex++;
-			acc=$('.SearchTypeahead').data('value');
+			acc=$('.SearchTypeahead').attr('data-value');
 			e.preventDefault();
 			$.ajax({
 				url:'pigmiInterestCalc',
@@ -284,6 +289,7 @@
 					$('.edit').hide();
 					$('#editintamt').val($claculatedint);
 					$('#editintamthiden').val($claculatedint);
+					disable_preview();
 				}
 			});
 		}
@@ -295,7 +301,7 @@
 		{
 			indexeditsb++;
 			
-			acc=$('.SearchTypeahead').data('value');
+			acc=$('.SearchTypeahead').attr('data-value');
 			editedintamt=$('#editintamt').val();
 			
 			calculatedintamt=$('#editintamthiden').val();
@@ -316,7 +322,7 @@
 		if(indexeditrdid==0)
 		{
 			indexeditrdid++;
-			acc=$('.typeahead2').data('value');
+			acc=$('.typeahead2').attr('data-value');
 			editedintamt=$('#editintamtrd').val();
 			
 			calculatedintamt=$('#editintamthidenrd').val();
@@ -332,13 +338,14 @@
 		}
 	});
 	rdindexid=0;
-	$('.sbmbtnrdint').click( function(e) {
+	$('#rd_calc').click( function(e) {
+		console.log("rd_calc");
 		if(rdindexid==0)
 		{
 			
 			rdindexid++;
 			//acctyp=$('.typeahead1').data('value');
-			rdaccnum=$('.typeahead2').data('value');
+			rdaccnum=$('.typeahead2').attr('data-value');
 			if(rdaccnum == undefined)
 			{
 				$("#id").html('This field is required');
@@ -358,6 +365,7 @@
 						$('#editintamthidenrd').val($intamtrd);
 						$('.intvalrd').show();
 						$('.editintrd').show();
+						disable_preview();
 					}
 				});
 			}
@@ -369,7 +377,7 @@
 		{
 			
 			sbindexid++;
-			acctyp=$('.typeahead1').data('value');
+			acctyp=$('.typeahead1').attr('data-value');
 			
 			if(acctyp == undefined)
 			{
@@ -402,21 +410,23 @@
 		}
 	});
 	fdindexid=0;
-	$('.sbmbtnFDint').click(function(e)
+	$('#fd_calc').click(function(e)
 	{
+		console.log("fd_calc");
 		if(fdindexid==0)
 		{
 			
 			
 			fdindexid++;
 			e.preventDefault();
-			fdnum=$('.fdSearchTypeahead').data('value');
+			fdnum=$('.fdSearchTypeahead').attr('data-value');
 			$.ajax({
 				url:'FDwithdraw',
 				type:'post',
 				data: '&fdalocid=' + fdnum,
 				success:function(e){
 					alert('Success');
+					disable_preview();
 				}
 			});
 		}
@@ -427,7 +437,45 @@
 	});
 	
 	$('input.typeahead2').typeahead({
-		ajax:'/Getrdaccnum'
+		//ajax:'/Getrdaccnum'
+		ajax:'/get_running_rd_num'
 	});
 	
-</script>	
+</script>
+
+<script>
+	$("#pg_preview").click(function(e) {
+		console.log("pg_preview");
+		acc=$('.SearchTypeahead').attr('data-value');
+		e.preventDefault();
+		$.ajax({
+			url:'pigmiInterestCalc',
+			type:'post',
+			data: '&acc11=' + acc+"&preview=1",
+			success:function(data){
+				alert("Interest Amount: "+data);
+			}
+		});
+	});
+</script>
+
+<script>
+	$("#rd_preview").click(function(e) {
+		console.log("rd_preview");
+		e.preventDefault();
+		rdaccnum=$('.typeahead2').attr('data-value');
+		$.ajax({
+			url: 'rd_interest',
+			type: 'post',
+			data: '&rdaccid='+rdaccnum+"&preview=1",
+			success: function(data) {
+				alert("Interest Amount: "+data);
+			}
+		});
+	});
+</script>
+<script>
+	function disable_preview() {
+		$("#pg_preview, #rd_preview").prop("disabled",true);
+	}
+</script>

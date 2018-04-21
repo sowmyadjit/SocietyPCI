@@ -26,6 +26,9 @@
 		
 		public function pigmiintcalc($id)
 		{
+			//var_dump($id);exit();
+			$prev = $id["preview"];
+			
 			$uname='';
 			if(Auth::user())
 			$uname= Auth::user();
@@ -137,6 +140,12 @@
 			
 			$totamt=$this->roundamt->Roundall($totamt);
 			
+/*******************/
+				if($prev == 1){//do not insert or update
+					return $totamt;
+				}
+/*******************/
+
 			$detailcount=$this->getdtlcount($acno,$sdate);
 			
 /************/
@@ -585,6 +594,8 @@
 		
 		public function rdinterest_cal($id)
 		{
+			//var_dump($id);exit();
+			$prev = $id["preview"];
 			
 			$uname='';
 			if(Auth::user())
@@ -603,7 +614,7 @@
 			$dte=date('Y-m-d');
 			
 			$accno=DB::table('createaccount')->select('AccNum')
-			->where('createaccount.Accid','=',$id)
+			->where('createaccount.Accid','=',$id["rdaccid"])
 			//->where('Status','=',"AUTHORISED")
 			->first();
 			//	->where('Closed','<>','YES')
@@ -686,6 +697,11 @@
 				$dueamt=$this->roundamt->Roundall($dueamt);
 				$rdamt1=($interestamt-$dueamt);
 				$rdamt=abs($rdamt1);//interest amt
+/*******************/
+				if($prev == 1){//do not insert or update
+					return $rdamt;
+				}
+/*******************/
 				$amtpay=($payableamt+$rdamt);
 				
 				if($interestcount==0)
@@ -718,6 +734,11 @@
 			}
 			else
 			{
+/*******************/
+				if($prev == 1){//do not insert or update
+					return $interestamt;
+				}
+/*******************/
 				$payamt=$payableamt+$interestamt;
 				if($interestcount==0)
 				{
@@ -871,7 +892,7 @@
 			$dte=date('Y-m-d');
 			$accno=DB::table('fdallocation')->select('Fd_CertificateNum')
 			//->where('FdReport_MatureDate','<=',$dte)
-			->where('Fdid','=',$id)
+			->where('Fdid','=',$id["fdalocid"])
 			->first();
 			//foreach($accno as $acc)
 			//{
@@ -1435,7 +1456,6 @@
 			
 			return($return_data);
 		}
-		
 		
 	}
 ?>

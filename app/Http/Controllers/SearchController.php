@@ -168,6 +168,11 @@
 			
 			return ($this->get_accnum->getrdaccount($request->search));
 		}
+		public function get_running_rd_num(Request $request)
+		{
+			
+			return ($this->get_accnum->get_running_rd_num($request->search));
+		}
 		
 		public function GetSeachedAcc(Request $request)
 		{

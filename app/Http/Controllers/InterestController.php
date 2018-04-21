@@ -68,6 +68,7 @@
 		{
 			
 			$interest['acc11']=$request->input('acc11');
+			$interest['preview']=$request->input('preview');
 			$pa=$this->interest_model->pigmiintcalc($interest);
 			return $pa;
 		}
@@ -75,6 +76,7 @@
 		public function rdinterest_cal(Request $request)
 		{
 			$interst['rdaccid']=$request->input('rdaccid');
+			$interst['preview']=$request->input('preview');
 			
 			$rd=$this->interest_model->rdinterest_cal($interst);
 			return $rd;
@@ -83,6 +85,7 @@
 		public function FDwithdraw(Request $request)
 		{
 			$interst['fdalocid']=$request->input('fdalocid');
+		//	$interst['preview']=$request->input('preview');
 			$FD=$this->interest_model->FDwithdraw($interst);
 		}
 		public function editpigmiInterestCalc(Request $request)

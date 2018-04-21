@@ -838,6 +838,17 @@ echo "pay = ";				print_r($pay); echo "<br />";
 			->get();
 		}
 		
+		public function get_running_rd_num($q)
+		{
+			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%".$q."%' ");
+			return DB::table('createaccount')
+			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
+			->where('AccNum','like','%RD%')
+			->where('Status','=',"AUTHORISED")
+			->where('createaccount.Closed','=',"NO")
+			->get();
+		}
+		
 		public function GetSeachedAcc($q)
 		{
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%".$q."%' ");

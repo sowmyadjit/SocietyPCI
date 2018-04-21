@@ -515,6 +515,7 @@
 				Route::get('/getAllocatesaraparalist','SearchController@getAllocatesaraparalist');
 				Route::get('/GetFdtype','SearchController@getFdType');
 				Route::get('/Getrdaccnum','SearchController@getrdaccount');//GTD
+				Route::get('/get_running_rd_num','SearchController@get_running_rd_num');//GTD
 				Route::get('/GetSearchAcc','SearchController@GetSeachedAcc');
 				Route::get('/GetSearchOldAcc','SearchController@GetSeachedOldAcc');
 				Route::get('/GetSearchpigmyAcc','SearchController@GetSeachedpigmyAccount');
