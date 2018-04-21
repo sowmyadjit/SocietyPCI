@@ -2029,7 +2029,7 @@
 						)
 				->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_JLAllocID")
 				->where("jewelloan_allocation.JewelLoanId","=",$allocation->JewelLoanId)
-				->orderBy("JLRepay_Id","desc")
+				->orderBy("JLRepay_Id","asc")
 				->get();
 				
 			$i = -1;
