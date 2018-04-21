@@ -1377,7 +1377,7 @@ echo "pay = ";				print_r($pay); echo "<br />";
 				$ret_data["account_list"][$i]["account_type"] = $row_acc_list->account_type;
 				$ret_data["account_list"][$i]["start_date"] = $row_acc_list->start_date;
 				$ret_data["account_list"][$i]["end_date"] = $row_acc_list->end_date;
-				if($row_acc_list->account_type == 1) {
+				if($row_acc_list->account_type == "SB") {
 					$ret_data["account_list"][$i]["balance"] = $this->get_account_balance(["acc_id"=>$row_acc_list->account_id]);
 				} else {
 					$ret_data["account_list"][$i]["balance"] = $row_acc_list->balance;
