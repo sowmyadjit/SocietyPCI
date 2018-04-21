@@ -76,7 +76,7 @@
 							
 							
 							
-							<div id="toprint" class="hide_it">
+							<div id="toprint_data" class="hide_it">
 							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 								<thead>
 									<tr>

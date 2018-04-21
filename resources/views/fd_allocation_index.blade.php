@@ -122,7 +122,7 @@
 	
 	$(function() {
 		$(".print").click(function() {
-			var divContents = $("#toprint").html();
+			var divContents = $("#toprint_data").html();
             var printWindow = window.open('', '', 'height=600,width=800');
             printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
             printWindow.document.write('</head><body>');
@@ -136,7 +136,7 @@
 	
 	
 	$('#excel').click(function(e){
-	$('#toprint').tableExport({type:'excel',escape:'false'});
+	$('#toprint_data').tableExport({type:'excel',escape:'false'});
 	});	
 </script>
 
