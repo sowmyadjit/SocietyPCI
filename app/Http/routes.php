@@ -153,6 +153,8 @@
 				Route::post('/crateaddeposittobranch','DepositController@crateaddeposittobranch');
 				Route::post('/deposit_account_list','DepositController@deposit_account_list');
 				Route::post('/deposit_account_edit','DepositController@deposit_account_edit');
+				Route::get('/maturity_deposit_index','DepositController@maturity_deposit_index');
+				Route::post('/maturity_amount_pay_form','DepositController@maturity_amount_pay_form');
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');

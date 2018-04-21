@@ -86,6 +86,7 @@
 	
 	}
 	
+	//	PIGMY FD KCC MATURITY-DEPOSIT
 		public function deposit_account_list(Request $request)
 		{
 			$in_data['category'] = $request->input("category");
@@ -100,6 +101,9 @@
 							break;
 				case "KCC":	$ret_data = $this->creadepositmodel->deposit_account_list_fd($in_data);
 							return view("deposit_account_list_data_kcc",compact("ret_data"));
+							break;
+				case "MD":	$ret_data = $this->creadepositmodel->deposit_account_list_md($in_data);
+							return view("deposit_account_list_data_md",compact("ret_data"));
 							break;
 			}
 		}
@@ -120,4 +124,17 @@
 			return "deposit_account_edit: done";
 		}
 		
+		public function maturity_deposit_index()
+		{
+			$data = [];
+			return view("maturity_deposit_index",compact('data'));
+		}
+		
+		public function maturity_amount_pay_form(Request $request)
+		{
+			$data = [];
+			$in_data["allocation_id"] = $request->input("allocation_id");
+			data = $this->creadepositmodel->maturity_amount_pay_form($in_data);
+			return view("maturity_amount_pay_form",compact('data'));
+		}
 	}

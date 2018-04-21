@@ -255,6 +255,79 @@ class DepositModel extends Model
 			return $ret_data;
 		}
 		
+		public function deposit_account_list_md($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$ret_data['deposit_details'] = array();
+			$ret_data['deposit_category'] = $data["category"];
+			$table = "fdallocation";
+			$sub_ledger_id_field = "SubLedgerId";
+			$branch_id_field = "{$table}.Bid";
+			$user_id_field = "{$table}.Uid";
+			$allocation_id_field = "{$table}.Fdid";
+			$select_array = array(
+									"{$table}.Fdid as allocation_id",
+									"{$table}.Fd_CertificateNum as account_no",
+									"{$table}.Fd_OldCertificateNum as old_account_no",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$table}.Fd_DepositAmt as total_amount",
+									"{$table}.Closed as closed",
+									"{$table}.Fd_TotalAmt as maturity_amount"
+								);
+								
+			$deposit_account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$user_id_field}")
+				->where($sub_ledger_id_field,"=","195")
+				->where($branch_id_field,"=",$BID);
+			if(!empty($data['allocation_id'])) {
+				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
+			}
+			$deposit_account_list = $deposit_account_list//->limit(1)
+										->get();
+				
+			if(empty($deposit_account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($deposit_account_list as $row) {
+				$ret_data['deposit_details'][++$i]['allocation_id'] = $row->allocation_id;
+				$ret_data['deposit_details'][$i]['account_no'] = $row->account_no;
+				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
+				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
+				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['deposit_details'][$i]['total_amount'] = $row->total_amount;
+				$ret_data['deposit_details'][$i]['maturity_amount'] = $row->maturity_amount;
+				$ret_data['deposit_details'][$i]['account_type'] = "FD";
+			}
+			//print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
+		public function maturity_amount_pay_form($data)
+		{
+			$ret_data = [];
+			
+			$table = "fdallocation";
+			$allocation_id_field = "Fdid";
+			$select_array = array(
+									"Fdid",
+									"Fd_TotalAmt"
+								);
+			
+			$ret_data = DB::table($table)
+				->select($select_array)
+				->where($allocation_id_field,"=",$data["allocation_id"])
+				->first();
+				
+			return $ret_data;
+		}
+		
 		public function deposit_account_edit_fd($data)
 		{
 			$table = "fdallocation";
