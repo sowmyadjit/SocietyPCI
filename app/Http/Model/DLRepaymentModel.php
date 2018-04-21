@@ -1092,7 +1092,7 @@
 				$repay_through_auction = 1;
 			}
 			
-			$jlTran=DB::table('jewelloan_repay')->InsertGetId(['JLRepay_JLAllocID'=>$DepAlID,'JLRepay_PaidAmt'=>$id['jlpayamt'],'JLRepay_PayMode'=>$paymode,'JLRepay_Bid'=>$branch,'JLRepay_Created_By'=>$UID,'JLRepay_Date'=>$RepayDte,'JLRepay_interestcalculated'=>$Loaninterest,'JLRepay_interestpaid'=>$paidinterest,'JLRepay_interestpending'=>$remaininginterst,'JLRepay_paidtoprincipalamt'=>$payAmt,'JL_ChequeNo'=>$chequeno,'JL_ChequeDate'=>$chequedate,'JL_BankName'=>$bankname,'JL_BankBranch'=>$bankbranch,'JL_CreditBank'=>$bankid,'JL_IFSC'=>$ifsc,'repay_through_auction'=>$repay_through_auction,'interest_paid_upto'=>$interest_upto]);
+			$jlTran=DB::table('jewelloan_repay')->InsertGetId(['JLRepay_JLAllocID'=>$DepAlID,'JLRepay_PaidAmt'=>$id['jlpayamt'],'JLRepay_PayMode'=>$paymode,'JLRepay_Bid'=>$bid,'JLRepay_Created_By'=>$UID,'JLRepay_Date'=>$RepayDte,'JLRepay_interestcalculated'=>$Loaninterest,'JLRepay_interestpaid'=>$paidinterest,'JLRepay_interestpending'=>$remaininginterst,'JLRepay_paidtoprincipalamt'=>$payAmt,'JL_ChequeNo'=>$chequeno,'JL_ChequeDate'=>$chequedate,'JL_BankName'=>$bankname,'JL_BankBranch'=>$bankbranch,'JL_CreditBank'=>$bankid,'JL_IFSC'=>$ifsc,'repay_through_auction'=>$repay_through_auction,'interest_paid_upto'=>$interest_upto]);
 			
 			DB::table('jewelloan_allocation')
 			->where('JewelLoanId',$DepAlID)
