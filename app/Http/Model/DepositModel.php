@@ -317,6 +317,7 @@ class DepositModel extends Model
 			$allocation_id_field = "Fdid";
 			$select_array = array(
 									"Fdid",
+									"Fd_CertificateNum",
 									"Fd_TotalAmt"
 								);
 			

@@ -134,7 +134,7 @@
 		{
 			$data = [];
 			$in_data["allocation_id"] = $request->input("allocation_id");
-			data = $this->creadepositmodel->maturity_amount_pay_form($in_data);
+			$data = $this->creadepositmodel->maturity_amount_pay_form($in_data);
 			return view("maturity_amount_pay_form",compact('data'));
 		}
 	}

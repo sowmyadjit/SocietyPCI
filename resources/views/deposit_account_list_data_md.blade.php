@@ -75,7 +75,10 @@
 			type:"post",
 			data:"&allocation_id="+allocation_id,
 			success:function(data) {
-				console.log("maturity_amount_pay_form: done");
+				//console.log("maturity_amount_pay_form: done");
+				//console.log(data);
+				$("#deposit_details_box").hide();
+				$("#temp_box").html(data);
 			}
 		});
 	});
