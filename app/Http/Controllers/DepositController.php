@@ -137,4 +137,25 @@
 			$data = $this->creadepositmodel->maturity_amount_pay_form($in_data);
 			return view("maturity_amount_pay_form",compact('data'));
 		}
+		
+		public function maturity_amt_create(Request $request)
+		{
+			$in_data["md_id"] = $request->input("md_id");
+			$in_data["payable_amt"] = $request->input("payable_amt");
+			$in_data["account_no"] = $request->input("account_no");
+			$in_data["pay_mode"] = $request->input("pay_mode");
+			$in_data["cheque_no"] = $request->input("cheque_no");
+			$in_data["cheque_date"] = $request->input("cheque_date");
+			$in_data["bank_name"] = $request->input("bank_name");
+			$in_data["bank_branch"] = $request->input("bank_branch");
+			$in_data["ifsc_code"] = $request->input("ifsc_code");
+			$in_data["bank_acc_no"] = $request->input("bank_acc_no");
+			$in_data["actid"] = $request->input("actid");
+			$in_data["type_ahead_sb_acc_no"] = $request->input("type_ahead_sb_acc_no");
+			$in_data["sb_acc_no"] = $request->input("sb_acc_no");
+			$in_data["sb_available_amount"] = $request->input("sb_available_amount");
+			$in_data["sb_remaining_amount"] = $request->input("sb_remaining_amount");
+			$data = $this->creadepositmodel->maturity_amt_create($in_data);
+			return "done";
+		}
 	}

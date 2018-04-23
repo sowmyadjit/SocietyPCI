@@ -29,7 +29,7 @@
 											<td>{{ $row['name'] }}</td>	
 											<td>{{$row['account_no'] }}</td>
 											<td>{{ $row['maturity_amount']}}</td>
-											<td><button class="btn_pay" data="{{$row['allocation_id']}}">Pay</button></td>
+											<td><button class="btn_pay btn-info btn-xs" data="{{$row['allocation_id']}}">Pay</button></td>
 										</tr>
 									@endforeach
 								</tbody>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Model;
 
+define("SUBHEAD_MATURITY_DEPOSIT",195);
+
 define("ACCOUNT_TYPE_PIGMY",2);
 
 use Illuminate\Database\Eloquent\Model;
@@ -261,28 +263,27 @@ class DepositModel extends Model
 			
 			$ret_data['deposit_details'] = array();
 			$ret_data['deposit_category'] = $data["category"];
-			$table = "fdallocation";
-			$sub_ledger_id_field = "SubLedgerId";
-			$branch_id_field = "{$table}.Bid";
-			$user_id_field = "{$table}.Uid";
-			$allocation_id_field = "{$table}.Fdid";
+			$table = "maturity_deposit";
+			$deleted_field = "deleted";
+			$branch_id_field = "{$table}.bid";
+			$user_id_field = "{$table}.uid";
+			$allocation_id_field = "{$table}.md_id";
 			$select_array = array(
-									"{$table}.Fdid as allocation_id",
-									"{$table}.Fd_CertificateNum as account_no",
-									"{$table}.Fd_OldCertificateNum as old_account_no",
+									"{$table}.md_id as allocation_id",
+									"{$table}.md_acc_no as account_no",
+									"{$table}.md_old_acc_no as old_account_no",
 									"user.Uid as user_id",
 									"user.FirstName as first_name",
 									"user.MiddleName as middle_name",
 									"user.LastName as last_name",
-									"{$table}.Fd_DepositAmt as total_amount",
-									"{$table}.Closed as closed",
-									"{$table}.Fd_TotalAmt as maturity_amount"
+									"{$table}.md_closed as closed",
+									"{$table}.md_amount as maturity_amount"
 								);
 								
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->where($sub_ledger_id_field,"=","195")
+				->where($deleted_field,"=",0)
 				->where($branch_id_field,"=",$BID);
 			if(!empty($data['allocation_id'])) {
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
@@ -301,7 +302,6 @@ class DepositModel extends Model
 				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
 				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
 				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
-				$ret_data['deposit_details'][$i]['total_amount'] = $row->total_amount;
 				$ret_data['deposit_details'][$i]['maturity_amount'] = $row->maturity_amount;
 				$ret_data['deposit_details'][$i]['account_type'] = "FD";
 			}
@@ -313,12 +313,12 @@ class DepositModel extends Model
 		{
 			$ret_data = [];
 			
-			$table = "fdallocation";
-			$allocation_id_field = "Fdid";
+			$table = "maturity_deposit";
+			$allocation_id_field = "md_id";
 			$select_array = array(
-									"Fdid",
-									"Fd_CertificateNum",
-									"Fd_TotalAmt"
+									"md_id",
+									"md_acc_no",
+									"md_amount"
 								);
 			
 			$ret_data = DB::table($table)
@@ -391,6 +391,72 @@ class DepositModel extends Model
 				->where("tran_reversed","=","NO")
 				->where("pigmy_tran_type","=",1)
 				->sum("Amount");
+		}
+		
+		public function maturity_amt_create($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$voucher_no = "";
+			switch($data["pay_mode"]) {
+				case "CASH" : 
+								break;
+				case "CHEQUE" : 
+								break;
+				case "SB ACCOUNT" : 
+								
+								$table = "createaccount";
+								$acc_no_field = "AccNum";
+								$acc_id = DB::table($table)
+									->where($acc_no_field,"=",$data["sb_acc_no"])
+									->value("Accid");
+								
+								$table = "sb_transaction";
+								$insert_array = array(
+														"Accid"				=>	$acc_id,
+														"AccTid"			=>	"1",
+														"TransactionType"	=>	"CREDIT",
+														"particulars"		=>	"MATURITY DEPOSIT PAYMENT",
+														"Amount"			=>	$data["payable_amt"],
+														//"CurrentBalance"	=>	"",
+														"tran_Date"			=>	date("d-m-Y"),
+														"SBReport_TranDate"	=>	date("Y-m-d"),
+														"Time"				=>	date("Y-m-d H:i:s"),
+														"Month"				=>	date("d"),
+														"Year"				=>	date("Y"),
+														//"Total_Bal"			=>	"",
+														"Bid"				=>	$BID,
+														"Payment_Mode"		=>	"ADJUSTMENT",
+														"CreatedBy"			=>	$UID,
+														"tran_reversed"		=>	"no",
+														"LedgerHeadId"		=>	38,
+														"SubLedgerId"		=>	42
+													);
+								
+								
+								DB::table($table)
+									->insertGetId($insert_array);
+								unset($insert_array);
+								
+								break;
+			}
+			
+			$table = "md_transaction";
+			$insert_array = array(
+									"md_tran_date" => date("Y-m-d"),
+									"md_tran_time" => date("Y-m-d H:i:s"),
+									"md_id" => $data["md_id"],
+									"bid" => $BID,
+									"payment_mode" => $data["pay_mode"],
+									"cheque_no" => $data["cheque_no"],
+									"cheque_date" => $data["cheque_date"],
+									"bank_id" => $data["bank_id"],
+									"voucher_no" => $voucher_no,
+									"subhead_id" => SUBHEAD_MATURITY_DEPOSIT
+								);
+			
+			return DB::table($table)
+				->insertGetId($insert_array);
 		}
 		
 	}

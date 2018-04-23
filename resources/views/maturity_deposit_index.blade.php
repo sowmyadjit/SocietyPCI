@@ -37,9 +37,9 @@
 							<div>
 								<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
 								<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
-								<div class="col-md-5 pull-right">
+							<?php /*	<div class="col-md-5 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchFd" placeholder="SEARCH MATURITY ACCOUNT">
-								</div>
+								</div>*/?>
 							</div>
 						</div>
 								

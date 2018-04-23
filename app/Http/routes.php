@@ -155,6 +155,7 @@
 				Route::post('/deposit_account_edit','DepositController@deposit_account_edit');
 				Route::get('/maturity_deposit_index','DepositController@maturity_deposit_index');
 				Route::post('/maturity_amount_pay_form','DepositController@maturity_amount_pay_form');
+				Route::post('/maturity_amt_create','DepositController@maturity_amt_create');
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');
