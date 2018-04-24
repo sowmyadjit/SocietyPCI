@@ -20,6 +20,22 @@
 				
 				<form id="form_data" name="form_data">
 					<div class="col-md-8 col-md-offset-2 form-group">
+						<label class="col-md-4 control-label">DATE</label>
+						<div class="col-md-4 date">
+							
+							<div class="input-group input-append">
+								<input type="text" id="tran_date" name="tran_date" class="form-control" value="{{date('d-m-Y')}}"/>
+								<span class="input-group-addon add-on">
+									<span class="glyphicon glyphicon-calendar">
+									</span>
+									<b class="caret"></b>
+								</span> 
+							</div>
+							
+						</div>
+					</div>
+						
+					<div class="col-md-8 col-md-offset-2 form-group">
 						<div class="box-content">
 							<div class="form-group">
 								<label class="control-label col-sm-4">Payable Amount:</label>
@@ -65,7 +81,7 @@
 							<div class="col-md-4">
 								<input type="text" class="form-control" id="cheque_no" name="cheque_no" placeholder="CHEQUE NUMBER">
 							</div>
-						</div>	
+						</div>
 						
 						<div class="form-group chequedte col-md-12">
 							<label class="col-md-4 control-label">CHEQUE DATE</label>
@@ -191,11 +207,11 @@
 		if(flag) {
 			var form_data = $("#form_data").serialize();
 			console.log(form_data);
+			var bank_id = $("#bank_name").attr("data-value");
 			$.ajax({
 				url : "maturity_amt_create",
 				type : "post",
-				data : form_data,
-				dataType : "json",
+				data : form_data+"&bank_id="+bank_id,
 				success : function(data) {
 					console.log(data);
 					disable_create_button();
@@ -246,6 +262,31 @@
 		$(this).val('');
 	});
 </script>
+
+<script>
+	
+	$('input[name="tran_date"]').daterangepicker({
+		singleDatePicker: true,
+		showDropdowns: true,
+		autoUpdateInput: false,//to get blank initially
+		
+		locale: {
+			cancelLabel: 'Clear',	//to get blank initially
+			format: 'DD-MM-YYYY'
+		},
+		
+		
+	});
+	
+	//to get blank initially
+	$('input[name="tran_date"]').on('apply.daterangepicker', function(ev, picker) {
+		$(this).val(picker.startDate.format('DD-MM-YYYY'));
+	});
+	
+	$('input[name="tran_date"]').on('cancel.daterangepicker', function(ev, picker) {
+		$(this).val('');
+	});
+</script>
 <script src="js/bootstrap-typeahead.js"></script>
 <script>
 	//Typeahead for Bank Branch Name from AddBank Table
@@ -271,7 +312,7 @@
 				$('#bank_branch').val(data['Branch']);
 				$('#ifsc_code').val(data['IFSC']);
 				$('#bank_acc_no').val(data['AccountNo']);
-				$('#bank_name').val(data['BankName']);
+				$('#bank_id').val(data['BankName']);
 			}
 		});
 	});

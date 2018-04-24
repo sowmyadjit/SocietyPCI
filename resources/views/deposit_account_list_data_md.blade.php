@@ -16,7 +16,9 @@
 										<th>Customer Name</th>
 										<th>Account Number</th>
 										<th>Maturity Deposit Amount</th>
-										<th>Action</th>
+										@if($ret_data["deposit_closed"] == 0)
+											<th>Action</th>
+										@endif
 									</tr>
 								</thead>
 							<tbody>
@@ -29,7 +31,9 @@
 											<td>{{ $row['name'] }}</td>	
 											<td>{{$row['account_no'] }}</td>
 											<td>{{ $row['maturity_amount']}}</td>
-											<td><button class="btn_pay btn-info btn-xs" data="{{$row['allocation_id']}}">Pay</button></td>
+											@if($ret_data["deposit_closed"] == 0)
+												<td><button class="btn_pay btn-info btn-xs" data="{{$row['allocation_id']}}">Pay</button></td>
+											@endif
 										</tr>
 									@endforeach
 								</tbody>

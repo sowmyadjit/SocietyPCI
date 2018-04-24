@@ -261,10 +261,17 @@ class DepositModel extends Model
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
+			if(strcasecmp($data["closed"],"YES") == 0) {
+				$data["closed"] = 1;
+			} else {
+				$data["closed"] = 0;
+			}
 			$ret_data['deposit_details'] = array();
 			$ret_data['deposit_category'] = $data["category"];
+			$ret_data['deposit_closed'] = $data["closed"];
 			$table = "maturity_deposit";
 			$deleted_field = "deleted";
+			$closed_field = "md_closed";
 			$branch_id_field = "{$table}.bid";
 			$user_id_field = "{$table}.uid";
 			$allocation_id_field = "{$table}.md_id";
@@ -287,6 +294,8 @@ class DepositModel extends Model
 				->where($branch_id_field,"=",$BID);
 			if(!empty($data['allocation_id'])) {
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
+			} else {
+				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data["closed"]);
 			}
 			$deposit_account_list = $deposit_account_list//->limit(1)
 										->get();
@@ -303,7 +312,8 @@ class DepositModel extends Model
 				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
 				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
 				$ret_data['deposit_details'][$i]['maturity_amount'] = $row->maturity_amount;
-				$ret_data['deposit_details'][$i]['account_type'] = "FD";
+				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
+				$ret_data['deposit_details'][$i]['account_type'] = "MD";
 			}
 			//print_r($ret_data);exit();
 			return $ret_data;
@@ -397,11 +407,28 @@ class DepositModel extends Model
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
+			$tran_date_str = date("Y-m-d",strtotime($data["tran_date"]));
+			$cheque_date_str = date("Y-m-d",strtotime($data["cheque_date"]));
+			$tran_date = strtotime($tran_date_str);
+			$old_tran = false;
+			if($tran_date_str != date("Y-m-d")) {
+				$old_tran = true;
+			}
 			$voucher_no = "";
 			switch($data["pay_mode"]) {
 				case "CASH" : 
+								if(!$old_tran) {
+									$prev_amt = DB::table("cash")->where("BID",$BID)->value("InHandCash");
+									$cur_amt = $prev_amt - $data["payable_amt"];
+									DB::table("cash")->where("BID",$BID)->update(["InHandCash"=>$cur_amt]);
+								}
 								break;
 				case "CHEQUE" : 
+								if(!$old_tran) {
+									$prev_amt = DB::table("addbank")->where("Bankid",$data["bank_id"])->value("TotalAmt");
+									$cur_amt = $prev_amt - $data["payable_amt"];
+									DB::table("addbank")->where("Bankid",$data["bank_id"])->update(["TotalAmt"=>$cur_amt]);
+								}
 								break;
 				case "SB ACCOUNT" : 
 								
@@ -419,11 +446,11 @@ class DepositModel extends Model
 														"particulars"		=>	"MATURITY DEPOSIT PAYMENT",
 														"Amount"			=>	$data["payable_amt"],
 														//"CurrentBalance"	=>	"",
-														"tran_Date"			=>	date("d-m-Y"),
-														"SBReport_TranDate"	=>	date("Y-m-d"),
-														"Time"				=>	date("Y-m-d H:i:s"),
-														"Month"				=>	date("d"),
-														"Year"				=>	date("Y"),
+														"tran_Date"			=>	date("d-m-Y",$tran_date),
+														"SBReport_TranDate"	=>	date("Y-m-d",$tran_date),
+														"Time"				=>	date("Y-m-d H:i:s",$tran_date),
+														"Month"				=>	date("d",$tran_date),
+														"Year"				=>	date("Y",$tran_date),
 														//"Total_Bal"			=>	"",
 														"Bid"				=>	$BID,
 														"Payment_Mode"		=>	"ADJUSTMENT",
@@ -443,20 +470,26 @@ class DepositModel extends Model
 			
 			$table = "md_transaction";
 			$insert_array = array(
-									"md_tran_date" => date("Y-m-d"),
-									"md_tran_time" => date("Y-m-d H:i:s"),
+									"md_tran_date" => date("Y-m-d",$tran_date),
+									"md_entry_time" => date("Y-m-d H:i:s"),
 									"md_id" => $data["md_id"],
 									"bid" => $BID,
 									"payment_mode" => $data["pay_mode"],
 									"cheque_no" => $data["cheque_no"],
-									"cheque_date" => $data["cheque_date"],
+									"cheque_date" => $cheque_date_str,
 									"bank_id" => $data["bank_id"],
 									"voucher_no" => $voucher_no,
 									"subhead_id" => SUBHEAD_MATURITY_DEPOSIT
 								);
 			
-			return DB::table($table)
+			DB::table($table)
 				->insertGetId($insert_array);
+				
+			$table = "maturity_deposit";
+			$closed_field = "md_closed";
+			DB::table($table)
+				->where("md_id","=",$data["md_id"])
+				->update([$closed_field=>1]);
 		}
 		
 	}

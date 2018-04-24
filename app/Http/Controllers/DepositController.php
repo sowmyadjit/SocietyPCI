@@ -141,12 +141,13 @@
 		public function maturity_amt_create(Request $request)
 		{
 			$in_data["md_id"] = $request->input("md_id");
+			$in_data["tran_date"] = $request->input("tran_date");
 			$in_data["payable_amt"] = $request->input("payable_amt");
 			$in_data["account_no"] = $request->input("account_no");
 			$in_data["pay_mode"] = $request->input("pay_mode");
 			$in_data["cheque_no"] = $request->input("cheque_no");
 			$in_data["cheque_date"] = $request->input("cheque_date");
-			$in_data["bank_name"] = $request->input("bank_name");
+			$in_data["bank_id"] = $request->input("bank_id");
 			$in_data["bank_branch"] = $request->input("bank_branch");
 			$in_data["ifsc_code"] = $request->input("ifsc_code");
 			$in_data["bank_acc_no"] = $request->input("bank_acc_no");

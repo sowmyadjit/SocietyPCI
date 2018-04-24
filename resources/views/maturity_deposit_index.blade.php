@@ -40,6 +40,13 @@
 							<?php /*	<div class="col-md-5 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchFd" placeholder="SEARCH MATURITY ACCOUNT">
 								</div>*/?>
+								<div class="col-md-3" style="height:38px;">
+									ACCOUNT TYPE:
+									<select id="closed_status" style="height:38px;">
+										<option value="NO">LIVE</option>
+										<option value="YES">CLOSED</option>
+									</select>
+								</div>
 							</div>
 						</div>
 								
