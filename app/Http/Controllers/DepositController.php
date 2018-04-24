@@ -144,6 +144,7 @@
 			$in_data["md_id"] = $request->input("md_id");
 			$in_data["tran_date"] = $request->input("tran_date");
 			$in_data["payable_amt"] = $request->input("payable_amt");
+			$in_data["particulars"] = $request->input("particulars");///////////////include it in view
 			$in_data["account_no"] = $request->input("account_no");
 			$in_data["pay_mode"] = $request->input("pay_mode");
 			$in_data["cheque_no"] = $request->input("cheque_no");

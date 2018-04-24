@@ -485,6 +485,8 @@ class DepositModel extends Model
 									"md_id" => $data["md_id"],
 									"bid" => $BID,
 									"payment_mode" => $data["pay_mode"],
+									"md_amount" => $data["payable_amt"],
+									"particulars" => "{$data["particulars"]}",
 									"cheque_no" => $data["cheque_no"],
 									"cheque_date" => $cheque_date_str,
 									"bank_id" => $data["bank_id"],
