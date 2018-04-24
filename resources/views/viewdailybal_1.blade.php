@@ -718,6 +718,36 @@
 					
 		
 					
+				<!------------------ MD PAID AMOUNT  -------------------->
+					<tr><td colspan="9"><h5><b><center>MATURITY DEPOSIT PAID AMOUNT<center></b></h5></td></tr>
+					<?php
+						$cash_db = 0;
+						$adj_db = 0;
+						
+						$cash_db_total = 0;
+						$adj_db_total = 0;
+					?>
+					@foreach ($trandaily['mdpayamt'] as $row)
+						@if(strcasecmp($row->payment_mode, "CASH") == 0)
+							<?php
+								$cash_db = $row->md_amount;
+								$cash_db_total += $cash_db;
+							?>
+							<tr>
+								<td>{{$row->md_tran_date}}</td>
+								<td>{{$row->md_acc_no}}</td>
+								<td>Maturiy dposit Paid Amount</td>
+								<td>-</td>
+								<td>{{$cash_db}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->voucher_no}}</td>
+							</tr>
+						@else
+						@endif
+					@endforeach
+				<!------------------ MD PAID AMOUNT END -------------------->
 					
 					
 					
