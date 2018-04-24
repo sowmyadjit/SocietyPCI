@@ -153,7 +153,7 @@ class DepositModel extends Model
 				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data['closed']);
 				$deposit_account_list = $deposit_account_list->where($agent_id_field,"=",$data['agent_id']);
 			}
-			$deposit_account_list = $deposit_account_list->limit(1)
+			$deposit_account_list = $deposit_account_list//->limit(1)
 										->get();
 				
 			if(empty($deposit_account_list)) {
@@ -503,5 +503,71 @@ class DepositModel extends Model
 				->where("md_id","=",$data["md_id"])
 				->update([$closed_field=>1]);
 		}
+		
+//COMPUSLORY DEPOSIT
+
+	/*	public function deposit_account_list_cd($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			if(strcasecmp($data["closed"],"YES") == 0) {
+				$data["closed"] = 1;
+			} else {
+				$data["closed"] = 0;
+			}
+			$ret_data['deposit_details'] = array();
+			$ret_data['deposit_category'] = $data["category"];
+			$ret_data['deposit_closed'] = $data["closed"];
+			$ret_data['day_open_status'] = $this->op->check_day_open(["date"=>date("Y-m-d")]);
+			$table = "compulsory_deposit";
+			$deleted_field = "deleted";
+			$closed_field = "cd_closed";
+			$branch_id_field = "{$table}.bid";
+			$user_id_field = "{$table}.uid";
+			$allocation_id_field = "{$table}.cd_id";
+			$select_array = array(
+									"{$table}.cd_id as allocation_id",
+									"{$table}.cd_acc_no as account_no",
+									"{$table}.cd_old_acc_no as old_account_no",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$table}.cd_closed as closed"
+								);
+								
+			$deposit_account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$user_id_field}")
+				->where($deleted_field,"=",0)
+				->where($branch_id_field,"=",$BID);
+			if(!empty($data['allocation_id'])) {
+				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
+			} else {
+				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data["closed"]);
+			}
+			$deposit_account_list = $deposit_account_list//->limit(1)
+										->get();
+				
+			if(empty($deposit_account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($deposit_account_list as $row) {
+				$ret_data['deposit_details'][++$i]['allocation_id'] = $row->allocation_id;
+				$ret_data['deposit_details'][$i]['account_no'] = $row->account_no;
+				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
+				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
+				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['deposit_details'][$i]['maturity_amount'] = //calc dynami
+				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
+				$ret_data['deposit_details'][$i]['account_type'] = "MD";
+			}
+			//print_r($ret_data);exit();
+			return $ret_data;
+		}*/
+		
+		
 		
 	}
