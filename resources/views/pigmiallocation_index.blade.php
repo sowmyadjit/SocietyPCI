@@ -34,11 +34,17 @@
 					
 					<div class="box-content">
 						<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
-						<div class="alert alert-info" style="height:60px;">
+						<div class="alert alert-info" style="height:120px;">
 							<div>
-								<a href="crtpigmiallocation" class="btn btn-default crtpal<?php echo $pa['module']->Mid; ?>">PIGMI ALLOCATION</a>
-								<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
-								<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
+								<div class="col-md-3" style="height:38px;">
+									AGENT NAME:
+									<select id="agent_id" style="height:38px;">
+										@foreach($agent_data as $row)
+											<option value="{{$row->Uid}}">{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</option>
+										@endforeach
+									</select>
+								</div>
+								
 								<div class="col-md-3" style="height:38px;">
 									ACCOUNT TYPE:
 									<select id="closed_status" style="height:38px;">
@@ -50,6 +56,9 @@
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
 								</div>
 							</div>
+								<a href="crtpigmiallocation" class="btn btn-default crtpal<?php echo $pa['module']->Mid; ?>">PIGMI ALLOCATION</a>
+								<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
+								<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
 						</div>
 								
 							<div id="deposit_account_list_box">Loading...</div>
@@ -70,7 +79,7 @@
 		deposit_account_list("");
 	});
 	
-	$("#closed_status").change(function() {
+	$("#closed_status, #agent_id").change(function() {
 		deposit_account_list("");
 	});
 	
@@ -82,10 +91,11 @@
 	
 	function deposit_account_list(allocation_id) {
 		var closed = $("#closed_status").val();
+		var agent_id = $("#agent_id").val();
 		$.ajax({
 			url:"deposit_account_list",
 			type:"post",
-			data:"&category=PG&closed="+closed+"&allocation_id="+allocation_id,
+			data:"&category=PG&closed="+closed+"&agent_id="+agent_id+"&allocation_id="+allocation_id,
 			success: function(data) {
 				console.log("done");
 				$("#back").show();

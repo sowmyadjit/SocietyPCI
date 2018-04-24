@@ -9,13 +9,20 @@ define("ACCOUNT_TYPE_PIGMY",2);
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Auth;
+use App\Http\Model\OpenCloseModel;
+
 class DepositModel extends Model
 {
 	protected $table = 'deposit';
 	
+	public function __construct() {
+		$this->op = new OpenCloseModel;
+	}
+	
 	public function insert($id)
-    {   $dte=date('d-m-Y');
-	 $dte1=date('Y-m-d');
+    {
+		$dte=date('d-m-Y');
+		$dte1=date('Y-m-d');
 		$bankID=$id['bank'];
 		$amount1=$id['ta'];
 		$bran=$id['branch'];
@@ -116,6 +123,7 @@ class DepositModel extends Model
 			$ret_data['deposit_category'] = $data["category"];
 			$table = "pigmiallocation";
 			$closed_field = "Closed";
+			$agent_id_field = "Agentid";
 			$branch_id_field = "{$table}.Bid";
 			$user_id_field = "{$table}.UID";
 			$allocation_id_field = "{$table}.PigmiAllocID";
@@ -143,8 +151,9 @@ class DepositModel extends Model
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
 			} else {
 				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data['closed']);
+				$deposit_account_list = $deposit_account_list->where($agent_id_field,"=",$data['agent_id']);
 			}
-			$deposit_account_list = $deposit_account_list//->limit(1)
+			$deposit_account_list = $deposit_account_list->limit(1)
 										->get();
 				
 			if(empty($deposit_account_list)) {
@@ -269,6 +278,7 @@ class DepositModel extends Model
 			$ret_data['deposit_details'] = array();
 			$ret_data['deposit_category'] = $data["category"];
 			$ret_data['deposit_closed'] = $data["closed"];
+			$ret_data['day_open_status'] = $this->op->check_day_open(["date"=>date("Y-m-d")]);
 			$table = "maturity_deposit";
 			$deleted_field = "deleted";
 			$closed_field = "md_closed";

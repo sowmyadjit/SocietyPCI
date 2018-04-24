@@ -517,7 +517,7 @@
 		public function getAllocatesaraparalist($alcg)
 		{
 		
-		$uname='';
+			$uname='';
 			if(Auth::user())
 			$uname= Auth::user();
 			
@@ -530,6 +530,16 @@
 			->where('user.Did','=',"8")
 			->where('user.Bid','=',$BID)
 			->get();
+		}
+		public function get_agents()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$ret_data = [];
+			$ret_data = DB::table("user")
+				->where("Bid",$BID)
+				->where("Did",4)
+				->get();
+			return $ret_data;
 		}
 	}
 ?>

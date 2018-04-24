@@ -91,6 +91,7 @@
 		{
 			$in_data['category'] = $request->input("category");
 			$in_data['closed'] = $request->input("closed");
+			$in_data['agent_id'] = $request->input("agent_id");
 			$in_data['allocation_id'] = $request->input("allocation_id");
 			switch($in_data['category']) {
 				case "PG":	$ret_data = $this->creadepositmodel->deposit_account_list_pg($in_data);

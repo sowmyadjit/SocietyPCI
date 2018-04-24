@@ -58,7 +58,8 @@
 		{
 			$Url="pigmiallocation";
 			$pa['module']=$this->Modules->GetAnyMid($Url);
-			return view('pigmiallocation_index',compact('pa'));
+			$agent_data = $this->pigmiallocation_model->get_agents();
+			return view('pigmiallocation_index',compact('pa','agent_data'));
 		}
 		
 		public function PigmySearchView(Request $request) //M 20-4-16 For pigmiallocation
