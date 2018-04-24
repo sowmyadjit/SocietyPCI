@@ -2588,9 +2588,16 @@
 			
 			$ret_data = [];
 			$ret_data = DB::table("md_transaction")
-				->select()
-				->where("deleted",0)
-				->where("bid",$BID)
+				->select(
+							"maturity_deposit.md_acc_no",
+							"md_transaction.md_tran_date",
+							"md_transaction.md_amount",
+							"md_transaction.payment_mode",
+							"md_transaction.voucher_no"
+						)
+				->join("maturity_deposit","maturity_deposit.md_id","=","md_transaction.md_id")
+				->where("md_transaction.deleted",0)
+				->where("md_transaction.bid",$BID)
 				->where("md_tran_date",$date)
 				->get();
 			return $ret_data;

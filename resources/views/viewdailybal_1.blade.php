@@ -716,6 +716,27 @@
 				?>
 				<!------------------ FD monthly int  -------------------->	
 					
+					
+					
+					<tr>
+						<th colspan =3>FD Amount Paid</th>
+						<td>-</td>
+						<td><?php echo $fd_cash_db_total; ?></td>
+						<td>-</td>
+				<?php /*		<td><?php echo $fd_adj_db_total; ?></td> */?>
+						<td><?php echo $fd_tot; ?></td>
+						<td>-</td><td>-</td>
+					</tr>
+					<?php
+						$gt_cash_db += $fd_cash_db_total;
+				//		$gt_adj_db += $fd_adj_db_total;
+						$gt_adj_db += $fd_tot;
+					?>
+					
+					
+					
+					
+					
 		
 					
 				<!------------------ MD PAID AMOUNT  -------------------->
@@ -745,30 +766,37 @@
 								<td>{{$row->voucher_no}}</td>
 							</tr>
 						@else
+							<?php
+								$adj_db = $row->md_amount;
+								$adj_db_total += $adj_db;
+							?>
+							<tr>
+								<td>{{$row->md_tran_date}}</td>
+								<td>{{$row->md_acc_no}}</td>
+								<td>Maturiy dposit Paid Amount</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$adj_db}}</td>
+								<td>-</td>
+								<td>{{$row->voucher_no}}</td>
+							</tr>
 						@endif
 					@endforeach
-				<!------------------ MD PAID AMOUNT END -------------------->
-					
-					
-					
 					<tr>
-						<th colspan =3>FD Amount Paid</th>
+						<th colspan=3>FD Amount Paid</th>
 						<td>-</td>
-						<td><?php echo $fd_cash_db_total; ?></td>
+						<td><?php echo $cash_db_total; ?></td>
 						<td>-</td>
-				<?php /*		<td><?php echo $fd_adj_db_total; ?></td> */?>
-						<td><?php echo $fd_tot; ?></td>
-						<td>-</td><td>-</td>
+						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
-						$gt_cash_db += $fd_cash_db_total;
-				//		$gt_adj_db += $fd_adj_db_total;
-						$gt_adj_db += $fd_tot;
+						$gt_cash_db += $cash_db_total;
+						$gt_adj_db += $adj_db_total;
 					?>
-					
-					
-					
-					
+				<!------------------ MD PAID AMOUNT END -------------------->
 					
 					
 					<tr><td colspan="9"><h5><b><center>Share Allocated<center></b></h5></td></tr>
