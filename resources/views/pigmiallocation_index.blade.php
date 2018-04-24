@@ -34,9 +34,9 @@
 					
 					<div class="box-content">
 						<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
-						<div class="alert alert-info" style="height:120px;">
-							<div>
-								<div class="col-md-3" style="height:38px;">
+						<div class="alert alert-info" style="height:123px;">
+							<div class="col-md-12">
+								<div class="col-md-5" style="height:38px;">
 									AGENT NAME:
 									<select id="agent_id" style="height:38px;">
 										@foreach($agent_data as $row)
@@ -52,13 +52,15 @@
 										<option value="YES">CLOSED</option>
 									</select>
 								</div>
-								<div class="col-md-5 pull-right">
+								<div class="col-md-4 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
 								</div>
 							</div>
-								<a href="crtpigmiallocation" class="btn btn-default crtpal<?php echo $pa['module']->Mid; ?>">PIGMI ALLOCATION</a>
-								<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
-								<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
+							<div class="col-md-12" style="padding-top:15px;">
+								<a href="crtpigmiallocation" class="btn btn-default crtpal<?php echo $pa['module']->Mid; ?> col-md-4">PIGMI ALLOCATION</a>
+								<input type="button" value="Export to Excel" class="btn btn-default col-md-4" id="excel">
+								<input type="button" value="Print" class="btn btn-default print col-md-4" id="print">
+							</div>
 						</div>
 								
 							<div id="deposit_account_list_box">Loading...</div>
