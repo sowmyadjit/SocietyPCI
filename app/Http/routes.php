@@ -1,5 +1,10 @@
 <?php
 	ini_set('memory_limit', '500M');
+	
+	define("DAY_IS_NOT_OPEN",0);
+	define("DAY_IS_OPEN",1);
+	define("DAY_IS_CLOSED",2);
+	
 	Route::group(['prefix' => '/'], function()
 	{
 		Route::resource('authenticate', 'AuthenticateController', ['only' => ['index']]);
@@ -377,6 +382,7 @@
 				Route::post('/delete_Sb_data','OpenCloseBalanceController@delete_Sb_data');
 				Route::post('/view_cash_details','OpenCloseBalanceController@view_cash_details');
 				Route::post('/edit_cash_details','OpenCloseBalanceController@edit_cash_details');
+				Route::post('/check_day_open','OpenCloseBalanceController@check_day_open');
 				
 				
 				//PermissionController

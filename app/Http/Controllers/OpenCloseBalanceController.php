@@ -218,6 +218,10 @@
 			$trandaily['emp_sal_extra']=$this->op->emp_sal_extra($dte);
 			$trandaily['agent_sal_extra']=$this->op->agent_sal_extra($dte);
 /********** salary extra ******/
+
+			$trandaily['mdpayamt']=$this->op->mdpayamt($dte);
+
+			
 			
 			
 			$trandaily['jewel_auction_account']=$this->op->jewel_auction_account($dte);
@@ -581,6 +585,8 @@
 			$trandaily['emp_sal_extra']=$this->op->emp_sal_extra($dte);
 			$trandaily['agent_sal_extra']=$this->op->agent_sal_extra($dte);
 /********** salary extra ******/
+
+			$trandaily['mdpayamt']=$this->op->mdpayamt($dte);
 			
 			$trandaily['jewel_auction_account']=$this->op->jewel_auction_account($dte);
 			
@@ -682,6 +688,13 @@
 			$in_data["cash_id"] = $request->input("cash_id");
 			$in_data["amount"] = $request->input("amount");
 			return $this->op->edit_cash_details($in_data);
+		}
+		
+		public function check_day_open(Request $request)
+		{
+			$in_data = array();
+			$in_data["date"] = $request->input("date");
+			return $this->op->check_day_open($in_data);
 		}
 		
 		

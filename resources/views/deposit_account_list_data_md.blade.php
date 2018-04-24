@@ -1,3 +1,7 @@
+<?php
+	$day_open_status = $ret_data["day_open_status"];
+?>
+
 <style>
 	.hide_it {
 		opacity: 0.5;
@@ -74,17 +78,24 @@
 	$(".btn_pay").click(function() {
 		//console.log("all_id:"+$(this).attr("data"));
 		var allocation_id = $(this).attr("data");
-		$.ajax({
-			url:"maturity_amount_pay_form",
-			type:"post",
-			data:"&allocation_id="+allocation_id,
-			success:function(data) {
-				//console.log("maturity_amount_pay_form: done");
-				//console.log(data);
-				$("#deposit_details_box").hide();
-				$("#temp_box").html(data);
-			}
-		});
+		var day_open_status = {{$day_open_status}};
+		if(day_open_status == {{DAY_IS_NOT_OPEN}}) {
+			alert("DAY IS NOT OPEN!");
+		} else if(day_open_status == {{DAY_IS_CLOSED}}) {
+			alert("DAY IS CLOSED!");
+		} else {
+			$.ajax({
+				url:"maturity_amount_pay_form",
+				type:"post",
+				data:"&allocation_id="+allocation_id,
+				success:function(data) {
+					//console.log("maturity_amount_pay_form: done");
+					//console.log(data);
+					$("#deposit_details_box").hide();
+					$("#temp_box").html(data);
+				}
+			});
+		}
 	});
 </script>
 

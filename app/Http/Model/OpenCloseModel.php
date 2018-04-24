@@ -218,7 +218,7 @@
 			$BranchId=$uname->Bid;
 			
 			return DB::table('sb_transaction')->where('SBReport_TranDate',$dte)->where('TransactionType','=',"DEBIT")->where('Payment_Mode','=',"CASH")->where('tran_reversed','=',"NO")->where('Uncleared_Bal','=',"0")->where('Bid',$BranchId)->sum('Amount');
-		}
+			}
 		
 		public function show_dailysbbalance_adjust($dte)
 		{
@@ -2548,6 +2548,52 @@
 			return DB::table("cash")
 				->where("cashId","=",$data["cash_id"])
 				->update(["InHandCash"=>$data["amount"]]);
+		}
+		
+		public function check_day_open($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$table = "dailyopenclose";
+			$branch_id_field = "Daily_Bid";
+			$date_field = "Daily_Date";
+			$amount_type_field = "Daily_Description";
+			$open_status = "Daily_Status";
+			
+			$day_open_entry = DB::table($table)
+				->where($branch_id_field,$BID)
+				->where($date_field,$data["date"])
+				->where($amount_type_field,"INHANDCASH")
+				->where($open_status,"OPEN")
+				->count();
+			$day_close_entry = DB::table($table)
+				->where($branch_id_field,$BID)
+				->where($date_field,$data["date"])
+				->where($amount_type_field,"INHANDCASH")
+				->where($open_status,"CLOSE")
+				->count();
+			
+			if($day_open_entry == 0) {
+				return DAY_IS_NOT_OPEN;
+			} else if($day_close_entry == 0) {
+				return DAY_IS_OPEN;
+			} else {
+				return DAY_IS_CLOSED;
+			}
+		}
+		
+		public function mdpayamt($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$ret_data = [];
+			$ret_data = DB::table("md_transaction")
+				->select()
+				->where("deleted",0)
+				->where("bid",$BID)
+				->where("md_tran_date",$date)
+				->get();
+			return $ret_data;
 		}
 		
 		
