@@ -506,7 +506,7 @@ class DepositModel extends Model
 		
 //COMPUSLORY DEPOSIT
 
-	/*	public function deposit_account_list_cd($data)
+		public function deposit_account_list_cd($data)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
@@ -522,6 +522,7 @@ class DepositModel extends Model
 			$table = "compulsory_deposit";
 			$deleted_field = "deleted";
 			$closed_field = "cd_closed";
+			$user_type_field = "user_type";
 			$branch_id_field = "{$table}.bid";
 			$user_id_field = "{$table}.uid";
 			$allocation_id_field = "{$table}.cd_id";
@@ -545,6 +546,7 @@ class DepositModel extends Model
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
 			} else {
 				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data["closed"]);
+				$deposit_account_list = $deposit_account_list->where($user_type_field,"=",$data["user_type"]);
 			}
 			$deposit_account_list = $deposit_account_list//->limit(1)
 										->get();
@@ -560,14 +562,12 @@ class DepositModel extends Model
 				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
 				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
 				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
-				$ret_data['deposit_details'][$i]['maturity_amount'] = //calc dynami
+				$ret_data['deposit_details'][$i]['amount'] = //calc dynami
 				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
-				$ret_data['deposit_details'][$i]['account_type'] = "MD";
+				$ret_data['deposit_details'][$i]['account_type'] = $data["category"];
 			}
 			//print_r($ret_data);exit();
 			return $ret_data;
-		}*/
-		
-		
+		}
 		
 	}

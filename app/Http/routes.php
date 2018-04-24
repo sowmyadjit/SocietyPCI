@@ -1,9 +1,12 @@
 <?php
 	ini_set('memory_limit', '500M');
-	
+	//USED IN MD
 	define("DAY_IS_NOT_OPEN",0);
 	define("DAY_IS_OPEN",1);
 	define("DAY_IS_CLOSED",2);
+	//USED IN CD
+	define("USER_TYPE_EMPLOYEE",1);
+	define("USER_TYPE_USER",1);
 	
 	Route::group(['prefix' => '/'], function()
 	{
@@ -161,6 +164,8 @@
 				Route::get('/maturity_deposit_index','DepositController@maturity_deposit_index');
 				Route::post('/maturity_amount_pay_form','DepositController@maturity_amount_pay_form');
 				Route::post('/maturity_amt_create','DepositController@maturity_amt_create');
+				Route::get('/compulsory_deposit_index','DepositController@compulsory_deposit_index');
+				Route::post('/cd_interest_calculation_index','DepositController@cd_interest_calculation_index');
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');

@@ -91,7 +91,8 @@
 		{
 			$in_data['category'] = $request->input("category");
 			$in_data['closed'] = $request->input("closed");
-			$in_data['agent_id'] = $request->input("agent_id");
+			$in_data['agent_id'] = $request->input("agent_id");//USED IN PG
+			$in_data['user_type'] = $request->input("user_type");// USED IN CD
 			$in_data['allocation_id'] = $request->input("allocation_id");
 			switch($in_data['category']) {
 				case "PG":	$ret_data = $this->creadepositmodel->deposit_account_list_pg($in_data);
@@ -105,6 +106,9 @@
 							break;
 				case "MD":	$ret_data = $this->creadepositmodel->deposit_account_list_md($in_data);
 							return view("deposit_account_list_data_md",compact("ret_data"));
+							break;
+				case "CD":	$ret_data = $this->creadepositmodel->deposit_account_list_cd($in_data);
+							return view("deposit_account_list_data_cd",compact("ret_data"));
 							break;
 			}
 		}
@@ -160,5 +164,17 @@
 			$in_data["sb_remaining_amount"] = $request->input("sb_remaining_amount");
 			$data = $this->creadepositmodel->maturity_amt_create($in_data);
 			return "done";
+		}
+		
+//COMPULSORY DEPOSIT
+		public function compulsory_deposit_index()
+		{
+			$data = [];
+			return view("compulsory_deposit_index",compact('data'));
+		}
+		
+		public function cd_interest_calculation_index(Request $request)
+		{
+			return view("cd_interest_calculation_index");
 		}
 	}
