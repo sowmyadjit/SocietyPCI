@@ -11,18 +11,20 @@
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\CompanyModel;
 	use App\Http\Model\LoanModel;
+	use App\Http\Model\AccountModel;
+	
 	class DLRepaymentController extends Controller
 	{
 		
 		
 		public function __construct()
 		{
-			
 				$this->pigmtDLrepay = new DLRepaymentModel;
 				$this->Report_model = new ReportModel;
 				$this->Modules= new ModulesModel;
 				$this->loan = new LoanModel;
-				}
+				$this->acc = new AccountModel;
+		}
 		
 		public function pigmiDLPigmy()
 		{
@@ -255,6 +257,10 @@
 		}
 		public function DLRepayGetSBDetails(Request $request)
 		{
+			/*********/
+			$fn_data["acc_id"] =  $request->input('sbAcNo');
+			$sb_balance = $this->acc->get_account_balance($fn_data);
+			/*********/
 			$Url="pigmiDLPigmy";	
 			$id['module']=$this->Modules->GetAnyMid($Url);
 			$AccNo['sbAcNo']=$request->input('sbAcNo');
@@ -262,7 +268,7 @@
 			$id['acid']=$get->Accid;
 			$id['acnum']=$get->AccNum;
 			$id['actid']=$get->AccTid;
-			$id['totamt']=$get->Total_Amount;
+			$id['totamt'] = $sb_balance; //$get->Total_Amount;
 			return $id;
 		}
 		
