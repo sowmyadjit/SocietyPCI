@@ -2799,6 +2799,7 @@
 				->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","{$table}.PigmiAllocID")
 				->where("{$table}.tran_reversed","=","NO")
 				->where("{$table}.Bid","=",$Bid)
+				->where("{$table}.service_charge","=",0)
 				->where("{$table}.Agentid","=",$data["agent_uid"]);
 			if(!empty($data["allocation_id"])) {
 				$all_pigmi_transaction = $all_pigmi_transaction->where("pigmiallocation.PigmiAllocID","=",$data["allocation_id"]);
