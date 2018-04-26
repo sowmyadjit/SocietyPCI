@@ -4,9 +4,18 @@
 	define("DAY_IS_NOT_OPEN",0);
 	define("DAY_IS_OPEN",1);
 	define("DAY_IS_CLOSED",2);
+	define("CREDIT",1);
+	define("DEBIT",2);
 	//USED IN CD
 	define("USER_TYPE_EMPLOYEE",1);
 	define("USER_TYPE_USER",1);
+	define("DELETED",1);
+	define("NOT_DELETED",0);
+	define("CLOSED",1);
+	define("NOT_CLOSED",0);
+	define("PAID",1);
+	define("UNPAID",0);
+	
 	
 	Route::group(['prefix' => '/'], function()
 	{
@@ -166,6 +175,7 @@
 				Route::post('/maturity_amt_create','DepositController@maturity_amt_create');
 				Route::get('/compulsory_deposit_index','DepositController@compulsory_deposit_index');
 				Route::post('/cd_interest_calculation_index','DepositController@cd_interest_calculation_index');
+				Route::post('/cd_interest_calculatoin','DepositController@cd_interest_calculatoin');
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');

@@ -16,25 +16,26 @@
 				
 				
 					<div class="alert alert-info" style="height:60px;">
-						
-						<div class="form-group chequedte col-md-12">
-							<label class="col-md-4 control-label">DATE</label>
-							<div class="col-md-4 date">
-								
-								<div class="input-group input-append">
-									<input type="text" name="date" id="date" name="cheque_date" class="form-control" value="{{date('d-m-Y',$date)}}"/>
-									<span class="input-group-addon add-on">
-										<span class="glyphicon glyphicon-calendar">
-										</span>
-										<b class="caret"></b>
-									</span> 
+						<form id="form_data">
+							<div class="form-group chequedte col-md-12">
+								<label class="col-md-4 control-label">DATE</label>
+								<div class="col-md-4 date">
+									
+									<div class="input-group input-append">
+										<input type="text" name="date" id="date" class="form-control" value="{{date('d-m-Y',$date)}}"/>
+										<span class="input-group-addon add-on">
+											<span class="glyphicon glyphicon-calendar">
+											</span>
+											<b class="caret"></b>
+										</span> 
+									</div>
+									
 								</div>
-								
+								<div class="col-md-4 date">
+									<button id="bt_calculate" >Calculate</button>
+								</div>
 							</div>
-							<div class="col-md-4 date">
-								<button id="bt_calculate" >Calculate</button>
-							</div>
-						</div>
+						</form>
 					</div>
 					
 					
@@ -42,11 +43,13 @@
 
 
 <script>
-	$("#bt_calculate").click(function() {
+	$("#bt_calculate").click(function(e) {
+		e.preventDefault();
+		var form_data = $("#form_data").serialize();
 		$.ajax({
-			url : "",
+			url : "cd_interest_calculatoin",
 			type : "post",
-			data : "",
+			data : form_data,
 			success : function() {
 				console.log("done");
 			}

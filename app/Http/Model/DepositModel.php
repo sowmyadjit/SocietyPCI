@@ -409,7 +409,7 @@ class DepositModel extends Model
 				->where("PigmiAllocID","=",$data["allocation_id"])
 				->where("Bid","=",$BID)
 				->where("tran_reversed","=","NO")
-				->where("pigmy_tran_type","=",1)
+				->where("service_charge","=",1)
 				->sum("Amount");
 		}
 		
@@ -486,12 +486,15 @@ class DepositModel extends Model
 									"bid" => $BID,
 									"payment_mode" => $data["pay_mode"],
 									"md_amount" => $data["payable_amt"],
+									"transaction_type" => DEBIT,
 									"particulars" => "{$data["particulars"]}",
 									"cheque_no" => $data["cheque_no"],
 									"cheque_date" => $cheque_date_str,
 									"bank_id" => $data["bank_id"],
 									"voucher_no" => $voucher_no,
-									"subhead_id" => SUBHEAD_MATURITY_DEPOSIT
+									"subhead_id" => SUBHEAD_MATURITY_DEPOSIT,
+									"paid" => PAID,
+									"deleted" => NOT_DELETED
 								);
 			
 			DB::table($table)
@@ -534,7 +537,8 @@ class DepositModel extends Model
 									"user.FirstName as first_name",
 									"user.MiddleName as middle_name",
 									"user.LastName as last_name",
-									"{$table}.cd_closed as closed"
+									"{$table}.cd_closed as closed",
+									"{$table}.user_type as user_type"
 								);
 								
 			$deposit_account_list = DB::table($table)
@@ -562,12 +566,96 @@ class DepositModel extends Model
 				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
 				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
 				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
-				$ret_data['deposit_details'][$i]['amount'] = //calc dynami
+				$ret_data['deposit_details'][$i]['amount'] = $this->get_cd_amount(["allocation_id"=>$row->allocation_id]);//calc dynami
 				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
 				$ret_data['deposit_details'][$i]['account_type'] = $data["category"];
+				switch($row->user_type) {
+					case 1:
+								$user_type = "EMPLOYEE";
+								break;
+					case 2:
+								$user_type = "CUSTOMER";
+								break;
+					default :
+								$user_type = "";
+								break;
+				}
+				$ret_data['deposit_details'][$i]['user_type'] = $user_type;
 			}
 			//print_r($ret_data);exit();
 			return $ret_data;
+		}
+		
+		public function cd_interest_calculatoin($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$today_date_str = date("Y-m-d",strtotime(data["date"]));
+			$today_date = strtotime($today_date_str);
+			
+			//select non closed employee accounts whose interest is not calculated this year march 31
+			$table = "compulsory_deposit";
+			$deleted_field = "{$table}.deleted";
+			$closed_field = "{$table}.cd_closed";
+			$branch_id_field = "{$table}.bid";
+			$select_array = array(
+									"{$table}.cd_id"
+								);
+			$cd_list = DB::table($table)
+				->select($select_array)
+				->where($deleted_field,NOT_DELETED)
+				->where($closed_field,NOT_CLOSED)
+				->where($branch_id_field,$BID)
+				->get();
+			
+			//calculate cd int
+			$interest_rate = DB::table("company")->where("Cid",1)->value("cd_interest");
+			foreach($cd_list as $row_cd_list) {
+				$cd_amount = 
+				
+				
+				// dump it to cd int table
+			/*	$insert_array = array(
+										"date"					=>	date("Y-m-d",$today_date),
+										"cd_id"					=>	$row_cd_list->cd_id,
+										"cd_amount"				=>	
+										"cd_interest_rate"		=>	$interest_rate,
+										"cd_interest_days"		=>	
+										"cd_interest_amount"	=>	
+										"paid_state"			=>	0,
+										"deleted"				=>	0
+									);**/
+				DB::table("cd_interest")
+					->insertGetId($insert_array);
+			}
+			
+			
+			return "done";
+		}
+		
+		public function get_cd_amount($data)
+		{
+			$table = "cd_transaction";
+			$allocation_id_field = "cd_id";
+			$amount_field = "cd_amount";
+			$deleted_field = "deleted";
+			$transaction_type_field = "transaction_type";
+			$paid_field = "paid";
+			
+			$credit_amount = DB::table($table)
+				->where($allocation_id_field,$data["allocation_id"])
+				->where($deleted_field,NOT_DELETED)
+				->where($transaction_type_field,CREDIT)
+				->where($paid_field,PAID)
+				->sum($amount_field);
+			
+			$debit_amount = DB::table($table)
+				->where($allocation_id_field,$data["allocation_id"])
+				->where($deleted_field,NOT_DELETED)
+				->where($transaction_type_field,DEBIT)
+				->where($paid_field,PAID)
+				->sum($amount_field);
+				
+			return $credit_amount - $debit_amount;
 		}
 		
 	}

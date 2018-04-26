@@ -177,4 +177,11 @@
 		{
 			return view("cd_interest_calculation_index");
 		}
+		
+		public function cd_interest_calculatoin(Request $request)
+		{
+			$in_data["date"] = $request->input("date");
+			$this->creadepositmodel->cd_interest_calculatoin($in_data);
+			return "11";
+		}
 	}

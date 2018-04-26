@@ -18,11 +18,9 @@
 										<th>Sl. No.</th>
 										<th>Customer ID</th>
 										<th>Customer Name</th>
+										<th>User Type</th>
 										<th>Account Number</th>
 										<th>Compulsory Deposit Amount</th>
-										@if($ret_data["deposit_closed"] == 0)
-											<th>Action</th>
-										@endif
 									</tr>
 								</thead>
 							<tbody>
@@ -33,11 +31,9 @@
 											<td>{{++$i}}</td>
 											<td>{{ $row['user_id'] }}</td>
 											<td>{{ $row['name'] }}</td>	
+											<td>{{ $row['user_type'] }}</td>	
 											<td>{{$row['account_no'] }}</td>
 											<td>{{ $row['amount']}}</td>
-											@if($ret_data["deposit_closed"] == 0)
-												<td><button class="btn_pay btn-info btn-xs" data="{{$row['allocation_id']}}">Pay</button></td>
-											@endif
 										</tr>
 									@endforeach
 								</tbody>
