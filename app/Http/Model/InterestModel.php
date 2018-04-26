@@ -1280,6 +1280,8 @@
 		
 		public function create_service_charge($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
 			$type = $data["type"];
 			$type_no = 0;
 			
@@ -1305,6 +1307,7 @@
 				->where("deleted","=",0)
 				->get();
 				
+			$sv_amt_sum = 0;
 			
 			switch($type) {
 				case "SB":	
@@ -1328,6 +1331,7 @@
 								$insert_data1["LedgerHeadId"] = 38;
 								$insert_data1["SubLedgerId"] = 42;
 								$insert_data1["ignore_for_service_charge"] = 1;
+								$insert_data1["service_charge"] = 1;
 								DB::table("sb_transaction")
 									->insertGetId($insert_data1);
 								DB::table("service_charge")
@@ -1338,6 +1342,7 @@
 									echo "acc_id:{$row->acc_id} - closed <br />\n";
 									DB::table("createaccount")->where("Accid","=",$row->acc_id)->update(["Closed"=>"YES"]);
 								}
+								$sv_amt_sum += $row->service_charge_amount;
 							}
 							
 							break;
@@ -1367,6 +1372,8 @@
 														"CreatedBy"=>$UID,
 														"LedgerHeadId"=>"",
 														"SubLedgerId"=>"",
+														"ignore_for_service_charge"=>"1",
+														"service_charge"=>"1",
 													);
 								DB::table("pigmi_transaction")
 									->insertGetId($insert_data);
@@ -1380,10 +1387,27 @@
 								
 								//DB::table("pigmiallocation")->where("PigmiAllocID","=",$row->acc_id)->update(['Total_Amount'=>$new_total_amt]);
 								
+								$sv_amt_sum += $row->service_charge_amount;
 							}
 							
 							break;
 			}
+			$table = "income";
+			$insert_array = array(
+									"Income_Head_lid"		=>	85,
+									"Income_SubHead_lid"	=>	88,
+									"Income_date"			=>	$tran_date,
+									"Bid"					=>	$BID,
+									"Income_pay_mode"		=>	"ADJUSTMENT",
+									"Income_amount"			=>	$sv_amt_sum,
+									"Income_Particulars"	=>	"{$type} SERVICE CHARGE ON ".date("31-03-Y"),
+									"Income_ExpenseBy"		=>	$UID,
+									//"Income_Expence_PamentVoucher"	=>	,
+									"LedgerHeadId"			=>	85,
+									"SubLedgerId"			=>	88
+								);
+			DB::table($table)
+				->insertGetId($insert_array);
 		}
 		
 		public function dmy($date)
