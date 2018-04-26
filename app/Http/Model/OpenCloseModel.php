@@ -520,7 +520,7 @@
 			->leftJoin('pigmiallocation', 'pigmiallocation.PigmiAllocID', '=' , 'pigmi_transaction.PigmiAllocID')
 			->leftJoin('pigmitype','pigmiallocation.PigmiTypeid','=','pigmitype.PigmiTypeid')
 			->where('PigReport_TranDate','=',$pigtoday)
-			->where('pigmy_tran_type','=',1)
+			->where('service_charge','=',1)
 			->where('pigmi_transaction.Bid','=',$BranchId)
 			->orderBy('PigReport_TranDate','desc')
 			->orderBy('PigmiTrans_ID','desc')
