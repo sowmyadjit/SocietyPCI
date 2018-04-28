@@ -9,7 +9,7 @@
 <script src="js/tableExport.js"/>	
 <input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="view_excel">
 <input type="button" value="Print" class="btn btn-info btn-sm print" id="view_print">
-<div class="alert alert-info" style="height:150px;">
+<div class="alert alert-info" style="height:125px;">
 	<div class="form-group col-sm-12">
 		<label class="control-label col-sm-5 right_text" for="first_name">Date :</label>
 		<div class="input-group input-append date col-sm-7" id="" style="padding-left:15px;padding-right:15px;">
