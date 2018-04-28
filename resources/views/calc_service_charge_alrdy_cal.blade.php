@@ -78,7 +78,7 @@
 </div>
 <script>
 $( document).ready(function(){
-	if({{$type}}=='PIGMY'){
+	if('{{$type}}'=='PIGMY'){
 		
 	}
 	
