@@ -516,6 +516,8 @@
 				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');
 				
 				Route::post('/user_details','ReportController@user_details');
+				Route::post('/cash_chitta_index','ReportController@cash_chitta_index');
+				Route::post('/cash_chitta_data','ReportController@cash_chitta_data');
 				
 				
 				
@@ -808,7 +810,7 @@
 				Route::post('/GetPygmyAccDetail','DLRepaymentController@GetPygmyAccDetail');
 				Route::post('/GetSBAccDetail','DLRepaymentController@GetSBAccDetail');
 				Route::post('/createPigmyDL','DLRepaymentController@createPigmyDL');
-/*****************************/
+				/*****************************/
 				Route::post('/dateComp','DLRepaymentController@dateComp');
 				Route::post('/dateDiff','DLRepaymentController@dateDiff');
 /*****************************/

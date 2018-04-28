@@ -800,4 +800,16 @@
 			
 				
 		}
+		
+		public function cash_chitta_index(Requestn $request)
+		{
+			return view("cash_chitta_index");
+		}
+		
+		public function cash_chitta_data(Requestn $request)
+		{
+			
+			$data = $this->Report_model->cash_chitta_data();
+			return view("cash_chitta_data",compact('data'));
+		}
 	}
