@@ -15,7 +15,7 @@
 				<div class="box-content">
 					
 					
-					{!! Form::open(['url' => 'crtpigmialloc','class' => 'form-horizontal','id' => 'form_pigmialloc','method'=>'post']) !!}
+				<?php /*	{!! Form::open(['url' => 'crtpigmialloc','class' => 'form-horizontal','id' => 'form_pigmialloc','method'=>'post']) !!} */?>
 					
 					<div class="alert alert-info">
 						<div class="form-group">
@@ -42,7 +42,7 @@
 				
 			</div>
 			
-			{!! Form::close() !!}
+		<?php /*	{!! Form::close() !!} */?>
 		</div>
 	</div>
 </div>
@@ -80,7 +80,7 @@
 	
 	$('.typeahead1').change( function(e) {
 		
-		mid=$('.typeahead1').data('value');
+		mid=$('.typeahead1').attr('data-value');
 		
 		e.preventDefault();
 		if(!isNaN(mid)) {
