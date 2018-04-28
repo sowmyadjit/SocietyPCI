@@ -7,7 +7,8 @@
 	use App\Http\Controllers\Controller;
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\PayAmtModel;
-use App\Http\Model\OpenCloseModel;
+	use App\Http\Model\OpenCloseModel;
+	use App\Http\Model\AccountModel;
 	
 	class PayAmtController extends Controller
 	{
@@ -16,6 +17,7 @@ use App\Http\Model\OpenCloseModel;
 		
 		public function __construct()
 		{
+			$this->acc = new AccountModel;
 			$this->Modules= new ModulesModel;
 			$this->PayAmtMod = new PayAmtModel;
 			$this->OP_model=new OpenCloseModel;
@@ -379,10 +381,15 @@ use App\Http\Model\OpenCloseModel;
 			$UserID['usrid']=$request->input('usrid');
 			$get=$this->PayAmtMod->GetSBForFDPayAmt($UserID);
 			
+			/*********/
+			$fn_data["acc_id"] =  $request->input('acc_id');
+			$sb_balance = $this->acc->get_account_balance($fn_data);
+			/*********/
+			
 			if(!empty($get->AccNum))  //if have SB Account
 			{
 				$id['acn']=0;
-				$id['tot']=$get->Total_Amount;
+				$id['tot'] = $sb_balance; //$get->Total_Amount;
 				$id['acccn']=$get->AccNum;
 				$id['acid']=$get->Accid;
 				$id['actid']=$get->AccTid;

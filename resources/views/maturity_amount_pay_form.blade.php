@@ -59,6 +59,17 @@
 					</div>
 						
 					<div class="col-md-8 col-md-offset-2 form-group">
+						<div class="box-content">
+							<div class="form-group">
+								<label class="control-label col-sm-4">Particulars:</label>
+								<div class="col-md-4">
+									<input type="text" class="form-control" id="particulars" name="particulars" placeholder="PARTICULARS" value="">
+								</div>
+							</div>
+						</div>
+					</div>
+						
+					<div class="col-md-8 col-md-offset-2 form-group">
 						<div class="form-group">
 							<label class="control-label col-sm-4">Payment Mode:</label>
 							<div class="col-md-4">
@@ -216,6 +227,8 @@
 					console.log(data);
 					disable_create_button();
 					deposit_account_list("");
+					alert("Transaction Successful");
+					$("#back").trigger("click");
 				}
 			});
 		}
@@ -321,10 +334,11 @@
 	
 	$('#type_ahead_sb_acc_no').change( function(e) {
 		usr=$('#type_ahead_sb_acc_no').attr('data-value');
+		var acc_id = $("#type_ahead_sb_acc_no").attr("data-value");
 		$.ajax({
 			url:'GetSBForFDPayAmt',
 			type:'post',
-			data:'&usrid='+usr,
+			data:'&usrid='+usr+"&acc_id="+acc_id,
 			success:function(data){
 				
 				$('#acnvalue').val(data['acn']);
@@ -338,11 +352,6 @@
 					console.log(tot_amt);
 					$('#sb_remaining_amount').val(tot_amt);
 				}
-				else
-				{
-					alert("SB Account Does not exist for this Customer. Please Create a SB Account");
-				}
-				
 			}
 		});
 	});
