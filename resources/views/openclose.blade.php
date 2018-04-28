@@ -41,7 +41,7 @@
 					data:'',
 					success:function(data)
 					{
-					$("#cash_details").html(data);
+						//$("#cash_details").html(data);//CASH EDITING TEMPERARILY DISABLED
 					}
 	});
 	});
