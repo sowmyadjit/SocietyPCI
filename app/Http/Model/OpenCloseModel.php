@@ -2005,11 +2005,25 @@
 				
 				if($fdcou==0)
 				{
-					$fddetails=DB::table('fdallocation')->select('Accid','lastinterestpaid','fdmonth','interstmonth','Fd_DepositAmt','FdTid')
+					$fddetails=DB::table('fdallocation')->select('Accid','lastinterestpaid','fdmonth','interstmonth','Fd_DepositAmt','FdTid','Fd_CertificateNum','FdReport_StartDate')
 					->where('Fd_CertificateNum',$accno1)
 					->first();
 					$fdmonth=$fddetails->fdmonth;
-					$lastpaiddate=$fddetails->lastinterestpaid;
+			/*******************/
+					$temp = DB::table("fd_monthly_interest")
+						->select("FD_Date")
+						->where("deleted",0)
+						->where("fdnum",$fddetails->Fd_CertificateNum)
+						->orderBy("FD_Date","desc")
+						->first();//print_r($temp);exit();
+					
+					if(!empty($temp) && $temp->FD_Date != "0000-00-00") {
+						$last_interest_paid_date = $temp->FD_Date;
+					} else {
+							$last_interest_paid_date = $fddetails->FdReport_StartDate;
+					}
+			/*******************/
+					$lastpaiddate=$last_interest_paid_date; //$fddetails->lastinterestpaid;
 					$intertsamt=$fddetails->interstmonth;
 					$accid=$fddetails->Accid;
 					$fddeposit=$fddetails->Fd_DepositAmt;
@@ -2035,11 +2049,11 @@
 					{
 						$saleem=1;
 					}
-					if($fdmonth=="3 Month(90 days)"&&$difdays>90)
+					if($fdmonth=="3 Month(90 days)"&&$difdays>85) //90 days
 					{
 						$saleem=1;
 					}
-					if($fdmonth=="6 Month(180 days)"&&$difdays>180)
+					if($fdmonth=="6 Month(180 days)"&&$difdays>170) // 180 days
 					{
 						$saleem=1;
 					}
@@ -2601,6 +2615,15 @@
 				->where("md_tran_date",$date)
 				->get();
 			return $ret_data;
+		}
+		
+		public function update_cash_details($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			return DB::table("cash")
+				->where("BID","=",$BID)
+				->update(["InHandCash"=>$data["amount"]]);
 		}
 		
 		
