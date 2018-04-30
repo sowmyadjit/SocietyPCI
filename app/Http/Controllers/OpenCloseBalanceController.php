@@ -51,6 +51,7 @@
 		function show_dailybalance1()
 		{
 			$dte=date('Y-m-d');
+			$trandaily['date'] = $dte;
 			//SB
 			$trandaily['sb']=$this->op->show_dailysbbalance($dte);
 			$trandaily['sbcredit']=$this->op->show_dailysbcreditbalance($dte);
@@ -237,7 +238,6 @@
 			$Url="openclose";
 			$trandaily['module']=$this->Modules->GetAnyMid($Url);
 			
-			
 			return view('viewdailybal_1',compact('trandaily'));
 		}
 /*		function show_dailybalance()
@@ -418,7 +418,7 @@
 		public function dailytrandate_details(Request $request)
 		{
 			$dte=$request->input('finddate');
-			
+			$trandaily["date"] = $dte;
 			//SB
 			$trandaily['sb']=$this->op->show_dailysbbalance($dte);
 			$trandaily['sbcredit']=$this->op->show_dailysbcreditbalance($dte);
@@ -690,6 +690,13 @@
 			return $this->op->edit_cash_details($in_data);
 		}
 		
+		public function update_cash_details(Request $request)
+		{
+			$in_data = array();
+			$in_data["amount"] = $request->input("amount");
+			return $this->op->update_cash_details($in_data);
+		}
+		
 		public function check_day_open(Request $request)
 		{
 			$in_data = array();
@@ -697,7 +704,18 @@
 			return $this->op->check_day_open($in_data);
 		}
 		
+		public function appraiser_commission_report_index(Request $request)// saraf commition report
+		{
+			return view("appraiser_commission_report_index");
+		}
 		
+		public function appraiser_commission_report_data(Request $request)
+		{
+			$in_data["year"] = $request->input("year");
+			$in_data["month"] = $request->input("month");
+			$data = $this->op->saraf_commission_report_data($in_data);
+			return view("saraf_commission_report_data",compact("data"));
+		}
 		
 		
 	}

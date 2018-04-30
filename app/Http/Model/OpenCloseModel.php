@@ -2626,6 +2626,42 @@
 				->update(["InHandCash"=>$data["amount"]]);
 		}
 		
+		public function appraiser_commission_report_data($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$ret_data["appraiser_commission_details"] = [];
+			
+			$select_array = array(
+									"JewelLoanId as allocation_id",
+									"JewelLoan_LoanNumber as loan_no",
+									"JewelLoan_SaraparaCharge as appraiser_charge",
+									"JewelLoan_StartDate as start_date",
+									"JewelLoan_LoanAmount as loan_amount"
+								);
+			
+			$loan_allocation_list = DB::table("jewelloan_allocation")
+				->select($select_array)
+				->where("BID","=",$BID)
+				->get();
+			
+			if(empty($loan_allocation_list)) {
+				return $ret_data;
+			}
+				
+			$i = -1;
+			foreach($loan_allocation_list as $row) {
+				$ret_data["appraiser_commission_details"][++$i]["allocation_id"] = $row->allocation_id;
+				$ret_data["appraiser_commission_details"][$i]["loan_no"] = $row->loan_no;
+				$ret_data["appraiser_commission_details"][$i]["appraiser_charge"] = $row->appraiser_charge;
+				$ret_data["appraiser_commission_details"][$i]["start_date"] = $row->start_date;
+				$ret_data["appraiser_commission_details"][$i]["loan_amount"] = $row->loan_amount;
+			}
+			
+			print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
 		
 	}
 
