@@ -2967,8 +2967,22 @@
 		$opening_balance = $trandaily['opbal'];
 		$running_balance = $opening_balance + $gt_cash_cr - $gt_cash_db;
 	?>
-	var running_balance = {{$running_balance}};
-	console.log(running_balance);
-	$("#running_balance").html(running_balance);
+	
+	$(document).ready(function() {
+	
+		var running_balance = {{$running_balance}};
+		console.log(running_balance);
+		$("#running_balance").html(running_balance);
+		<?php if($trandaily["date"] == date("Y-m-d")) {?>
+			$.ajax({
+				url : "update_cash_details",
+				type : "post",
+				data : "amount="+running_balance,
+				success : function() {
+					console.log("done");
+				}
+			});
+		<?php } ?>
+	});
 </script>
 
