@@ -397,6 +397,7 @@
 				Route::post('/delete_Sb_data','OpenCloseBalanceController@delete_Sb_data');
 				Route::post('/view_cash_details','OpenCloseBalanceController@view_cash_details');
 				Route::post('/edit_cash_details','OpenCloseBalanceController@edit_cash_details');
+				Route::post('/update_cash_details','OpenCloseBalanceController@update_cash_details');
 				Route::post('/check_day_open','OpenCloseBalanceController@check_day_open');
 				
 				
@@ -518,6 +519,8 @@
 				Route::post('/user_details','ReportController@user_details');
 				Route::post('/cash_chitta_index','ReportController@cash_chitta_index');
 				Route::post('/cash_chitta_data','ReportController@cash_chitta_data');
+				Route::get('/appraiser_commission_report_index','ReportController@appraiser_commission_report_index');
+				Route::post('/appraiser_commission_report_data','ReportController@appraiser_commission_report_data');
 				
 				
 				
