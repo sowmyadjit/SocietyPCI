@@ -102,6 +102,7 @@
 	$('#account_type_alrdy_cal_view').click(function(){
 		type=$('#account_type_alrdy_cal').val();
 		paid_status=$('#account_type_alrdy_cal_paid_status').val();
+		$("#already_calculated").html("");
 		$.ajax({
 		url: 'calc_service_charge_alrdy_cal',
 		type: 'post',

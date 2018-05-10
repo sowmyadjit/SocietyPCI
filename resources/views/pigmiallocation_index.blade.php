@@ -95,6 +95,7 @@
 	});
 	
 	function deposit_account_list(allocation_id) {
+		$("#deposit_account_list_box").html("");
 		var closed = $("#closed_status").val();
 		var agent_id = $("#agent_id").val();
 		$.ajax({

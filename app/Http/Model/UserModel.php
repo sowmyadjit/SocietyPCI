@@ -63,6 +63,7 @@
 		
 		public function GetAgent($agi)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
 			//return DB::table('user')
 			$test = DB::table('user')
 			
@@ -70,6 +71,7 @@
 			->leftJoin('designation','designation.Did','=','user.Did')
 			->where('designation.DName','like','%AGENT%')
 			->where('AuthStatus','=',"AUTHORISED")
+			->where('Bid','=',$BID)
 			->get();
 			//echo $test;
 			return $test;
