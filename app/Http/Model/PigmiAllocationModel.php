@@ -61,7 +61,9 @@
 			{
 				$paccno="PCISPG".$bcode.($countpal+1);
 			}*/
-			$maxid=DB::table('pigmiallocation')->where('Bid','=',$bid)->max('PigmiAllocID');
+			
+			
+/*			$maxid=DB::table('pigmiallocation')->where('Bid','=',$bid)->max('PigmiAllocID');
 			$accnum1=DB::table('pigmiallocation')->select('PigmiAcc_No')->where('PigmiAllocID','=',$maxid)->first();
 			$accnum=$accnum1->PigmiAcc_No;
 			print_r($accnum);
@@ -69,7 +71,25 @@
 				$paccno2=$matches[2];
 				
 				$paccno3=intval($paccno2)+1;
-				$paccno="PCISPG".$bcode.$paccno3;
+				$paccno="PCISPG".$bcode.$paccno3;*/
+				
+	/************ NEXT PIGMY ACCOUNT NUMBER ************/
+			$allocation_list = DB::table("pigmiallocation")
+			->select("PigmiAcc_No")
+				->where("Bid",$BID)
+				->get();
+			
+			$max_number = 0;
+			foreach($allocation_list as $row_all_list) {
+				$temp_number = preg_replace('/[^0-9]/', '', $row_all_list->PigmiAcc_No);
+				$max_number = ($temp_number > $max_number) ? $temp_number: $max_number;
+			}
+			//echo "max: {$max_number}\n<br />";
+			$new_max_number = $max_number + 1;
+			$new_allocation_number = "PCISPG{$bcode}{$new_max_number}";
+			//echo "new all no: {$new_allocation_number}\n<br />"; exit();
+			$paccno = $new_allocation_number;
+	/************************/
 				
 				
 				$agentid=$id['agid'];
