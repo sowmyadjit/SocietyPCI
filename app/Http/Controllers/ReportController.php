@@ -801,15 +801,28 @@
 				
 		}
 		
-		public function cash_chitta_index(Requestn $request)
+		public function cash_chitta_index(Request $request)
 		{
 			return view("cash_chitta_index");
 		}
 		
-		public function cash_chitta_data(Requestn $request)
+		public function cash_chitta_data(Request $request)
 		{
 			
 			$data = $this->Report_model->cash_chitta_data();
 			return view("cash_chitta_data",compact('data'));
+		}
+		
+		public function appraiser_commission_report_index(Request $request)
+		{
+			return view("appraiser_commission_report_index");
+		}
+		
+		public function appraiser_commission_report_data(Request $request)
+		{
+			$in_data["year"] = $request->input("year","2018");
+			$in_data["month"] = $request->input("month","05");
+			$data = $this->Report_model->appraiser_commission_report_data($in_data);
+			return view("appraiser_commission_report_data",compact($data));
 		}
 	}

@@ -2978,4 +2978,60 @@
 			return($ret_data);
 		}
 		
+		public function get_cal_days($data)
+		{
+			$cal_days = [];
+			$temp_date = $data["from_date"];
+			$end_date = $data["to_date"];
+			$i = -1;
+			while($temp_date <= $end_date) {
+				//var_dump($temp_date);
+				$cal_days[++$i] = $temp_date;
+				$temp_date = date('Y-m-d', strtotime('+1 day', strtotime($temp_date)));
+			}//print_r($cal_days);
+			
+			return $cal_days;
+		}
+		
+		public function appraiser_commission_report_data($data)
+		{
+			$from_date = "{$data['year']}-{$data['month']}-01";
+			$to_date = date("Y-m-t",strtotime($from_date));
+			$ret_data["cal_days"] = $this->get_cal_days(["from_date"=>$from_date,"to_date"=>$to_date]);
+			$ret_data["appraiser_commission_details"] = array();
+			$table = "jewelloan_allocation";
+			$select_array = array(
+									"{$table}.JewelLoan_LoanAmount as loan_amount",
+									"{$table}.JewelLoan_SaraparaCharge as appraiser_charge",
+									"{$table}.JewelLoan_StartDate as start_date"
+								);
+			$loan_allocation_list = DB::table($table)
+				->select($select_array)
+				->where("{$table}.JewelLoan_StartDate","like","%{$data['year']}-{$data['month']}%")
+				->get();
+				
+			$loan_amount_total_sum = 0;
+			$appraiser_charge_total_sum = 0;
+			$i = -1;
+			foreach($ret_data["cal_days"] as $date) {
+				$loan_amount_daily_sum = 0;
+				$appraiser_charge_daily_sum = 0;
+				foreach($loan_allocation_list as $row_jl) {	
+					if($row_jl->start_date == $date) {
+						$loan_amount_daily_sum += $row_jl->loan_amount;
+						$appraiser_charge_daily_sum += $row_jl->appraiser_charge;
+					}
+				}
+				$ret_data["appraiser_commission_details"][++$i]["date"] = $date;
+				$ret_data["appraiser_commission_details"][$i]["loan_amount_daily_sum"] = $loan_amount_daily_sum;
+				$ret_data["appraiser_commission_details"][$i]["appraiser_charge_daily_sum"] = $appraiser_charge_daily_sum;
+				$loan_amount_total_sum += $loan_amount_daily_sum;
+				$appraiser_charge_total_sum += $appraiser_charge_total_sum;
+			}
+			$ret_data["loan_amount_total_sum"] = $loan_amount_total_sum;
+			$ret_data["appraiser_charge_total_sum"] = $appraiser_charge_total_sum;
+			print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
 	}
