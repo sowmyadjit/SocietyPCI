@@ -78,7 +78,10 @@
 <script>
 	$(document).ready(function() {
 		$("#back").hide();
-		deposit_account_list("");
+		
+		setTimeout(function(){
+			deposit_account_list("");
+		}, 5*1000);
 	});
 	
 	$("#closed_status, #agent_id").change(function() {
