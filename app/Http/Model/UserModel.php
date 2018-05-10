@@ -67,7 +67,7 @@
 			//return DB::table('user')
 			$test = DB::table('user')
 			
-			->select(DB::raw('user.Uid as id, CONCAT(`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
+			->select(DB::raw('user.Uid as id, CONCAT(`Uid`," - ",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
 			->leftJoin('designation','designation.Did','=','user.Did')
 			->where('designation.DName','like','%AGENT%')
 			->where('AuthStatus','=',"AUTHORISED")
