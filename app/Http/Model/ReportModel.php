@@ -2995,6 +2995,7 @@
 		
 		public function appraiser_commission_report_data($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			$from_date = "{$data['year_month']}-01";
 			$to_date = date("Y-m-t",strtotime($from_date));
 			$ret_data["cal_days"] = $this->get_cal_days(["from_date"=>$from_date,"to_date"=>$to_date]);
@@ -3008,6 +3009,7 @@
 			$loan_allocation_list = DB::table($table)
 				->select($select_array)
 				->where("{$table}.JewelLoan_StartDate","like","%{$data['year_month']}%")
+				->where("{$table}.JewelLoan_Bid",$BID)
 				->get();
 				
 			$loan_amount_total_sum = 0;
