@@ -410,6 +410,7 @@ class DepositModel extends Model
 				->where("Bid","=",$BID)
 				->where("tran_reversed","=","NO")
 				->where("service_charge","=",1)
+				->where("PigReport_TranDate",">","2018-01-01")
 				->sum("Amount");
 		}
 		
