@@ -211,6 +211,35 @@
 		public function payagentcommision(Request $request)
 		{
 			$agentsal['aguid']=$request->input('aguid');
+			$agentsal['cp']=$request->input('com_per');
+			$agentsal['totalamt']=$request->input('totalamt');
+			$agentsal['commdis']=$request->input('com_val');
+			$agentsal['tdsval']=$request->input('tds_value');
+			$agentsal['sdpo']=$request->input('sd_value');
+			$agentsal['sbAcNo']=$request->input('sbAcNo');
+			$agentsal['pmode']=$request->input('pmode');
+			$agentsal['SBAvailhidn']=$request->input('SBAvailhidn');
+			$agentsal['plremamt']=$request->input('plremamt');
+			$agentsal['plintamt']=$request->input('plintamt');
+			$agentsal['plemi']=$request->input('plemi');
+			$agentsal['loannum']=$request->input('loannum');  
+			$agentsal['noloan']=$request->input('noloan');  
+			$agentsal['pay']=$request->input('pay');  
+			$agentsal['charges']=$request->input('charges');  
+			$agentsal['amount']=$request->input('amount');  
+			$agentsal['loopid']=$request->input('loopid');
+			
+/*************edit**************/
+			$agentsal['sal_extra_all']=$request->input('sal_extra_all');
+/*************edit end**************/
+
+			$get=$this->salary->payagentcommision($agentsal);
+			
+			
+		}
+		public function payagentcommision2(Request $request)
+		{
+			$agentsal['aguid']=$request->input('aguid');
 			$agentsal['cp']=$request->input('cp');//com_per
 			$agentsal['totalamt']=$request->input('totalamt');
 			$agentsal['commdis']=$request->input('com_val');

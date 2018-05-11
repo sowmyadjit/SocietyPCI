@@ -350,7 +350,7 @@ loannum=$('.PLAccNumTypeAhead').data('value');
 			e.preventDefault();
 			$.ajax({
 				
-				url: 'payagentcommision',
+				url: 'payagentcommision2',
 				type: 'post',
 				data: $('#form_addbank').serialize() + '&aguid='+auid+'&sbAcNo='+AccNum+'&pmode='+pmode+'&loannum='+loannum+'&noloan='+noloan,
 				success: function(data) {

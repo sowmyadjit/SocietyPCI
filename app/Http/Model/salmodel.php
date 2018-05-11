@@ -377,7 +377,7 @@
 			$aloan=$emi;//+$intrerst+$chargsum;
 				$paidprincipal=$remaining-$intrerst;
 				$loanremainingamt=$remaining-$aloan;
-				$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$id['loannum'],'PLRepay_PaidAmt'=>$repay_amt/*$id['pay']*/,'PLRepay_PayMode'=>"SALARY",'PLRepay_Bid'=>$BID,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$dte,'PLRepay_CalculatedInterest'=>$id['plintamt'],'RemainingInterest_Amt'=>"0",'PLRepay_PaidInterest'=>$id['plintamt'],'PLRepay_Amtpaidtoprincpalamt'=>$paidprincipal,'PLRepay_EMIremaining'=>"0"]);
+				$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$id['loannum'],'PLRepay_PaidAmt'=>$repay_amt/*$id['pay']*/,'PLRepay_PayMode'=>"SALARY",'PLRepay_Bid'=>$BID,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$dte,'PLRepay_CalculatedInterest'=>$id['plintamt'],'RemainingInterest_Amt'=>"0",'PLRepay_PaidInterest'=>$id['plintamt'],'PLRepay_Amtpaidtoprincpalamt'=>"0"/*$paidprincipal*/,'PLRepay_EMIremaining'=>"0","interest_paid_upto"=>$dte]);
 				
 				DB::table('personalloan_allocation')
 				->where('PersLoanAllocID',$id['loannum'])

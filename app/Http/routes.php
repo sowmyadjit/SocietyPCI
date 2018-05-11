@@ -780,6 +780,7 @@
 				Route::get('/RDagent','salcontroller@RDagent');
 				Route::get('/sarapara','salcontroller@sarapara');
 				Route::post('/payagentcommision','salcontroller@payagentcommision');
+				Route::post('/payagentcommision2','salcontroller@payagentcommision2');
 				Route::get('/getagentsalary','salcontroller@getagentsalary');
 				Route::get('/getagentsalary_1','salcontroller@getagentsalary_1');
 				Route::get('/getsaraparasalary','salcontroller@getsaraparasalary');
