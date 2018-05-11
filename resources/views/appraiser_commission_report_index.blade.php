@@ -1,4 +1,6 @@
-
+<?php 
+	$current_year_month = date("Y-m");
+?>
 <style>
 	.right_text{
 	text-align: right;
@@ -6,6 +8,7 @@
     margin-top: 10px;
 	}
 </style>
+
 	
 <!--<script src="js/jquery.js"></script>-->
 <script src="js/jquery-ui.min.js"></script>
@@ -32,7 +35,7 @@
 							<label class="control-label col-sm-5 right_text" for="year_month">Select Month :</label>
 							<div class="col-md-7 pull-right">
 							
-								<input id="year_month" class="date-picker" type="month" value="1997-11"/>
+								<input id="year_month" class="date-picker" type="month" value="{{$current_year_month}}"/>
 								
 							</div>
 						</div> 
