@@ -25,8 +25,8 @@
 					</div>
 					
 				</div>
-				<div class="box-content" style="height: 365px;">
-					<div class="alert alert-info" style="height:50px;">
+				<div class="box-content" style="height: auto;">
+					<div class="alert alert-info" style="height:75px;">
 						
 						<div class="col-md-12" style="height:50px;">
 							<label class="control-label col-sm-5 right_text" for="year_month">Select Month :</label>
