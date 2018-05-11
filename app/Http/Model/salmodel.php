@@ -392,10 +392,12 @@
 			$agt_cmm_id = DB::table('agent_commission_payment')->insertGetId(['Agent_Commission_Uid'=>$id['aguid'],'Agent_Commission_Bid'=>$BID,'Agent_Commission_PaidDate'=>$dte,'Agent_Commission_PaidforAmt'=>$id['totalamt'],'Agent_Commission_PaidAmount'=>$id['pay'],'Agent_Commission_PaidStatus'=>"PAID",'Agent_Commission_PaidBY'=>$UID,'Agent_Commission_Persent'=>$id['cp'],'securityDeposit'=>$id['sdpo'],'Tds'=>$id['tdsval'],'paymentmode'=>$pmode,'sbtranid'=>$tranid]);
 			
 /*************edit**************/
-			$sal_extra_data['sal_extra_all'] = $id['sal_extra_all'];
-			$sal_extra_data['sal_id'] = $agt_cmm_id;
-			$sal_extra_data['emp_type'] = 2;//AGENT
-			$this->insertSalExtraPay($sal_extra_data);
+			if(!empty($id['sal_extra_all'])) {
+				$sal_extra_data['sal_extra_all'] = $id['sal_extra_all'];
+				$sal_extra_data['sal_id'] = $agt_cmm_id;
+				$sal_extra_data['emp_type'] = 2;//AGENT
+				$this->insertSalExtraPay($sal_extra_data);
+			}
 /*************edit**************/
 			
 			return $agt_cmm_id;

@@ -237,7 +237,7 @@
 			
 			$Url="openclose";
 			$trandaily['module']=$this->Modules->GetAnyMid($Url);
-			
+			//print_r($trandaily);exit();
 			return view('viewdailybal_1',compact('trandaily'));
 		}
 /*		function show_dailybalance()

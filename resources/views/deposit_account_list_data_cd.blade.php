@@ -78,16 +78,16 @@
 			alert("DAY IS NOT OPEN!");
 		} else if(day_open_status == {{DAY_IS_CLOSED}}) {
 			alert("DAY IS CLOSED!");
-		} else {
-			$.ajax({
-				url:"maturity_amount_pay_form",
-				type:"post",
-				data:"&allocation_id="+allocation_id,
-				success:function(data) {
-					$("#deposit_details_box").hide();
-					$("#temp_box").html(data);
-				}
-			});
+			} else {
+				$.ajax({
+					url:"maturity_amount_pay_form",
+					type:"post",
+					data:"&allocation_id="+allocation_id,
+					success:function(data) {
+						$("#deposit_details_box").hide();
+						$("#temp_box").html(data);
+					}
+				});
 		}
 	});
 </script>

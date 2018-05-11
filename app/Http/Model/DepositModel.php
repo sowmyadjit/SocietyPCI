@@ -589,7 +589,7 @@ class DepositModel extends Model
 		public function cd_interest_calculatoin($data)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
-			$today_date_str = date("Y-m-d",strtotime(data["date"]));
+			$today_date_str = date("Y-m-d",strtotime($data["date"]));
 			$today_date = strtotime($today_date_str);
 			
 			//select non closed employee accounts whose interest is not calculated this year march 31

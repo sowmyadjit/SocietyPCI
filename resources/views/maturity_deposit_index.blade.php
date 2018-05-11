@@ -69,6 +69,7 @@
 	});
 	
 	$("#closed_status").change(function() {
+		$("#deposit_account_list_box").html("Loading...");
 		deposit_account_list("");
 	});
 	

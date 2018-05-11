@@ -2995,7 +2995,7 @@
 		
 		public function appraiser_commission_report_data($data)
 		{
-			$from_date = "{$data['year']}-{$data['month']}-01";
+			$from_date = "{$data['year_month']}-01";
 			$to_date = date("Y-m-t",strtotime($from_date));
 			$ret_data["cal_days"] = $this->get_cal_days(["from_date"=>$from_date,"to_date"=>$to_date]);
 			$ret_data["appraiser_commission_details"] = array();
@@ -3007,7 +3007,7 @@
 								);
 			$loan_allocation_list = DB::table($table)
 				->select($select_array)
-				->where("{$table}.JewelLoan_StartDate","like","%{$data['year']}-{$data['month']}%")
+				->where("{$table}.JewelLoan_StartDate","like","%{$data['year_month']}%")
 				->get();
 				
 			$loan_amount_total_sum = 0;
@@ -3026,11 +3026,11 @@
 				$ret_data["appraiser_commission_details"][$i]["loan_amount_daily_sum"] = $loan_amount_daily_sum;
 				$ret_data["appraiser_commission_details"][$i]["appraiser_charge_daily_sum"] = $appraiser_charge_daily_sum;
 				$loan_amount_total_sum += $loan_amount_daily_sum;
-				$appraiser_charge_total_sum += $appraiser_charge_total_sum;
+				$appraiser_charge_total_sum += $appraiser_charge_daily_sum;
 			}
 			$ret_data["loan_amount_total_sum"] = $loan_amount_total_sum;
 			$ret_data["appraiser_charge_total_sum"] = $appraiser_charge_total_sum;
-			print_r($ret_data);exit();
+			//print_r($ret_data);exit();
 			return $ret_data;
 		}
 		

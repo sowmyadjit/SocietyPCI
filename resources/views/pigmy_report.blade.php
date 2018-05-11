@@ -106,7 +106,7 @@
 		print=$(this).attr('id');
 		if($('#SearchPigmy').val()=='')
 		{
-			console.log('haiaaaaaaaaaaaaaa');
+			//console.log('haiaaaaaaaaaaaaaa');
 			$('#SearchPigmy').attr('data-value', 0);
 		}
 		searchvalue=$('#SearchPigmy').attr('data-value');

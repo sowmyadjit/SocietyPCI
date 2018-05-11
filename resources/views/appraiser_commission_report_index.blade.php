@@ -5,12 +5,12 @@
     vertical-align: middle;
     margin-top: 10px;
 	}
-	</style>
-<script src="js/bootstrap-typeahead.js"></script>
-<script src="js/jquery.validate.min.js"></script>
-<script src="js/bootstrap-typeahead.js"></script>
-<link href="css/datepicker.css" rel='stylesheet'>
-<script src="js/bootstrap-datepicker.js"/>
+</style>
+	
+<!--<script src="js/jquery.js"></script>-->
+<script src="js/jquery-ui.min.js"></script>
+<link href="css/jquery-ui.css" rel="stylesheet"></link>
+	
 <div id="content" class="col-lg-10 col-sm-10">
 	
 	<div class="row">
@@ -26,142 +26,51 @@
 					
 				</div>
 				<div class="box-content" style="height: 365px;">
-				<script src="js/FileSaver.js"/>			
-				<script src="js/tableExport.js"/>	
-					<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
-					<div class="alert alert-info" style="height:340px;">
-					
-						<div class="form-group col-sm-12">
-							<label class="control-label col-sm-5 right_text" for="first_name">From Date :</label>
-							<div class="input-group input-append date col-sm-7" id="" style="padding-left:15px;padding-right:15px;">
-								<input type="text" class="form-control datepicker" name="from_date" id="from_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
-								<span class="input-group-addon add-on">
-									<span class="glyphicon glyphicon-calendar">
-									</span>
-								</span> 
-							</div>
-						</div>
-						<div class="form-group col-sm-12">
-							<label class="control-label col-sm-5 right_text" for="first_name">To Date :</label>
-							<div class="input-group input-append date col-sm-7" id="" style="padding-left:15px;padding-right:15px;">
-								<input type="text" class="form-control datepicker" name="to_date" id="to_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
-								<span class="input-group-addon add-on">
-									<span class="glyphicon glyphicon-calendar">
-									</span>
-								</span> 
-							</div>
-						</div>
+					<div class="alert alert-info" style="height:50px;">
 						
-						<div class="col-md-12" style="height:100px;">
-							<label class="control-label col-sm-5 right_text" for="first_name">Select Year :</label>
+						<div class="col-md-12" style="height:50px;">
+							<label class="control-label col-sm-5 right_text" for="year_month">Select Month :</label>
 							<div class="col-md-7 pull-right">
-								<select class="form-control">
-									<option>aaa</option>
-									<option>bbbb</option>
-								</select>
+							
+								<input id="year_month" class="date-picker" type="month" value="1997-11"/>
+								
 							</div>
-						</div>
-						<div class="col-md-12" style="height:100px;">
-							<label class="control-label col-sm-5 right_text" for="first_name">Select Month :</label>
-							<div class="col-md-7 pull-right">
-								<select class="form-control">
-									<option value="01">January</option>
-									<option value="02">aaa</option>
-									<option value="03">aaa</option>
-									<option value="04">aaa</option>
-									<option value="05">aaa</option>
-									<option value="06">aaa</option>
-									<option value="01">aaa</option>
-									<option value="01">aaa</option>
-									<option value="01">aaa</option>
-									<option value="01">aaa</option>
-									<option value="01">aaa</option>
-									<option value="01">aaa</option>
-								</select>
-							</div>
-						</div>
-						<div class="col-sm-7">
-						<?php /*	<div class="col-md-4 pull-right" style='display:inline-block;'>
-							<button class="btn btn-info btn-sm"  id="print">Print</button>
-							</div> */?>
-						<div class="col-md-1 pull-right" style='display:inline-block;'>
-						<button class="btn btn-info btn-sm"  id="excel">Excel</button>
-						</div>
-						</div>
-						
-                <br />Choose a Month:
-                <input id="IconDemo" class='Default' type="text" />
-				
+						</div> 
 					</div>
-					<div style="opacity:0;height:0; position: fixed;overflow-y:scroll" id="report">
-					</div> 
+					
+					<div id="data_box"></div>
+					
 				</div>
+			</div>
 		</div>
 	</div>
 </div>
 
 
 
-
-
 <script>
 	
-    $('.Default').MonthPicker();
 	
-	$('.datepicker').datepicker().on('changeDate',function(e){
-		$(this).datepicker('hide');
+	$("#year_month").change(function() {
+		appraiser_commission_report_data();
 	});
-	$("#print,#excel").click(function(){
-		console.log("view clicked");
-		agent_uid=$("#agent_uid").val();
-		from_date=$("#from_date").val();
-		to_date=$("#to_date").val();
-		print=$(this).attr('id');
-		if($('#SearchPigmy').val()=='')
-		{
-			console.log('haiaaaaaaaaaaaaaa');
-			$('#SearchPigmy').attr('data-value', 0);
-		}
-		searchvalue=$('#SearchPigmy').attr('data-value');
-		//$('#SearchPigmy').attr('data-value', 0);
+	
+	function appraiser_commission_report_data() {
+		var year_month = $("#year_month").val();
+		$("#data_box").html("1");
 		$.ajax({
-						url:'/pigmy_report',
-						type:'post',
-						data:'&from_date='+from_date+'&to_date='+to_date+'&allocation_id='+searchvalue+'&print='+print+'&agent_uid='+agent_uid,
-						success:function(data)
-						{
-						console.log("hai");
-						$("#report").html('');
-						$("#report").html(data);
-						}
+			url:"appraiser_commission_report_data",
+			type:"post",
+			data:"&year_month="+year_month,
+			success:function(data) {
+				$("#data_box").html(data);
+			}
 		});
-	});
-	
-		$('input.SearchTypeahead').typeahead({
-		//ajax: '/SearchPigmy'
-        source:SearchPigmy
-	});
-	
-	$('#excela').click(function(e){
-	alert("excel");
-	$('#expense_details').tableExport({type:'excel',escape:'false'});
-	});	
+	}
 </script>
-<script src="js/jQuery.print.js"></script>
 <script>
 	
-	$(function() {
-		$(".printa").click(function() {
-			alert("print");
-			var divContents = $("#toprint").html();
-            var printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(divContents);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-			//$("#toprint").print();
-            printWindow.print(); 
-		});
-	});	
+	$(document).ready(function(){
+		appraiser_commission_report_data();
+	});
 </script>

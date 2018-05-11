@@ -820,9 +820,8 @@
 		
 		public function appraiser_commission_report_data(Request $request)
 		{
-			$in_data["year"] = $request->input("year","2018");
-			$in_data["month"] = $request->input("month","05");
+			$in_data["year_month"] = $request->input("year_month",date("Y-m"));
 			$data = $this->Report_model->appraiser_commission_report_data($in_data);
-			return view("appraiser_commission_report_data",compact($data));
+			return view("appraiser_commission_report_data",compact("data"));
 		}
 	}

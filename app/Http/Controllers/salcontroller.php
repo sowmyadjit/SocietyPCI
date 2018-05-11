@@ -211,11 +211,11 @@
 		public function payagentcommision(Request $request)
 		{
 			$agentsal['aguid']=$request->input('aguid');
-			$agentsal['cp']=$request->input('com_per');
+			$agentsal['cp']=$request->input('cp');//com_per
 			$agentsal['totalamt']=$request->input('totalamt');
 			$agentsal['commdis']=$request->input('com_val');
-			$agentsal['tdsval']=$request->input('tds_value');
-			$agentsal['sdpo']=$request->input('sd_value');
+			$agentsal['tdsval']=$request->input('tdsval');//tds_value
+			$agentsal['sdpo']=$request->input('sdpo');//sd_value
 			$agentsal['sbAcNo']=$request->input('sbAcNo');
 			$agentsal['pmode']=$request->input('pmode');
 			$agentsal['SBAvailhidn']=$request->input('SBAvailhidn');
