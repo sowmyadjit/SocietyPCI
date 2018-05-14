@@ -337,8 +337,8 @@
 					<div class="form-group">
 						<label class="col-sm-4 control-label">CREATED DATE</label>
 						<div class="col-md-4 date">
-							<div class="input-group input-append date" id="datePicker">
-								<input type="text" class="form-control datepicker" name="ptdte"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="<?php echo date("Y-m-d");?>" disabled />
+							<div class="input-group input-append " id="">
+								<input type="text" class="form-control " name="ptdte"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="<?php echo date("Y-m-d");?>" readonly />
 								<span class="input-group-addon add-on">
 									<span class="glyphicon glyphicon-calendar">
 									</span>
