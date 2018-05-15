@@ -70,7 +70,7 @@
 			//Inserting into Nominee Table
 			$nid = DB::table('nominee')->insertGetId(['Nom_FirstName'=> $id['nfname'],'Nom_MiddleName' => $id['nmname'],'Nom_LastName' => $id['nlname'],'Nom_Gender' => $id['ngender'],'Nom_Marital_Status' => $id['nmstate'],'Nom_Occupation' => $id['noccup'],'Nom_Age' => $id['nage'],'Nom_Birthdate' => $id['nbdate'],'Nom_Email' => $id['nemail'],'Nom_Address' => $id['nadd'],'Nom_City' => $id['ncity'],'Nom_District' => $id['ndist'],'Nom_state' => $id['nstate'],'Nom_MobNo' => $id['nmno'],'Nom_Pincode' => $id['npin'],'Nom_PhoneNo'=>$id['npno'],'Uid'=>$id['user_ss'],'Relationship'=>$id['relation'],'Nom_District'=>$id['ndist']]); 
 			//Inserting into createaccount Table
-			$acid = DB::table('createaccount')->insertGetId(['AccNum'=>$count_inc,'Old_AccNo'=>$id['oldaccno'],'Duration'=>$id['rddurtn'],'AccTid'=>$id['acctyp_11'],'Bid'=>$BID,'Uid'=>$id['user_ss'],'opening_blance'=>$id['ob'],'nid'=>$nid,'Created_on'=>$dte,'Total_Amount'=>$id['ob'],'Maturity_Date'=>$mdate,'Agent_ID'=>$id['agid']]);
+			$acid = DB::table('createaccount')->insertGetId(['AccNum'=>$count_inc,'Old_AccNo'=>$id['oldaccno'],'Duration'=>$id['rddurtn'],'AccTid'=>$id['acctyp_11'],'Bid'=>$BID,'Uid'=>$id['user_ss'],'opening_blance'=>$id['ob'],'nid'=>$nid,'Created_on'=>$dte,'Total_Amount'=>$id['ob'],'Maturity_Date'=>$mdate,'Agent_ID'=>$id['agid'],"Closed"=>"NO"]);
 			$amount1=$id['ob'];
 			if($type=="SB")
 			{
@@ -117,6 +117,7 @@
 				DB::table('inhandcash_trans')
 				->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Credited to SB Account",'InhandTrans_Cash'=>$amount1,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Credit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$totcash]);
 				}
+				return $sb_id;
 				
 			}
 			else if($type=="RD"||$type=="Recurring Deposit")
@@ -171,9 +172,9 @@
 					
 					$amount1=$id['ob'];
 					$rd_id = DB::table('rd_transaction')->insertGetId(['Accid'=> $acid,'AccTid' => $id['acctyp_11'],'RD_Trans_Type' => "Credit",'RD_Particulars' => "Opening Balance",'RD_Amount' => $amount1,'RD_CurrentBalance' => $amount1,'RD_Total_Bal' => $id['ob'],'RD_Date' => $dte,'RDReport_TranDate'=> $dte,'RD_Month'=>$mnt,'RD_Year'=>$year,'CreatedBy'=>$u,'Bid'=>$BID,'RD_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"43",'RDPayment_Mode'=>$rd_pay_mode]);
+					return $rd_id;
 				
 			}
-			return $rd_id;
 			
 			
 			
