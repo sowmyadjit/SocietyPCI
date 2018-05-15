@@ -324,6 +324,9 @@
 			$PersLoan['partpayment']=$request->input('partpayment');
 			$PersLoan['uid']=$request->input('uid');
 			$PersLoan['Persloantypeid']=$request->input('Persloantypeid');
+		/*******/
+			$PersLoan['partpay']=$request->input('partpay');
+		/*******/
 
 
 			$uid=$request->input('Persuid');
