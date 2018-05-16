@@ -153,8 +153,9 @@
 		
 		public function change_branch($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			DB::table("user")
-				->where("LoginName","=",'djitsoft')
+				->where("Uid","=",$UID)
 				->update(["Bid"=>$data["branch_id"]]);
 		}
 		
