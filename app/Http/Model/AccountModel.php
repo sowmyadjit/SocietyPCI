@@ -519,11 +519,12 @@
 				$r=0;
 			}
 			if($pay != "SB") {
-echo "pay = ";				print_r($pay); echo "<br />";
+				//echo "pay = ";				print_r($pay); echo "<br />";
 				if($pay == "ADJUSTMENT (OLD ENTRY)") {
 					$id["paymode"] = "ADJUSTMENT";
 					$id['tb'] = $id['cb'];
 				}
+				$r=0;
 				$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $id['actid'],'AccTid' => $id['acctype'],'TransactionType' => $id['trantyp'],'particulars' => $id['par'],'Amount' => $id['sb_amount'],'CurrentBalance' => $id['cb'],'Total_Bal' => $id['tb'],'tran_Date' => $id['dte'],'SBReport_TranDate'=>  $id['dte'],'Time' =>$tm,'Month'=>$mnt,'Year'=>$year,'Time'=>$tm,'Payment_Mode'=>$id['paymode'],'Cheque_Number'=>$id['chequeno'],'Cheque_Date'=>$id['chdate'],'Cleared_State'=>$id['unclearedval'],'Uncleared_Bal'=>$id['uncleared'],'Bank_Name'=>$id['bankname'],'Bank_Branch'=>$id['bankbranch'],'IFSC_Code'=>$id['ifsccode'],'Bid'=>$BID,'CreatedBy'=>$UID,'SB_resp_No'=>$r,'SB_paymentvoucher_No'=>$r1,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'CreditBankId'=>$id['creditbank']]);
 				
 				if(!$old_tran)
