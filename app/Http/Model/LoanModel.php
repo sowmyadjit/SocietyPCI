@@ -2337,6 +2337,29 @@
 //		CUSTOMER DETAILS END
 
 
+//		PAYMENT DETAILS
+			$table = "personalloan_payment";
+			$payment = array();
+			$payment = DB::table($table)
+				->select(
+							"{$table}.pl_payment_id as payment_id",
+							"{$table}.pl_payment_date as date",
+							"{$table}.paid_amount as amount"
+						)
+				->where("{$table}.pl_allocation_id","=",$allocation->PersLoanAllocID)
+				->where("{$table}.paid_status","=",1)
+				->where("{$table}.deleted","=",0)
+				->orderBy("pl_payment_date","asc")
+				->get();
+			
+			$i = -1;
+			foreach($payment as $key => $row_payment) {
+				$ret_data["payments"][++$i]["payment_id"] = $row_payment->payment_id;
+				$ret_data["payments"][$i]["date"] = $row_payment->date;
+				$ret_data["payments"][$i]["amount"] = $row_payment->amount;
+			}
+
+
 
 
 //		REPAYMENT DETAILS///////////////////////////////

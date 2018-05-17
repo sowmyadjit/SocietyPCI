@@ -1260,7 +1260,7 @@
 		{
 			$in_data = array();
 			$data = array();
-			$in_data["loan_category"] = "PL";$request->input("loan_category");//PL,JL,...
+			$in_data["loan_category"] = $request->input("loan_category");//PL,JL,...
 			$in_data["loan_allocation_id"] = $request->input("loan_allocation_id");//204;
 			
 			switch($in_data["loan_category"]) {

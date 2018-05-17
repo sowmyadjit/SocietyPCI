@@ -137,6 +137,41 @@
         </table>
         </div>
 		
+		
+        <div>
+			<h2>Loan Payment Details</h2>
+			<table class="table table-striped bootstrap-datatable datatable responsive">
+				<tr>
+					<th>
+						Serial No.
+					</th>
+					<th>
+						Date
+					</th>
+					<th>
+						Amount
+					</th>
+				</tr>
+				<?php
+					$i = 1;
+				?>
+				@foreach($data["payments"] as $row_payment)
+					<tr>
+						<td>
+							{{$i++}}
+						</td>
+						<td>
+							{{$row_payment["date"]}}
+						</td>
+						<td>
+							{{$row_payment["amount"]}}
+						</td>
+					</tr>
+				@endforeach
+			</table>
+        </div>
+		
+		
 		<h2>Repayment Details</h2> 
         <div id="repayment_details_table">			   
 <?php
