@@ -115,6 +115,22 @@
 			$uname= Auth::user();
 			$UID=$uname->Uid;
 			$BID=$uname->Bid;
+			
+			$ptdte = $id['ptdte'];
+			$allocation_id = $id['acctno'];
+			$agent_id = $id['agtid'];
+			$amount = $id['pgamount'];
+			
+			$last_tran_date = DB::table("pigmi_transaction")
+				->where("PigmiAllocID",$allocation_id)
+				->orderBy("PigReport_TranDate","desc")
+				->value("PigReport_TranDate");
+			
+			if($ptdte < $last_tran_date) {
+				return ["error" => "date not valid (date should be greater than {$last_tran_date})"];
+			}
+			
+			
 				$respit1=DB::table('branch')->select('Recp_No')->where('Bid',$BID)->first();
 				$respit=$respit1->Recp_No;
 				$r=$respit+1;
@@ -135,8 +151,8 @@
 			
 			//$dte=date('d-m-Y');
 			//$reportdte=date('Y-m-d');
-			$mnt=date('m');
-			$year=date('Y');
+			$mnt=date('m',strtotime($ptdte));
+			$year=date('Y',strtotime($ptdte));
 			$palid=$id['acctno'];
 			$amt=$id['pgbalamt'];
 			date_default_timezone_set('Asia/Kolkata');
@@ -173,41 +189,54 @@
 			$message.='. Available balance is ';
 			$message.=$msg_totbal;
 			$message.='. Regards PCI Society.';
-			echo $mobile;
-			echo '</br>'.$message;
+			//echo $mobile;
+			//echo '</br>'.$message;
 			//$this->smsmodel->SendMSG(60451,$mobile,$message);
 			
 			
-			
-			
-			
-			
+			$pending_pigmy_entry = DB::table("pending_pigmy")
+				->where("PendPigmy_AgentUid",$agent_id)//111111)//
+				->where("PendPigmy_Status","PENDING")
+				->where("PendPigmy_Bid",$BID)
+				->orderBy("PendPigmy_CollectionDate","desc")
+				->first();
+				
+			if(!empty($pending_pigmy_id)) {//update
+				$pending_pigmy_id = $pending_pigmy_entry->PpId;
+				$prev_pending_amount = $pending_pigmy_entry->PendPigmy_PendingAmount;
+				$current_pending_amount = $prev_pending_amount + $amount;
+				DB::table("pending_pigmy")->where("PpId",$pending_pigmy_id)->update(["PendPigmy_PendingAmount"=>$current_pending_amount]);
+			} else {//insert
+				$insert_array = array(
+										"PendPigmy_AgentUid"		=>	$agent_id,
+										"PendPigmy_CollectionDate"	=>	$ptdte,
+										"PendPigmy_PendingAmount"	=>	$amount,
+										"PendPigmy_Status"			=>	"PENDING",
+										"PendPigmy_Bid"				=>	$BID,
+										"PenPigmy_AmountReceived"	=>	0,
+									);
+				DB::table("pending_pigmy")
+					->insert($insert_array);
+			}
 			
 			
 			if($pgpay!="CHEQUE")
 			{
-				$tr_date = $id['ptdte'];
-				$td_date = date("Y-m-d");
-				
-				$diff = abs(strtotime($td_date) - strtotime($tr_date));
-				$diff_in_hrs = $diff/60/60;
-				echo "diff_in_hrs="; print_r("$diff_in_hrs");
-				
-				
 				$inhandcashh=DB::table('cash')->select('InHandCash')->where('BID','=',$BID)->first();
 				$inhandcash1=$inhandcashh->InHandCash;
 				$totcash=$inhandcash1+$amount1;
 				
-				if($diff_in_hrs < 12)
+				if($ptdte == date("Y-m-d")) {
 					DB::table('cash')->where('BID','=',$BID)
 					->update(['InHandCash'=>$totcash]);
 				
-				$trandate=date('Y-m-d');
-				DB::table('inhandcash_trans')
-				->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Credited to Pigmy Account",'InhandTrans_Cash'=>$amount1,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Credit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$totcash]);
+					$trandate=date('Y-m-d',strtotime($ptdte));
+					DB::table('inhandcash_trans')
+					->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Credited to Pigmy Account",'InhandTrans_Cash'=>$amount1,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Credit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$totcash]);
+				}
 			}
 			
-			return $id;
+			return;
 		}
 	}
 

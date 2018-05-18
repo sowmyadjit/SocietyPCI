@@ -260,7 +260,10 @@ $trans['LedgerId']=$request->input('LedgerId');
 			$pgtrans['pgmunclearedval']=$request->input('pgmunclearedval');
 			
 			$id=$this->pigmi_transactionmodel->insert_pgtran($pgtrans);
-			return redirect('/home');
+			if(isset($id["error"])) {
+				return $id["error"];
+			}
+			return "success";
 		}
 
 			public function AgentPigmiTransaction(Request $request)
