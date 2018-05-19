@@ -3036,4 +3036,114 @@
 			return $ret_data;
 		}
 		
+		public function cash_chitta_data($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			
+			$ret_data["date"] = $data["date"];
+			$ret_data["chitta"] = [];
+			$ret_data["receipt_amount_sum"] = 0;
+			$ret_data["voucher_amount_sum"] = 0;
+			
+			$chitta_list = DB::table("cash_chitta_details")
+				->where("deleted",0)
+				->where("pk_field","!=","")
+				->where("bid_field","!=","")
+				->where("date_field","!=","")
+				->where("transaction_type","!=",0)
+				->get();
+				
+			$i = -1;
+			foreach($chitta_list as $row_ch) {
+				$bid_field = "{$row_ch->table_name}.{$row_ch->bid_field}";
+				$date_field = "{$row_ch->table_name}.{$row_ch->date_field}";
+				
+				$select_array = array(
+										"{$row_ch->table_name}.{$row_ch->pk_field} as pk",
+										"{$row_ch->table_name}.{$row_ch->amount_field} as amount",
+										"{$row_ch->table_containing_account_no}.{$row_ch->account_no_field} as account_no"
+										//,"aa as bb"
+									);
+				switch($row_ch->transaction_type) {
+					case CREDIT	:	
+									$raw_obj = DB::raw("'CREDIT' as 'transaction_type'");
+									break;
+					case DEBIT	:	
+									$raw_obj = DB::raw("'DEBIT' as 'transaction_type'");
+									break;
+					case BOTH	:	
+									$raw_obj = DB::raw("{$row_ch->table_name}.{$row_ch->transaction_type_field} as 'transaction_type'");
+									break;
+				}
+				
+				array_push($select_array,$raw_obj);
+				
+				$where_list = DB::table("cash_chitta_where_clause")
+					->where("deleted",0)
+					->where("cash_chitta_id",$row_ch->cash_chitta_id)
+					->get();
+				$join_list = DB::table("cash_chitta_joining_tables")
+					->where("deleted",0)
+					->where("cash_chitta_id",$row_ch->cash_chitta_id)
+					->get();
+/*+++++++++++++++*/
+				$temp = DB::table($row_ch->table_name);
+				$temp = $temp->select($select_array);
+				foreach($join_list as $row_jo) {
+					$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
+											"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
+				}
+				$temp = $temp->where($bid_field,$BID);
+				$temp = $temp->where($date_field,$data["date"]);
+				foreach($where_list as $row_wh) {
+					$where_table = $row_wh->table_name;
+					$where_operator = $row_wh->operator;
+					$where_field = $row_wh->field_name;
+					$where_value = $row_wh->field_value;
+					$where_value = "\"{$where_value}\"";
+					$where_value = str_replace(",","\",\"",$where_value);
+					$where_value = explode(",", $where_value);
+					switch($where_operator) {
+						
+						case "="		:	
+						case "LIKE"		:	
+						case "like"		:	
+											$temp->where("{$where_table}.{$where_field}","{$where_operator}",$where_value);
+											break;
+						case "IN"		:
+						case "in"		:
+											$temp->whereIn("{$where_table}.{$where_field}",$where_value);
+											break;
+						case "NOT IN"	:
+						case "not in"	:
+											$temp->whereNotIn("{$where_table}.{$where_field}",$where_value);
+											break;
+					}
+				}
+				$temp = $temp->get();
+				//print_r($temp);exit();
+/*---------------*/
+				foreach($temp as $row_te) {
+					$ret_data["chitta"][++$i]["receipt_no"] = 0;
+					$ret_data["chitta"][$i]["voucher_no"] = 0;
+					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} {$row_te->account_no} {$row_te->transaction_type}";
+					$ret_data["chitta"][$i]["transaction_type"] = $row_te->transaction_type;
+					switch($row_te->transaction_type) {
+						case "CREDIT"	:	$ret_data["chitta"][$i]["receipt_amount"] = $row_te->amount;
+											$ret_data["chitta"][$i]["voucher_amount"] = 0;
+											break;
+						case "DEBIT"	:	$ret_data["chitta"][$i]["receipt_amount"] = 0;
+											$ret_data["chitta"][$i]["voucher_amount"] = $row_te->amount;
+											break;
+					}
+					$ret_data["receipt_amount_sum"] += $ret_data["chitta"][$i]["receipt_amount"];
+					$ret_data["voucher_amount_sum"] += $ret_data["chitta"][$i]["voucher_amount"];
+				}
+				
+			}
+			
+				print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
 	}

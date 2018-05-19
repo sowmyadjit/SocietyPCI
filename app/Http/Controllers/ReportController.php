@@ -808,8 +808,9 @@
 		
 		public function cash_chitta_data(Request $request)
 		{
-			
-			$data = $this->Report_model->cash_chitta_data();
+			$in_data["date"] = $request->input("date");
+			$data = $this->Report_model->cash_chitta_data($in_data);
+			//print_r($data);exit();
 			return view("cash_chitta_data",compact('data'));
 		}
 		

@@ -1,27 +1,67 @@
-<?php
-	function dmy($date)
-	{
-		return date("d-m-Y",strtotime($date));
+
+
+<style>
+	.right_text{
+	text-align: right;
+    vertical-align: middle;
+    margin-top: 10px;
 	}
-?>
-<div>
-<script src="js/FileSaver.js"/>			
-<script src="js/tableExport.js"/>	
-<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="view_excel">
-<input type="button" value="Print" class="btn btn-info btn-sm print" id="view_print">
-<div class="alert alert-info" style="height:125px;">
-	<div class="form-group col-sm-12">
-		<label class="control-label col-sm-5 right_text" for="first_name">Date :</label>
-		<div class="input-group input-append date col-sm-7" id="" style="padding-left:15px;padding-right:15px;">
-			<input type="text" class="form-control datepicker" name="from_date" id="from_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
-			<span class="input-group-addon add-on">
-			<span class="glyphicon glyphicon-calendar">
-			</span>
-			</span> 
-		</div>
-		<div class="col-md-1 pull-right" style='display:inline-block;'>
-			<button class="btn btn-info btn-sm" >View</button>
+</style>
+
+	
+<div id="content" class="col-lg-10 col-sm-10">
+	
+	<div class="row">
+		<div class="box col-md-12">
+			<div class="bdy box-inner">
+				<div class="box-header well" data-original-title="">
+					<h2><i class="glyphicon glyphicon-user"></i> Cash Chitta</h2>
+					<div class="box-icon">
+						<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
+						<a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
+						<a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
+					</div>
+					
+				</div>
+				<div class="box-content" style="height: auto;">
+					<div class="alert alert-info" style="height:75px;">
+						
+						<div class="col-md-12" style="height:50px;">
+							<label class="control-label col-sm-5 right_text" for="year_month">Select Date :</label>
+							<div class="col-md-7 pull-right">
+							
+								<input id="date" class="date-picker" type="date" value="{{date('Y-m-d')}}"/>
+								
+							</div>
+						</div> 
+					</div>
+					
+					<div id="data_box"></div>
+					
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
-</div>
+
+
+
+<script>
+	$("#date").change(function() {
+		var date = $("#date").val();
+		$("#data_box").html("");
+		$.ajax({
+			url : "cash_chitta_data",
+			type : "post",
+			data : "date="+date,
+			success : function(data) {
+				$("#data_box").html(data);
+			}
+		});
+	});
+	
+	$(function() {
+		$("#date").trigger("change");
+	});
+	
+</script>

@@ -1,27 +1,52 @@
 <?php
-	function dmy($date)
-	{
-		return date("d-m-Y",strtotime($date));
-	}
+	$class_debit = "red-text";
+	$class_credit = "green-text";
 ?>
-<div>
-<script src="js/FileSaver.js"/>			
-<script src="js/tableExport.js"/>	
-<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="view_excel">
-<input type="button" value="Print" class="btn btn-info btn-sm print" id="view_print">
-<div class="alert alert-info" style="height:125px;">
-	<div class="form-group col-sm-12">
-		<label class="control-label col-sm-5 right_text" for="first_name">Date :</label>
-		<div class="input-group input-append date col-sm-7" id="" style="padding-left:15px;padding-right:15px;">
-			<input type="text" class="form-control datepicker" name="from_date" id="from_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" value="{{date("Y-m-d")}}"/>
-			<span class="input-group-addon add-on">
-			<span class="glyphicon glyphicon-calendar">
-			</span>
-			</span> 
-		</div>
-		<div class="col-md-1 pull-right" style='display:inline-block;'>
-			<button class="btn btn-info btn-sm" >View</button>
-		</div>
-	</div>
-</div>
-</div>
+
+<style>
+	.green-text {
+		color: #014204;
+	}
+	.red-text {
+		color: #600101;
+	}
+</style>
+
+	<h1>Date : {{$data["date"]}}</h1>
+	<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >
+		<thead>
+			<tr>
+				<th>Receipt No.</th>
+				<th>Voucher No.</th>
+				<th>Particulars</th>
+				<th>Receipt Amount</th>
+				<th>Payment Amount</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach($data["chitta"] as $row)
+				<?php
+				if($row["transaction_type"] == "CREDIT") {
+					$row_class = $class_credit;
+				} else {
+					$row_class = $class_debit;
+				}
+				?>
+				<tr class="{{$row_class}}">
+					<td>{{$row["receipt_no"]}}</td>
+					<td>{{$row["voucher_no"]}}</td>
+					<td>{{$row["particulars"]}}</td>
+					<td>{{$row["receipt_amount"]}}</td>
+					<td>{{$row["voucher_amount"]}}</td>
+				</tr>
+			@endforeach
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td><span class="green-text"><b>{{$data["receipt_amount_sum"]}}</b></span></td>
+					<td><span class="red-text"><b>{{$data["voucher_amount_sum"]}}</b></span></td>
+				</tr>
+		</tbody>
+	</table>
+	
