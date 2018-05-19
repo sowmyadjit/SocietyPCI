@@ -3142,7 +3142,64 @@
 				
 			}
 			
-				print_r($ret_data);exit();
+				//print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
+		public function cash_chitta_details_list($data)
+		{
+			$ret_data["chitta"] = [];
+			$ret_data["tables"] = [];
+			
+			$table = "cash_chitta_details";
+			$deleted_field = "{$table}.deleted";
+			$select_array = array(
+									"cash_chitta_id",
+									"prefix",
+									"table_name",
+									"pk_field",
+									"amount_field",
+									"bid_field",
+									"date_field",
+									"transaction_type",
+									"transaction_type_field",
+									"table_containing_account_no",
+									"account_no_field"
+								);
+			
+			$cash_chitta_details_list = DB::table($table)
+				->select($select_array)
+				->where($deleted_field,NOT_DELETED);
+			if(isset($data["cash_chitta_details_id"])) {
+				$cash_chitta_details_list = $cash_chitta_details_list->where("{$table}.cash_chitta_id",$data["cash_chitta_details_id"]);
+			}
+			$cash_chitta_details_list = $cash_chitta_details_list->get();
+				
+			$i = -1;
+			foreach($cash_chitta_details_list as $row_ca) {
+				$ret_data["chitta"][++$i]["cash_chitta_id"] = $row_ca->cash_chitta_id;
+				$ret_data["chitta"][$i]["prefix"] = $row_ca->prefix;
+				$ret_data["chitta"][$i]["table_name"] = $row_ca->table_name;
+				$ret_data["chitta"][$i]["pk_field"] = $row_ca->pk_field;
+				$ret_data["chitta"][$i]["amount_field"] = $row_ca->amount_field;
+				$ret_data["chitta"][$i]["bid_field"] = $row_ca->bid_field;
+				$ret_data["chitta"][$i]["date_field"] = $row_ca->date_field;
+				$ret_data["chitta"][$i]["transaction_type"] = $row_ca->transaction_type;
+				$ret_data["chitta"][$i]["transaction_type_field"] = $row_ca->transaction_type_field;
+				$ret_data["chitta"][$i]["table_containing_account_no"] = $row_ca->table_containing_account_no;
+				$ret_data["chitta"][$i]["account_no_field"] = $row_ca->account_no_field;
+			}
+			
+			
+			$tables = DB::select('SHOW TABLES');
+			$tables_in_member = "Tables_in_".DB::getDatabaseName();
+			$i = -1;
+			foreach($tables as $row_table)
+			{
+				$ret_data["tables"][++$i] = $row_table->$tables_in_member;
+			}
+			
+			//print_r($ret_data);exit();
 			return $ret_data;
 		}
 		

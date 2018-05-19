@@ -27,16 +27,17 @@
 					<div class="alert alert-info" style="height:75px;">
 						
 						<div class="col-md-12" style="height:50px;">
-							<label class="control-label col-sm-5 right_text" for="year_month">Select Date :</label>
 							<div class="col-md-7 pull-right">
-							
-								<input id="date" class="date-picker" type="date" value="{{date('Y-m-d')}}"/>
-								<button class="btn-sm refresh"><span class="glyphicon  glyphicon-refresh" /></button>
+								
+								<button class="btn-sm btn-dark add"><span class="glyphicon  glyphicon-plus" /></button>
+								<button class="btn-sm btn-dark refresh"><span class="glyphicon  glyphicon-refresh" /></button>
+								
 							</div>
 						</div> 
 						
 					</div>
 					
+					<div id="add_box"></div>
 					<div id="data_box"></div>
 					
 				</div>
@@ -48,25 +49,19 @@
 
 
 <script>
-	$("#date").change(function() {
-		var date = $("#date").val();
-		$("#data_box").html("");
+	$(".refresh").click(function() {
+		cash_chitta_details_list();
+	});
+	
+	function cash_chitta_details_list() {
+		
 		$.ajax({
-			url : "cash_chitta_data",
+			url : "cash_chitta_details_list",
 			type : "post",
-			data : "date="+date,
+			data : "",
 			success : function(data) {
 				$("#data_box").html(data);
 			}
 		});
-	});
-	
-	$(function() {
-		$("#date").trigger("change");
-	});
-	
-	$(".refresh").click(function() {
-		$("#date").trigger("change");
-	});
-	
+	}
 </script>

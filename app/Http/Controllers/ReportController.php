@@ -801,6 +801,7 @@
 				
 		}
 		
+/******/
 		public function cash_chitta_index(Request $request)
 		{
 			return view("cash_chitta_index");
@@ -813,7 +814,34 @@
 			//print_r($data);exit();
 			return view("cash_chitta_data",compact('data'));
 		}
+/******/
 		
+	/*******/
+		public function cash_chitta_add_details_index(Request $request)
+		{
+			return view("cash_chitta_add_details_index");
+		}
+		
+		public function cash_chitta_details_list(Request $request)
+		{
+			$data = $this->Report_model->cash_chitta_details_list([]);
+			return view("cash_chitta_details_list",compact('data'));
+		}
+	/*******/
+	
+		public function cash_chitta_details_edit(Request $request)
+		{
+			$flag = $request->input("flag");
+			switch($flag) {
+				case "data"		:	$in_data["cash_chitta_details_id"] = $request->input("cash_chitta_details_id");
+									$data = $this->Report_model->cash_chitta_details_list($in_data);
+									return view("cash_chitta_details_edit_data",compact("data"));	break;
+				case "update"	:	return "";	break;
+				default	:	return "";
+			}
+		}
+		
+/*******/
 		public function appraiser_commission_report_index(Request $request)
 		{
 			return view("appraiser_commission_report_index");
@@ -825,4 +853,5 @@
 			$data = $this->Report_model->appraiser_commission_report_data($in_data);
 			return view("appraiser_commission_report_data",compact("data"));
 		}
+/*******/
 	}
