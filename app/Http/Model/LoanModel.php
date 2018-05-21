@@ -2298,24 +2298,14 @@
 							"address.MobileNo",
 							"members.Member_no",
 							"members.Memid",
-							"personalloan_allocation.MEMBER_NO_FirstSurety"
+							"personalloan_allocation.FirstSurety",
+							"personalloan_allocation.SecondSurety"
 						)
 				->join("address","address.Aid","=","user.Aid")
 				->join("members","members.Uid","=","user.Uid")
 				->join("personalloan_allocation","personalloan_allocation.MemId","=","members.Memid")
 				->where("user.Uid","=",$allocation->Uid)
 				->first();
-			$guarantor_mem_no=$user->MEMBER_NO_FirstSurety;
-			$table1 = "members";
-			$guarantor=DB::table($table1)
-						->select(
-									"{$table1}.FirstName",
-									"address.Address",
-									"address.MobileNo"
-								)
-						->join("address","address.Aid","=","members.Aid")
-						->where("members.Memid","=",$guarantor_mem_no)
-						->first();
 			$ret_data["customer_details"]["user_id"] = $user->Uid;
 			$ret_data["customer_details"]["name"] = "{$user->FirstName} {$user->MiddleName} {$user->LastName}";
 			$ret_data["customer_details"]["address"] = $user->Address;
@@ -2324,14 +2314,33 @@
 							//->join("members","members.Uid","=","user.Uid")
 				//->join("personalloan_allocation","personalloan_allocation.MemId","=","members.Memid")
 			//query
-			if(!empty($guarantor)) {
-				$ret_data["customer_details"]["guarantor_name"] = $guarantor->FirstName;//PL
-				$ret_data["customer_details"]["guarantor_mobile"] = $guarantor->MobileNo;//PL
-				$ret_data["customer_details"]["guarantor_address"] = $guarantor->Address;//PL
+			
+			$guarantor1_mem_id=$user->FirstSurety;
+			$guarantor2_mem_id=$user->SecondSurety;
+			$table1 = "members";
+			$guarantors = DB::table($table1)
+						->select(
+									"{$table1}.FirstName",
+									"address.Address",
+									"address.MobileNo"
+								)
+						->join("address","address.Aid","=","members.Aid")
+						->whereIn("members.Memid",[$guarantor1_mem_id,$guarantor2_mem_id])
+						->get();
+			if(!empty($guarantors)) {
+				$ret_data["customer_details"]["guarantor1_name"] = $guarantors[0]->FirstName;//PL
+				$ret_data["customer_details"]["guarantor1_mobile"] = $guarantors[0]->MobileNo;//PL
+				$ret_data["customer_details"]["guarantor1_address"] = $guarantors[0]->Address;//PL
+				$ret_data["customer_details"]["guarantor2_name"] = $guarantors[1]->FirstName;//PL
+				$ret_data["customer_details"]["guarantor2_mobile"] = $guarantors[1]->MobileNo;//PL
+				$ret_data["customer_details"]["guarantor2_address"] = $guarantors[1]->Address;//PL
 			} else {
-				$ret_data["customer_details"]["guarantor_name"] = "";
-				$ret_data["customer_details"]["guarantor_mobile"] = "";
-				$ret_data["customer_details"]["guarantor_address"] = "";
+				$ret_data["customer_details"]["guarantor1_name"] = "";
+				$ret_data["customer_details"]["guarantor1_mobile"] = "";
+				$ret_data["customer_details"]["guarantor1_address"] = "";
+				$ret_data["customer_details"]["guarantor2_name"] = "";
+				$ret_data["customer_details"]["guarantor2_mobile"] = "";
+				$ret_data["customer_details"]["guarantor2_address"] = "";
 			}
 			//print_r($ret_data); exit();
 //		CUSTOMER DETAILS END

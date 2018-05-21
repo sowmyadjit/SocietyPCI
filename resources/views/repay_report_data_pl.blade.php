@@ -63,24 +63,44 @@
 			</tr>
             <tr>
                 <th>
-                    Guarantor :
+                    Guarantor 1:
                 </th>
                 <td>
-					{{$data["customer_details"]["guarantor_name"]}}
+					{{$data["customer_details"]["guarantor1_name"]}}
                 </td>
                 <th>
-                    Guarantor Ph No:
+                    Guarantor 2:
                 </th>
                 <td>
-					{{$data["customer_details"]["guarantor_mobile"]}}
+					{{$data["customer_details"]["guarantor2_name"]}}
                 </td>
             </tr>
 			<tr>
                 <th>
-                    Guarantor Address:
+                    Guarantor 1 Address:
                 </th>
-                <td  colspan="3">
-					{{$data["customer_details"]["guarantor_address"]}}
+                <td  colspan="1">
+					{{$data["customer_details"]["guarantor1_address"]}}
+                </td>
+                <th>
+                    Guarantor 2 Address:
+                </th>
+                <td  colspan="1">
+					{{$data["customer_details"]["guarantor2_address"]}}
+                </td>
+            </tr>
+			<tr>
+                <th>
+                    Guarantor 1 Mobile No:
+                </th>
+                <td  colspan="1">
+					{{$data["customer_details"]["guarantor1_mobile"]}}
+                </td>
+                <th>
+                    Guarantor 2 Mobile No:
+                </th>
+                <td  colspan="1">
+					{{$data["customer_details"]["guarantor2_mobile"]}}
                 </td>
             </tr>
         </table>
