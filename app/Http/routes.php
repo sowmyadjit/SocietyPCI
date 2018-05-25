@@ -6,6 +6,7 @@
 	define("DAY_IS_CLOSED",2);
 	define("CREDIT",1);
 	define("DEBIT",2);
+	define("BOTH",3);
 	//USED IN CD
 	define("USER_TYPE_EMPLOYEE",1);
 	define("USER_TYPE_USER",1);
@@ -517,10 +518,15 @@
 				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');
 				
 				Route::post('/user_details','ReportController@user_details');
-				Route::post('/cash_chitta_index','ReportController@cash_chitta_index');
+				Route::get('/cash_chitta_index','ReportController@cash_chitta_index');
 				Route::post('/cash_chitta_data','ReportController@cash_chitta_data');
+				Route::get('/cash_chitta_add_details_index','ReportController@cash_chitta_add_details_index');
+				Route::post('/cash_chitta_details_list','ReportController@cash_chitta_details_list');
+				Route::post('/cash_chitta_details_edit','ReportController@cash_chitta_details_edit');
 				Route::get('/appraiser_commission_report_index','ReportController@appraiser_commission_report_index');
 				Route::post('/appraiser_commission_report_data','ReportController@appraiser_commission_report_data');
+				Route::post('/get_table_fields','ReportController@get_table_fields');
+				Route::post('/cash_chitta_details_add_form','ReportController@cash_chitta_details_add_form');
 				
 				
 				
@@ -958,6 +964,9 @@
 
 //LogController
 		Route::get("aa","LogController@aa");
+		
+//TestController
+		Route::get("test","TestController@test");
 		
 
 //	CLEAR CACHE

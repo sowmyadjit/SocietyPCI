@@ -153,8 +153,16 @@ class DepositModel extends Model
 				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data['closed']);
 				$deposit_account_list = $deposit_account_list->where($agent_id_field,"=",$data['agent_id']);
 			}
-			$deposit_account_list = $deposit_account_list//->limit(1)
-										->get();
+			//$deposit_account_list = $deposit_account_list->limit(1);
+			if(!empty($data["skip"])) {
+				$deposit_account_list = $deposit_account_list->skip($data["skip"]);
+			}
+			if(!empty($data["limit"])) {
+				$deposit_account_list = $deposit_account_list->limit($data["limit"]);
+			}
+										//->skip(1)
+										//->limit(10)
+			$deposit_account_list = $deposit_account_list->get();
 				
 			if(empty($deposit_account_list)) {
 				return $ret_data;

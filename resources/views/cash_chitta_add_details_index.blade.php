@@ -65,3 +65,16 @@
 		});
 	}
 </script>
+
+<script>
+	$(".add").click(function() {
+		$.ajax({
+			url : "cash_chitta_details_add_form",
+			type : "post",
+			data : "",
+			success : function(data) {
+				$("#data_box").html(data);
+			}
+		});
+	});
+</script>
