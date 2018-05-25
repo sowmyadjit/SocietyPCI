@@ -827,7 +827,6 @@
 			$data = $this->Report_model->cash_chitta_details_list([]);
 			return view("cash_chitta_details_list",compact('data'));
 		}
-	/*******/
 	
 		public function cash_chitta_details_edit(Request $request)
 		{
@@ -840,6 +839,20 @@
 				default	:	return "";
 			}
 		}
+		
+		public function cash_chitta_details_add_form(Request $request)
+		{
+			$data = $this->Report_model->get_table_list([]);
+			return view("cash_chitta_details_add_form",compact('data'));
+		}
+
+		public function get_table_fields(Request $request)
+		{
+			$in_data["table_name"] = $request->input("table_name");
+			$data = $this->Report_model->get_table_fields($in_data);
+			return $data;
+		}
+	/*******/
 		
 /*******/
 		public function appraiser_commission_report_index(Request $request)
