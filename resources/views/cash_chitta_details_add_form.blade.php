@@ -125,7 +125,7 @@
         table = "cash_chitta_details";
         operation = "insert";
         pk = "";
-        console.log(fields);
+        // console.log(fields);
         save_data(table,fields,operation,pk);
     });
 

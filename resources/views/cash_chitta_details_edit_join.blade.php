@@ -1,6 +1,7 @@
 				
 		<?php
 			$join_rows = $data["chitta"][0]["join"];
+			$cash_chitta_id = $data["chitta"][0]["cash_chitta_id"];
 		?>
 		<div id="ej_box">
 			<table>
@@ -58,20 +59,135 @@
 							</select>
 						</td>
 						<td>
-							<select id="ed_joining_table_2_field_{{$pk}}">
+							<select id="ej_joining_table_2_field_{{$pk}}">
 								<option>{{$join_row["joining_table_2_field"]}}</option>
 							</select>
 						</td>
 						<td>
-							<input id="ej_cash_chitta_joining_tables_id_{{$pk}}" value="{{$join_row["deleted"]}}" />
+							<input id="ej_deleted_{{$pk}}" value="{{$join_row["deleted"]}}" />
 						</td>
+						<td><button class="btn-xs ej_save" data="{{$pk}}">SAVE</button></td>
 					</tr>
 				@endforeach
+					<!--ADD JOIN-->
+					<tr>
+						<td>
+							<input id="aj_cash_chitta_joining_tables_id" value="0" readonly />
+						</td>
+						<td>
+							<input id="aj_cash_chitta_id" value="{{$cash_chitta_id}}" readonly />
+						</td>
+						<td>
+							<select id="aj_joining_table_1_name" >
+								@foreach($data["tables"] as $row_table)
+									<option>{{$row_table}}</option>
+								@endforeach
+							</select>
+						</td>
+						<td>
+							<select id="aj_joining_table_1_field">
+								<option></option>
+							</select>
+						</td>
+						<td>
+							<select id="aj_joining_table_2_name">
+								@foreach($data["tables"] as $row_table)
+									<option>{{$row_table}}</option>
+								@endforeach
+							</select>
+						</td>
+						<td>
+							<select id="aj_joining_table_2_field">
+								<option></option>
+							</select>
+						</td>
+						<td>
+							<input id="aj_deleted" value="0" />
+						</td>
+						<td><button class="btn-xs cancel" id="aj_save">ADD</button></td>
+					</tr>
 			</table>
 		</div>
 
 
 <script>
+//SAVE EDIT JOIN
+    $(".ej_save").click(function() {
+		var id = $(this).attr("data");
+		
+        cash_chitta_joining_tables_id = $("#ej_cash_chitta_joining_tables_id_"+id).val();
+        cash_chitta_id = $("#ej_cash_chitta_id_"+id).val();
+        joining_table_1_name = $("#ej_joining_table_1_name_"+id).val();
+        joining_table_1_field = $("#ej_joining_table_1_field_"+id).val();
+        joining_table_2_name = $("#ej_joining_table_2_name_"+id).val();
+        joining_table_2_field = $("#ej_joining_table_2_field_"+id).val();
+        deleted = $("#ej_deleted_"+id).val();
+		
+        var fields = new Object;
+        fields.cash_chitta_joining_tables_id = cash_chitta_joining_tables_id;
+        fields.cash_chitta_id = cash_chitta_id;
+        fields.joining_table_1_name = joining_table_1_name;
+        fields.joining_table_1_field = joining_table_1_field;
+        fields.joining_table_2_name = joining_table_2_name;
+        fields.joining_table_2_field = joining_table_2_field;
+        fields.deleted = deleted;
+
+		fields = JSON.stringify(fields);
+        table = "cash_chitta_joining_tables";
+        operation = "update";
+        pk = "cash_chitta_joining_tables_id";
+        // console.log(fields);
+        save_data(table,fields,operation,pk);
+    });
+
+//SAVE ADD JOIN
+    $("#aj_save").click(function() {
+		var id = $(this).attr("data");
+		
+        // cash_chitta_joining_tables_id = $("#aj_cash_chitta_joining_tables_id).val();
+        cash_chitta_id = $("#aj_cash_chitta_id").val();
+        joining_table_1_name = $("#aj_joining_table_1_name").val();
+        joining_table_1_field = $("#aj_joining_table_1_field").val();
+        joining_table_2_name = $("#aj_joining_table_2_name").val();
+        joining_table_2_field = $("#aj_joining_table_2_field").val();
+        deleted = $("#aj_deleted").val();
+		
+        var fields = new Object;
+        // fields.cash_chitta_joining_tables_id = cash_chitta_joining_tables_id;
+        fields.cash_chitta_id = cash_chitta_id;
+        fields.joining_table_1_name = joining_table_1_name;
+        fields.joining_table_1_field = joining_table_1_field;
+        fields.joining_table_2_name = joining_table_2_name;
+        fields.joining_table_2_field = joining_table_2_field;
+        fields.deleted = deleted;
+
+		fields = JSON.stringify(fields);
+        table = "cash_chitta_joining_tables";
+        operation = "insert";
+        pk = "";
+        // console.log(fields);
+        save_data(table,fields,operation,pk);
+    });
+
+
+//FUNCTION SAVE DATA
+    function save_data(table,fields,operation,pk) {
+        var flag = "save_data";
+        $.ajax({
+            url : "cash_chitta_details_edit",
+            type : "post",
+            data : "flag="+flag+
+                    "&table="+table+
+                    "&fields="+fields+
+                    "&operation="+operation+
+                    "&pk="+pk,
+            success : function(data) {
+                console.log("add_details: done");
+            }
+        });
+    }
+
+//EDIT JOIN
     $(".ej_joining_table_1_name").change(function() {
 		var id = $(this).attr("data");
         var table_name = $(this).val();
@@ -82,6 +198,17 @@
 		var id = $(this).attr("data");
         var table_name = $(this).val();
         var selector_arr = ["#ej_joining_table_2_field_"+id];
+        get_table_fields(table_name,selector_arr);
+    });
+//ADD JOIN
+    $("#aj_joining_table_1_name").change(function() {
+        var table_name = $(this).val();
+        var selector_arr = ["#aj_joining_table_1_field"];
+        get_table_fields(table_name,selector_arr);
+    });
+    $("#aj_joining_table_2_name").change(function() {
+        var table_name = $(this).val();
+        var selector_arr = ["#aj_joining_table_2_field"];
         get_table_fields(table_name,selector_arr);
     });
 
