@@ -3202,5 +3202,25 @@
 			//print_r($ret_data);exit();
 			return $ret_data;
 		}
+
+		public function get_table_list($data)
+		{
+			$ret_data = [];
+			$tables = DB::select('SHOW TABLES');
+			$tables_in_member = "Tables_in_".DB::getDatabaseName();
+			$i = -1;
+			foreach($tables as $row_table)
+			{
+				$ret_data["tables"][++$i] = $row_table->$tables_in_member;
+			}
+			return $ret_data;
+		}
+
+		public function get_table_fields($data)
+		{
+			$ret_data = [];
+			$ret_data = DB::getSchemaBuilder()->getColumnListing($data["table_name"]);
+			return $ret_data;
+		}
 		
 	}
