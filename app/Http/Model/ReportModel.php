@@ -3191,9 +3191,15 @@
 
 				$table_data = DB::table("cash_chitta_joining_tables")
 					->where("cash_chitta_joining_tables.cash_chitta_id",$row_ca->cash_chitta_id)
+					->where("cash_chitta_joining_tables.deleted",0)
 					->get();
-
 				$ret_data["chitta"][$i]["join"] = $this->parse_table_data(["table_data"=>$table_data]);
+
+				$table_data = DB::table("cash_chitta_where_clause")
+					->where("cash_chitta_where_clause.cash_chitta_id",$row_ca->cash_chitta_id)
+					->where("cash_chitta_where_clause.deleted",0)
+					->get();
+				$ret_data["chitta"][$i]["where"] = $this->parse_table_data(["table_data"=>$table_data]);
 
 
 			}

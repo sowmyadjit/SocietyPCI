@@ -1,21 +1,22 @@
 				
 		<?php
 			$row = $data["chitta"][0];
+			$pk = $row["cash_chitta_id"];
 		?>
 		<div id="ed_box">
 			<table>
 				<tr>
 					<th>cash_chitta_id</th>
-					<td><input id="ed_cash_chitta_id" value="{{$row['cash_chitta_id']}}" readonly /></td>
+					<td><input id="ed_cash_chitta_id_{{$pk}}" value="{{$row['cash_chitta_id']}}" readonly /></td>
 				</tr>
 				<tr>
 					<th>prefix</th>
-					<td><input id="ed_prefix" name="prefix" value="" /></td>
+					<td><input id="ed_prefix_{{$pk}}" name="prefix" value="" /></td>
 				</tr>
 				<tr>
 					<th>table_name</th>
 					<td>
-						<select id="ed_table_name" name="table_name">
+						<select id="ed_table_name_{{$pk}}" name="table_name">
 							@foreach($data["tables"] as $row_table)
 								<?php 
 									if($row_table == $row['table_name']) {
@@ -32,7 +33,7 @@
 				<tr>
 					<th>pk_field</th>
 					<td>
-						<select id="ed_pk_field" name="pk_field">
+						<select id="ed_pk_field_{{$pk}}" name="pk_field">
 							<option>{{$row["pk_field"]}}</option>
 						</select>
 					</td>
@@ -40,7 +41,7 @@
 				<tr>
 					<th>amount_field</th>
 					<td>
-						<select id="ed_amount_field" name="amount_field">
+						<select id="ed_amount_field_{{$pk}}" name="amount_field">
 							<option>{{$row["amount_field"]}}</option>
 						</select>
 					</td>
@@ -48,7 +49,7 @@
 				<tr>
 					<th>bid_field</th>
 					<td>
-						<select id="ed_bid_field" name="bid_field">
+						<select id="ed_bid_field_{{$pk}}" name="bid_field">
 							<option>{{$row["bid_field"]}}</option>
 						</select>
 					</td>
@@ -56,7 +57,7 @@
 				<tr>
 					<th>date_field</th>
 					<td>
-						<select id="ed_date_field" name="date_field">
+						<select id="ed_date_field_{{$pk}}" name="date_field">
 							<option>{{$row["date_field"]}}</option>
 						</select>
 					</td>
@@ -64,7 +65,7 @@
 				<tr>
 					<th>transaction_type</th>
 					<td>
-						<select id="ed_transaction_type" name="transaction_type">
+						<select id="ed_transaction_type_{{$pk}}" name="transaction_type">
 						<?php
 							switch($row["transaction_type"]) {
 								case 1 :	
@@ -93,7 +94,7 @@
 				<tr>
 					<th>transaction_type_field</th>
 					<td>
-						<select id="ed_transaction_type_field" name="transaction_type_field">
+						<select id="ed_transaction_type_field_{{$pk}}" name="transaction_type_field">
 							<option>{{$row["transaction_type_field"]}}</option>
 						</select>
 					</td>
@@ -101,7 +102,7 @@
 				<tr>
 					<th>table_containing_account_no</th>
 					<td>
-						<select id="ed_table_containing_account_no" name="table_containing_account_no">
+						<select id="ed_table_containing_account_no_{{$pk}}" name="table_containing_account_no">
 							@foreach($data["tables"] as $row_table)
 								<?php 
 									if($row_table == $row['table_name']) {
@@ -118,29 +119,60 @@
 				<tr>
 					<th>account_no_field</th>
 					<td>
-						<select id="ed_account_no_field" name="account_no_field">
+						<select id="ed_account_no_field_{{$pk}}" name="account_no_field">
 							<option>{{$row["account_no_field"]}}</option>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<th>deleted</th>
-					<td><input id="ed_deleted" name="deleted" value="0" /></td>
+					<td><input id="ed_deleted_{{$pk}}" name="deleted" value="0" /></td>
 				</tr>
 			</table>
 
-			<button class="btn-xs cancel" id="ed_cancel">cancel</button>
+			<button class="btn-xs" class="ed_save" data="{{$pk}}">SAVE</button>
 		</div>
-				
-	<script>
-		$("#ed_cancel").click(function() {
-			$("#ed_box").remove();
-		});
-	</script>
 
-	<script>
-		$("#").change();
-	</script>
+<script>
+//SAVE CHITTA DETAILS
+	
+$(".ed_save").click(function() {
+		var id = $(this).attr("data");
+		
+        cash_chitta_id = $("#ed_cash_chitta_id_"+id).val();
+        prefix = $("#ed_prefix_"+id).val();
+        table_name = $("#ed_table_name_"+id).val();
+        pk_field = $("#ed_pk_field_"+id).val();
+        amount_field = $("#ed_amount_field_"+id).val();
+        bid_field = $("#ed_bid_field_"+id).val();
+        date_field = $("#ed_date_field_"+id).val();
+        transaction_type = $("#ed_transaction_type_"+id).val();
+        transaction_type_field = $("#ed_transaction_type_field_"+id).val();
+        table_containing_account_no = $("#ed_table_containing_account_no_"+id).val();
+        account_no_field = $("#ed_account_no_field_"+id).val();
+        deleted = $("#ed_deleted_"+id).val();
+		
+        var fields = new Object;
+        fields.cash_chitta_id = cash_chitta_id;
+        fields.prefix = prefix;
+        fields.table_name = table_name;
+        fields.pk_field = pk_field;
+        fields.amount_field = amount_field;
+        fields.bid_field = bid_field;
+        fields.date_field = date_field;
+        fields.transaction_type = transaction_type;
+        fields.transaction_type_field = transaction_type_field;
+        fields.table_containing_account_no = table_containing_account_no;
+        fields.account_no_field = account_no_field;
+        fields.deleted = deleted;
+
+		fields = JSON.stringify(fields);
+		table = "cash_chitta_details";
+		operation = "update";
+		pk = "cash_chitta_id";
+		// console.log(fields);
+		save_data(table,fields,operation,pk);
+</script>
 
 <script>
     $("#ed_table_name").change(function() {

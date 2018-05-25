@@ -840,6 +840,10 @@
 										$data = $this->Report_model->cash_chitta_details_list($in_data);
 										return view("cash_chitta_details_edit_join",compact("data"));	break;
 
+				case "where_data"	:	$in_data["cash_chitta_details_id"] = $request->input("cash_chitta_details_id");
+										$data = $this->Report_model->cash_chitta_details_list($in_data);
+										return view("cash_chitta_details_edit_where",compact("data"));	break;
+
 				case "update"		:	return "";	break;
 
 				case "add_details"	:
