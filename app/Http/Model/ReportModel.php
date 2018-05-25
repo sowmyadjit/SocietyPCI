@@ -3188,6 +3188,14 @@
 				$ret_data["chitta"][$i]["transaction_type_field"] = $row_ca->transaction_type_field;
 				$ret_data["chitta"][$i]["table_containing_account_no"] = $row_ca->table_containing_account_no;
 				$ret_data["chitta"][$i]["account_no_field"] = $row_ca->account_no_field;
+
+				$table_data = DB::table("cash_chitta_joining_tables")
+					->where("cash_chitta_joining_tables.cash_chitta_id",$row_ca->cash_chitta_id)
+					->get();
+
+				$ret_data["chitta"][$i]["join"] = $this->parse_table_data(["table_data"=>$table_data]);
+
+
 			}
 			
 			
@@ -3251,6 +3259,32 @@
 									break;		
 			}
 			return;
+		}
+
+		public function parse_table_data($data)
+		{
+			$ret_data = [];
+			$table_data = (array)$data["table_data"];
+
+			$i = -1;
+			foreach($table_data as $row_obj) {
+				$i++;
+				$table_row = (array)$row_obj;
+				foreach($table_row as $field => $value) {
+					$ret_data[$i]["{$field}"] = $value;
+				}
+			}
+			return $ret_data;
+		}
+
+		public function parse_table_row($data)
+		{
+			$ret_data = [];
+			$table_row = (array)$data['table_row'];
+			foreach($table_row as $field => $value) {
+				$ret_data["{$field}"] = $value;
+			}
+			return $ret_data;
 		}
 		
 	}
