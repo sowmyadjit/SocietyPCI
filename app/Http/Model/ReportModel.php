@@ -3222,5 +3222,35 @@
 			$ret_data = DB::getSchemaBuilder()->getColumnListing($data["table_name"]);
 			return $ret_data;
 		}
+
+		public function save_data($data)
+		{
+			$table = $data["table"];
+			$fields = $data["fields"];
+			$operation = $data["operation"];
+
+			$data_array = (array)json_decode($fields);
+
+			// echo "*****";
+			// print_r($data_array);
+			// echo "*****";exit();
+
+			switch($operation) {
+				case "insert"	:
+									DB::table("{$table}")
+										->insertGetId($data_array);
+									break;
+				case "update"	:
+									$pk = $data["pk"];
+									$pk_value = $data_array["{$pk}"];
+									unset($data_array["{$pk}"]);
+
+									DB::table("{$table}")
+										->where("{$pk}",$pk_value)
+										->update($data_array);
+									break;		
+			}
+			return;
+		}
 		
 	}

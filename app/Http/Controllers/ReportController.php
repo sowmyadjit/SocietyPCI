@@ -832,11 +832,32 @@
 		{
 			$flag = $request->input("flag");
 			switch($flag) {
-				case "data"		:	$in_data["cash_chitta_details_id"] = $request->input("cash_chitta_details_id");
-									$data = $this->Report_model->cash_chitta_details_list($in_data);
-									return view("cash_chitta_details_edit_data",compact("data"));	break;
-				case "update"	:	return "";	break;
-				default	:	return "";
+				case "data"			:	$in_data["cash_chitta_details_id"] = $request->input("cash_chitta_details_id");
+										$data = $this->Report_model->cash_chitta_details_list($in_data);
+										return view("cash_chitta_details_edit_data",compact("data"));	break;
+				case "update"		:	return "";	break;
+				case "add_details"	:
+										$in_data["prefix"] = $request->input("prefix");
+										$in_data["table_name"] = $request->input("table_name");
+										$in_data["pk_field"] = $request->input("pk_field");
+										$in_data["amount_field"] = $request->input("amount_field");
+										$in_data["bid_field"] = $request->input("bid_field");
+										$in_data["date_field"] = $request->input("date_field");
+										$in_data["transaction_type"] = $request->input("transaction_type");
+										$in_data["transaction_type_field"] = $request->input("transaction_type_field");
+										$in_data["table_containing_account_no"] = $request->input("table_containing_account_no");
+										$in_data["account_no_field"] = $request->input("account_no_field");
+										$in_data["deleted"] = $request->input("deleted");
+										$this->Report_model->save_cash_chitta_details($in_data);
+				case "save_data"	:
+										$in_data["table"] = $request->input("table");
+										$in_data["fields"] = $request->input("fields");
+										$in_data["operation"] = $request->input("operation");
+										$in_data["pk"] = $request->input("pk");
+										$this->Report_model->save_data($in_data);
+										return "save_data done";
+										break;
+				default	:	return "11";
 			}
 		}
 		

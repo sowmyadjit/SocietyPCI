@@ -18,10 +18,11 @@
 					<td>{{$row["prefix"]}}</td>
 					<td>{{$row["table_name"]}}</td>
 					<td>
-						<button class="btn-xs edit"><span class="glyphicon  glyphicon-pencil" /></button>
+						<button class="btn-xs edit" data="{{$row['cash_chitta_id']}}"><span class="glyphicon  glyphicon-pencil" /></button>
 					</td>
 				</tr>
-				<tr class="row_edit" id="row_edit_{{$row['cash_chitta_id']}}" data="{{$row['cash_chitta_id']}}">
+				<tr>
+					<td colspan="4" class="row_edit" id="row_edit_{{$row['cash_chitta_id']}}" data="{{$row['cash_chitta_id']}}"></td>
 				<tr>
 			@endforeach
 		</tbody>
@@ -31,17 +32,18 @@
 		$(".row_edit").hide();
 		
 		$(".edit").click(function() {
-			var box_edit_row_selector = $(this).parent().parent().next();
-			var cash_chitta_details_id = box_edit_row_selector.attr("data");
-			//console.log(box_edit_row_selector.attr("id"));
+			var cash_chitta_details_id = $(this).attr("data");
+			var row_id = "row_edit_"+cash_chitta_details_id;
+
+			console.log(cash_chitta_details_id);
 			var flag = "data";
 			$.ajax({
 				url : "cash_chitta_details_edit",
 				type : "post",
 				data : "flag="+flag+"&cash_chitta_details_id="+cash_chitta_details_id,
 				success : function(data) {
-					box_edit_row_selector.html(data);
-					box_edit_row_selector.show();
+					$("#"+row_id).html(data);
+					$("#"+row_id).show();
 				}
 			});
 		});
