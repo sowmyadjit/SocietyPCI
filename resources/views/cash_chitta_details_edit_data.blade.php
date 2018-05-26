@@ -11,12 +11,12 @@
 				</tr>
 				<tr>
 					<th>prefix</th>
-					<td><input id="ed_prefix_{{$pk}}" name="prefix" value="" /></td>
+					<td><input id="ed_prefix_{{$pk}}" name="prefix" value="{{$row['prefix']}}" /></td>
 				</tr>
 				<tr>
 					<th>table_name</th>
 					<td>
-						<select id="ed_table_name_{{$pk}}" name="table_name">
+						<select id="ed_table_name_{{$pk}}" class="ed_table_name" data="{{$pk}}" name="table_name">
 							@foreach($data["tables"] as $row_table)
 								<?php 
 									if($row_table == $row['table_name']) {
@@ -102,16 +102,16 @@
 				<tr>
 					<th>table_containing_account_no</th>
 					<td>
-						<select id="ed_table_containing_account_no_{{$pk}}" name="table_containing_account_no">
+						<select id="ed_table_containing_account_no_{{$pk}}" class="ed_table_containing_account_no" data="{{$pk}}" name="table_containing_account_no">
 							@foreach($data["tables"] as $row_table)
 								<?php 
-									if($row_table == $row['table_name']) {
+									if($row_table == $row['table_containing_account_no']) {
 										$selected = "selected";
 									} else {
 										$selected = "";
 									}
 								?>
-								<option>{{$row_table}}</option>
+								<option {{$selected}}>{{$row_table}}</option>
 							@endforeach
 						</select>
 					</td>
@@ -176,14 +176,16 @@
 </script>
 
 <script>
-    $("#ed_table_name").change(function() {
+    $(".ed_table_name").change(function() {
+		var id = $(this).attr("data");
         var table_name = $(this).val();
-        var selector_arr = ["#ed_pk_field","#ed_amount_field","#ed_bid_field","#ed_date_field","#ed_transaction_type_field"];
+        var selector_arr = ["#ed_pk_field_"+id,"#ed_amount_field_"+id,"#ed_bid_field_"+id,"#ed_date_field_"+id,"#ed_transaction_type_field_"+id];
         get_table_fields(table_name,selector_arr);
     });
-    $("#ed_table_containing_account_no").change(function() {
+    $(".ed_table_containing_account_no").change(function() {
+		var id = $(this).attr("data");
         var table_name = $(this).val();
-        var selector_arr = ["#ed_account_no_field"];
+        var selector_arr = ["#ed_account_no_field_"+id];
         get_table_fields(table_name,selector_arr);
     });
 

@@ -3107,11 +3107,17 @@
 											break;
 						case "STR"		:	$where_value = "{$where_value}";
 											break;
+						case "STR_ARR"	:	
+											$where_value = "\"{$where_value}\"";
+											$where_value = str_replace(",","\",\"",$where_value);
+											$where_value = explode(",", $where_value);
+											$where_value = (array)$where_value;
+											break;
 						case "FLOAT"	:	$where_value = (float)$where_value;
 											break;
 					}
-					$where_value = str_replace(",","\",\"",$where_value);
-					$where_value = explode(",", $where_value);
+					// $where_value = str_replace(",","\",\"",$where_value);
+					// $where_value = explode(",", $where_value);
 					switch($where_operator) {
 						
 						case "="		:	

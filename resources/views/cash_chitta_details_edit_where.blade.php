@@ -25,6 +25,7 @@
 					<th>cash_chitta_id</th>
 					<th>table_name</th>
 					<th>field_name</th>
+					<th>field_type</th>
 					<th>operator</th>
 					<th>field_value</th>
 					<th>deleted</th>
@@ -34,6 +35,7 @@
 					<th>cid</th>
 					<th>table</th>
 					<th>field name</th>
+					<th>field type</th>
 					<th>operator</th>
 					<th>field value</th>
 					<th>deleted</th>
@@ -69,6 +71,40 @@
 							</select>
 						</td>
 						<td>
+							<select id="ew_field_type_{{$pk}}" class="sm_sel_box">
+								<?php
+									$int_selected = "selected";
+									$str_selected = "";
+									$str_arr_selected = "";
+									$float_selected = "";
+									$date_selected = "";
+									switch($where_row["field_type"]) {
+										case "INT"	:	
+													$int_selected = "selected";
+													break;
+										case "STR"	:	
+													$str_selected = "selected";
+													break;
+										case "STR_ARR"	:	
+													$str_arr_selected = "selected";
+													break;
+										case "FLOAT"	:	
+													$float_selected = "selected";
+													break;
+										case "DATE"	:	
+													$date_selected = "selected";
+													break;
+									}
+								?>
+								<option></option>
+								<option {{$int_selected}}>INT</option>
+								<option {{$str_selected}}>STR</option>
+								<option {{$str_arr_selected}}>STR_ARR</option>
+								<option {{$float_selected}}>FLOAT</option>
+								<option {{$date_selected}}>DTAE</option>
+							</select>
+						</td>
+						<td>
 							<input id="ew_operator_{{$pk}}" class="sm_ip_box" value="{{$where_row["operator"]}}" />
 						</td>
 						<td>
@@ -101,6 +137,16 @@
 							</select>
 						</td>
 						<td>
+							<select id="aw_field_type" class="sm_sel_box">
+								<option></option>
+								<option>INT</option>
+								<option>STR</option>
+								<option>STR_ARR</option>
+								<option>FLOAT</option>
+								<option>DTAE</option>
+							</select>
+						</td>
+						<td>
 							<input id="aw_operator" class="sm_ip_box" value="=" />
 						</td>
 						<td>
@@ -124,6 +170,7 @@
         cash_chitta_id = $("#ew_cash_chitta_id_"+id).val();
         table_name = $("#ew_table_name_"+id).val();
         field_name = $("#ew_field_name_"+id).val();
+        field_type = $("#ew_field_type_"+id).val();
         operator = $("#ew_operator_"+id).val();
         field_value = $("#ew_field_value_"+id).val();
         deleted = $("#ew_deleted_"+id).val();
@@ -133,6 +180,7 @@
         fields.cash_chitta_id = cash_chitta_id;
         fields.table_name = table_name;
         fields.field_name = field_name;
+        fields.field_type = field_type;
         fields.operator = operator;
         fields.field_value = field_value;
         fields.deleted = deleted;
@@ -153,6 +201,7 @@
         cash_chitta_id = $("#aw_cash_chitta_id").val();
         table_name = $("#aw_table_name").val();
         field_name = $("#aw_field_name").val();
+        field_type = $("#aw_field_type").val();
         operator = $("#aw_operator").val();
         field_value = $("#aw_field_value").val();
         deleted = $("#aw_deleted").val();
@@ -162,6 +211,7 @@
         fields.cash_chitta_id = cash_chitta_id;
         fields.table_name = table_name;
         fields.field_name = field_name;
+        fields.field_type = field_type;
         fields.operator = operator;
         fields.field_value = field_value;
         fields.deleted = deleted;
