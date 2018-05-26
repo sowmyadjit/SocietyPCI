@@ -3094,13 +3094,22 @@
 											"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
 				}
 				$temp = $temp->where($bid_field,$BID);
-				$temp = $temp->where($date_field,$data["date"]);
+				$temp = $temp->whereDate($date_field,"=",$data['date']);
 				foreach($where_list as $row_wh) {
 					$where_table = $row_wh->table_name;
 					$where_operator = $row_wh->operator;
 					$where_field = $row_wh->field_name;
+					$where_type = $row_wh->field_type;
 					$where_value = $row_wh->field_value;
-					$where_value = "\"{$where_value}\"";
+					$where_value = $where_value;
+					switch($where_type) {
+						case "INT"		:	$where_value = (int)$where_value;
+											break;
+						case "STR"		:	$where_value = "{$where_value}";
+											break;
+						case "FLOAT"	:	$where_value = (float)$where_value;
+											break;
+					}
 					$where_value = str_replace(",","\",\"",$where_value);
 					$where_value = explode(",", $where_value);
 					switch($where_operator) {
@@ -3111,11 +3120,11 @@
 											$temp->where("{$where_table}.{$where_field}","{$where_operator}",$where_value);
 											break;
 						case "IN"		:
-						case "in"		:
+						case "in"		:	
 											$temp->whereIn("{$where_table}.{$where_field}",$where_value);
 											break;
-						case "NOT IN"	:
-						case "not in"	:
+						case "NOT IN"	:	
+						case "not in"	:	
 											$temp->whereNotIn("{$where_table}.{$where_field}",$where_value);
 											break;
 					}

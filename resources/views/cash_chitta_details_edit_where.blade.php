@@ -4,14 +4,38 @@
 			$cash_chitta_id = $data["chitta"][0]["cash_chitta_id"];
 		?>
 		<div id="ej_box">
+			<style>
+				.xs_ip_box {
+					width : 50px;
+				}
+				.sm_ip_box {
+					width : 100px;
+				}
+				.sm_sel_box {
+					width : 100px;
+				}
+				.lg_sel_box {
+					width : 150px;
+				}
+			</style>
+
 			<table>
-				<tr>
+			<!-- 	<tr>
 					<th>cash_chitta_where_clause_id</th>
 					<th>cash_chitta_id</th>
 					<th>table_name</th>
 					<th>field_name</th>
 					<th>operator</th>
 					<th>field_value</th>
+					<th>deleted</th>
+				</tr> -->
+				<tr>
+					<th>wid</th>
+					<th>cid</th>
+					<th>table</th>
+					<th>field name</th>
+					<th>operator</th>
+					<th>field value</th>
 					<th>deleted</th>
 				</tr>
 				@foreach($where_rows as $where_row)
@@ -20,13 +44,13 @@
 					?>
 					<tr>
 						<td>
-							<input id="ew_cash_chitta_where_clause_id_{{$pk}}" value="{{$where_row["cash_chitta_where_clause_id"]}}" readonly />
+							<input id="ew_cash_chitta_where_clause_id_{{$pk}}" class="xs_ip_box" value="{{$where_row["cash_chitta_where_clause_id"]}}" readonly />
 						</td>
 						<td>
-							<input id="ew_cash_chitta_id_{{$pk}}" value="{{$where_row['cash_chitta_id']}}" readonly />
+							<input id="ew_cash_chitta_id_{{$pk}}" class="xs_ip_box" value="{{$where_row['cash_chitta_id']}}" readonly />
 						</td>
 						<td>
-							<select id="ew_table_name_{{$pk}}" class="ej_table_name" data="{{$pk}}" >
+							<select id="ew_table_name_{{$pk}}" class="ej_table_name lg_sel_box" data="{{$pk}}" >
 								@foreach($data["tables"] as $row_table)
 									<?php 
 										if($row_table == $where_row["table_name"]) {
@@ -40,18 +64,18 @@
 							</select>
 						</td>
 						<td>
-							<select id="ew_field_name_{{$pk}}">
+							<select id="ew_field_name_{{$pk}}" class="sm_sel_box">
 								<option>{{$where_row["field_name"]}}</option>
 							</select>
 						</td>
 						<td>
-							<input id="ew_operator_{{$pk}}" value="{{$where_row["operator"]}}" />
+							<input id="ew_operator_{{$pk}}" class="sm_ip_box" value="{{$where_row["operator"]}}" />
 						</td>
 						<td>
 							<input id="ew_field_value_{{$pk}}" value="{{$where_row["field_value"]}}" />
 						</td>
 						<td>
-							<input id="ew_deleted_{{$pk}}" value="{{$where_row["deleted"]}}" />
+							<input id="ew_deleted_{{$pk}}" class="xs_ip_box" value="{{$where_row["deleted"]}}" />
 						</td>
 						<td><button class="btn-xs ew_save" data="{{$pk}}">SAVE</button></td>
 					</tr>
@@ -59,33 +83,33 @@
 					<!--ADD JOIN-->
 					<tr>
 						<td>
-							<input id="aw_cash_chitta_where_clause_id" value="0" readonly />
+							<input id="aw_cash_chitta_where_clause_id" class="xs_ip_box" value="0" readonly />
 						</td>
 						<td>
-							<input id="aw_cash_chitta_id" value="{{$cash_chitta_id}}" readonly />
+							<input id="aw_cash_chitta_id" class="xs_ip_box" value="{{$cash_chitta_id}}" readonly />
 						</td>
 						<td>
-							<select id="aw_table_name" >
+							<select id="aw_table_name" class="lg_sel_box">
 								@foreach($data["tables"] as $row_table)
 									<option>{{$row_table}}</option>
 								@endforeach
 							</select>
 						</td>
 						<td>
-							<select id="aw_field_name">
+							<select id="aw_field_name" class="sm_sel_box">
 								<option></option>
 							</select>
 						</td>
 						<td>
-							<input id="aw_operator" value="{{$where_row["operator"]}}" />
+							<input id="aw_operator" class="sm_ip_box" value="=" />
 						</td>
 						<td>
 							<input id="aw_field_value" value="" />
 						</td>
 						<td>
-							<input id="aw_deleted" value="0" />
+							<input id="aw_deleted" value="0" class="xs_ip_box" />
 						</td>
-						<td><button class="btn-xs" id="aw_save" data="{{$pk}}">ADD</button></td>
+						<td><button class="btn-xs aw_save">ADD</button></td>
 					</tr>
 			</table>
 		</div>
@@ -122,8 +146,8 @@
     });
 
 //SAVE ADD WHERE
-    $("#aw_save").click(function() {
-		var id = $(this).attr("data");
+    $(".aw_save").click(function() {
+		// var id = $(this).attr("data");
 		
         // cash_chitta_where_clause_id = $("#ew_cash_chitta_where_clause_id_"+id).val();
         cash_chitta_id = $("#aw_cash_chitta_id").val();

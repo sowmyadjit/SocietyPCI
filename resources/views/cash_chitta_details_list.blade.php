@@ -13,6 +13,9 @@
 		</thead>
 		<tbody>
 			@foreach($data["chitta"] as $row)
+				<?php
+					$pk = $row['cash_chitta_id'];
+				?>
 				<tr id="row_{{$row['cash_chitta_id']}}" data="{{$row['cash_chitta_id']}}">
 					<td>{{$row["cash_chitta_id"]}}</td>
 					<td>{{$row["prefix"]}}</td>
@@ -26,7 +29,7 @@
 						<div id="row_edit_data_{{$row['cash_chitta_id']}}"></div>
 						<div id="row_edit_join_{{$row['cash_chitta_id']}}"></div>
 						<div id="row_edit_where_{{$row['cash_chitta_id']}}"></div>
-						<button class="btn-sm cancel_row_edit" class="btn-sm">CANCEL</button>
+						<button class="btn-sm cancel_row_edit" data="{{$pk}}">CANCEL</button>
 					</td>
 				<tr>
 			@endforeach
@@ -36,7 +39,10 @@
 	<script>
 		$(".cancel_row_edit").click(function() {
 			var id = $(this).attr("data");
-			$("#row_edit_data_"+id).hide();
+			$("#row_edit_data_"+id).html("");
+			$("#row_edit_join_"+id).html("");
+			$("#row_edit_where_"+id).html("");
+			$("#row_edit_"+id).hide();
 		});
 	</script>
 

@@ -4,14 +4,37 @@
 			$cash_chitta_id = $data["chitta"][0]["cash_chitta_id"];
 		?>
 		<div id="ej_box">
+			<style>
+				.xs_ip_box {
+					width : 50px;
+				}
+				.sm_ip_box {
+					width : 100px;
+				}
+				.sm_sel_box {
+					width : 100px;
+				}
+				.lg_sel_box {
+					width : 150px;
+				}
+			</style>
 			<table>
-				<tr>
+				<!-- <tr>
 					<th>cash_chitta_joining_tables_id</th>
 					<th>cash_chitta_id</th>
 					<th>joining_table_1_name</th>
 					<th>joining_table_1_field</th>
 					<th>joining_table_1_field</th>
 					<th>joining_table_2_field</th>
+					<th>deleted</th>
+				</tr> -->
+				<tr>
+					<th>jid</th>
+					<th>cid</th>
+					<th>table 1</th>
+					<th>field 1</th>
+					<th>table 2</th>
+					<th>field 2</th>
 					<th>deleted</th>
 				</tr>
 				@foreach($join_rows as $join_row)
@@ -20,13 +43,13 @@
 					?>
 					<tr>
 						<td>
-							<input id="ej_cash_chitta_joining_tables_id_{{$pk}}" value="{{$join_row["cash_chitta_joining_tables_id"]}}" readonly />
+							<input id="ej_cash_chitta_joining_tables_id_{{$pk}}" class="xs_ip_box" value="{{$join_row["cash_chitta_joining_tables_id"]}}" readonly />
 						</td>
 						<td>
-							<input id="ej_cash_chitta_id_{{$pk}}" value="{{$join_row['cash_chitta_id']}}" readonly />
+							<input id="ej_cash_chitta_id_{{$pk}}" class="xs_ip_box" value="{{$join_row['cash_chitta_id']}}" readonly />
 						</td>
 						<td>
-							<select id="ej_joining_table_1_name_{{$pk}}" class="ej_joining_table_1_name" data="{{$pk}}" >
+							<select id="ej_joining_table_1_name_{{$pk}}" class="ej_joining_table_1_name lg_sel_box" data="{{$pk}}" >
 								@foreach($data["tables"] as $row_table)
 									<?php 
 										if($row_table == $join_row["joining_table_1_name"]) {
@@ -40,12 +63,12 @@
 							</select>
 						</td>
 						<td>
-							<select id="ej_joining_table_1_field_{{$pk}}">
+							<select id="ej_joining_table_1_field_{{$pk}}" class="sm_sel_box">
 								<option>{{$join_row["joining_table_1_field"]}}</option>
 							</select>
 						</td>
 						<td>
-							<select id="ej_joining_table_2_name_{{$pk}}" class="ej_joining_table_2_name" data="{{$pk}}" >
+							<select id="ej_joining_table_2_name_{{$pk}}" class="ej_joining_table_2_name lg_sel_box" data="{{$pk}}" >
 								@foreach($data["tables"] as $row_table)
 									<?php 
 										if($row_table == $join_row["joining_table_2_name"]) {
@@ -59,12 +82,12 @@
 							</select>
 						</td>
 						<td>
-							<select id="ej_joining_table_2_field_{{$pk}}">
+							<select id="ej_joining_table_2_field_{{$pk}}" class="lg_sel_box">
 								<option>{{$join_row["joining_table_2_field"]}}</option>
 							</select>
 						</td>
 						<td>
-							<input id="ej_deleted_{{$pk}}" value="{{$join_row["deleted"]}}" />
+							<input id="ej_deleted_{{$pk}}" class="xs_ip_box" value="{{$join_row["deleted"]}}" />
 						</td>
 						<td><button class="btn-xs ej_save" data="{{$pk}}">SAVE</button></td>
 					</tr>
@@ -72,39 +95,39 @@
 					<!--ADD JOIN-->
 					<tr>
 						<td>
-							<input id="aj_cash_chitta_joining_tables_id" value="0" readonly />
+							<input id="aj_cash_chitta_joining_tables_id" class="xs_ip_box" value="0" readonly />
 						</td>
 						<td>
-							<input id="aj_cash_chitta_id" value="{{$cash_chitta_id}}" readonly />
+							<input id="aj_cash_chitta_id" class="xs_ip_box" value="{{$cash_chitta_id}}" readonly />
 						</td>
 						<td>
-							<select id="aj_joining_table_1_name" >
+							<select id="aj_joining_table_1_name" class="lg_sel_box" >
 								@foreach($data["tables"] as $row_table)
 									<option>{{$row_table}}</option>
 								@endforeach
 							</select>
 						</td>
 						<td>
-							<select id="aj_joining_table_1_field">
+							<select id="aj_joining_table_1_field" class="sm_sel_box">
 								<option></option>
 							</select>
 						</td>
 						<td>
-							<select id="aj_joining_table_2_name">
+							<select id="aj_joining_table_2_name" class="lg_sel_box">
 								@foreach($data["tables"] as $row_table)
 									<option>{{$row_table}}</option>
 								@endforeach
 							</select>
 						</td>
 						<td>
-							<select id="aj_joining_table_2_field">
+							<select id="aj_joining_table_2_field" class="lg_sel_box">
 								<option></option>
 							</select>
 						</td>
 						<td>
-							<input id="aj_deleted" value="0" />
+							<input id="aj_deleted" class="xs_ip_box" value="0" />
 						</td>
-						<td><button class="btn-xs cancel" id="aj_save">ADD</button></td>
+						<td><button class="btn-xs cancel aj_save">ADD</button></td>
 					</tr>
 			</table>
 		</div>
@@ -141,8 +164,8 @@
     });
 
 //SAVE ADD JOIN
-    $("#aj_save").click(function() {
-		var id = $(this).attr("data");
+    $(".aj_save").click(function() {
+		// var id = $(this).attr("data");
 		
         // cash_chitta_joining_tables_id = $("#aj_cash_chitta_joining_tables_id).val();
         cash_chitta_id = $("#aj_cash_chitta_id").val();

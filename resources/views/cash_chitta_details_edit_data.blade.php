@@ -136,35 +136,35 @@
 <script>
 //SAVE CHITTA DETAILS
 	
-$(".ed_save").click(function() {
+	$(".ed_save").click(function() {
 		var id = $(this).attr("data");
 		
-        cash_chitta_id = $("#ed_cash_chitta_id_"+id).val();
-        prefix = $("#ed_prefix_"+id).val();
-        table_name = $("#ed_table_name_"+id).val();
-        pk_field = $("#ed_pk_field_"+id).val();
-        amount_field = $("#ed_amount_field_"+id).val();
-        bid_field = $("#ed_bid_field_"+id).val();
-        date_field = $("#ed_date_field_"+id).val();
-        transaction_type = $("#ed_transaction_type_"+id).val();
-        transaction_type_field = $("#ed_transaction_type_field_"+id).val();
-        table_containing_account_no = $("#ed_table_containing_account_no_"+id).val();
-        account_no_field = $("#ed_account_no_field_"+id).val();
-        deleted = $("#ed_deleted_"+id).val();
+		cash_chitta_id = $("#ed_cash_chitta_id_"+id).val();
+		prefix = $("#ed_prefix_"+id).val();
+		table_name = $("#ed_table_name_"+id).val();
+		pk_field = $("#ed_pk_field_"+id).val();
+		amount_field = $("#ed_amount_field_"+id).val();
+		bid_field = $("#ed_bid_field_"+id).val();
+		date_field = $("#ed_date_field_"+id).val();
+		transaction_type = $("#ed_transaction_type_"+id).val();
+		transaction_type_field = $("#ed_transaction_type_field_"+id).val();
+		table_containing_account_no = $("#ed_table_containing_account_no_"+id).val();
+		account_no_field = $("#ed_account_no_field_"+id).val();
+		deleted = $("#ed_deleted_"+id).val();
 		
-        var fields = new Object;
-        fields.cash_chitta_id = cash_chitta_id;
-        fields.prefix = prefix;
-        fields.table_name = table_name;
-        fields.pk_field = pk_field;
-        fields.amount_field = amount_field;
-        fields.bid_field = bid_field;
-        fields.date_field = date_field;
-        fields.transaction_type = transaction_type;
-        fields.transaction_type_field = transaction_type_field;
-        fields.table_containing_account_no = table_containing_account_no;
-        fields.account_no_field = account_no_field;
-        fields.deleted = deleted;
+		var fields = new Object;
+		fields.cash_chitta_id = cash_chitta_id;
+		fields.prefix = prefix;
+		fields.table_name = table_name;
+		fields.pk_field = pk_field;
+		fields.amount_field = amount_field;
+		fields.bid_field = bid_field;
+		fields.date_field = date_field;
+		fields.transaction_type = transaction_type;
+		fields.transaction_type_field = transaction_type_field;
+		fields.table_containing_account_no = table_containing_account_no;
+		fields.account_no_field = account_no_field;
+		fields.deleted = deleted;
 
 		fields = JSON.stringify(fields);
 		table = "cash_chitta_details";
@@ -172,6 +172,7 @@ $(".ed_save").click(function() {
 		pk = "cash_chitta_id";
 		// console.log(fields);
 		save_data(table,fields,operation,pk);
+	});
 </script>
 
 <script>
