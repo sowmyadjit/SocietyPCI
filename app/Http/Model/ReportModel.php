@@ -3,6 +3,7 @@
 	namespace App\Http\Model;
 	use DB;
 	use Auth;
+	use Exception;
 	
 	use Illuminate\Database\Eloquent\Model;
 	
@@ -3139,17 +3140,30 @@
 				//print_r($temp);exit();
 /*---------------*/
 				foreach($temp as $row_te) {
+					switch($row_te->transaction_type) {
+						case "1"			:	
+						case "WITHDRAWL"	:	
+												$row_te->transaction_type = "CREDIT";
+												break;
+						case "2"			:	
+						case "Deposit"		:	//deposite to bank - deposit table
+						case ""				:	//BLANK is deposit to bank
+												$row_te->transaction_type = "DEBIT";
+												break;
+					}
 					$ret_data["chitta"][++$i]["receipt_no"] = 0;
 					$ret_data["chitta"][$i]["voucher_no"] = 0;
-					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} {$row_te->account_no} {$row_te->transaction_type}";
+					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} - {$row_te->account_no} - {$row_te->transaction_type}";
 					$ret_data["chitta"][$i]["transaction_type"] = $row_te->transaction_type;
 					switch($row_te->transaction_type) {
-						case "CREDIT"	:	$ret_data["chitta"][$i]["receipt_amount"] = $row_te->amount;
+						case "CREDIT"	:	
+											$ret_data["chitta"][$i]["receipt_amount"] = $row_te->amount;
 											$ret_data["chitta"][$i]["voucher_amount"] = 0;
 											break;
 						case "DEBIT"	:	$ret_data["chitta"][$i]["receipt_amount"] = 0;
 											$ret_data["chitta"][$i]["voucher_amount"] = $row_te->amount;
 											break;
+						default			:	throw new exception("\n\ninvalid value for transaction_type :  {$row_te->transaction_type}\n\n");
 					}
 					$ret_data["receipt_amount_sum"] += $ret_data["chitta"][$i]["receipt_amount"];
 					$ret_data["voucher_amount_sum"] += $ret_data["chitta"][$i]["voucher_amount"];
