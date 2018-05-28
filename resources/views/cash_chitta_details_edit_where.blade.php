@@ -222,6 +222,7 @@
         pk = "";
         // console.log(fields);
         save_data(table,fields,operation,pk);
+		$("#e_"+cash_chitta_id).trigger("click");
     });
 
 

@@ -21,7 +21,7 @@
 					<td>{{$row["prefix"]}}</td>
 					<td>{{$row["table_name"]}}</td>
 					<td>
-						<button class="btn-xs edit" data="{{$row['cash_chitta_id']}}"><span class="glyphicon  glyphicon-pencil" /></button>
+						<button id="e_{{$pk}}" class="btn-xs edit" data="{{$row['cash_chitta_id']}}"><span class="glyphicon  glyphicon-pencil" /></button>
 					</td>
 				</tr>
 				<tr>

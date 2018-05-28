@@ -127,6 +127,7 @@
         pk = "";
         // console.log(fields);
         save_data(table,fields,operation,pk);
+        $(".refresh").trigger("click");
     });
 
     function save_data(table,fields,operation,pk) {
