@@ -130,7 +130,7 @@
 				</tr>
 			</table>
 
-			<button class="btn-xs" class="ed_save" data="{{$pk}}">SAVE</button>
+			<button class="btn-xs ed_save" data="{{$pk}}">SAVE</button>
 		</div>
 
 <script>
