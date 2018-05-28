@@ -3056,7 +3056,7 @@
 				
 			$i = -1;
 			foreach($chitta_list as $row_ch) {
-				$bid_field = "{$row_ch->table_name}.{$row_ch->bid_field}";
+				$bid_field = "{$row_ch->table_containing_bid}.{$row_ch->bid_field}";
 				$date_field = "{$row_ch->table_name}.{$row_ch->date_field}";
 				
 				$select_array = array(
@@ -3083,10 +3083,14 @@
 					->where("deleted",0)
 					->where("cash_chitta_id",$row_ch->cash_chitta_id)
 					->get();
-				$join_list = DB::table("cash_chitta_joining_tables")
+					$join_list = DB::table("cash_chitta_joining_tables")
+						->where("deleted",0)
+						->where("cash_chitta_id",$row_ch->cash_chitta_id)
+						->get();
+			/* 	$join_list = DB::table("cash_chitta_select_fields")
 					->where("deleted",0)
 					->where("cash_chitta_id",$row_ch->cash_chitta_id)
-					->get();
+					->get(); */
 /*+++++++++++++++*/
 				$temp = DB::table($row_ch->table_name);
 				$temp = $temp->select($select_array);
@@ -3094,8 +3098,10 @@
 					$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
 											"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
 				}
+			//	if($row_ch->bid_field != "NA") {}
 				$temp = $temp->where($bid_field,$BID);
 				$temp = $temp->whereDate($date_field,"=",$data['date']);
+				
 				foreach($where_list as $row_wh) {
 					$where_table = $row_wh->table_name;
 					$where_operator = $row_wh->operator;
@@ -3153,9 +3159,9 @@
 					}
 					$ret_data["chitta"][++$i]["receipt_no"] = 0;
 					$ret_data["chitta"][$i]["voucher_no"] = 0;
-					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} - {$row_te->account_no} - {$row_te->transaction_type}";
+					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} - {$row_te->account_no}";// - {$row_te->transaction_type}";
 					$ret_data["chitta"][$i]["transaction_type"] = $row_te->transaction_type;
-					switch($row_te->transaction_type) {
+					switch(strtoupper($row_te->transaction_type)) {
 						case "CREDIT"	:	
 											$ret_data["chitta"][$i]["receipt_amount"] = $row_te->amount;
 											$ret_data["chitta"][$i]["voucher_amount"] = 0;
@@ -3163,7 +3169,7 @@
 						case "DEBIT"	:	$ret_data["chitta"][$i]["receipt_amount"] = 0;
 											$ret_data["chitta"][$i]["voucher_amount"] = $row_te->amount;
 											break;
-						default			:	throw new exception("\n\ninvalid value for transaction_type :  {$row_te->transaction_type}\n\n");
+						default			:	throw new exception("\n\ninvalid value for transaction_type : {$row_te->transaction_type} ({$row_te->account_no})\n\n");
 					}
 					$ret_data["receipt_amount_sum"] += $ret_data["chitta"][$i]["receipt_amount"];
 					$ret_data["voucher_amount_sum"] += $ret_data["chitta"][$i]["voucher_amount"];
@@ -3188,12 +3194,15 @@
 									"table_name",
 									"pk_field",
 									"amount_field",
-									"bid_field",
 									"date_field",
 									"transaction_type",
 									"transaction_type_field",
+									"table_containing_bid",
+									"bid_field",
 									"table_containing_account_no",
-									"account_no_field"
+									"account_no_field",
+									"table_containing_particulars",
+									"particulars_field"
 								);
 			
 			$cash_chitta_details_list = DB::table($table)
@@ -3211,12 +3220,15 @@
 				$ret_data["chitta"][$i]["table_name"] = $row_ca->table_name;
 				$ret_data["chitta"][$i]["pk_field"] = $row_ca->pk_field;
 				$ret_data["chitta"][$i]["amount_field"] = $row_ca->amount_field;
-				$ret_data["chitta"][$i]["bid_field"] = $row_ca->bid_field;
 				$ret_data["chitta"][$i]["date_field"] = $row_ca->date_field;
 				$ret_data["chitta"][$i]["transaction_type"] = $row_ca->transaction_type;
 				$ret_data["chitta"][$i]["transaction_type_field"] = $row_ca->transaction_type_field;
+				$ret_data["chitta"][$i]["table_containing_bid"] = $row_ca->table_containing_bid;
+				$ret_data["chitta"][$i]["bid_field"] = $row_ca->bid_field;
 				$ret_data["chitta"][$i]["table_containing_account_no"] = $row_ca->table_containing_account_no;
 				$ret_data["chitta"][$i]["account_no_field"] = $row_ca->account_no_field;
+				$ret_data["chitta"][$i]["table_containing_particulars"] = $row_ca->table_containing_particulars;
+				$ret_data["chitta"][$i]["particulars_field"] = $row_ca->particulars_field;
 
 				$table_data = DB::table("cash_chitta_joining_tables")
 					->where("cash_chitta_joining_tables.cash_chitta_id",$row_ca->cash_chitta_id)

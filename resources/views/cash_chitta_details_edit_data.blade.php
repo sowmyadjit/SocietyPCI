@@ -47,14 +47,6 @@
 					</td>
 				</tr>
 				<tr>
-					<th>bid_field</th>
-					<td>
-						<select id="ed_bid_field_{{$pk}}" name="bid_field">
-							<option>{{$row["bid_field"]}}</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
 					<th>date_field</th>
 					<td>
 						<select id="ed_date_field_{{$pk}}" name="date_field">
@@ -100,6 +92,31 @@
 					</td>
 				</tr>
 				<tr>
+					<th>table_containing_bid</th>
+					<td>
+						<select id="ed_table_containing_bid_{{$pk}}" class="ed_table_containing_bid" data="{{$pk}}" name="table_containing_bid">
+							@foreach($data["tables"] as $row_table)
+								<?php 
+									if($row_table == $row['table_containing_bid']) {
+										$selected = "selected";
+									} else {
+										$selected = "";
+									}
+								?>
+								<option {{$selected}}>{{$row_table}}</option>
+							@endforeach
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>bid_field</th>
+					<td>
+						<select id="ed_bid_field_{{$pk}}" name="bid_field">
+							<option>{{$row["bid_field"]}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<th>table_containing_account_no</th>
 					<td>
 						<select id="ed_table_containing_account_no_{{$pk}}" class="ed_table_containing_account_no" data="{{$pk}}" name="table_containing_account_no">
@@ -125,6 +142,31 @@
 					</td>
 				</tr>
 				<tr>
+					<th>table_containing_particulars</th>
+					<td>
+						<select id="ed_table_containing_particulars_{{$pk}}" class="ed_table_containing_particulars" data="{{$pk}}" name="table_containing_particulars">
+							@foreach($data["tables"] as $row_table)
+								<?php 
+									if($row_table == $row['table_containing_particulars']) {
+										$selected = "selected";
+									} else {
+										$selected = "";
+									}
+								?>
+								<option {{$selected}}>{{$row_table}}</option>
+							@endforeach
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>particulars_field</th>
+					<td>
+						<select id="ed_particulars_field_{{$pk}}" name="particulars_field">
+							<option>{{$row["particulars_field"]}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
 					<th>deleted</th>
 					<td><input id="ed_deleted_{{$pk}}" name="deleted" value="0" /></td>
 				</tr>
@@ -144,12 +186,15 @@
 		table_name = $("#ed_table_name_"+id).val();
 		pk_field = $("#ed_pk_field_"+id).val();
 		amount_field = $("#ed_amount_field_"+id).val();
-		bid_field = $("#ed_bid_field_"+id).val();
 		date_field = $("#ed_date_field_"+id).val();
 		transaction_type = $("#ed_transaction_type_"+id).val();
 		transaction_type_field = $("#ed_transaction_type_field_"+id).val();
+		table_containing_bid = $("#ed_table_containing_bid_"+id).val();
+		bid_field = $("#ed_bid_field_"+id).val();
 		table_containing_account_no = $("#ed_table_containing_account_no_"+id).val();
 		account_no_field = $("#ed_account_no_field_"+id).val();
+		table_containing_particulars = $("#ed_table_containing_particulars_"+id).val();
+		particulars_field = $("#ed_particulars_field_"+id).val();
 		deleted = $("#ed_deleted_"+id).val();
 		
 		var fields = new Object;
@@ -158,12 +203,15 @@
 		fields.table_name = table_name;
 		fields.pk_field = pk_field;
 		fields.amount_field = amount_field;
-		fields.bid_field = bid_field;
 		fields.date_field = date_field;
 		fields.transaction_type = transaction_type;
 		fields.transaction_type_field = transaction_type_field;
+		fields.table_containing_bid = table_containing_bid;
+		fields.bid_field = bid_field;
 		fields.table_containing_account_no = table_containing_account_no;
 		fields.account_no_field = account_no_field;
+		fields.table_containing_particulars = table_containing_particulars;
+		fields.particulars_field = particulars_field;
 		fields.deleted = deleted;
 
 		fields = JSON.stringify(fields);
@@ -179,13 +227,25 @@
     $(".ed_table_name").change(function() {
 		var id = $(this).attr("data");
         var table_name = $(this).val();
-        var selector_arr = ["#ed_pk_field_"+id,"#ed_amount_field_"+id,"#ed_bid_field_"+id,"#ed_date_field_"+id,"#ed_transaction_type_field_"+id];
+        var selector_arr = ["#ed_pk_field_"+id,"#ed_amount_field_"+id,"#ed_date_field_"+id,"#ed_transaction_type_field_"+id];
         get_table_fields(table_name,selector_arr);
     });
     $(".ed_table_containing_account_no").change(function() {
 		var id = $(this).attr("data");
         var table_name = $(this).val();
         var selector_arr = ["#ed_account_no_field_"+id];
+        get_table_fields(table_name,selector_arr);
+    });
+    $(".ed_table_containing_bid").change(function() {
+		var id = $(this).attr("data");
+        var table_name = $(this).val();
+        var selector_arr = ["#ed_bid_field_"+id];
+        get_table_fields(table_name,selector_arr);
+    });
+    $(".ed_table_containing_particulars").change(function() {
+		var id = $(this).attr("data");
+        var table_name = $(this).val();
+        var selector_arr = ["#ed_particulars_field_"+id];
         get_table_fields(table_name,selector_arr);
     });
 
@@ -197,7 +257,7 @@
                 data : "table_name="+table_name,
                 success : function(data) {
                     // console.log(data);
-                    var select_ele = "";
+                    var select_ele = "<option>NA</option>";
                     for(i=0; i<data.length; i++) {
                         select_ele += "<option>"+data[i]+"</option>";
                     }

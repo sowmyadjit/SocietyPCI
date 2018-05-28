@@ -33,14 +33,6 @@
             </td>
         </tr>
         <tr>
-            <th>bid_field</th>
-            <td>
-                <select id="ad_bid_field" name="bid_field">
-                    <option></option>
-                </select>
-            </td>
-        </tr>
-        <tr>
             <th>date_field</th>
             <td>
                 <select id="ad_date_field" name="date_field">
@@ -62,6 +54,24 @@
             <th>transaction_type_field</th>
             <td>
                 <select id="ad_transaction_type_field" name="transaction_type_field">
+                    <option></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>table_containing_bid</th>
+            <td>
+                <select id="ad_table_containing_bid" name="table_containing_bid">
+                    @foreach($data["tables"] as $row_table)
+                        <option>{{$row_table}}</option>
+                    @endforeach
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>bid_field</th>
+            <td>
+                <select id="ad_bid_field" name="bid_field">
                     <option></option>
                 </select>
             </td>
@@ -100,10 +110,11 @@
         table_name = $("#ad_table_name").val();
         pk_field = $("#ad_pk_field").val();
         amount_field = $("#ad_amount_field").val();
-        bid_field = $("#ad_bid_field").val();
         date_field = $("#ad_date_field").val();
         transaction_type = $("#ad_transaction_type").val();
         transaction_type_field = $("#ad_transaction_type_field").val();
+        table_containing_bid = $("#ad_table_containing_bid").val();
+        bid_field = $("#ad_bid_field").val();
         table_containing_account_no = $("#ad_table_containing_account_no").val();
         account_no_field = $("#ad_account_no_field").val();
         deleted = $("#ad_deleted").val();
@@ -113,10 +124,11 @@
         fields.table_name = table_name;
         fields.pk_field = pk_field;
         fields.amount_field = amount_field;
-        fields.bid_field = bid_field;
         fields.date_field = date_field;
         fields.transaction_type = transaction_type;
         fields.transaction_type_field = transaction_type_field;
+        fields.table_containing_bid = table_containing_bid;
+        fields.bid_field = bid_field;
         fields.table_containing_account_no = table_containing_account_no;
         fields.account_no_field = account_no_field;
         fields.deleted = deleted;
@@ -150,7 +162,7 @@
 <script>
     $("#ad_table_name").change(function() {
         var table_name = $(this).val();
-        var selector_arr = ["#ad_pk_field","#ad_amount_field","#ad_bid_field","#ad_date_field","#ad_transaction_type_field"];
+        var selector_arr = ["#ad_pk_field","#ad_amount_field","#ad_date_field","#ad_transaction_type_field"];
         get_table_fields(table_name,selector_arr);
     });
     $("#ad_table_containing_account_no").change(function() {
@@ -158,7 +170,11 @@
         var selector_arr = ["#ad_account_no_field"];
         get_table_fields(table_name,selector_arr);
     });
-
+    $("#ad_table_containing_bid").change(function() {
+        var table_name = $(this).val();
+        var selector_arr = ["#ad_bid_field"];
+        get_table_fields(table_name,selector_arr);
+    });
     function get_table_fields(table_name,selector_arr) {
 
         $.ajax({
@@ -167,7 +183,7 @@
                 data : "table_name="+table_name,
                 success : function(data) {
                     // console.log(data);
-                    var select_ele = "";
+                    var select_ele = "<option>NA</option>";
                     for(i=0; i<data.length; i++) {
                         select_ele += "<option>"+data[i]+"</option>";
                     }

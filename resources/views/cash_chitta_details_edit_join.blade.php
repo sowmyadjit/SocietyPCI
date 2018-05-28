@@ -244,7 +244,7 @@
                 data : "table_name="+table_name,
                 success : function(data) {
                     // console.log(data);
-                    var select_ele = "";
+                    var select_ele = "<option>NA</option>";
                     for(i=0; i<data.length; i++) {
                         select_ele += "<option>"+data[i]+"</option>";
                     }
