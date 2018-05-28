@@ -61,16 +61,17 @@
 	
 	$('.DailyTranBtn<?php echo $OpCls['module']->Mid; ?>').click(function(e){
 		e.preventDefault();
+		if(confirm("Are you sure?")) {
+			var id = $(this).attr("id");
+			var is_day_open = "{{$OpCls['is_day_open']}}";
+			console.log(is_day_open);
+			if(id == "daily_transaction" && is_day_open == "no") {
+				alert("Day is not open");
+				return;
+			}
 		
-		var id = $(this).attr("id");
-		var is_day_open = "{{$OpCls['is_day_open']}}";
-		console.log(is_day_open);
-		if(id == "daily_transaction" && is_day_open == "no") {
-			alert("Day is not open");
-			return;
+			$('.bdy_<?php echo $OpCls['module']->Mid; ?>').load($(this).attr('href'));
 		}
-		
-		$('.bdy_<?php echo $OpCls['module']->Mid; ?>').load($(this).attr('href'));
 	});
 	
 	
