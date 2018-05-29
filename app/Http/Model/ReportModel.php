@@ -3059,14 +3059,52 @@
 				$bid_field = "{$row_ch->table_containing_bid}.{$row_ch->bid_field}";
 				$date_field = "{$row_ch->table_name}.{$row_ch->date_field}";
 				
+				$where_list = DB::table("cash_chitta_where_clause")
+					->where("deleted",0)
+					->where("cash_chitta_id",$row_ch->cash_chitta_id)
+					->get();
+				$join_list = DB::table("cash_chitta_joining_tables")
+					->where("deleted",0)
+					->where("cash_chitta_id",$row_ch->cash_chitta_id)
+					->get();
+				$amount_list = DB::table("cash_chitta_amount_fields")
+					->where("deleted",0)
+					->where("cash_chitta_id",$row_ch->cash_chitta_id)
+					->get();
+				
+				//SELECT ARRAY
 				$select_array = array(
 										"{$row_ch->table_name}.{$row_ch->pk_field} as pk",
-										"{$row_ch->table_name}.{$row_ch->amount_field} as amount",
 										"{$row_ch->table_containing_account_no}.{$row_ch->account_no_field} as account_no"
+										
 										//,"aa as bb"
 									);
+				if(!empty($row_ch->amount_field) && $row_ch->amount_field != "NA") {
+					$select_ele = DB::raw("{$row_ch->table_name}.{$row_ch->amount_field} as amount");
+					array_push($select_array,$select_ele);
+				} else {
+					$amt_fields = "(";
+					$first_flag = true;
+					//	print_r($amount_list);//exit();
+					foreach($amount_list as $row_amt) {
+						if($first_flag) {
+							$first_flag = false;
+							$amt_fields .= "{$row_amt->amount_table}.{$row_amt->amount_field}";
+						} else {
+							$amt_fields .= " + {$row_amt->amount_table}.{$row_amt->amount_field}";
+						}
+					}
+					$amt_fields .= ")";
+					// var_dump($amt_fields);
+					$select_ele = DB::raw(" {$amt_fields} as 'amount'");
+					array_push($select_array,$select_ele);
+				}
+				if(!empty($row_ch->table_containing_particulars) && $row_ch->table_containing_particulars != "NA" && $row_ch->particulars_field != "NA") {
+					$select_ele = "{$row_ch->table_containing_particulars}.{$row_ch->particulars_field} as particulars";
+					array_push($select_array,$select_ele);
+				}
 				switch($row_ch->transaction_type) {
-					case CREDIT	:	
+					case CREDIT	:	//constant defined in route.php file
 									$raw_obj = DB::raw("'CREDIT' as 'transaction_type'");
 									break;
 					case DEBIT	:	
@@ -3076,75 +3114,66 @@
 									$raw_obj = DB::raw("{$row_ch->table_name}.{$row_ch->transaction_type_field} as 'transaction_type'");
 									break;
 				}
-				
 				array_push($select_array,$raw_obj);
-				
-				$where_list = DB::table("cash_chitta_where_clause")
-					->where("deleted",0)
-					->where("cash_chitta_id",$row_ch->cash_chitta_id)
-					->get();
-					$join_list = DB::table("cash_chitta_joining_tables")
-						->where("deleted",0)
-						->where("cash_chitta_id",$row_ch->cash_chitta_id)
-						->get();
-			/* 	$join_list = DB::table("cash_chitta_select_fields")
-					->where("deleted",0)
-					->where("cash_chitta_id",$row_ch->cash_chitta_id)
-					->get(); */
-/*+++++++++++++++*/
-				$temp = DB::table($row_ch->table_name);
-				$temp = $temp->select($select_array);
-				foreach($join_list as $row_jo) {
-					$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
-											"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
-				}
-			//	if($row_ch->bid_field != "NA") {}
-				$temp = $temp->where($bid_field,$BID);
-				$temp = $temp->whereDate($date_field,"=",$data['date']);
-				
-				foreach($where_list as $row_wh) {
-					$where_table = $row_wh->table_name;
-					$where_operator = $row_wh->operator;
-					$where_field = $row_wh->field_name;
-					$where_type = $row_wh->field_type;
-					$where_value = $row_wh->field_value;
-					$where_value = $where_value;
-					switch($where_type) {
-						case "INT"		:	$where_value = (int)$where_value;
-											break;
-						case "STR"		:	$where_value = "{$where_value}";
-											break;
-						case "STR_ARR"	:	
-											$where_value = "\"{$where_value}\"";
-											$where_value = str_replace(",","\",\"",$where_value);
-											$where_value = explode(",", $where_value);
-											$where_value = (array)$where_value;
-											break;
-						case "FLOAT"	:	$where_value = (float)$where_value;
-											break;
+				// print_r($select_array);
+					
+				//QUERY STARTS HERE
+					$temp = DB::table($row_ch->table_name);
+					$temp = $temp->select($select_array);
+					//JOINS
+					foreach($join_list as $row_jo) {
+						$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
+												"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
 					}
-					// $where_value = str_replace(",","\",\"",$where_value);
-					// $where_value = explode(",", $where_value);
-					switch($where_operator) {
-						
-						case "="		:	
-						case "LIKE"		:	
-						case "like"		:	
-											$temp->where("{$where_table}.{$where_field}","{$where_operator}",$where_value);
-											break;
-						case "IN"		:
-						case "in"		:	
-											$temp->whereIn("{$where_table}.{$where_field}",$where_value);
-											break;
-						case "NOT IN"	:	
-						case "not in"	:	
-											$temp->whereNotIn("{$where_table}.{$where_field}",$where_value);
-											break;
+
+					$temp = $temp->where($bid_field,$BID);
+					$temp = $temp->whereDate($date_field,"=",$data['date']);
+					
+					//WHERE CLAUSE
+					foreach($where_list as $row_wh) {
+						$where_table = $row_wh->table_name;
+						$where_operator = $row_wh->operator;
+						$where_field = $row_wh->field_name;
+						$where_type = $row_wh->field_type;
+						$where_value = $row_wh->field_value;
+						$where_value = $where_value;
+						switch($where_type) {
+							case "INT"		:	$where_value = (int)$where_value;
+												break;
+							case "STR"		:	$where_value = "{$where_value}";
+												break;
+							case "STR_ARR"	:	
+												$where_value = "\"{$where_value}\"";
+												$where_value = str_replace(",","\",\"",$where_value);
+												$where_value = explode(",", $where_value);
+												$where_value = (array)$where_value;
+												break;
+							case "FLOAT"	:	$where_value = (float)$where_value;
+												break;
+						}
+						// $where_value = str_replace(",","\",\"",$where_value);
+						// $where_value = explode(",", $where_value);
+						switch($where_operator) {
+							
+							case "="		:	
+							case "LIKE"		:	
+							case "like"		:	
+												$temp->where("{$where_table}.{$where_field}","{$where_operator}",$where_value);
+												break;
+							case "IN"		:
+							case "in"		:	
+												$temp->whereIn("{$where_table}.{$where_field}",$where_value);
+												break;
+							case "NOT IN"	:	
+							case "not in"	:	
+												$temp->whereNotIn("{$where_table}.{$where_field}",$where_value);
+												break;
+						}
 					}
-				}
-				$temp = $temp->get();
-				//print_r($temp);exit();
-/*---------------*/
+					$temp = $temp->get();
+				//QUERY ENDS HERE
+				
+				// print_r($temp);exit();
 				foreach($temp as $row_te) {
 					switch($row_te->transaction_type) {
 						case "1"			:	
@@ -3159,7 +3188,12 @@
 					}
 					$ret_data["chitta"][++$i]["receipt_no"] = 0;
 					$ret_data["chitta"][$i]["voucher_no"] = 0;
-					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} - {$row_te->account_no}";// - {$row_te->transaction_type}";
+					if(isset($row_te->particulars)) {
+						$temp_particulars = " - {$row_te->particulars}";
+					} else {
+						$temp_particulars = "";
+					}
+					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} - {$row_te->account_no}{$temp_particulars}";// - {$row_te->transaction_type}";
 					$ret_data["chitta"][$i]["transaction_type"] = $row_te->transaction_type;
 					switch(strtoupper($row_te->transaction_type)) {
 						case "CREDIT"	:	

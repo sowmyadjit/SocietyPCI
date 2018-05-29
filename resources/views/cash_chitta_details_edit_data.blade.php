@@ -17,6 +17,7 @@
 					<th>table_name</th>
 					<td>
 						<select id="ed_table_name_{{$pk}}" class="ed_table_name" data="{{$pk}}" name="table_name">
+								<option>NA</option>
 							@foreach($data["tables"] as $row_table)
 								<?php 
 									if($row_table == $row['table_name']) {
@@ -95,6 +96,7 @@
 					<th>table_containing_bid</th>
 					<td>
 						<select id="ed_table_containing_bid_{{$pk}}" class="ed_table_containing_bid" data="{{$pk}}" name="table_containing_bid">
+								<option>NA</option>
 							@foreach($data["tables"] as $row_table)
 								<?php 
 									if($row_table == $row['table_containing_bid']) {
@@ -120,6 +122,7 @@
 					<th>table_containing_account_no</th>
 					<td>
 						<select id="ed_table_containing_account_no_{{$pk}}" class="ed_table_containing_account_no" data="{{$pk}}" name="table_containing_account_no">
+								<option>NA</option>
 							@foreach($data["tables"] as $row_table)
 								<?php 
 									if($row_table == $row['table_containing_account_no']) {
@@ -145,6 +148,7 @@
 					<th>table_containing_particulars</th>
 					<td>
 						<select id="ed_table_containing_particulars_{{$pk}}" class="ed_table_containing_particulars" data="{{$pk}}" name="table_containing_particulars">
+								<option>NA</option>
 							@foreach($data["tables"] as $row_table)
 								<?php 
 									if($row_table == $row['table_containing_particulars']) {
