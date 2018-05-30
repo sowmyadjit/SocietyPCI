@@ -3367,5 +3367,15 @@
 			}
 			return $ret_data;
 		}
+
+		public function get_opening_balance($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			return DB::table("dailyopenclose")
+				->where("Daily_Date",$data["date"])
+				->where("Daily_Status","OPEN")
+				->where("Daily_Bid",$BID)
+				->value("Daily_TotBal");
+		}
 		
 	}

@@ -1,6 +1,11 @@
 <?php
 	$class_debit = "red-text";
 	$class_credit = "green-text";
+	$opening_balance = $data["opening_balance"];
+	$receipt_amount_sum = $data["receipt_amount_sum"];
+	$voucher_amount_sum = $data["voucher_amount_sum"];
+	$op_rec_sum = $opening_balance + $receipt_amount_sum;
+	$total_remaining_bal = $op_rec_sum - $voucher_amount_sum;
 ?>
 
 <style>
@@ -26,7 +31,7 @@
 		<tbody>
 			@foreach($data["chitta"] as $row)
 				<?php
-				if($row["transaction_type"] == "CREDIT") {
+				if(strcasecmp($row["transaction_type"],"CREDIT") == 0) {
 					$row_class = $class_credit;
 				} else {
 					$row_class = $class_debit;
@@ -43,9 +48,23 @@
 				<tr>
 					<td></td>
 					<td></td>
-					<td></td>
+					<td><b>TOTAL</b></td>
 					<td><span class="green-text"><b>{{$data["receipt_amount_sum"]}}</b></span></td>
 					<td><span class="red-text"><b>{{$data["voucher_amount_sum"]}}</b></span></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td><b>OP BAL / CL BAL</b></td>
+					<td><b>{{$data["opening_balance"]}}</b></td>
+					<td><b>{{$total_remaining_bal}}</b></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td><b>GRAND TOTAL</b></td>
+					<td><b>{{$op_rec_sum}}</b></td>
+					<td><b>{{$op_rec_sum}}</b></td>
 				</tr>
 		</tbody>
 	</table>

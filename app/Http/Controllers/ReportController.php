@@ -11,6 +11,8 @@
 	use App\Http\Model\ExpenceModel;
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\MemberModel;
+	use App\Http\Model\DenominationsModel;
+	
 	class ReportController extends Controller
 	{
 		public function __construct()
@@ -19,6 +21,8 @@
 			$this->creadexpencemodel = new ExpenceModel;
 			$this->Modules= new ModulesModel;
 			$this->member_model= new MemberModel;
+			$this->denomination= new DenominationsModel;
+			
 		}
 		
 		
@@ -811,6 +815,7 @@
 		{
 			$in_data["date"] = $request->input("date");
 			$data = $this->Report_model->cash_chitta_data($in_data);
+			$data["opening_balance"] = $this->Report_model->get_opening_balance($in_data);
 			//print_r($data);exit();
 			return view("cash_chitta_data",compact('data'));
 		}
@@ -898,4 +903,11 @@
 			return view("appraiser_commission_report_data",compact("data"));
 		}
 /*******/
+
+		public function get_denominations(Request $request)
+		{
+			$in_data["date"] = $request->input("date");
+			$data["denomination_row"] = $this->denomination->get_denominations();
+			return view("cash_chitta_denominations");
+		}
 	}

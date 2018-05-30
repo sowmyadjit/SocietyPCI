@@ -57,6 +57,7 @@
 			data : "date="+date,
 			success : function(data) {
 				$("#data_box").html(data);
+				get_denominations(date);
 			}
 		});
 	});
@@ -68,5 +69,16 @@
 	$(".refresh").click(function() {
 		$("#date").trigger("change");
 	});
+
+	function get_denominations(date) {
+		$.ajax({
+			url : "get_denominations",
+			type : "post",
+			data : "date="+date,
+			success : function(data) {
+				$("#data_box").append(data);
+			}
+		});
+	}
 	
 </script>
