@@ -4,6 +4,7 @@
 	
 	use Illuminate\Http\Request;
 	use DB;
+	use Auth;
 	use App\Http\Requests;
 	use App\Http\Controllers\Controller;
 	use App\Http\Model\ReportModel;
@@ -907,7 +908,55 @@
 		public function get_denominations(Request $request)
 		{
 			$in_data["date"] = $request->input("date");
-			$data["denomination_row"] = $this->denomination->get_denominations();
-			return view("cash_chitta_denominations");
+			$data["date"] = $in_data["date"];
+			$data["denomination_row"] = $this->denomination->get_denominations($in_data);
+			return view("cash_chitta_denominations",compact('data'));
+		}
+
+		public function save_denominations(Request $request)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$in_data["{$this->denomination->pk}"] = $request->input("{$this->denomination->pk}");
+			$in_data["{$this->denomination->date_field}"] = $request->input("{$this->denomination->date_field}");
+			$in_data["{$this->denomination->value_2000_field}"] = $request->input("{$this->denomination->value_2000_field}");
+			$in_data["{$this->denomination->value_500_field}"] = $request->input("{$this->denomination->value_500_field}");
+			$in_data["{$this->denomination->value_200_field}"] = $request->input("{$this->denomination->value_200_field}");
+			$in_data["{$this->denomination->value_100_field}"] = $request->input("{$this->denomination->value_100_field}");
+			$in_data["{$this->denomination->value_50_field}"] = $request->input("{$this->denomination->value_50_field}");
+			$in_data["{$this->denomination->value_20_field}"] = $request->input("{$this->denomination->value_20_field}");
+			$in_data["{$this->denomination->value_10_field}"] = $request->input("{$this->denomination->value_10_field}");
+			$in_data["{$this->denomination->value_5_field}"] = $request->input("{$this->denomination->value_5_field}");
+			$in_data["{$this->denomination->value_2_field}"] = $request->input("{$this->denomination->value_2_field}");
+			$in_data["{$this->denomination->value_1_field}"] = $request->input("{$this->denomination->value_1_field}");
+			$in_data["{$this->denomination->value_other_field}"] = $request->input("{$this->denomination->value_other_field}");
+			$in_data["{$this->denomination->bid_field}"] = $BID;
+			$in_data["{$this->denomination->entered_by_field}"] = $UID;
+			
+			$this->denomination->required($in_data,"{$this->denomination->date_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_2000_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_500_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_200_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_100_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_50_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_20_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_10_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_5_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_2_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_1_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_other_field}");
+			$this->denomination->required($in_data,"{$this->denomination->bid_field}");
+			$this->denomination->required($in_data,"{$this->denomination->entered_by_field}");
+
+			$this->denomination->clear_row_data();
+			$this->denomination->set_row_data($in_data);
+			if(!empty($in_data["{$this->denomination->pk}"])) {//UPDATE
+				$row_id = $this->denomination->update_row();
+			} else {//INSERT
+				$row_id = $this->denomination->insert_row();
+			}
+			$ret_data = $this->denomination->get_row(["{$this->denomination->pk}"=>$row_id]);
+			
+			return $ret_data;
 		}
 	}

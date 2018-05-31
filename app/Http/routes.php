@@ -528,6 +528,7 @@
 				Route::post('/get_table_fields','ReportController@get_table_fields');
 				Route::post('/cash_chitta_details_add_form','ReportController@cash_chitta_details_add_form');
 				Route::post('/get_denominations','ReportController@get_denominations');
+				Route::post('/save_denominations','ReportController@save_denominations');
 				
 				
 				

@@ -24,7 +24,9 @@
         public $value_1_field = "value_1";
         public $value_other_field = "value_other";
         public $entered_by_field = "by_uid";
-        public $deleted_field = "deleted";
+		public $deleted_field = "deleted";
+		
+		private $row_data = array();
 		
 		function __construct()
 		{
@@ -49,6 +51,12 @@
 		{
 			if(isset($data["{$this->pk}"])) {
 				$this->row_data["{$this->pk}"] = $data["{$this->pk}"];
+			}
+			if(isset($data["{$this->date_field}"])) {
+				$this->row_data["{$this->date_field}"] = $data["{$this->date_field}"];
+			}
+			if(isset($data["{$this->bid_field}"])) {
+				$this->row_data["{$this->bid_field}"] = $data["{$this->bid_field}"];
 			}
 			if(isset($data["{$this->value_2000_field}"])) {
 				$this->row_data["{$this->value_2000_field}"] = $data["{$this->value_2000_field}"];
@@ -136,7 +144,8 @@
 			$row = DB::table($this->tbl)
 				->where("{$this->tbl}.{$this->pk}",$data["{$this->pk}"])
 				->first();
-			return (array)$row;
+			$ret_data = $this->parse_row_object(["row_data"=>$row]);
+			return $ret_data;
 		}
 		
 		public function get_value($data)
@@ -147,15 +156,40 @@
 				->value($data["field"]);
 			return $value;
         }
+		
+		public function parse_row_object($data)
+		{
+			$ret_data = [];
+			$row_data = (array)$data["row_data"];
+			foreach($row_data as $key_data=>$value_data) {
+				$ret_data["{$key_data}"] = $value_data;
+			}
+			return $ret_data;
+        }
+		
+		public function parse_table_objects($data)
+		{
+			$ret_data = [];
+			$i = -1;
+			foreach($data["table_data"] as $row_data_obj) {
+				$row_data_arr = (array)$row_data_obj;
+				$i++;
+				foreach($row_data_arr as $key_data => $value_data) {
+					$ret_data[$i]["{$key_data}"] = $value_data;
+				}
+			}
+			return $ret_data;
+		}
 
         public function get_denominations($data)
         {
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
-            $ret_data = DB::table($this->tble)
-                ->where($deleted_field,0)
-                ->where($date_field,$data["date"])
-                ->where($bid_field,$BID)
-                ->first();
+            $row_data = DB::table($this->tbl)
+                ->where($this->deleted_field,0)
+                ->where($this->date_field,$data["date"])
+                ->where($this->bid_field,$BID)
+				->first();
+			$ret_data = $this->parse_row_object(["row_data"=>$row_data]);
             return $ret_data;
         }
         
