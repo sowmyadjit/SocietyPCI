@@ -2019,8 +2019,10 @@
 					
 					if(!empty($temp) && $temp->FD_Date != "0000-00-00") {
 						$last_interest_paid_date = $temp->FD_Date;
+						$first_interest = false;
 					} else {
-							$last_interest_paid_date = $fddetails->FdReport_StartDate;
+						$last_interest_paid_date = $fddetails->FdReport_StartDate;
+						$first_interest = true;
 					}
 			/*******************/
 					$lastpaiddate=$last_interest_paid_date; //$fddetails->lastinterestpaid;
@@ -2045,6 +2047,9 @@
 					$date2=date_create($lastpaiddate);
 					$difdate=date_diff($date1,$date2);
 					$difdays=$difdate->format('%a');
+					if($first_interest) {
+						$difdays++;
+					}
 					if($fdmonth=="1 Month(30 days)")
 					{
 						$saleem=1;
