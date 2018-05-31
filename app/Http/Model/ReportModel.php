@@ -2880,7 +2880,7 @@
 					->where("tran_reversed","No")
 					->where("Agentid",0)
 					->where("Transaction_Type","DEBIT")
-					->where("PigReport_TranDate","<",$data["from_date"])
+					->where("PigReport_TranDate","<=",$data["from_date"])
 					->sum("Amount");
 				
 				$ret_data["pg_tr"][$i]["day_sum_row"] = 0;
