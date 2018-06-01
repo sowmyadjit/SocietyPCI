@@ -141,7 +141,7 @@ $('#view_excel').click(function(e){
 		if({{$data["print"]}} == "print") {
 			$("#view_print").trigger("click");
 		} else {
-			$("#view_excel").trigger("click");	
+			$("#view_excel").trigger("click");
 		}
 	});
 </script>
