@@ -23,9 +23,7 @@
 			$this->Modules= new ModulesModel;
 			$this->member_model= new MemberModel;
 			$this->denomination= new DenominationsModel;
-			
 		}
-		
 		
 		
 		public function index()

@@ -20,6 +20,13 @@
 		public $deleted_field = "deleted";
 		
 		private $row_data = array();
+
+		const RECEIPT = 1;
+		const VOUCHER = 2;
+
+		const SB_TRAN = 1;
+		const RD_TRAN = 2;
+		const PG_TRAN = 3;
 		
 		function __construct()
 		{
@@ -153,9 +160,28 @@
 			return $ret_data;
 		}
 
-		public function get_next_receipt()
+		public function get_next_receipt_no()
 		{
-			
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			$last_rec_no = DB::table($this->tbl)
+				->where($bid_field,$BID)
+				->where($receipt_voucher_type_field,$this->RECEIPT)
+				->where($deleted_field,0)
+				->value($receipt_voucher_no_field);
+			$next_receipt_no = $last_rec_no++;
+			return $next_receipt_no;
+		}
+
+		public function get_next_voucher_no()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			$last_voucher_no = DB::table($this->tbl)
+				->where($bid_field,$BID)
+				->where($receipt_voucher_type_field,$this->VOUCHER)
+				->where($deleted_field,0)
+				->value($receipt_voucher_no_field);
+			$next_voucher_no = $last_voucher_no++;
+			return $next_voucher_no;
 		}
         
 
