@@ -14,7 +14,7 @@
 
 		function __construct()
 		{
-			//$this->rv_no = new ReceiptVoucherController;
+			$this->rv_no = new ReceiptVoucherModel;
 		}
 
 		public function save_rv_no($data)
@@ -37,9 +37,9 @@
 				}
 				$fn_data["{$this->rv_no->receipt_voucher_type_field}"] = $temp_receipt_voucher_type_field;
 				$fn_data["{$this->rv_no->receipt_voucher_no_field}"] = $rv_no;
-				$fn_data["{$this->rv_no->transaction_category_field}"] = $rv_transaction_category;
-				$fn_data["{$this->rv_no->transaction_id_field}"] = $rv_transaction_id;
-				$fn_data["{$this->rv_no->deleted_field}"] = $this->rv_no::NOT_DELETED;
+				$fn_data["{$this->rv_no->transaction_category_field}"] = $data["rv_transaction_category"];
+				$fn_data["{$this->rv_no->transaction_id_field}"] = $data["rv_transaction_id"];
+				$fn_data["{$this->rv_no->deleted_field}"] = ReceiptVoucherModel::NOT_DELETED;
 
 				$this->rv_no->required($fn_data,"{$this->rv_no->date_field}");
 				$this->rv_no->required($fn_data,"{$this->rv_no->time_field}");

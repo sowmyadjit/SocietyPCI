@@ -226,7 +226,7 @@
 				->where($this->deleted_field,0)
 				->whereBetween($this->date_field,[$from_date,$to_date])
 				->value($this->receipt_voucher_no_field);
-			if(empty($last_rec_no)) {
+			if(empty($last_voucher_no)) {
 				$last_rec_no = 0;
 			}
 			$next_voucher_no = $last_rec_no + 1;
