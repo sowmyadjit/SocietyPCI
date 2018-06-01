@@ -5,6 +5,8 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use App\Http\Model\SmsModel;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class AccountModel extends Model
 	{
@@ -14,6 +16,7 @@
 		public function __construct()
 		{
 			$this->smsmodel=new SmsModel;
+			$this->rv_no = new ReceiptVoucherController;
 		}
 		
 		public function insert($id)
@@ -526,6 +529,16 @@
 				}
 				$r=0;
 				$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $id['actid'],'AccTid' => $id['acctype'],'TransactionType' => $id['trantyp'],'particulars' => $id['par'],'Amount' => $id['sb_amount'],'CurrentBalance' => $id['cb'],'Total_Bal' => $id['tb'],'tran_Date' => $id['dte'],'SBReport_TranDate'=>  $id['dte'],'Time' =>$tm,'Month'=>$mnt,'Year'=>$year,'Time'=>$tm,'Payment_Mode'=>$id['paymode'],'Cheque_Number'=>$id['chequeno'],'Cheque_Date'=>$id['chdate'],'Cleared_State'=>$id['unclearedval'],'Uncleared_Bal'=>$id['uncleared'],'Bank_Name'=>$id['bankname'],'Bank_Branch'=>$id['bankbranch'],'IFSC_Code'=>$id['ifsccode'],'Bid'=>$BID,'CreatedBy'=>$UID,'SB_resp_No'=>$r,'SB_paymentvoucher_No'=>$r1,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'CreditBankId'=>$id['creditbank']]);
+				
+				/***********/
+				$fn_data["rv_payment_mode"] = $pay;
+				$fn_data["rv_transaction_id"] = $res;
+				$fn_data["rv_transaction_type"] = $trantyp;
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['dte'];
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 				
 				if(!$old_tran)
 					$sb=DB::table('createaccount')->where('Accid',$acid)

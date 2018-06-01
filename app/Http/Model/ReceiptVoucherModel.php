@@ -15,7 +15,7 @@
 		public $bid_field = "bid";
 		public $receipt_voucher_type_field = "receipt_voucher_type";
 		public $receipt_voucher_no_field = "receipt_voucher_no";
-		public $transaction_type_field = "transaction_type";
+		public $transaction_category_field = "transaction_category";
 		public $transaction_id_field = "transaction_id";
 		public $deleted_field = "deleted";
 		
@@ -27,6 +27,9 @@
 		const SB_TRAN = 1;
 		const RD_TRAN = 2;
 		const PG_TRAN = 3;
+
+		const DELETED = 1;
+		const NOT_DELETED = 0;
 		
 		function __construct()
 		{
@@ -67,8 +70,8 @@
 			if(isset($data["{$this->receipt_voucher_no_field}"])) {
 				$this->row_data["{$this->receipt_voucher_no_field}"] = $data["{$this->receipt_voucher_no_field}"];
 			}
-			if(isset($data["{$this->transaction_type_field}"])) {
-				$this->row_data["{$this->transaction_type_field}"] = $data["{$this->transaction_type_field}"];
+			if(isset($data["{$this->transaction_category_field}"])) {
+				$this->row_data["{$this->transaction_category_field}"] = $data["{$this->transaction_category_field}"];
 			}
 			if(isset($data["{$this->transaction_id_field}"])) {
 				$this->row_data["{$this->transaction_id_field}"] = $data["{$this->transaction_id_field}"];
@@ -160,29 +163,74 @@
 			return $ret_data;
 		}
 
-		public function get_next_receipt_no()
+		public function get_next_receipt_no($data = NULL)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			if(!empty($data["date"])) {
+				$year = date("Y",strtotime($data["date"]));
+				$month = date("m",strtotime($data["date"]));
+			} else {
+				$year = date("Y");
+				$month = date("m");
+			}
+
+			if($month <= 3) {//BEFORE 31TS MARCH
+				$from_year = $year - 1;
+			} else {//AFTER 31TS MARCH
+				$from_year = $year;
+			}
+			$to_year = $from_year + 1;
+
+			$from_date = "{$from_year}-04-01";
+			$to_date = "{$to_year}-03-31";
+
 			$last_rec_no = DB::table($this->tbl)
-				->where($bid_field,$BID)
-				->where($receipt_voucher_type_field,$this->RECEIPT)
-				->where($deleted_field,0)
-				->value($receipt_voucher_no_field);
-			$next_receipt_no = $last_rec_no++;
+				->where($this->bid_field,$BID)
+				->where($this->receipt_voucher_type_field,self::RECEIPT)
+				->where($this->deleted_field,0)
+				->whereBetween($this->date_field,[$from_date,$to_date])
+				->max($this->receipt_voucher_no_field);
+			if(empty($last_rec_no)) {
+				$last_rec_no = 0;
+			}
+			$next_receipt_no = $last_rec_no + 1;
 			return $next_receipt_no;
 		}
 
-		public function get_next_voucher_no()
+		public function get_next_voucher_no($data = NULL)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			
+			if(!empty($data["date"])) {
+				$year = date("Y",strtotime($data["date"]));
+				$month = date("m",strtotime($data["date"]));
+			} else {
+				$year = date("Y");
+				$month = date("m");
+			}
+
+			if($month <= 3) {//BEFORE 31TS MARCH
+				$from_year = $year - 1;
+			} else {//AFTER 31TS MARCH
+				$from_year = $year;
+			}
+			$to_year = $from_year + 1;
+
+			$from_date = "{$from_year}-04-01";
+			$to_date = "{$to_year}-03-31";
+
 			$last_voucher_no = DB::table($this->tbl)
-				->where($bid_field,$BID)
-				->where($receipt_voucher_type_field,$this->VOUCHER)
-				->where($deleted_field,0)
-				->value($receipt_voucher_no_field);
-			$next_voucher_no = $last_voucher_no++;
+				->where($this->bid_field,$BID)
+				->where($this->receipt_voucher_type_field,self::VOUCHER)
+				->where($this->deleted_field,0)
+				->whereBetween($this->date_field,[$from_date,$to_date])
+				->value($this->receipt_voucher_no_field);
+			if(empty($last_rec_no)) {
+				$last_rec_no = 0;
+			}
+			$next_voucher_no = $last_rec_no + 1;
 			return $next_voucher_no;
 		}
-        
 
     }
