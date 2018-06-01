@@ -968,7 +968,7 @@
 		Route::get("aa","LogController@aa");
 		
 //TestController
-		Route::get("test","TestController@test");
+		Route::match(["get","post"],"test","TestController@test");
 		
 
 //	CLEAR CACHE
