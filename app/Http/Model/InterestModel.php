@@ -343,6 +343,7 @@
 			$test= DB::table('pigmi_transaction')
 			->join('pigmiallocation','pigmiallocation.PigmiAllocID','=','pigmi_transaction.PigmiAllocID')
 			->where('pigmi_transaction.PigmiAllocID','=',$pgalid)
+			->where('pigmi_transaction.service_charge','=',0)//NO SERVICE CHARGE ENTRIES
 			->whereRaw("DATE(pigmi_transaction.PigReport_TranDate) BETWEEN '".$sdate."' AND '".$final."'")
 			->groupBy('pigmi_transaction.Month')
 			->selectRaw('max(pigmi_transaction.PigmiTrans_ID) as sum,pigmi_transaction.Month,pigmi_transaction.Total_Amount')
