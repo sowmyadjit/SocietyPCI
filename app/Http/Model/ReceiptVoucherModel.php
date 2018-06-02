@@ -40,6 +40,11 @@
 		const PG_PAYAMOUNT = 14;
 		const RD_PAYAMOUNT = 15;
 		const FD_PAYAMOUNT = 16;
+		const DL_ALLOCATION = 17;
+		const PL_ALLOCATION = 18;//personalloan_payment table; NOT personalloan_allocation table
+		const SL_ALLOCATION = 19;
+		const JL_ALLOCATION = 20;
+
 		
 		const DELETED = 1;
 		const NOT_DELETED = 0;

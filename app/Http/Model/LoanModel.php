@@ -5,10 +5,16 @@
 	use Auth;
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class LoanModel extends Model
 	{
 		protected $table='loan_allocation';
+
+		public function __construct() {
+				$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		public function getaccname($id)
 		{
@@ -145,6 +151,17 @@
 			}
 			$lid = DB::table('depositeloan_allocation')->insertGetId(['DepLoan_DepositeType'=> $deptyp,'DepLoan_LoanTypeID'=>$id['DepLoanType'],'DepLoan_Branch'=>$AccBID,'DepLoan_AccNum'=>$id['DepositAccountNum'],'DepLoan_LoanAmount'=>$id['DepLoanAmt'],'DepLoan_RemailningAmt'=>$id['DepLoanAmt'],'DepLoan_LoanCharge'=>$id['LoanCharge'],'DepLoan_LoanStartDate'=>$id['DepLoanStartDate'],'DepLoan_LoanEndDate'=>$id['DepLoanEndDate'],'DepLoan_LoanDurationDays'=>$id['emimonth'],'DepLoan_PaymentMode'=>$id['DepLoanPayMode'],'DepLoan_ChequeNumber'=>$id['DepLoanChequeNum'],'DepLoan_ChequeDate'=>$id['DepLoanChequeDte'],'DepLoan_BankId'=>$id['LoanBankId'],'DepLoan_LoanNum'=>$paccno,'DepLoan_SbTranId'=>$sbtran,'DepLoan_Uid'=>$Uidfi,'DepLoan_AuthBy'=>$UID,'EMI_Amount'=>$id['EMIAmount'],'DepLoan_lastpaiddate'=>$id['DepLoanStartDate'],'Old_loan_number'=>$id['old']]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $lid;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DL_ALLOCATION;//constant DL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['DepLoanStartDate'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($deptyp=="PIGMY")
 			{
 				$alid = DB::table('pigmiallocation')
@@ -550,7 +567,7 @@
 			$ln_amt = $id['PersLoanAmt'];
 			$ln_type = $Persloantypeid;
 			$subhead = DB::table("loan_type")->where("LoanType_ID","=",$ln_type)->value("SubLedgerId");
-			DB::table('personalloan_payment')->insertGetId([
+			$personalloan_payment_id = DB::table('personalloan_payment')->insertGetId([
 																	"pl_payment_date"=>date("Y-m-d"),
 																	"pl_allocation_id"=>$perslid,
 																	"paid_amount"=>$ln_amt,
@@ -560,6 +577,17 @@
 																	"SubLedgerId"=>$subhead,
 																	"deleted"=>"0",
 																]);
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $personalloan_payment_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PL_ALLOCATION;//constant PL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = date("Y-m-d");
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/																
 			
 			$membertyp1=DB::table('members')->select('agent_member')->where('Memid','=',$id['PLMembID'])->first();
 			$membertyp=$membertyp1->agent_member;
@@ -685,6 +713,17 @@
 			
 			$jid=DB::table('jewelloan_allocation')->InsertGetId(['JewelLoan_LoanNumber'=>$count_inc,'JewelLoan_LoanTypeId'=>$id['loantyp'],'JewelLoan_Bid'=>$BranchId,'JewelLoan_Uid'=>$id['jeweluid'],'JewelLoan_AppraisalValue'=>$id['Jewelappval'],'JewelLoan_LoanDuration'=>$id['Jewelduration'],'JewelLoan_LoanAmount'=>$id['JewelAmt'],'JewelLoan_SaraparaCharge'=>$id['JewelspacomVal'],'JewelLoan_InsuranceCharge'=>$id['JewelinsuVal'],'JewelLoan_BookAndFormCharge'=>$id['JewelBkfrmChrgVal'],'JewelLoan_OtherCharge'=>$id['JewelOthrChrges'],'JewelLoan_LoanAmountAfterDeduct'=>$id['JewelPayAmountAfter'],'JewelLoan_StartDate'=>$id['JewelStartDate'],'JewelLoan_EndDate'=>$coneDate,'JewelLoan_PaymentMode'=>$id['JewelPayMode'],'JewelLoan_ChqNum'=>$id['JewelChequeNum'],'JewelLoan_ChqDate'=>$id['JewelChequeDte'],'JewelLoan_Bankid'=>$id['BankId'],'JewelLoan_CreatedBy'=>$UID,'JewelLoan_LoanRemainingAmount'=>$id['JewelAmt'],'JewelLoan_lastpaiddate'=>$id['JewelStartDate'],'jewelloan_Description'=>$id['Jewel_Description'],'jewelloan_Oldloan_No'=>$id['old'],'jewelloan_RequestID'=>$id['PersLoanAllocID']]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $id['JewelPayMode'];
+				$fn_data["rv_transaction_id"] = $jid;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_ALLOCATION;//constant JL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			$pid=$id['PersLoanAllocID'];
 			
 			DB::table('request_loan')->where('PersLoanAllocID','=',$pid)
@@ -964,6 +1003,16 @@
 			
 			$perslid = DB::table('staffloan_allocation')->insertGetId(['StfLoan_Number'=> $count_inc,'Bid'=> $AccBID,'DocId'=>$docid,'Uid'=>$id['StaffID'],'LoanAmt'=>$id['Stfamttopay'],'otherCharges'=>$id['StfOthrChrge'],'Book_FormCharges'=>$id['StfBkfrmChrg'],'AjustmentCharges'=>$id['Compulsory_Deposit'],'ShareCharges'=>$id['staffcharge'],'PayableAmt'=>$id['StfPayAmt'],'LoandurationYears'=>$id['LoanDurationYears'],'LoanduratiobDays'=>$id['LoanDurationDays'],'Staff_Surety'=>$id['suretyid'],'Loan_Type'=>$id['StfLoanType'],'StartDate'=>$consDate,'EndDate'=>$coneDate,'PayMode'=>$paymode,'accid'=>$id['StfLoanSBAccid'],'CreadtedBY'=>$UID,'BankID'=>$id['StfBankId'],'ChequeDate'=>$id['StfLoanChequeDte'],'ChequeNumber'=>$id['StfLoanChequeNum'],'StaffLoan_LoanRemainingAmount'=>$id['Stfamttopay'],'cd_id'=>$cd_id,'LedgerHeadId'=>'49','SubLedgerId'=>'56']);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $perslid;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SL_ALLOCATION;//constant SL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			
 			
 			
