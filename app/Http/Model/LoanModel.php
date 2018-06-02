@@ -1629,8 +1629,29 @@
 			}
 			
 			if($pay_type == "CASH") {
-				DB::table('branch_to_branch')
-					->insert(['Branch_Branch1_Id'=>$BID,'Branch_Branch2_Id'=>$bid2,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$auctionAmt,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
+				$b2b_tran_id = DB::table('branch_to_branch')
+					->insertGetId(['Branch_Branch1_Id'=>$BID,'Branch_Branch2_Id'=>$bid2,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$auctionAmt,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
+				
+					/***********/
+					$fn_data["rv_payment_mode"] = $pay_type;
+					$fn_data["rv_transaction_id"] = $b2b_tran_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $dte;
+					$fn_data["rv_bid"] = null;
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
+					/***********/
+					$fn_data["rv_payment_mode"] = $pay_type;
+					$fn_data["rv_transaction_id"] = $b2b_tran_id;
+					$fn_data["rv_transaction_type"] = "CREDIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $dte;
+					$fn_data["rv_bid"] = $bid2;//TO BRANCH
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
 			
 			} else {
 				DB::table('branch_to_branch')
@@ -1646,6 +1667,21 @@
 			DB::table('jewel_auction')
 				->where('JewelLoanId',$jewelalocid)
 				->update(['auction_date'=>$auc_date,'jewel_auction_amount'=>$auctionAmt,'loan_deduction_amount'=>$loan_deduction_amount,'extra_amount'=>$extra_amount,'buyer_name'=>$buyerName,'pay_mode'=>$buyerpaymentmode,'sb_acc_no'=>$SBAccid,'bank_name'=>"",'cheque_no'=>"",'cheque_date'=>""]);
+			
+			$jewel_auction_id = DB::table("jewel_auction")
+				->where("JewelLoanId",$jewelalocid)
+				->value("jewel_auction_id");
+				/***********/
+				$fn_data["rv_payment_mode"] = $buyerpaymentmode;
+				$fn_data["rv_transaction_id"] = $jewel_auction_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_AUCTION;//constant JL_AUCTION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+			
 		}
 		
 		function jewelAuctionExtraAmountPay($id)
@@ -1680,9 +1716,20 @@
 				$cheque_date = $id["cheque_date"];
 				$bank_acc_no = $id["bank_acc_no"];
 			
-			DB::table('auction_amount_transaction')
-				->insert(['bid'=>$BID,'jl_alloc_id'=>$id['jl_alloc_id'],'tran_date'=>$pay_date,'amt_piad'=>$id['extra_amt'],'created_by'=>$UID,'pay_mode'=>$id["pay_mode"],"voucher_no"=>$voucher_no,"cheque_no"=>$cheque_no,"cheque_date"=>$cheque_date,'SubLedgerId'=>"67"]);
-				
+			$auction_amount_transaction_id = DB::table('auction_amount_transaction')
+				->insertGetId(['bid'=>$BID,'jl_alloc_id'=>$id['jl_alloc_id'],'tran_date'=>$pay_date,'amt_piad'=>$id['extra_amt'],'created_by'=>$UID,'pay_mode'=>$id["pay_mode"],"voucher_no"=>$voucher_no,"cheque_no"=>$cheque_no,"cheque_date"=>$cheque_date,'SubLedgerId'=>"67"]);
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $id["pay_mode"];
+				$fn_data["rv_transaction_id"] = $auction_amount_transaction_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_AUCTION_EXTRA_AMOUNT_PAY;//constant JL_AUCTION_EXTRA_AMOUNT_PAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $pay_date;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+			
 			if($id["pay_mode"] == "CASH") {
 				if(!$old_entry) {
 					$cash_amount = DB::table("cash")->where("BID","=",$BID)->value("InHandCash");

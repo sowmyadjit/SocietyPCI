@@ -44,6 +44,12 @@
 		const PL_ALLOCATION = 18;//personalloan_payment table; NOT personalloan_allocation table
 		const SL_ALLOCATION = 19;
 		const JL_ALLOCATION = 20;
+		const DL_REPAY = 21;
+		const PL_REPAY = 22;
+		const JL_REPAY = 23;
+		const SL_REPAY = 24;
+		const JL_AUCTION = 25;//jewel_auction table
+		const JL_AUCTION_EXTRA_AMOUNT_PAY = 26;//auction_amount_transaction table
 
 		
 		const DELETED = 1;
@@ -185,6 +191,9 @@
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 
+			if(!empty($data["bid"])) {
+				$BID = $data["bid"];
+			}
 			if(!empty($data["date"])) {
 				$year = date("Y",strtotime($data["date"]));
 				$month = date("m",strtotime($data["date"]));
@@ -220,6 +229,9 @@
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			
+			if(!empty($data["bid"])) {
+				$BID = $data["bid"];
+			}
 			if(!empty($data["date"])) {
 				$year = date("Y",strtotime($data["date"]));
 				$month = date("m",strtotime($data["date"]));

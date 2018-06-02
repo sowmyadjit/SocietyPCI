@@ -31,11 +31,11 @@
 				switch($data["rv_transaction_type"]) {
 					case "CREDIT"	:
 								$temp_receipt_voucher_type_field = $this->rv_no::RECEIPT;//RECEIPT is CONSTANT DECLARED IN ReceiptVoucherModel CLASS
-								$rv_no = $this->rv_no->get_next_receipt_no();//["date"=>$id['dte']  - date is optional
+								$rv_no = $this->rv_no->get_next_receipt_no(["bid"=>$BID]);//["date"=>$id['dte']  - date is optional
 								break;
 					case "DEBIT"	:
 								$temp_receipt_voucher_type_field = $this->rv_no::VOUCHER;
-								$rv_no = $this->rv_no->get_next_voucher_no();//["date"=>$id['dte']  - date is optional
+								$rv_no = $this->rv_no->get_next_voucher_no(["bid"=>$BID]);//["date"=>$id['dte']  - date is optional
 								break;
 				}
 				$fn_data["{$this->rv_no->receipt_voucher_type_field}"] = $temp_receipt_voucher_type_field;

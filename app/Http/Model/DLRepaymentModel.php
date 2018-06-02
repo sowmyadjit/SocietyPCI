@@ -4,10 +4,17 @@
 	use Auth;
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class DLRepaymentModel extends Model
 	{
 		protected $table='depositeloan_allocation';
+		
+		public function __construct() {
+			$this->rv_no = new ReceiptVoucherController;
+		}
+		
 		public function pigmydlacc()
 		{
 			
@@ -356,6 +363,18 @@
 			{
 				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['FDDLAlloc'],'DLRepay_PaidAmt'=>$id['fdpayamt'],'DLRepay_PayMode'=>$id['FdPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1"]);
 			}
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $DLTran;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DL_REPAY;//constant DL_REPAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $RepayDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="PIGMI ACCOUNT"||$paymode=="FD_ACCOUNT")
 			{
 				DB::table('depositeloan_allocation')
@@ -929,6 +948,18 @@
 				$remainigemi=$emi;
 			}	     
 			$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$DepAlID,'PLRepay_PaidAmt'=>$id['plpayamt'],'PLRepay_PayMode'=>$id['plPayMode'],'PLRepay_Bid'=>$branch,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$RepayDte,'PLRepay_CalculatedInterest'=>$loaninterest,'RemainingInterest_Amt'=>$remaininginterst,'PLRepay_PaidInterest'=>$paidinterest,'PLRepay_Amtpaidtoprincpalamt'=>$payAmt,'PLRepay_EMIremaining'=>$remainigemi,'PL_ReceiptNum'=>$r,'PL_ChequeNO'=>$chequeno,'PL_ChequeDate'=>$chequedate,'PL_BankName'=>$bankname,'PL_BankBranch'=>$bankbranch,'PL_IFSC'=>$ifsc,'PL_CreditBank'=>$bankid,'interest_paid_upto'=>$interest_upto_pl]);
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $plTran;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PL_REPAY;//constant PL_REPAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $RepayDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+			
 			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="PYGMY ACCOUNT"||$paymode=="ADJUSTMENT")
 			{
 				DB::table('personalloan_allocation')
@@ -1094,6 +1125,17 @@
 			
 			$jlTran=DB::table('jewelloan_repay')->InsertGetId(['JLRepay_JLAllocID'=>$DepAlID,'JLRepay_PaidAmt'=>$id['jlpayamt'],'JLRepay_PayMode'=>$paymode,'JLRepay_Bid'=>$bid,'JLRepay_Created_By'=>$UID,'JLRepay_Date'=>$RepayDte,'JLRepay_interestcalculated'=>$Loaninterest,'JLRepay_interestpaid'=>$paidinterest,'JLRepay_interestpending'=>$remaininginterst,'JLRepay_paidtoprincipalamt'=>$payAmt,'JL_ChequeNo'=>$chequeno,'JL_ChequeDate'=>$chequedate,'JL_BankName'=>$bankname,'JL_BankBranch'=>$bankbranch,'JL_CreditBank'=>$bankid,'JL_IFSC'=>$ifsc,'repay_through_auction'=>$repay_through_auction,'interest_paid_upto'=>$interest_upto]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $jlTran;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_REPAY;//constant JL_REPAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $RepayDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			DB::table('jewelloan_allocation')
 			->where('JewelLoanId',$DepAlID)
 			->update(['JewelLoan_LoanRemainingAmount'=>$pendingloanamt,'JewelLoan_remaininginterest'=>$remaininginterst,'JewelLoan_lastpaiddate'=>$RepayDte]);
@@ -1225,6 +1267,17 @@
 			
 			$slTran=DB::table('staffloan_repay')->InsertGetId(['SLRepay_SLAllocID'=>$DepAlID,'SLRepay_PaidAmt'=>$id['slpayamt'],'SLRepay_PayMode'=>$id['slPayMode'],'SLRepay_Bid'=>$branch,'SLRepay_Created_By'=>$UID,'SLRepay_Date'=>$RepayDte]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $slTran;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SL_REPAY;//constant SL_REPAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $RepayDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			DB::table('staffloan_allocation')
 			->where('StfLoanAllocID',$DepAlID)
 			->update(['StaffLoan_LoanRemainingAmount'=>$totrem]);
