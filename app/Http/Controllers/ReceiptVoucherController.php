@@ -20,17 +20,20 @@
 		public function save_rv_no($data)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
-
-			if(strcasecmp($data["rv_payment_mode"], "CASH") == 0 || strcasecmp($data["payment_mode"], "INHAND") == 0) {
+			if(isset($data["rv_bid"])) {
+				$BID = $data["rv_bid"];
+			}
+			
+			if(strcasecmp($data["rv_payment_mode"], "CASH") == 0 || strcasecmp($data["rv_payment_mode"], "INHAND") == 0) {
 				$fn_data["{$this->rv_no->date_field}"] = $data["rv_date"];
 				$fn_data["{$this->rv_no->time_field}"] = date("H:i:s");
 				$fn_data["{$this->rv_no->bid_field}"] = $BID;
 				switch($data["rv_transaction_type"]) {
-					case "CREDIT"	:	
+					case "CREDIT"	:
 								$temp_receipt_voucher_type_field = $this->rv_no::RECEIPT;//RECEIPT is CONSTANT DECLARED IN ReceiptVoucherModel CLASS
 								$rv_no = $this->rv_no->get_next_receipt_no();//["date"=>$id['dte']  - date is optional
 								break;
-					case "DEBIT"	:	
+					case "DEBIT"	:
 								$temp_receipt_voucher_type_field = $this->rv_no::VOUCHER;
 								$rv_no = $this->rv_no->get_next_voucher_no();//["date"=>$id['dte']  - date is optional
 								break;

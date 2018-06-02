@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Auth;
 use App\Http\Model\OpenCloseModel;
+use App\Http\Model\ReceiptVoucherModel;
+use App\Http\Controllers\ReceiptVoucherController;
 
 class DepositModel extends Model
 {
@@ -17,6 +19,7 @@ class DepositModel extends Model
 	
 	public function __construct() {
 		$this->op = new OpenCloseModel;
+		$this->rv_no = new ReceiptVoucherController;
 	}
 	
 	public function insert($id)
@@ -35,6 +38,18 @@ class DepositModel extends Model
 				$BID=$uname->Bid;
 		
 		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>$dte1,'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$pay_mode,'Bid'=>$BID]);
+		
+			/***********/
+			$fn_data["rv_payment_mode"] = $pay_mode;
+			$fn_data["rv_transaction_id"] = $id;
+			$fn_data["rv_transaction_type"] = "DEBIT";
+			$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+			$fn_data["rv_date"] = $dte1;
+			$fn_data["rv_bid"] = null;//BY DEFAULT LOGIN BRANCH ID
+			$this->rv_no->save_rv_no($fn_data);
+			unset($fn_data);
+			/***********/
+		
 		$totamt=DB::table('addbank')->select('TotalAmt')
 							->where('Bankid','=',$bankID)
 							->first();
@@ -69,23 +84,23 @@ class DepositModel extends Model
        $branch = DB::table('cash')->select('Branch','BID')->get();
         return $branch;
     }
-		public function GetBankDetailForDeposite($id)
-		{
-			return $id=DB::table('addbank')
-			->select('Branch','AddBank_IFSC','TotalAmt')
-			->where('Bankid','=',$id)
-			->first();
-			
-		}
-		public function GetDepositData()
-		{
-			$id= DB::table('deposit')->select('d_id','depo_bank','Branch','amount','date','d_date','depo_bank_id','reason','pay_mode','cheque_no','cheque_date','bank_name','paid','cd')
-			->get();
-			
-			
-			return $id;
-		}
-		public function crateaddeposittobranch($id)
+	public function GetBankDetailForDeposite($id)
+	{
+		return $id=DB::table('addbank')
+		->select('Branch','AddBank_IFSC','TotalAmt')
+		->where('Bankid','=',$id)
+		->first();
+		
+	}
+	public function GetDepositData()
+	{
+		$id= DB::table('deposit')->select('d_id','depo_bank','Branch','amount','date','d_date','depo_bank_id','reason','pay_mode','cheque_no','cheque_date','bank_name','paid','cd')
+		->get();
+		
+		
+		return $id;
+	}
+	public function crateaddeposittobranch($id)
     {   $dte=date('d-m-Y');
 		$bankID=$id['bank'];
 		$amount1=$id['ta'];
@@ -95,7 +110,19 @@ class DepositModel extends Model
 			$UID=$uname->Uid;
 			
 			$BID=$uname->Bid;
-		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>date('Y-m-d'),'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$id['paymode'],'Bid'=>$BID,'Deposit_type'=>"WITHDRAWL"]);
+		$tran_id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>date('Y-m-d'),'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$id['paymode'],'Bid'=>$BID,'Deposit_type'=>"WITHDRAWL"]);
+		
+			/***********/
+			$fn_data["rv_payment_mode"] = $id['paymode'];
+			$fn_data["rv_transaction_id"] = $tran_id;
+			$fn_data["rv_transaction_type"] = "CREDIT";
+			$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+			$fn_data["rv_date"] = date('Y-m-d');
+			$fn_data["rv_bid"] = null;
+			$this->rv_no->save_rv_no($fn_data);
+			unset($fn_data);
+			/***********/
+			
 		$totamt=DB::table('addbank')->select('TotalAmt')
 							->where('Bankid','=',$bankID)
 							->first();
@@ -112,7 +139,7 @@ class DepositModel extends Model
 		
 						
 	
-		return $id;
+		return $tran_id;
 	}
 	
 		public function deposit_account_list_pg($data)

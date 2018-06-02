@@ -757,8 +757,17 @@
 			$totbal=$id['rdtb'];
 			$acid=$id['rdactid'];
 			$sb_id=$id['AccId'];
-			$id = DB::table('rd_transaction')->insertGetId(['Accid'=> $id['rdactid'],'AccTid' => $id['rdacctype'],'RD_Trans_Type' => $id['rdtrantyp'],'RD_Particulars' => $id['rdpar'],'RD_Amount' => $id['rdamount'],'RD_CurrentBalance' => $id['rdcb'],'RD_Total_Bal' => $id['rdtb'],'RD_Date' => $id['rddte'],'RDReport_TranDate'=>$id['rddte'],'RD_Month'=>$mnt,'RD_Year'=>$year,'RD_Time'=>$tm,'Bid'=>$id['rdbranch'],'RDPayment_Mode'=>$id['rdpaymode'],'RDCheque_Number'=>$id['rdchequeno'],'RDCheque_Date'=>$id['rdchdate'],'RDCleared_State'=>$id['rdunclearedval'],'RDUncleared_Bal'=>$id['rduncleared'],'RDBank_Name'=>$id['rdbankname'],'RDBank_Branch'=>$id['rdbankbranch'],'RDIFSC_Code'=>$id['rdifsccode'],'CreatedBy'=>$UID,'LedgerHeadId'=>"38",'SubLedgerId'=>"43"]); 
+			$rd_tran_id = DB::table('rd_transaction')->insertGetId(['Accid'=> $id['rdactid'],'AccTid' => $id['rdacctype'],'RD_Trans_Type' => $id['rdtrantyp'],'RD_Particulars' => $id['rdpar'],'RD_Amount' => $id['rdamount'],'RD_CurrentBalance' => $id['rdcb'],'RD_Total_Bal' => $id['rdtb'],'RD_Date' => $id['rddte'],'RDReport_TranDate'=>$id['rddte'],'RD_Month'=>$mnt,'RD_Year'=>$year,'RD_Time'=>$tm,'Bid'=>$id['rdbranch'],'RDPayment_Mode'=>$id['rdpaymode'],'RDCheque_Number'=>$id['rdchequeno'],'RDCheque_Date'=>$id['rdchdate'],'RDCleared_State'=>$id['rdunclearedval'],'RDUncleared_Bal'=>$id['rduncleared'],'RDBank_Name'=>$id['rdbankname'],'RDBank_Branch'=>$id['rdbankbranch'],'RDIFSC_Code'=>$id['rdifsccode'],'CreatedBy'=>$UID,'LedgerHeadId'=>"38",'SubLedgerId'=>"43"]); 
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $rdpay;
+				$fn_data["rv_transaction_id"] = $rd_tran_id;
+				$fn_data["rv_transaction_type"] = $id['rdtrantyp'];
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::RD_TRAN;//constant RD_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['rddte'];
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			
 			if($rdpay!="SB ACCOUNT")
 			{
@@ -815,7 +824,7 @@
 				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $AccTid,'Bid' =>$bid,'Accid' => $sb_id,'TransactionType' => "DEBIT",'particulars' => "Amount debited for RD account",'Amount' =>$rdamt,'CurrentBalance' => $Amount_total,'tran_Date'=>date('Y-m-d'),'Time'=>$tm,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$totalAmount,'Payment_Mode'=>"SB ACCOUNT",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>'']);
 				
 			}
-			return $id;
+			return $rd_tran_id;
 		}
 		
 		public function getrdvalue($id)

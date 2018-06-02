@@ -5,9 +5,17 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+
 	class ExpenceModel extends Model
 	{
 		protected $table = 'expense';
+
+		public function __construct()
+		{
+			$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		public function insert($id)
 		{
@@ -208,6 +216,18 @@
 				//$inh=$id['ta1'];
 				//echo "hai".$inh;
 				$id = DB::table('expense')->insertGetId(['e_date'=>$trandate,'Bid'=>$id['branchid'],'pay_mode'=>$id['paydone'],'amount'=>$id['ta1'],'Particulars'=>$id['parti1'],'ExpenseBy'=>$uid,'Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Expence_PamentVoucher'=>$r1]);
+					
+					/***********/
+					$fn_data["rv_payment_mode"] = $paydone;
+					$fn_data["rv_transaction_id"] = $id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::EXPENSE;//constant EXPENSE is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $trandate;
+					$fn_data["rv_bid"] = null;
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
+				
 				$incash=DB::table('cash')->select('InHandCash')
 				->where('BID','=',$b)
 				->first();
@@ -341,7 +361,28 @@
 				DB::table('cash')->where('BID',$b2)
 				->update(['InHandCash'=>$totB2]);
 			}
-			DB::table('branch_to_branch')->insert(['Branch_Branch1_Id'=>$id['Br1'],'Branch_Branch2_Id'=>$id['Br2'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
+			$b2b_tran_id = DB::table('branch_to_branch')->insertGetId(['Branch_Branch1_Id'=>$id['Br1'],'Branch_Branch2_Id'=>$id['Br2'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
+
+				/***********/
+				$fn_data["rv_payment_mode"] = $tt;
+				$fn_data["rv_transaction_id"] = $b2b_tran_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+				/***********/
+				$fn_data["rv_payment_mode"] = $tt;
+				$fn_data["rv_transaction_id"] = $b2b_tran_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = $id['Br2'];
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($id['Br1'] == 6 && strcasecmp($tt,"ADJUSTMENT") == 0) {
 				DB::table('branch_to_branch')->insert(['Branch_Branch1_Id'=>$id['Br2'],'Branch_Branch2_Id'=>$id['Br1'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
 			}
@@ -400,6 +441,18 @@
 				//$inh=$id['ta1'];
 				//echo "hai".$inh;
 				$id = DB::table('income')->insertGetId(['Income_date'=>$trandate,'Bid'=>$id['branchid'],'Income_pay_mode'=>$id['paydone'],'Income_amount'=>$amount1,'Income_Particulars'=>$particlr,'Income_ExpenseBy'=>$uid,'Income_Head_lid'=>$id['incomehead'],'Income_SubHead_lid'=>$id['incomesubhead'],'Income_Expence_PamentVoucher'=>$r1]);
+				
+				/***********/
+				$fn_data["rv_payment_mode"] = $paydone;
+				$fn_data["rv_transaction_id"] = $id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::INCOME;//constant INCOME is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $trandate;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+				
 				$incash=DB::table('cash')->select('InHandCash')
 				->where('BID','=',$b)
 				->first();

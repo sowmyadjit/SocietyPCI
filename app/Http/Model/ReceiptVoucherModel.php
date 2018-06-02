@@ -27,7 +27,11 @@
 		const SB_TRAN = 1;
 		const RD_TRAN = 2;
 		const PG_TRAN = 3;
-
+		const B2B_TRAN = 4;
+		const EXPENSE = 5;
+		const DEPOSIT = 6;
+		const INCOME = 7;
+		
 		const DELETED = 1;
 		const NOT_DELETED = 0;
 		
@@ -225,11 +229,11 @@
 				->where($this->receipt_voucher_type_field,self::VOUCHER)
 				->where($this->deleted_field,0)
 				->whereBetween($this->date_field,[$from_date,$to_date])
-				->value($this->receipt_voucher_no_field);
+				->max($this->receipt_voucher_no_field);
 			if(empty($last_voucher_no)) {
-				$last_rec_no = 0;
+				$last_voucher_no = 0;
 			}
-			$next_voucher_no = $last_rec_no + 1;
+			$next_voucher_no = $last_voucher_no + 1;
 			return $next_voucher_no;
 		}
 
