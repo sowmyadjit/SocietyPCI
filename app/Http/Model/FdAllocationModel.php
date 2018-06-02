@@ -6,6 +6,8 @@
 	use DB;
 	use Auth;
 	use App\Http\Model\SmsModel;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class FdAllocationModel extends Model
 	{
@@ -14,6 +16,7 @@
 		public function __construct()
 		{
 			$this->smsmodel=new SmsModel;
+			$this->rv_no = new ReceiptVoucherController;
 		}
 		public function InsertFdAlloc($id)
 		{
@@ -84,6 +87,17 @@
 			
 			$fd= DB::table('fdallocation')->insertGetId(['Accid'=> $id['accid_int'],'FdTid'=> $id['fdtid'],'Fd_DepositAmt'=> $id['fddep'],'Created_Date'=> $dte,'Fd_StartDate'=> $s_date,'FdReport_StartDate'=> $id['s_dte'],'Fd_CertificateNum'=> $fdcertnum,'Fd_Remarks'=> $id['fdrem'],'Fd_MatureDate'=> $id['e_dte'],'FdReport_MatureDate'=> $reportenddate,'Fd_TotalAmt'=>$id['mamt'],'Bid'=>$id['bid'],'FDPayment_Mode'=>$id['fdpaymode'],'FDChq_No'=>$id['fdchequeno'],'FDChq_Date'=>$id['fdchdate'],'FDBnk_Name'=>$id['FdBankName'],'FDIFSC_Code'=>$id['fdifsccode'],'FDSB_Amt'=>$id['fdsbamount'],'FDBnk_Branch'=>$id['fdbankbranch'],'FDUnclear_Bal'=>$id['fduncleared'],'FDCleared_State'=>$id['fdunclearedval'],'Nid'=>$Nid,'Uid'=>$id['userid'],'interest_amount'=>$intamt,'FD_ReceiptNum'=>$FdReceipt,'FD_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"41",'createdBy'=>$UID,'intrest_needed'=>$id['intneeded'],'fdmonth'=>$id['month'],'interstmonth'=>$id['monthinterest'],'lastinterestpaid'=>$dte,'Accid'=>$id['accid_int'],'Days'=>$id['days']]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $id['fdpaymode'];
+				$fn_data["rv_transaction_id"] = $fd;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_ALLOCATION;//constant FD_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['s_dte'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($pmode=="SB ACCOUNT")
 			{
 				/*$actid=DB::table('accounttype')

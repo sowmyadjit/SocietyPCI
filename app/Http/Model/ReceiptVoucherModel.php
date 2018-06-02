@@ -31,6 +31,7 @@
 		const EXPENSE = 5;
 		const DEPOSIT = 6;
 		const INCOME = 7;
+		const FD_ALLOCATION = 8;
 		
 		const DELETED = 1;
 		const NOT_DELETED = 0;
