@@ -533,8 +533,19 @@ class DepositModel extends Model
 									"deleted" => NOT_DELETED
 								);
 			
-			DB::table($table)
+			$md_tran_id = DB::table($table)
 				->insertGetId($insert_array);
+				
+				/***********/
+				$fn_data["rv_payment_mode"] = $data["pay_mode"];
+				$fn_data["rv_transaction_id"] = $md_tran_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::MD_TRAN;//constant MD_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = date("Y-m-d",$tran_date);
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 				
 			$table = "maturity_deposit";
 			$closed_field = "md_closed";

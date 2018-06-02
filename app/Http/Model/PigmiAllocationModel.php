@@ -5,10 +5,16 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use File;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class PigmiAllocationModel extends Model
 	{
 		protected $table='pigmiallocation';
+		
+		public function __construct() {
+			$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		public function insert($id)
 		{
@@ -345,6 +351,16 @@
 			DB::table('pending_pigmy')->where('PpId',$PPrPpId)
 			->update(['PendPigmy_PendingAmount'=>$PPrPendingBal,'PenPigmy_AmountReceived'=>$ReceivedAmt,'PendPigmy_ReceivedDate'=>$ReceivedDte,'PendPigmy_Status'=>$Stat,'PenPigmy_ReceivedBy'=>$UID]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $PPrPpId;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::AGENT_COLLECTION;//constant AGENT_COLLECTION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $ReceivedDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			
 			
 		}

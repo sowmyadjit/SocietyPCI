@@ -4,11 +4,17 @@
 	use Auth;
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class PurchaseshareModel extends Model
 	{
 		//
 		protected $table='purchaseshare'; 
+		
+		public function __construct() {
+			$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		public function getmaxcount()
 		{
@@ -56,8 +62,19 @@
 			$s1=$noofshare*$shareprice;
 			$s2=$noofshare*$shareval;
 			$s3=$s1+$s2;
-			$id = DB::table('purchaseshare')->insertGetId(['Bid'=>$BID,'PURSH_Memid'=> $id['mid'],'PURSH_Shrclass'=>$id['shclass'],'PURSH_Shareamt'=>$id['shamt'],'PURSH_Memshareid'=>$id['memshr'],'PURSH_Certfid'=>$certid,'PURSH_Shareprice'=>$id['shprice'],'PURSH_Shmaxcount'=>$id['count'],'PURSH_Noofshares'=>$id['totshare'],'PURSH_Totalamt'=>$s3,'PURSH_TotalShareValue'=>$id['totshrval'],'PURSH_Date'=>$id['spdate'],'LedgerHeadId'=>"32",'SubLedgerId'=>"34"]);
+			$purchaseshare_id = DB::table('purchaseshare')->insertGetId(['Bid'=>$BID,'PURSH_Memid'=> $id['mid'],'PURSH_Shrclass'=>$id['shclass'],'PURSH_Shareamt'=>$id['shamt'],'PURSH_Memshareid'=>$id['memshr'],'PURSH_Certfid'=>$certid,'PURSH_Shareprice'=>$id['shprice'],'PURSH_Shmaxcount'=>$id['count'],'PURSH_Noofshares'=>$id['totshare'],'PURSH_Totalamt'=>$s3,'PURSH_TotalShareValue'=>$id['totshrval'],'PURSH_Date'=>$id['spdate'],'LedgerHeadId'=>"32",'SubLedgerId'=>"34"]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $purchaseshare_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SHARE_ALLOCATION;//constant SHARE_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['spdate'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			$inhandcashh=DB::table('cash')->select('InHandCash')->where('BID','=',$bid)->first();
 			$inhandcash1=$inhandcashh->InHandCash;
 			$totinhand=$inhandcash1+$puramt;
@@ -78,7 +95,7 @@
 			}
 			
 			
-			return $id;
+			return $purchaseshare_id;
 		}
 		
 		public function GetData()

@@ -32,6 +32,10 @@
 		const DEPOSIT = 6;
 		const INCOME = 7;
 		const FD_ALLOCATION = 8;
+		const AGENT_COLLECTION = 9;
+		const MD_TRAN = 10;
+		const MEMBER_ALLOCATION = 11;
+		const SHARE_ALLOCATION = 12;
 		
 		const DELETED = 1;
 		const NOT_DELETED = 0;
