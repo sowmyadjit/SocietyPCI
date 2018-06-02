@@ -759,7 +759,6 @@
 				Route::get('/GetFDMatuDetailsForPayAmt','PayAmtController@GetFDMatuDetailsForPayAmt');
 				Route::get('/GetFDDetailsForPayAmt','PayAmtController@GetFDDetailsForPayAmt');
 				Route::post('/FDPayAmount','PayAmtController@FDPayAmount');
-				Route::post('/FDPayAmount','PayAmtController@FDPayAmount');
 				Route::get('/PigmyPaySearchView','PayAmtController@PigmyPaySearchView');//M 20-4-16
 				Route::get('/RdPaySearchView','PayAmtController@RdPaySearchView');//M 20-4-16
 				Route::get('/FdPaySearchView','PayAmtController@FdPaySearchView');//M 20-4-16

@@ -37,6 +37,9 @@
 		const MEMBER_ALLOCATION = 11;
 		const SHARE_ALLOCATION = 12;
 		const SHARE_CLOSE = 13;
+		const PG_PAYAMOUNT = 14;
+		const RD_PAYAMOUNT = 15;
+		const FD_PAYAMOUNT = 16;
 		
 		const DELETED = 1;
 		const NOT_DELETED = 0;

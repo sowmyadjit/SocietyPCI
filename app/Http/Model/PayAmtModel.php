@@ -5,11 +5,16 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class PayAmtModel extends Model
 	{
 		protected $table = 'pigmi_prewithdrawal';
 		
+		public function __construct() {
+			$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		public function InsertPayAmount($id)
 		{
@@ -49,8 +54,19 @@
 				$r1=$respit3+1;
 				DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r1]);
 			
-			DB::table('pigmi_payamount')->insertGetId(['PayAmount_PigmiAccNum'=>$id['account'],'PayAmount_PaymentMode'=>$id['PigPayMode'],'PayAmount_ChequeNum'=>$id['PigPayChequeNum'],'PayAmount_ChequeDate'=>$id['PigPayChequeDate'],'PayAmount_PayableAmount'=>$id['PigPayableAmt'],'PayAmount_PayDate'=>$paydate,'PayAmountReport_PayDate'=>$paydatereport,'PayAmount_BankId'=>$id['BankId'],'PayAmount_IntType'=>$id['PigIntMode'],'PayAmount_ReceiptNum'=>$ReceiptNum,'PayAmount_PaymentVoucher'=>$r1]);
+			$pigmi_payamount_id = DB::table('pigmi_payamount')->insertGetId(['PayAmount_PigmiAccNum'=>$id['account'],'PayAmount_PaymentMode'=>$id['PigPayMode'],'PayAmount_ChequeNum'=>$id['PigPayChequeNum'],'PayAmount_ChequeDate'=>$id['PigPayChequeDate'],'PayAmount_PayableAmount'=>$id['PigPayableAmt'],'PayAmount_PayDate'=>$paydate,'PayAmountReport_PayDate'=>$paydatereport,'PayAmount_BankId'=>$id['BankId'],'PayAmount_IntType'=>$id['PigIntMode'],'PayAmount_ReceiptNum'=>$ReceiptNum,'PayAmount_PaymentVoucher'=>$r1,'Bid'=>$BID]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $PayMode;
+				$fn_data["rv_transaction_id"] = $pigmi_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PG_PAYAMOUNT;//constant PG_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($inttype=="PREWITHDRAWAL")
 			{
 				DB::table('pigmi_prewithdrawal')->where('PigmiAcc_No','=',$PigAccNum)
@@ -144,8 +160,19 @@
 				$r1=$respit3+1;
 				DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r1]);
 				
-			DB::table('rd_payamount')->insertGetId(['RDPayAmt_AccNum'=>$id['rdaccount'],'RDPayAmt_PaymentMode'=>$id['RDPayMode'],'RDPayAmt_ChequeNum'=>$id['RDPayChequeNum'],'RDPayAmt_ChequeDate'=>$id['RDPayChequeDate'],'RDPayAmt_PayableAmount'=>$id['RDPayableAmt'],'RDPayAmt_PayDate'=>$paydate,'RDPayAmtReport_PayDate'=>$paydatereport,'RDPayAmt_BankId'=>$id['BankId'],'RDPayAmt_IntType'=>$id['RDIntMode'],'RD_PayAmount_ReceiptNum'=>$ReceiptNum,'RD_PayAmount_pamentvoucher'=>$r1]);
+			$rd_payamount_id = DB::table('rd_payamount')->insertGetId(['RDPayAmt_AccNum'=>$id['rdaccount'],'RDPayAmt_PaymentMode'=>$id['RDPayMode'],'RDPayAmt_ChequeNum'=>$id['RDPayChequeNum'],'RDPayAmt_ChequeDate'=>$id['RDPayChequeDate'],'RDPayAmt_PayableAmount'=>$id['RDPayableAmt'],'RDPayAmt_PayDate'=>$paydate,'RDPayAmtReport_PayDate'=>$paydatereport,'RDPayAmt_BankId'=>$id['BankId'],'RDPayAmt_IntType'=>$id['RDIntMode'],'RD_PayAmount_ReceiptNum'=>$ReceiptNum,'RD_PayAmount_pamentvoucher'=>$r1]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $RDPayMode;
+				$fn_data["rv_transaction_id"] = $rd_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::RD_PAYAMOUNT;//constant RD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($inttype=="PREWITHDRAWAL")
 			{
 				DB::table('rd_prewithdrawal')->where('RdAcc_No','=',$RDAccNum)
@@ -249,7 +276,19 @@
 				$sub_head_id = '41';
 			}
 /***********************/
-			DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$id['fdaccount'],'FDPayAmt_PaymentMode'=>$id['FDPayMode'],'Bid'=>$BID,'FDPayAmt_ChequeNum'=>$id['FDPayChequeNum'],'FDPayAmt_ChequeDate'=>$id['FDPayChequeDate'],'FDPayAmt_PayableAmount'=>$id['FDPayableAmt'],'FDPayAmt_PayDate'=>$paydate,'FDPayAmtReport_PayDate'=>$paydatereport,'FDPayAmt_BankId'=>$id['BankId'],'FDPayAmt_IntType'=>$id['FDPaymntMode'],'FD_PayAmount_ReceiptNum'=>$ReceiptNum,'FD_PayAmount_pamentvoucher'=>$r1,'LedgerHeadId'=>'38','SubLedgerId'=>$sub_head_id]);
+			$fd_payamount_id = DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$id['fdaccount'],'FDPayAmt_PaymentMode'=>$id['FDPayMode'],'Bid'=>$BID,'FDPayAmt_ChequeNum'=>$id['FDPayChequeNum'],'FDPayAmt_ChequeDate'=>$id['FDPayChequeDate'],'FDPayAmt_PayableAmount'=>$id['FDPayableAmt'],'FDPayAmt_PayDate'=>$paydate,'FDPayAmtReport_PayDate'=>$paydatereport,'FDPayAmt_BankId'=>$id['BankId'],'FDPayAmt_IntType'=>$id['FDPaymntMode'],'FD_PayAmount_ReceiptNum'=>$ReceiptNum,'FD_PayAmount_pamentvoucher'=>$r1,'LedgerHeadId'=>'38','SubLedgerId'=>$sub_head_id]);
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $FDPayMode;
+				$fn_data["rv_transaction_id"] = $fd_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_PAYAMOUNT;//constant FD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+			
 			$fd_alloc = DB::table("fdallocation")
 				->select('fd_renewed','renewed_amount')
 				->where("Fd_CertificateNum","=",$id['fdaccount'])
