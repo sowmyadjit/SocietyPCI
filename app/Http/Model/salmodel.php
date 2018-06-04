@@ -4,6 +4,9 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use App\Http\Model\RoundModel;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+
 	class salmodel extends Model
 	{
 		protected $table='salary';
@@ -11,6 +14,7 @@
 		public function __construct()
 		{
 			$this->roundamt=new RoundModel;
+			$this->rv_no = new ReceiptVoucherController;
 		}
 		public function insert($id)
 		{
@@ -391,6 +395,16 @@
 			}
 			$agt_cmm_id = DB::table('agent_commission_payment')->insertGetId(['Agent_Commission_Uid'=>$id['aguid'],'Agent_Commission_Bid'=>$BID,'Agent_Commission_PaidDate'=>$dte,'Agent_Commission_PaidforAmt'=>$id['totalamt'],'Agent_Commission_PaidAmount'=>$id['pay'],'Agent_Commission_PaidStatus'=>"PAID",'Agent_Commission_PaidBY'=>$UID,'Agent_Commission_Persent'=>$id['cp'],'securityDeposit'=>$id['sdpo'],'Tds'=>$id['tdsval'],'paymentmode'=>$pmode,'sbtranid'=>$tranid]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $pmode;
+				$fn_data["rv_transaction_id"] = $agt_cmm_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::AGENT_COMMISSION_PAYMENT;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 /*************edit**************/
 			if(!empty($id['sal_extra_all'])) {
 				$sal_extra_data['sal_extra_all'] = $id['sal_extra_all'];
