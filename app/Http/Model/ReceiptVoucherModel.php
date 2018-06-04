@@ -8,7 +8,7 @@
 
     class ReceiptVoucherModel extends Model
     {
-        protected $tbl = "receipt_voucher";//table
+        public $tbl = "receipt_voucher";//table
         public $pk = "receipt_voucher_id";//primary key
         public $date_field = "date";
         public $time_field = "time";
@@ -50,6 +50,7 @@
 		const SL_REPAY = 24;
 		const JL_AUCTION = 25;//jewel_auction table
 		const JL_AUCTION_EXTRA_AMOUNT_PAY = 26;//auction_amount_transaction table
+		const AGENT_COMMISSION_PAYMENT = 27;
 
 		
 		const DELETED = 1;

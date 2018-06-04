@@ -4,11 +4,19 @@
 	use DB;
 	use Auth;
 	use Exception;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Model\ReceiptVoucherTranCatModel;
 	
 	use Illuminate\Database\Eloquent\Model;
 	
 	class ReportModel extends Model
 	{
+		private $rv_no;
+		public function __construct()
+		{
+			$this->rv_no = new ReceiptVoucherModel;
+			$this->rv_tran_cat = new ReceiptVoucherTranCatModel;
+		}
 		protected $table='sb_transaction';
 		public function getData()
 		{
@@ -3054,6 +3062,7 @@
 			$ret_data["receipt_amount_sum"] = 0;
 			$ret_data["voucher_amount_sum"] = 0;
 			
+			//CASH CHITTA DETAILS TABLE
 			$chitta_list = DB::table("cash_chitta_details")
 				->where("deleted",0)
 				->where("pk_field","!=","")
@@ -3079,11 +3088,23 @@
 					->where("deleted",0)
 					->where("cash_chitta_id",$row_ch->cash_chitta_id)
 					->get();
+				$rv_tran_cat_list = DB::table("{$this->rv_tran_cat->tbl}")
+					->where("{$this->rv_tran_cat->deleted_field}",0)
+					->get();
+				$tran_category_arr = $this->parse_table_data(["table_data"=>$rv_tran_cat_list]);
+				
+				$tran_category = [];
+				foreach($tran_category_arr as $row_tran_cat) {
+					$tran_category["{$row_tran_cat[$this->rv_tran_cat->rv_tran_table_field]}"] = $row_tran_cat["{$this->rv_tran_cat->pk}"];
+					// like
+					// $tran_category["sb_transaction"] = 1
+				}
 				
 				//SELECT ARRAY
 				$select_array = array(
 										"{$row_ch->table_name}.{$row_ch->pk_field} as pk",
-										"{$row_ch->table_containing_account_no}.{$row_ch->account_no_field} as account_no"
+										"{$row_ch->table_containing_account_no}.{$row_ch->account_no_field} as account_no",
+										"receipt_voucher.receipt_voucher_no as rv_no"
 										
 										//,"aa as bb"
 									);
@@ -3126,62 +3147,72 @@
 				// print_r($select_array);
 					
 				//QUERY STARTS HERE
-					$temp = DB::table($row_ch->table_name);
-					$temp = $temp->select($select_array);
-					//JOINS
-					foreach($join_list as $row_jo) {
-						$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
-												"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
-					}
+					try {
+						$temp = DB::table($row_ch->table_name);
+						$temp = $temp->select($select_array);
+						//JOINS
+						$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","{$row_ch->table_name}.{$row_ch->pk_field}");//JOIN RECEIPT VOUCHER TABLE
+						foreach($join_list as $row_jo) {
+							$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
+													"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
+						}
 
-					$temp = $temp->where($bid_field,$BID);
-					$temp = $temp->whereDate($date_field,"=",$data['date']);
-					
-					//WHERE CLAUSE
-					foreach($where_list as $row_wh) {
-						$where_table = $row_wh->table_name;
-						$where_operator = $row_wh->operator;
-						$where_field = $row_wh->field_name;
-						$where_type = $row_wh->field_type;
-						$where_value = $row_wh->field_value;
-						$where_value = $where_value;
-						switch($where_type) {
-							case "INT"		:	$where_value = (int)$where_value;
-												break;
-							case "STR"		:	$where_value = "{$where_value}";
-												break;
-							case "STR_ARR"	:	
-												$where_value = "\"{$where_value}\"";
-												$where_value = str_replace(",","\",\"",$where_value);
-												$where_value = explode(",", $where_value);
-												$where_value = (array)$where_value;
-												break;
-							case "FLOAT"	:	$where_value = (float)$where_value;
-												break;
+						$temp = $temp->where($bid_field,$BID);
+						$temp = $temp->whereDate($date_field,"=",$data['date']);
+						
+						//WHERE CLAUSE
+						$temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->transaction_category_field}",$tran_category["{$row_ch->table_name}"]);
+						foreach($where_list as $row_wh) {
+							$where_table = $row_wh->table_name;
+							$where_operator = $row_wh->operator;
+							$where_field = $row_wh->field_name;
+							$where_type = $row_wh->field_type;
+							$where_value = $row_wh->field_value;
+							$where_value = $where_value;
+							switch($where_type) {
+								case "INT"		:	$where_value = (int)$where_value;
+													break;
+								case "STR"		:	$where_value = "{$where_value}";
+													break;
+								case "STR_ARR"	:	
+													$where_value = "\"{$where_value}\"";
+													$where_value = str_replace(",","\",\"",$where_value);
+													$where_value = explode(",", $where_value);
+													$where_value = (array)$where_value;
+													break;
+								case "FLOAT"	:	$where_value = (float)$where_value;
+													break;
+							}
+							// $where_value = str_replace(",","\",\"",$where_value);
+							// $where_value = explode(",", $where_value);
+							switch($where_operator) {
+								
+								case "="		:	
+								case "LIKE"		:	
+								case "like"		:	
+													$temp->where("{$where_table}.{$where_field}","{$where_operator}",$where_value);
+													break;
+								case "IN"		:
+								case "in"		:	
+													$temp->whereIn("{$where_table}.{$where_field}",$where_value);
+													break;
+								case "NOT IN"	:	
+								case "not in"	:	
+													$temp->whereNotIn("{$where_table}.{$where_field}",$where_value);
+													break;
+							}
 						}
-						// $where_value = str_replace(",","\",\"",$where_value);
-						// $where_value = explode(",", $where_value);
-						switch($where_operator) {
-							
-							case "="		:	
-							case "LIKE"		:	
-							case "like"		:	
-												$temp->where("{$where_table}.{$where_field}","{$where_operator}",$where_value);
-												break;
-							case "IN"		:
-							case "in"		:	
-												$temp->whereIn("{$where_table}.{$where_field}",$where_value);
-												break;
-							case "NOT IN"	:	
-							case "not in"	:	
-												$temp->whereNotIn("{$where_table}.{$where_field}",$where_value);
-												break;
-						}
+						$temp = $temp->get();
+					} catch(Exception $e) {
+						// echo "Exception occured : <br />\n";
+						echo "<br /><br /><br />\n\n\n";
+    					echo $e->getMessage();
+						continue;
 					}
-					$temp = $temp->get();
 				//QUERY ENDS HERE
 				
 				// print_r($temp);exit();
+				//PROCESS QUERY RESULT
 				foreach($temp as $row_te) {
 					switch($row_te->transaction_type) {
 						case "1"			:	
@@ -3207,9 +3238,13 @@
 						case "CREDIT"	:	
 											$ret_data["chitta"][$i]["receipt_amount"] = $row_te->amount;
 											$ret_data["chitta"][$i]["voucher_amount"] = 0;
+											$ret_data["chitta"][$i]["receipt_no"] = $row_te->rv_no;
+											$ret_data["chitta"][$i]["voucher_no"] = "";
 											break;
 						case "DEBIT"	:	$ret_data["chitta"][$i]["receipt_amount"] = 0;
 											$ret_data["chitta"][$i]["voucher_amount"] = $row_te->amount;
+											$ret_data["chitta"][$i]["receipt_no"] = "";
+											$ret_data["chitta"][$i]["voucher_no"] = $row_te->rv_no;
 											break;
 						default			:	throw new exception("\n\ninvalid value for transaction_type : {$row_te->transaction_type} ({$row_te->account_no})\n\n");
 					}
