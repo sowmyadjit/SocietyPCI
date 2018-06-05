@@ -3152,7 +3152,7 @@
 						$temp = DB::table($row_ch->table_name);
 						$temp = $temp->select($select_array);
 						//JOINS
-						$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","{$row_ch->table_name}.{$row_ch->pk_field}");//JOIN RECEIPT VOUCHER TABLE
+						$temp = $temp->leftJoin("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","{$row_ch->table_name}.{$row_ch->pk_field}");//JOIN RECEIPT VOUCHER TABLE
 						foreach($join_list as $row_jo) {
 							$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
 													"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
@@ -3163,7 +3163,7 @@
 						
 						//WHERE CLAUSE
 						$temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->transaction_category_field}",$tran_category["{$row_ch->table_name}"]);
-						$temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->bid_field}",$BID);
+						// $temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->bid_field}",$BID);
 						foreach($where_list as $row_wh) {
 							$where_table = $row_wh->table_name;
 							$where_operator = $row_wh->operator;
@@ -3258,12 +3258,13 @@
 			}
 			
 			//SORT ENTRIES BASED ON TIME
-			usort($ret_data["chitta"],array("self","cmp"));
+			usort($ret_data["chitta"],array("self","cmp"));//cmp - CALLBACK METHOD
 		
 			//print_r($ret_data);exit();
 			return $ret_data;
 		}
 		
+		// CALLBACK METHOD
 		function cmp($a, $b)
 		{
 			if ($a["time"] == $b["time"]) {
