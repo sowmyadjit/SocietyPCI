@@ -3104,7 +3104,8 @@
 				$select_array = array(
 										"{$row_ch->table_name}.{$row_ch->pk_field} as pk",
 										"{$row_ch->table_containing_account_no}.{$row_ch->account_no_field} as account_no",
-										"receipt_voucher.receipt_voucher_no as rv_no"
+										"{$this->rv_no->tbl}.{$this->rv_no->receipt_voucher_no_field} as rv_no",
+										"{$this->rv_no->tbl}.{$this->rv_no->time_field} as time"
 										
 										//,"aa as bb"
 									);
@@ -3162,6 +3163,7 @@
 						
 						//WHERE CLAUSE
 						$temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->transaction_category_field}",$tran_category["{$row_ch->table_name}"]);
+						$temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->bid_field}",$BID);
 						foreach($where_list as $row_wh) {
 							$where_table = $row_wh->table_name;
 							$where_operator = $row_wh->operator;
@@ -3227,6 +3229,7 @@
 					}
 					$ret_data["chitta"][++$i]["receipt_no"] = 0;
 					$ret_data["chitta"][$i]["voucher_no"] = 0;
+					$ret_data["chitta"][$i]["time"] = $row_te->time;
 					if(isset($row_te->particulars)) {
 						$temp_particulars = " - {$row_te->particulars}";
 					} else {
@@ -3254,10 +3257,21 @@
 				
 			}
 			
-				//print_r($ret_data);exit();
+			//SORT ENTRIES BASED ON TIME
+			usort($ret_data["chitta"],array("self","cmp"));
+		
+			//print_r($ret_data);exit();
 			return $ret_data;
 		}
 		
+		function cmp($a, $b)
+		{
+			if ($a["time"] == $b["time"]) {
+				return 0;
+			}
+			return ($a["time"] < $b["time"]) ? -1 : 1;
+		}
+
 		public function cash_chitta_details_list($data)
 		{
 			$ret_data["chitta"] = [];
