@@ -51,12 +51,18 @@
 				$this->rv_no->required($fn_data,"{$this->rv_no->receipt_voucher_no_field}");
 				$this->rv_no->required($fn_data,"{$this->rv_no->transaction_category_field}");
 				$this->rv_no->required($fn_data,"{$this->rv_no->transaction_id_field}");
+
+				if($this->rv_no->exists($fn_data)) {
+					return "EXISTS";
+				}
 				
 				$this->rv_no->clear_row_data();
 				$this->rv_no->set_row_data($fn_data);
-				$this->rv_no->insert_row();
+				$insert_id = $this->rv_no->insert_row();
+			} else {
+				return "NOT A CASH TRANSACTION";
 			}
-			return "done";
+			return "DONE,  INSERT ID : {$insert_id}";
 		}
 
 
