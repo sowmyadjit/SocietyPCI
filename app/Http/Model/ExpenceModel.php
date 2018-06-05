@@ -369,6 +369,7 @@
 				$fn_data["rv_transaction_type"] = "DEBIT";
 				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = $id['Br1'];
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
