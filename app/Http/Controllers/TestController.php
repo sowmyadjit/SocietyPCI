@@ -25,7 +25,7 @@
 		public function test()
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
-			$cal_days = $this->get_cal_days(["from_date"=>"2018-04-01","to_date"=>date("Y-m-d",strtotime("2018-06-05"))]);
+			$cal_days = $this->get_cal_days(["from_date"=>"2018-04-01","to_date"=>date("Y-m-d",strtotime("2018-06-06"))]);
 			//print_r($cal_days);
 
 			echo "<br />\n";
