@@ -532,22 +532,12 @@
 			$fd=$fd1->Fd_TotalAmt;
 			$fdacc=$fd1->Fd_CertificateNum;
 			$remainamt=$fd-$depamt;
-			if($remainamt==0)
+			if($remainamt <= 0)
 			{
-				DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Fd_TotalAmt'=>$remainamt,'Paid_State'=>"PAID","fd_renewed"=>"YES","renewed_amount"=>$id['mamt']]);
-				
-				
-				
-				
-				DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['depositamount'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
-				
-				
-				
+				DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Paid_State'=>"PAID"]);
 			}
-			else
-			{
-				DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['mamt']]);
-			}
+			DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['depositamount'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
+			DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['mamt']]);
 			
 			
 		}
