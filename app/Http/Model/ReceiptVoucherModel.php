@@ -51,6 +51,7 @@
 		const JL_AUCTION = 25;//jewel_auction table
 		const JL_AUCTION_EXTRA_AMOUNT_PAY = 26;//auction_amount_transaction table
 		const AGENT_COMMISSION_PAYMENT = 27;
+		const CUSTOMER_FEE = 28;
 
 		
 		const DELETED = 1;

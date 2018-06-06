@@ -5,12 +5,19 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	
 	class CustomerModel extends Model
 	{
 		//
 		protected $table = 'customer';
+
+		public function __construct()
+		{
+			$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		public function insert($id)
 		{
@@ -73,6 +80,16 @@
 			if($CustType=="CLASS D")
 			{
 				$cid = DB::table('customer')->insertGetId(['Aid'=>$Aid,'Nid'=>$Nid,'FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Bid'=>$id['branchid'],'Uid'=>$uid,'DocProvid'=>$docid,'FatherName'=>$id['fthrname'],'SpouseName'=>$id['spousename'],'Customer_Fee'=>$id['custfee'],'custtyp'=>$id['custtyp'],'Customer_ReceiptNum'=>$r,'Created_on'=>$dte,'LedgerHeadId'=>"32",'SubLedgerId'=>"35"]);
+				
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $cid;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::CUSTOMER_FEE;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			}
 			else if($CustType=="CUSTOMER")
 			{
