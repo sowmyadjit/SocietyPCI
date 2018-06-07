@@ -160,7 +160,7 @@
 				$r1=$respit3+1;
 				DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r1]);
 				
-			$rd_payamount_id = DB::table('rd_payamount')->insertGetId(['RDPayAmt_AccNum'=>$id['rdaccount'],'RDPayAmt_PaymentMode'=>$id['RDPayMode'],'RDPayAmt_ChequeNum'=>$id['RDPayChequeNum'],'RDPayAmt_ChequeDate'=>$id['RDPayChequeDate'],'RDPayAmt_PayableAmount'=>$id['RDPayableAmt'],'RDPayAmt_PayDate'=>$paydate,'RDPayAmtReport_PayDate'=>$paydatereport,'RDPayAmt_BankId'=>$id['BankId'],'RDPayAmt_IntType'=>$id['RDIntMode'],'RD_PayAmount_ReceiptNum'=>$ReceiptNum,'RD_PayAmount_pamentvoucher'=>$r1]);
+			$rd_payamount_id = DB::table('rd_payamount')->insertGetId(['RDPayAmt_AccNum'=>$id['rdaccount'],'RDPayAmt_PaymentMode'=>$id['RDPayMode'],'RDPayAmt_ChequeNum'=>$id['RDPayChequeNum'],'RDPayAmt_ChequeDate'=>$id['RDPayChequeDate'],'RDPayAmt_PayableAmount'=>$id['RDPayableAmt'],'RDPayAmt_PayDate'=>$paydate,'RDPayAmtReport_PayDate'=>$paydatereport,'RDPayAmt_BankId'=>$id['BankId'],'RDPayAmt_IntType'=>$id['RDIntMode'],'RD_PayAmount_ReceiptNum'=>$ReceiptNum,'RD_PayAmount_pamentvoucher'=>$r1,'Bid'=>$BID]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $RDPayMode;
