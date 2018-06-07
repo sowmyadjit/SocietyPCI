@@ -3136,12 +3136,16 @@
 				switch($row_ch->transaction_type) {
 					case CREDIT	:	//constant defined in route.php file
 									$raw_obj = DB::raw("'CREDIT' as 'transaction_type'");
+									$temp_rv_type = [1];
 									break;
 					case DEBIT	:	
 									$raw_obj = DB::raw("'DEBIT' as 'transaction_type'");
+									$temp_rv_type = [2];
 									break;
 					case BOTH	:	
 									$raw_obj = DB::raw("{$row_ch->table_name}.{$row_ch->transaction_type_field} as 'transaction_type'");
+									
+									$temp_rv_type = [1,2];
 									break;
 				}
 				array_push($select_array,$raw_obj);
@@ -3152,7 +3156,7 @@
 						$temp = DB::table($row_ch->table_name);
 						$temp = $temp->select($select_array);
 						//JOINS
-						$temp = $temp->leftJoin("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","{$row_ch->table_name}.{$row_ch->pk_field}");//JOIN RECEIPT VOUCHER TABLE
+						$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","{$row_ch->table_name}.{$row_ch->pk_field}");//JOIN RECEIPT VOUCHER TABLE
 						foreach($join_list as $row_jo) {
 							$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
 													"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
@@ -3163,6 +3167,7 @@
 						
 						//WHERE CLAUSE
 						$temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->transaction_category_field}",$tran_category["{$row_ch->table_name}"]);
+						$temp = $temp->whereIn("{$this->rv_no->tbl}.{$this->rv_no->receipt_voucher_type_field}",$temp_rv_type);
 						// $temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->bid_field}",$BID);
 						foreach($where_list as $row_wh) {
 							$where_table = $row_wh->table_name;

@@ -271,6 +271,7 @@
 				->where("{$this->bid_field}",$data["{$this->bid_field}"])
 				->where("{$this->transaction_category_field}",$data["{$this->transaction_category_field}"])
 				->where("{$this->transaction_id_field}",$data["{$this->transaction_id_field}"])
+				->where("{$this->receipt_voucher_type_field}",$data["{$this->receipt_voucher_type_field}"])
 				->where("{$this->deleted_field}",0)
 				->count();
 

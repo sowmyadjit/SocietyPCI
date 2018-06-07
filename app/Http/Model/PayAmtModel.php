@@ -66,9 +66,19 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
-
+			
 			if($inttype=="PREWITHDRAWAL")
 			{
+				/***********/
+				$fn_data["rv_payment_mode"] ="CASH";
+				$fn_data["rv_transaction_id"] = $pigmi_payamount_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PG_PAYAMOUNT;//PIGMI PREWITHDRAWAL DEDUCT AMOUNT
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 				DB::table('pigmi_prewithdrawal')->where('PigmiAcc_No','=',$PigAccNum)
 				->update(['CashPaid_State'=>"PAID"]);
 			}
