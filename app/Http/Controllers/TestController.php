@@ -60,7 +60,7 @@
 											// "{$ch_row->transaction_type} as rv_transaction_type",
 											"{$ch_row->date_field} as rv_date"
 										);
-					if($tran_table == "pending_pigmy" || $tran_table == "members" || $tran_table == "purchaseshare") {
+					if($tran_table == "pending_pigmy" || $tran_table == "members" || $tran_table == "purchaseshare" || $tran_table == "customer") {
 						$raw_obj = DB::raw("'CASH' as 'rv_payment_mode'");
 						array_push($select_array,$raw_obj);
 					} else {
