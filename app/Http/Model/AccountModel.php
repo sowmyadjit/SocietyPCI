@@ -601,6 +601,10 @@
 					$Banktot=$Banktot1->TotalAmt;
 					$amt=$id['sb_amount'];
 					$bankamttot=$Banktot-$amt;
+
+					DB::table("sb_transaction")
+						->where("Tranid",$res)
+						->update(["Cleared_State"=>"CLEARED"]);
 					
 					if(!$old_tran)
 						DB::table('addbank')->where('Bankid',$bankid)
