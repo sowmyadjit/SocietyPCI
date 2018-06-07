@@ -15,7 +15,7 @@
 		<div class="box col-md-12">
 			<div class="bdy box-inner">
 				<div class="box-header well" data-original-title="">
-					<h2><i class="glyphicon glyphicon-user"></i> Cash Chitta</h2>
+					<h2><i class="glyphicon glyphicon-user"></i> Day Book<!-- cash chitta--></h2>
 					<div class="box-icon">
 						<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
 						<a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>

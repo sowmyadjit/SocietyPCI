@@ -518,7 +518,7 @@
 				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');
 				
 				Route::post('/user_details','ReportController@user_details');
-				Route::get('/cash_chitta_index','ReportController@cash_chitta_index');
+				Route::get('/cash_chitta_index','ReportController@cash_chitta_index');//CASH CHITTA = DAY BOOK
 				Route::post('/cash_chitta_data','ReportController@cash_chitta_data');
 				Route::get('/cash_chitta_add_details_index','ReportController@cash_chitta_add_details_index');
 				Route::post('/cash_chitta_details_list','ReportController@cash_chitta_details_list');
