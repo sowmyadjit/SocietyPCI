@@ -67,6 +67,10 @@
 						$raw_obj = DB::raw("{$ch_row->payment_mode_field} as 'rv_payment_mode'");
 						array_push($select_array,$raw_obj);
 					}
+					if($tran_table == "pigmi_payamount") {
+						$raw_obj = DB::raw("PayAmount_IntType as 'withdrawal_type'");
+						array_push($select_array,$raw_obj);
+					}
 
 					switch($ch_row->transaction_type) {
 						case CREDIT	:	//constant defined in route.php file
@@ -124,6 +128,20 @@
 						unset($fn_data);
 						echo $fn_ret_data . "<br />\n";
 						/***********/
+						if($tran_table == "pigmi_payamount") {
+							if($table_row->withdrawal_type =="PREWITHDRAWAL") {
+								/***********/
+								$fn_data["rv_payment_mode"] = "CASH";
+								$fn_data["rv_transaction_id"] = $table_row->rv_transaction_id;
+								$fn_data["rv_transaction_type"] = "CREDIT";
+								$fn_data["rv_transaction_category"] = $key_category;
+								$fn_data["rv_date"] = $cal_day;
+								$fn_ret_data = $this->rv_no->save_rv_no($fn_data);
+								unset($fn_data);
+								echo $fn_ret_data . "<br />\n";
+								/***********/
+							}
+						}
 					}
 					//break;
 				}
