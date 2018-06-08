@@ -25,7 +25,8 @@
 		public function test()
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
-			$cal_days = $this->get_cal_days(["from_date"=>"2018-04-01","to_date"=>date("Y-m-d",strtotime("2018-06-06"))]);
+			$to_date = date("Y-m-d"); //"2018-06-06";
+			$cal_days = $this->get_cal_days(["from_date"=>"2018-04-01","to_date"=>date("Y-m-d",strtotime($to_date))]);
 			//print_r($cal_days);
 
 			echo "<br />\n";
@@ -128,19 +129,44 @@
 						unset($fn_data);
 						echo $fn_ret_data . "<br />\n";
 						/***********/
-						if($tran_table == "pigmi_payamount") {
-							if($table_row->withdrawal_type =="PREWITHDRAWAL") {
-								/***********/
-								$fn_data["rv_payment_mode"] = "CASH";
-								$fn_data["rv_transaction_id"] = $table_row->rv_transaction_id;
-								$fn_data["rv_transaction_type"] = "CREDIT";
-								$fn_data["rv_transaction_category"] = $key_category;
-								$fn_data["rv_date"] = $cal_day;
-								$fn_ret_data = $this->rv_no->save_rv_no($fn_data);
-								unset($fn_data);
-								echo $fn_ret_data . "<br />\n";
-								/***********/
-							}
+						switch($tran_table) {
+							case "pigmi_payamount"			:	if($table_row->withdrawal_type =="PREWITHDRAWAL") {
+																	/***********/
+																	$fn_data["rv_payment_mode"] = $table_row->rv_payment_mode;
+																	$fn_data["rv_transaction_id"] = $table_row->rv_transaction_id;
+																	$fn_data["rv_transaction_type"] = "CREDIT";
+																	$fn_data["rv_transaction_category"] = $key_category;
+																	$fn_data["rv_date"] = $cal_day;
+																	$fn_ret_data = $this->rv_no->save_rv_no($fn_data);
+																	unset($fn_data);
+																	echo $fn_ret_data . "<br />\n";
+																	/***********/
+																}
+																break;
+							case "jewelloan_allocation"		:	if($tran_table == "jewelloan_allocation") {
+																	/***********/
+																	$fn_data["rv_payment_mode"] = $table_row->rv_payment_mode;
+																	$fn_data["rv_transaction_id"] = $table_row->rv_transaction_id;
+																	$fn_data["rv_transaction_type"] = "CREDIT";
+																	$fn_data["rv_transaction_category"] = $key_category;
+																	$fn_data["rv_date"] = $cal_day;
+																	$fn_ret_data = $this->rv_no->save_rv_no($fn_data);
+																	unset($fn_data);
+																	echo $fn_ret_data . "<br />\n";
+																	/***********/
+																}
+							case "depositeloan_allocation"	:	if($tran_table == "depositeloan_allocation") {
+																	/***********/
+																	$fn_data["rv_payment_mode"] = $table_row->rv_payment_mode;
+																	$fn_data["rv_transaction_id"] = $table_row->rv_transaction_id;
+																	$fn_data["rv_transaction_type"] = "CREDIT";
+																	$fn_data["rv_transaction_category"] = $key_category;
+																	$fn_data["rv_date"] = $cal_day;
+																	$fn_ret_data = $this->rv_no->save_rv_no($fn_data);
+																	unset($fn_data);
+																	echo $fn_ret_data . "<br />\n";
+																	/***********/
+																}
 						}
 					}
 					//break;
