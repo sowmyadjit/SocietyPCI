@@ -1,4 +1,3 @@
-
 <script src="js/bootstrap-typeahead.js"></script>
 <script src="js/bootstrap-table.js"/>
 <script src="js/FileSaver.js"/>			
