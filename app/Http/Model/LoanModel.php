@@ -161,6 +161,16 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $lid;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DL_ALLOCATION;//constant DL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['DepLoanStartDate'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 
 			if($deptyp=="PIGMY")
 			{
@@ -551,11 +561,11 @@
 								"LoanAmt"=>$total_loan_amount,
 								"RemainingLoan_Amt"=>$total_remaining_amount,
 								"EMI_Amount"=>$id['PersEMIAmt'],
-								"otherCharges"=>$total_otherCharges,
-								"Book_FormCharges"=>$total_Book_FormCharges,
-								"AjustmentCharges"=>$total_AjustmentCharges,
-								"ShareCharges"=>$total_ShareCharges,
-								"Insurance"=>$total_Insurance
+								// "otherCharges"=>$total_otherCharges,
+								// "Book_FormCharges"=>$total_Book_FormCharges,
+								// "AjustmentCharges"=>$total_AjustmentCharges,
+								// "ShareCharges"=>$total_ShareCharges,
+								// "Insurance"=>$total_Insurance
 							]);
 				$perslid = $allocation_entry->PersLoanAllocID;
 					
@@ -717,6 +727,16 @@
 				$fn_data["rv_payment_mode"] = $id['JewelPayMode'];
 				$fn_data["rv_transaction_id"] = $jid;
 				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_ALLOCATION;//constant JL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+				/***********/
+				$fn_data["rv_payment_mode"] = $id['JewelPayMode'];
+				$fn_data["rv_transaction_id"] = $jid;
+				$fn_data["rv_transaction_type"] = "CREDIT";
 				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_ALLOCATION;//constant JL_ALLOCATION is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $dte;
 				$fn_data["rv_bid"] = null;
@@ -3565,6 +3585,24 @@
 			DB::table($table)
 				->where($allocation_id_field,'=',$data['loan_id'])
 				->update($update_array);
+		}
+
+		public function pl_is_first_payment($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$first_payment = "YES";
+			if($data['member_id'] > 0) {
+				$part_pay_count = DB::table("personalloan_allocation")
+					->where("MemId",$data['member_id'])
+					->where("Closed","NO")
+					->where("Bid",$BID)
+					->count();
+					
+				if($part_pay_count > 0) {
+					$first_payment = "NO";
+				}
+			}
+			return $first_payment;
 		}
 		
 	}

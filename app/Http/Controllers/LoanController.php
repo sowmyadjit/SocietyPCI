@@ -808,6 +808,7 @@
 			$id['Branch_ID']=$get->Bid;
 			$id['LType_ID']=$get->LoanType_ID;
 			$id['uid']=$get->Uid;
+			$id['first_payment'] = $this->loan->pl_is_first_payment(["member_id"=>$MemDet['membrid']]);
 			
 			return $id;
 		}
