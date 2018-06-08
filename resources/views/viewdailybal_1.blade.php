@@ -91,6 +91,8 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
+								<td>{{ $sb->SB_resp_No }}</td>
+								<td><p class="text-center">-</p></td>
 							@else
 								<?php
 									$sb_cash_db=$sb->Amount;
@@ -100,9 +102,9 @@
 								<td><p class="text-right"><?php echo $sb_cash_db; ?></p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
+								<td><p class="text-center">-</p></td>
+								<td>{{ $sb->SB_paymentvoucher_No }}</td>
 							@endif
-							<td>{{ $sb->SB_resp_No }}</td>
-							<td>{{ $sb->SB_paymentvoucher_No }}</td>
 						</tr>
 					@endforeach
 					
@@ -225,7 +227,7 @@
 						</tr>
 					@endforeach
 					<tr>
-						<th colspan =3>SB Total</th>
+						<th colspan =3>RD Total</th>
 						<td class="text-right"><?php echo $rd_cash_cr_total ?></td>
 						<td class="text-right"><?php echo $rd_cash_db_total ?></td>
 						<td class="text-right"><?php echo $rd_adj_cr_total ?></td>
@@ -1062,7 +1064,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$dlallocation->voucher_no}}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['dlallocation_adjust'] as $dlallocation)
@@ -1092,7 +1094,7 @@
 							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanCharge }}</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$dlallocation->receipt_no}}</td>
 							<td>-</td>
 						</tr>
 					@endforeach		
@@ -1215,7 +1217,7 @@
 							<td>-</td>
 							<td>{{ $plallocation->LoanAmt }}</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$plallocation->voucher_no}}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_adjust'] as $plallocation)
@@ -1250,7 +1252,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$plallocation->receipt_no}}</td>
 							<td>-</td>
 						</tr>
 					@endforeach
@@ -1574,7 +1576,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$jlallocation->voucher_no}}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['jlallocation_adjust'] as $jlallocation)
@@ -1809,7 +1811,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td></td>
-								<td>-</td>
+								<td>{{$row_jew->voucher_no}}</td>
 							</tr>
 						@else
 							<?php
@@ -1870,7 +1872,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
-								<td>-</td>
+								<td>{{$slallocation->voucher_no}}</td>
 							</tr>
 						@else
 							<?php
@@ -1929,7 +1931,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
-								<td>-</td>
+								<td>{{$slrepay->receipt_no}}</td>
 								<td>-</td>
 							</tr>
 						@else
@@ -1988,7 +1990,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
-								<td>-</td>
+								<td>{{$row->receipt_no}}</td>
 								<td>-</td>
 							</tr>
 						@else
@@ -2025,7 +2027,7 @@
 					
 					
 					
-<!--------------------------------- loan charges --------------------------------->
+<!-- ------------------------------- loan charges ------------------------------- -->
 
 
 					<tr><td colspan="9"><h5><b><center>LOAN CHARGES TRANSACTION<center></b></h5></td></tr>
@@ -2050,7 +2052,7 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
-								<td></td>
+								<td>{{$row->receipt_no}}</td>
 								<td></td>
 							</tr>
 						@else
@@ -2087,7 +2089,7 @@
 
 
 
-<!--------------------------------- loan charges end --------------------------------->
+<!-- ------------------------------- loan charges end ------------------------------- -->
 					
 					
 					
@@ -2119,7 +2121,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
-								<td>-</td>
+								<td>{{$branch_branch_tran->voucher_no}}</td>
 							</tr>
 						@else	<?php /*DEBIT ADJUSTMENT*/?>
 						<?php
@@ -2155,7 +2157,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
-								<td>-</td>
+								<td>{{$branch_branch_tran->receipt_no}}</td>
 								<td>-</td>
 							</tr>
 						@endif
@@ -2387,7 +2389,7 @@
 					
 					
 					
-	<!---------------salary------------------->
+	<!-- -------------salary----------------- -->
 	
 				<tr><td colspan="9"><h5><b><center>Employee Salary<center></b></h5></td></tr>
 				<?php
@@ -2464,11 +2466,11 @@
 	
 	
 	
-	<!---------------salary------------------->
+	<!-- -------------salary----------------- -->
 	
 	
-	<!---------------salary Extra Pay------------------->
-	<!---------------Staff Addition------------------->
+	<!-- -------------salary Extra Pay----------------- -->
+	<!-- -------------Staff Addition----------------- -->
 				<tr><td colspan="9"><h5><b><center>Employee Salary Extra<center></b></h5></td></tr>
 								
 				<?php
@@ -2517,8 +2519,8 @@
 					<td>-</td>
 					<td>-</td>
 				</tr>
-	<!---------------Staff Addition------------------->
-	<!---------------Staff Addition------------------->
+	<!-- -------------Staff Addition----------------- -->
+	<!-- -------------Staff Addition----------------- -->
 				<tr><td colspan="9"><b><center>Staff Deductions<center></b></td></tr>
 				<?php
 					$adj_cr_2 = 0;//2 - Staff Deductions
@@ -2553,8 +2555,8 @@
 					<td>-</td>
 					<td>-</td>
 				</tr>
-	<!---------------Staff Addition------------------->
-	<!---------------Staff Addition------------------->
+	<!-- -------------Staff Addition----------------- -->
+	<!-- -------------Staff Addition----------------- -->
 				<tr><td colspan="9"><b><center>Society Contribution<center></b></td></tr>
 				<?php
 					$adj_db_3 = 0;
@@ -2589,8 +2591,8 @@
 					<td>-</td>
 					<td>-</td>
 				</tr>
-	<!---------------Staff Addition------------------->
-	<!---------------Staff Addition------------------->
+	<!-- -------------Staff Addition----------------- -->
+	<!-- -------------Staff Addition----------------- -->
 				<tr><td colspan="9"><b><center>Agent Deductions<center></b></td></tr>
 				<?php
 					$cash_cr_4 = 0;
@@ -2646,7 +2648,7 @@
 					<td>-</td>
 					<td>-</td>
 				</tr>
-	<!---------------Staff Addition------------------->
+	<!-- -------------Staff Addition----------------- -->
 	
 	
 	
@@ -2665,7 +2667,7 @@
 				?>
 	
 	
-	<!---------------salary Extra Pay------------------->
+	<!-- -------------salary Extra Pay----------------- -->
 	
 	
 					<tr>
