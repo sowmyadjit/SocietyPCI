@@ -1635,7 +1635,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$trandaily['jlcharges']['receipt_no'][$jlcharges]}}</td>
 							<td>-</td>
 						</tr>
 					@endforeach

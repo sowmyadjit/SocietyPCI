@@ -184,7 +184,7 @@
 			$BranchId=$uname->Bid;
 			
 			$sbtoday=$dte;
-			$id = DB::table('sb_transaction')->select('SBReport_TranDate','TransactionType','Amount','Total_Bal','AccNum','Tranid','particulars','CurrentBalance','SB_resp_No','receipt_voucher_no as SB_paymentvoucher_No','receipt_voucher_no as Payment_Mode')
+			$id = DB::table('sb_transaction')->select('SBReport_TranDate','TransactionType','Amount','Total_Bal','AccNum','Tranid','particulars','CurrentBalance','receipt_voucher_no as SB_resp_No','receipt_voucher_no as SB_paymentvoucher_No','Payment_Mode')
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
 			->join("receipt_voucher","receipt_voucher.transaction_id","=","sb_transaction.Tranid")
 			->where("receipt_voucher.transaction_category",1)
@@ -1830,6 +1830,7 @@
 			return DB::table('jewelloan_allocation')->select('JewelLoan_LoanNumber','JewelLoan_LoanAmount','JewelLoan_StartDate','JewelLoan_Bid','receipt_voucher_no as voucher_no')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
 			->where("receipt_voucher.transaction_category",20)
+			->where("receipt_voucher.receipt_voucher_type",2)
 			->where('JewelLoan_PaymentMode','=',"CASH")
 			->where('JewelLoan_StartDate',$dte)
 			->where('JewelLoan_Bid',$BranchId)
@@ -1967,11 +1968,17 @@
 			//->where('JewelLoan_StartDate','=',"2017-02-07")
 			->where('JewelLoan_Bid',$BranchId)
 			->get();
+
+			$temp_rec = array();
 			$sum=0;
 			foreach($jlaccno As $jl1)
 			{
 				$jl=$jl1->JewelLoan_LoanNumber;
-				$jldetails1=DB::table('jewelloan_allocation')->select('JewelLoan_LoanNumber','JewelLoan_SaraparaCharge','JewelLoan_StartDate','JewelLoan_InsuranceCharge','JewelLoan_BookAndFormCharge','JewelLoan_OtherCharge')
+				$jldetails1=DB::table('jewelloan_allocation')
+				->select('JewelLoan_LoanNumber','JewelLoan_SaraparaCharge','JewelLoan_StartDate','JewelLoan_InsuranceCharge','JewelLoan_BookAndFormCharge','JewelLoan_OtherCharge','receipt_voucher_no as receipt_no')
+				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
+				->where("receipt_voucher.transaction_category",20)
+				->where("receipt_voucher.receipt_voucher_type",1)
 				->where('JewelLoan_LoanNumber',$jl)
 				->first();
 				
@@ -1985,11 +1992,13 @@
 				$temp[]=$acc;
 				
 				$temp1[$acc]=$tot;
+				$temp_rec[$acc] = $jldetails1->receipt_no;
 				$sum=$sum+$tot;
 			}
 			$temp2['num']=$temp;
 			$temp2['val']=$temp1;
 			$temp2['sum']=$sum;
+			$temp2['receipt_no']=$temp_rec;
 			return $temp2;
 		}
 		
