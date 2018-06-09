@@ -2223,7 +2223,7 @@
 										<td>-</td>
 										<td>-</td>
 										<td>-</td>
-										<td>-</td>
+										<td>{{$Bank_Branch->receipt_no}}</td>
 										<td>-</td>
 									</tr>
 						<?php
@@ -2258,7 +2258,7 @@
 										<td>-</td>
 										<td>-</td>
 										<td>-</td>
-										<td>-</td>
+										<td>{{$Bank_Branch->voucher_no}}</td>
 									</tr>
 						<?php
 								} else {
@@ -2370,7 +2370,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$agentcoll_tran->receipt_no}}</td>
 							<td>-</td>
 						</tr>
 					@endforeach
@@ -2616,7 +2616,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
-								<td>-</td>
+								<td>{{$row->receipt_no}}</td>
 								<td>-</td>
 							</tr>
 						@else
