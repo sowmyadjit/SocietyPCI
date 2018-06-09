@@ -1,5 +1,9 @@
 
-							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >
+					<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
+						<div id="to_print" >
+						
+							<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+							<table class="table table-striped table-bordered bootstrap-datatable datatable responsive ">
 								<thead>
 									<tr>
 										<th>Sl. No.</th>
@@ -27,5 +31,28 @@
 									</tr>
 								</tbody>
 							</table>
+						</div>
 							
+<script src="js/jQuery.print.js"></script>
+<script>
+	
+	$(function() {
+		$(".print").click(function() {
+			var divContents = $("#to_print").html();
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+			//$("#toprint").print();
+            printWindow.print();
+		});
+	});
+	
+	
+	$('#excel').click(function(e){
+	$('#toprint_data').tableExport({type:'excel',escape:'false'});
+	});	
+</script>
 							
