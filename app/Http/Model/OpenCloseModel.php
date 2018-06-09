@@ -641,6 +641,7 @@
 			->join('pigmi_prewithdrawal','pigmi_prewithdrawal.PigmiAcc_No','=','PayAmount_PigmiAccNum')
 			->join("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
 			->where("receipt_voucher.transaction_category",14)
+			->where("receipt_voucher.receipt_voucher_type",2)
 			->where('PayAmountReport_PayDate',$dte)
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode',"CASH")
@@ -754,10 +755,12 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('pigmi_payamount')->select('PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate','PayAmount_ReceiptNum','PayAmount_PaymentVoucher','PgmTotal_Amt','Deduct_Commission','Deduct_Amount')
+			$id=DB::table('pigmi_payamount')->select('PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate','PayAmount_ReceiptNum','receipt_voucher_no as PayAmount_PaymentVoucher','PgmTotal_Amt','Deduct_Commission','Deduct_Amount')
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','PayAmount_PigmiAccNum')
-			
 			->join('pigmi_prewithdrawal','pigmi_prewithdrawal.PigmiAcc_No','=','PayAmount_PigmiAccNum')
+			->join("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
+			->where("receipt_voucher.transaction_category",14)
+			->where("receipt_voucher.receipt_voucher_type",1)
 			->where('PayAmountReport_PayDate',$dte)
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','=',"CASH")
@@ -890,7 +893,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('rd_payamount')->select('RDPayAmt_AccNum','RDPayAmt_PayableAmount','RDPayAmtReport_PayDate','receipt_voucher_no as RD_PayAmount_pamentvoucher', 'receipt_voucher_no as RDPayAmt_PaymentMode')
+			$id=DB::table('rd_payamount')->select('RDPayAmt_AccNum','RDPayAmt_PayableAmount','RDPayAmtReport_PayDate','receipt_voucher_no as RD_PayAmount_pamentvoucher', 'RDPayAmt_PaymentMode')
 			->join('createaccount','createaccount.AccNum','=','rd_payamount.RDPayAmt_AccNum')
 			->join("receipt_voucher","receipt_voucher.transaction_id","=","rd_payamount.RDPayId")
 			->where("receipt_voucher.transaction_category",15)
@@ -1607,6 +1610,7 @@
 			return DB::table('depositeloan_allocation')->select('DepLoan_LoanNum','DepLoan_AccNum','DepLoan_LoanStartDate','DepLoan_LoanAmount','receipt_voucher_no as voucher_no')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","depositeloan_allocation.DepLoanAllocId")
 			->where("receipt_voucher.transaction_category",17)
+			->where("receipt_voucher.receipt_voucher_type",2)
 			->where('DepLoan_PaymentMode','=',"CASH")
 			->where('DepLoan_LoanStartDate',$dte)
 			->where('DepLoan_Branch',$BranchId)
@@ -1669,6 +1673,7 @@
 			return DB::table('depositeloan_allocation')->select('DepLoan_LoanCharge','DepLoan_LoanNum','DepLoan_AccNum','DepLoan_LoanStartDate','DepLoan_LoanAmount','receipt_voucher_no as receipt_no')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","depositeloan_allocation.DepLoanAllocId")
 			->where("receipt_voucher.transaction_category",17)
+			->where("receipt_voucher.receipt_voucher_type",1)
 			->where('DepLoan_LoanStartDate',$dte)
 			->where('DepLoan_PaymentMode','=',"CASH")
 			->where('DepLoan_Branch',$BranchId)
