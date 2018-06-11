@@ -185,6 +185,17 @@
 					
 					$amount1=$id['ob'];
 					$rd_id = DB::table('rd_transaction')->insertGetId(['Accid'=> $acid,'AccTid' => $id['acctyp_11'],'RD_Trans_Type' => "Credit",'RD_Particulars' => "Opening Balance",'RD_Amount' => $amount1,'RD_CurrentBalance' => $amount1,'RD_Total_Bal' => $id['ob'],'RD_Date' => $dte,'RDReport_TranDate'=> $dte,'RD_Month'=>$mnt,'RD_Year'=>$year,'CreatedBy'=>$u,'Bid'=>$BID,'RD_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"43",'RDPayment_Mode'=>$rd_pay_mode]);
+					
+					/***********/
+					$fn_data["rv_payment_mode"] = $mode;
+					$fn_data["rv_transaction_id"] = $rd_id;
+					$fn_data["rv_transaction_type"] = "CREDIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::RD_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $dte;
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
+
 					return $rd_id;
 				
 			}
