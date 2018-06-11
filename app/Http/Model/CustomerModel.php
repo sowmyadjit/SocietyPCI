@@ -90,6 +90,7 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+				
 			}
 			else if($CustType=="CUSTOMER")
 			{

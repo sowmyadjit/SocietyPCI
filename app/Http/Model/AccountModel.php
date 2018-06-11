@@ -94,6 +94,16 @@
 				//Inserting into sb_transaction Table
 				$sb_id = DB::table('sb_transaction')->insertGetId(['Accid'=> $acid,'AccTid' => $id['acctyp_11'],'TransactionType' => "CREDIT",'particulars' =>"Opening Balance",'Amount' =>$amount1,'CurrentBalance' => $amount1,'Total_Bal' => $id['ob'],'tran_Date' =>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'Bid'=>$BID,'SB_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'Payment_Mode'=>"CASH"]);
 				
+				/***********/
+				$fn_data["rv_payment_mode"] = $mode;
+				$fn_data["rv_transaction_id"] = $sb_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 				if($mode=="SB ACCOUNT")
 				{
 						
