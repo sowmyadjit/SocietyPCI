@@ -3109,6 +3109,10 @@
 										
 										//,"aa as bb"
 									);
+				if(!empty($row_ch->name_field) && $row_ch->name_field != "NA") {
+					$select_ele = DB::raw("{$row_ch->table_containing_name}.{$row_ch->name_field} as name");
+					array_push($select_array,$select_ele);
+				}
 				if(!empty($row_ch->amount_field) && $row_ch->amount_field != "NA") {
 					$select_ele = DB::raw("{$row_ch->table_name}.{$row_ch->amount_field} as amount");
 					array_push($select_array,$select_ele);
@@ -3240,7 +3244,12 @@
 					} else {
 						$temp_particulars = "";
 					}
-					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} - {$row_te->account_no}{$temp_particulars}";// - {$row_te->transaction_type}";
+					if(isset($row_te->name)) {
+						$temp_name = " - {$row_te->name}";
+					} else {
+						$temp_name = "";
+					}
+					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} - {$row_te->account_no}{$temp_particulars}{$temp_name}";// - {$row_te->transaction_type}";
 					$ret_data["chitta"][$i]["transaction_type"] = $row_te->transaction_type;
 					switch(strtoupper($row_te->transaction_type)) {
 						case "CREDIT"	:	
