@@ -3174,8 +3174,8 @@
 															$tran_category["charges_tran"] = $tran_category["jewelloan_repay"];
 															break;
 								case "LOAN CHARGES PL"	:
-															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","personalloan_allocation.PersLoanAllocID");
-															$tran_category["charges_tran"] = $tran_category["personalloan_allocation"];
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","personalloan_repay.PLRepay_Id");
+															$tran_category["charges_tran"] = $tran_category["personalloan_repay"];
 															break;
 								case "LOAN CHARGES SL"	:
 															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","staffloan_allocation.StfLoanAllocID");
