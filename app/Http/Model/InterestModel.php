@@ -86,7 +86,7 @@
 			
 			$monthamt=$this->getmonth_amt($acno,$sdate,$edate);
 			
-			//	print_r($monthamt);
+				print_r($monthamt);
 			$arramt=array();
 			for($i=1;$i<=12;$i++)
 			{

@@ -3071,6 +3071,17 @@
 				->where("transaction_type","!=",0)
 				->get();
 				
+			$rv_tran_cat_list = DB::table("{$this->rv_tran_cat->tbl}")
+				->where("{$this->rv_tran_cat->deleted_field}",0)
+				->get();
+			$tran_category_arr = $this->parse_table_data(["table_data"=>$rv_tran_cat_list]);
+			
+			$tran_category = [];
+			foreach($tran_category_arr as $row_tran_cat) {
+				$tran_category["{$row_tran_cat[$this->rv_tran_cat->rv_tran_table_field]}"] = $row_tran_cat["{$this->rv_tran_cat->pk}"];
+				// like
+				// $tran_category["sb_transaction"] = 1
+			}
 			$i = -1;
 			foreach($chitta_list as $row_ch) {
 				$bid_field = "{$row_ch->table_containing_bid}.{$row_ch->bid_field}";
@@ -3088,17 +3099,6 @@
 					->where("deleted",0)
 					->where("cash_chitta_id",$row_ch->cash_chitta_id)
 					->get();
-				$rv_tran_cat_list = DB::table("{$this->rv_tran_cat->tbl}")
-					->where("{$this->rv_tran_cat->deleted_field}",0)
-					->get();
-				$tran_category_arr = $this->parse_table_data(["table_data"=>$rv_tran_cat_list]);
-				
-				$tran_category = [];
-				foreach($tran_category_arr as $row_tran_cat) {
-					$tran_category["{$row_tran_cat[$this->rv_tran_cat->rv_tran_table_field]}"] = $row_tran_cat["{$this->rv_tran_cat->pk}"];
-					// like
-					// $tran_category["sb_transaction"] = 1
-				}
 				
 				//SELECT ARRAY
 				$select_array = array(
@@ -3160,10 +3160,34 @@
 						$temp = DB::table($row_ch->table_name);
 						$temp = $temp->select($select_array);
 						//JOINS
-						$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","{$row_ch->table_name}.{$row_ch->pk_field}");//JOIN RECEIPT VOUCHER TABLE
+						
 						foreach($join_list as $row_jo) {
 							$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
 													"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
+						}
+
+						if($row_ch->table_name == "charges_tran") {
+							//JOIN RECEIPT VOUCHER TABLE
+							switch($row_ch->prefix) {
+								case "LOAN CHARGES JL"	:
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","jewelloan_repay.JLRepay_Id");
+															$tran_category["charges_tran"] = $tran_category["jewelloan_repay"];
+															break;
+								case "LOAN CHARGES PL"	:
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","personalloan_allocation.PersLoanAllocID");
+															$tran_category["charges_tran"] = $tran_category["personalloan_allocation"];
+															break;
+								case "LOAN CHARGES SL"	:
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","staffloan_allocation.StfLoanAllocID");
+															$tran_category["charges_tran"] = $tran_category["staffloan_allocation"];
+															break;
+								case "LOAN CHARGES DL"	:
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","depositeloan_allocation.DepLoanAllocId");
+															$tran_category["charges_tran"] = $tran_category["depositeloan_allocation"];
+															break;
+							}
+						} else {
+							$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","{$row_ch->table_name}.{$row_ch->pk_field}");//JOIN RECEIPT VOUCHER TABLE
 						}
 
 						$temp = $temp->where($bid_field,$BID);
