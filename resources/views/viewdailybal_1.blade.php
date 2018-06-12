@@ -80,7 +80,7 @@
 						<tr>
 							<td>{{ $sb->SBReport_TranDate }}</td>
 							<td>{{ $sb->AccNum }}</td>
-							<td>{{ $sb->particulars }}</td>
+							<td>{{ $sb->particulars }} - {{$sb->name}}</td>
 							
 							@if($sb->TransactionType=="Credit"||$sb->TransactionType=="CREDIT"||$sb->TransactionType=="credit")
 									<?php
@@ -112,7 +112,7 @@
 						<tr>
 							<td>{{ $sb->SBReport_TranDate }}</td>
 							<td>{{ $sb->AccNum }}</td>
-							<td>{{ $sb->particulars }}</td>
+							<td>{{ $sb->particulars }} - {{ $name }}</td>
 							
 							@if($sb->TransactionType=="Credit"||$sb->TransactionType=="CREDIT"||$sb->TransactionType=="credit")
 								<?php
@@ -171,7 +171,7 @@
 						<tr>	
 							<td>{{ $rd->RDReport_TranDate }}</td>
 							<td>{{ $rd->AccNum }}</td>
-							<td>{{ $rd->RD_Particulars }}</td>
+							<td>{{ $rd->RD_Particulars }} - {{ $name }}</td>
 									
 							@if($rd->RD_Trans_Type=="Credit"||$rd->RD_Trans_Type=="CREDIT"||$rd->RD_Trans_Type=="credit"&&$rd->RDPayment_Mode=="CASH")
 								<?php
@@ -201,7 +201,7 @@
 						<tr>	
 							<td>{{ $rd->RDReport_TranDate }}</td>
 							<td>{{ $rd->AccNum }}</td>
-							<td>{{ $rd->RD_Particulars }}</td>
+							<td>{{ $rd->RD_Particulars }} - {{ $name }}</td>
 									
 							@if($rd->RD_Trans_Type=="Credit"||$rd->RD_Trans_Type=="CREDIT"||$rd->RD_Trans_Type=="credit"&&$rd->RDPayment_Mode=="CASH")
 								<?php
@@ -259,7 +259,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $name }}</td>
 									
 							@if($pigmy->Transaction_Type=="Credit"||$pigmy->Transaction_Type=="CREDIT"||$pigmy->Transaction_Type=="credit")
 								<?php
@@ -287,7 +287,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $name }}</td>
 							<td>-</td>
 							<td>-</td>
 							
@@ -315,7 +315,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $name }}</td>
 							<td>-</td>
 							<td>-</td>
 							
@@ -368,7 +368,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount</td>
+							<td>Pigmy Paid Amount - {{ $name }}</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PayableAmount }}</td>
 							<td>-</td>
@@ -385,7 +385,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount</td>
+							<td>Pigmy Paid Amount - {{ $name }}</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PgmTotal_Amt }}</td>
 							<td>-</td>
@@ -402,7 +402,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount</td>
+							<td>Pigmy Paid Amount - {{ $name }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -419,7 +419,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount</td>
+							<td>Pigmy Paid Amount - {{ $name }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -436,7 +436,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Commission</td>
+							<td>Pigmy Pay Deduct Commission - {{ $name }}</td>
 							
 							<td>{{ $pigmyamt->Deduct_Commission }}</td>
 							<td>-</td>
@@ -454,7 +454,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Amount</td>
+							<td>Pigmy Pay Deduct Amount - {{ $name }}</td>
 							
 							<td>{{ $pigmyamt->Deduct_Amount }}</td>
 							<td>-</td>
@@ -472,7 +472,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Commission</td>
+							<td>Pigmy Pay Deduct Commission - {{ $name }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->Deduct_Commission }}</td>
@@ -534,7 +534,7 @@
 							<tr>
 								<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
 								<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
-								<td>RD Paid Amount</td>
+								<td>RD Paid Amount - {{ $name }}</td>
 								<td>-</td>
 								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
 								<td>-</td>
@@ -593,7 +593,7 @@
 						<tr>
 							<td>{{ $fdamt->Created_Date }}</td>
 							<td>{{ $fdamt->Fd_CertificateNum }}</td>
-							<td>FD Deposit Amount</td>
+							<td>FD Deposit Amount - {{ $name }}</td>
 							<td>{{ $fdamt->Fd_DepositAmt }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -654,7 +654,7 @@
 						<tr>
 							<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
 							<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-							<td>FD Paid Amount</td>
+							<td>FD Paid Amount - {{ $name }}</td>
 							<td>-</td>
 							<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
 							<td>-</td>
@@ -671,7 +671,7 @@
 						<tr>
 							<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
 							<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-							<td>FD Paid Amount</td>
+							<td>FD Paid Amount - {{ $name }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -759,7 +759,7 @@
 							<tr>
 								<td>{{$row->md_tran_date}}</td>
 								<td>{{$row->md_acc_no}}</td>
-								<td>Maturiy dposit Paid Amount</td>
+								<td>Maturiy dposit Paid Amount - {{ $name }}</td>
 								<td>-</td>
 								<td>{{$cash_db}}</td>
 								<td>-</td>
@@ -775,7 +775,7 @@
 							<tr>
 								<td>{{$row->md_tran_date}}</td>
 								<td>{{$row->md_acc_no}}</td>
-								<td>Maturiy dposit Paid Amount</td>
+								<td>Maturiy dposit Paid Amount - {{ $name }}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
@@ -814,7 +814,7 @@
 						<tr>
 							<td>{{ $share->PURSH_Date }}</td>
 							<td>{{ $share->PURSH_Memshareid }}</td>
-							<td>Purchased Shares</td>
+							<td>Purchased Shares - {{ $name }}</td>
 							<td>{{ $share->PURSH_Totalamt }}</td>
 							<td>-</td>
 							<td>-</td>
