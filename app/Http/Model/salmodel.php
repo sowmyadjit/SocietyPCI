@@ -115,6 +115,7 @@
 			$id = DB::table('salary')->select('salid','FirstName','basicpay','date','netpay','salary.Eid','salary.Uid')
 			->leftJoin('employee','employee.Eid','=','salary.Eid')
 			->leftJoin('user','user.Uid','=','salary.Uid')
+			->orderBy("salid","desc")
 			->get();
 			return $id;
 		}
