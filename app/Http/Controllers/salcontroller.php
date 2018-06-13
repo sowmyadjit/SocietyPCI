@@ -27,7 +27,8 @@
 
 		public function salary_slip(Request $request)
 		{
-			$salary_slip_data = $this->salary->salary_slip_data([]);
+			$sal_id = $request->input("sal_id");
+			$salary_slip_data = $this->salary->salary_slip_data(["sal_id"=>$sal_id]);
 			return view('salary_slip',compact('salary_slip_data'));
 		}
 
