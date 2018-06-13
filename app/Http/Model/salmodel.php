@@ -485,7 +485,10 @@
 		}
 
 		public function salary_slip_data($data){
-			$ret_data = DB::table("salary")
+			$ret_data["deduction"] = [];
+			$ret_data["adition"] = [];
+
+			$ret_data["sal_details"] = DB::table("salary")
 				->select(
 							DB::raw("rtrim(concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`)) as 'full_name'"),
 							DB::raw("`Joining_Date` as 'date_of_joining'"),
@@ -505,12 +508,31 @@
 				->where("salid",$data["sal_id"])
 				->first();
 
-			if(empty($ret_data)) {
+			if(empty($ret_data["sal_details"])) {
 				return "Salary entry not found";
 			}
 
-			$ret_data->month = date("F",strtotime($ret_data->rep_date));
-			$ret_data->year = date("Y",strtotime($ret_data->rep_date));
+			$ret_data["sal_details"]->month = date("F",strtotime($ret_data["sal_details"]->rep_date));
+			$ret_data["sal_details"]->year = date("Y",strtotime($ret_data["sal_details"]->rep_date));
+
+			$ret_data["deduction"] = DB::table("salary_extra_pay")
+				->select(
+							"sal_extra_display_name",
+							"salpay_extra_amt"
+						)
+				->join("salary_extra","salary_extra.sal_extra_id","=","salary_extra_pay.sal_extra_id")
+				->where("sal_id",$data["sal_id"])
+				->where("salary_extra.sal_extra_type",2)
+				->get();
+			$ret_data["adition"] = DB::table("salary_extra_pay")
+				->select(
+							"sal_extra_display_name",
+							"salpay_extra_amt"
+						)
+				->join("salary_extra","salary_extra.sal_extra_id","=","salary_extra_pay.sal_extra_id")
+				->where("sal_id",$data["sal_id"])
+				->where("salary_extra.sal_extra_type",1)
+				->get();
 
 			return $ret_data;
 		}
