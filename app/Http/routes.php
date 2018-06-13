@@ -793,6 +793,7 @@
 				Route::get('/getagentsalary_1','salcontroller@getagentsalary_1');
 				Route::get('/getsaraparasalary','salcontroller@getsaraparasalary');
 				Route::get('/getrdagentsalary','salcontroller@getrdagentsalary');
+				Route::get('/salary_slip_data','salcontroller@salary_slip_data');
 				
 				
 				
@@ -968,6 +969,7 @@
 		Route::get("aa","LogController@aa");
 		
 //TestController
+		Route::match(["get","post"],"rv","TestController@rv");
 		Route::match(["get","post"],"test","TestController@test");
 		
 

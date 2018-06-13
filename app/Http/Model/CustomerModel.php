@@ -7,6 +7,7 @@
 	use Auth;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	
 	class CustomerModel extends Model
@@ -17,6 +18,7 @@
 		public function __construct()
 		{
 			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
 		}
 		
 		public function insert($id)
@@ -163,9 +165,11 @@
 			$id = DB::table('customer')->select('Custid','customer.FirstName','customer.MiddleName','customer.LastName','BName','AccNum','Gender','OpeningBalance','address.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','MobileNo','Pincode','PhoneNo','custtyp','user.Uid','Member_No')
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
-			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')
-			->where('customer.Bid','=',$BID)
-			->orderBy('Custid','desc')
+			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$id = $id->where('customer.Bid','=',$BID);
+			}
+			$id = $id->orderBy('Custid','desc')
 			->paginate(10);
 			
 			return $id;
