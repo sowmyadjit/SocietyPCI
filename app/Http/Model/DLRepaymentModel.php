@@ -6,6 +6,7 @@
 	use DB;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class DLRepaymentModel extends Model
 	{
@@ -13,17 +14,23 @@
 		
 		public function __construct() {
 			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
 		}
 		
 		public function pigmydlacc()
-		{
-			
-			return DB::table('depositeloan_allocation')
+		{	
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('depositeloan_allocation')
 			//->select(DB::raw('DepLoanAllocId as id, CONCAT(`DepLoanAllocId`,"-",`DepLoan_AccNum`) as name'))
 			->select(DB::raw('DepLoanAllocId as id, DepLoan_AccNum as name'))
 			->where('DepLoan_AccNum','like','%PG%')
-			->where('LoanClosed_State','<>',"YES")
-			->get();		
+			->where('LoanClosed_State','<>',"YES");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;	
 		}
 		public function GetDLDetail($id)
 		{
@@ -504,23 +511,31 @@
 		
 		public function RDdlacc()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			
-			return DB::table('depositeloan_allocation')
-			
+			$ret_data = DB::table('depositeloan_allocation')
 			->select(DB::raw('DepLoanAllocId as id, DepLoan_AccNum as name'))
-			->where('DepLoan_AccNum','like','%RD%')
-			->get();		
+			->where('DepLoan_AccNum','like','%RD%');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function FDdlacc()
 		{
-			
-			return DB::table('depositeloan_allocation')
-			
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('depositeloan_allocation')
 			->select(DB::raw('DepLoanAllocId as id, DepLoan_AccNum as name'))
-			->where('LoanClosed_State','<>',"YES")
+			->where('LoanClosed_State','<>',"YES");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+			}
 			//->where('DepLoan_AccNum','like','%FD%')
-			->get();		
+			$ret_data = $ret_data->get();		
+			return $ret_data;
 		}
 		public function FDdlacc_fd()
 		{
@@ -584,11 +599,15 @@
 		}
 		public function getplacc()
 		{
-			
-			return DB::table('personalloan_allocation')
-			
-			->select(DB::raw('PersLoanAllocID as id, PersLoan_Number as name'))
-			->get();		
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('personalloan_allocation')
+			->select(DB::raw('PersLoanAllocID as id, PersLoan_Number as name'));
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("personalloan_allocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		public function getjlacc()
 		{
@@ -603,14 +622,16 @@
 				$bids = array($BID);
 			}
 			
-			return DB::table('jewelloan_allocation')
-			
-			->select(DB::raw('JewelLoanId as id, JewelLoan_LoanNumber as name'))
-			->where('JewelLoan_Closed','!=','YES')
-			->whereIn('JewelLoan_Bid',$bids)
-			->orWhere("auction_status","=","1")
+			$ret_data = DB::table('jewelloan_allocation')
+				->select(DB::raw('JewelLoanId as id, JewelLoan_LoanNumber as name'))
+				->where('JewelLoan_Closed','!=','YES');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->whereIn('JewelLoan_Bid',$bids);
+			}
+			$ret_data = $ret_data->orWhere("auction_status","=","1")
 			->orWhere("auction_status","=","2")
-			->get();		
+			->get();
+			return $ret_data;
 		}
 		public function getplacc_partpayment()
 		{
@@ -717,11 +738,15 @@
 		
 		public function getslacc()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			
-			return DB::table('staffloan_allocation')
-			
-			->select(DB::raw('StfLoanAllocID as id,StfLoan_Number as name'))
-			->get();		
+			$ret_data = DB::table('staffloan_allocation')
+			->select(DB::raw('StfLoanAllocID as id,StfLoan_Number as name'));
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("staffloan_allocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		public function getslacc_partpayment()
 		{

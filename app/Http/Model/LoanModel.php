@@ -7,6 +7,7 @@
 	use DB;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class LoanModel extends Model
 	{
@@ -14,6 +15,7 @@
 
 		public function __construct() {
 				$this->rv_no = new ReceiptVoucherController;
+				$this->settings = new SettingsModel;
 		}
 		
 		public function getaccname($id)
@@ -3362,8 +3364,10 @@
 								);
 			$account_list = DB::table($table)
 				->select($select_array)
-				->join("user","user.Uid","=","{$table}.{$user_id_field}")
-				->where($branch_id_field,"=",$BID);
+				->join("user","user.Uid","=","{$table}.{$user_id_field}");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$account_list = $account_list->where($branch_id_field,"=",$BID);
+			}
 			if(!empty($data['loan_id'])) {
 				$account_list = $account_list->where($loan_id_field,'=',$data['loan_id']);
 			} else {
@@ -3438,8 +3442,10 @@
 			$account_list = DB::table($table)
 				->select($select_array)
 				->join("members","members.Memid","=","{$table}.MemId")
-				->join("user","user.Uid","=","members.Uid")
-				->where($branch_id_field,"=",$BID);
+				->join("user","user.Uid","=","members.Uid");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$account_list = $account_list->where($branch_id_field,"=",$BID);
+			}
 			if(!empty($data['loan_id'])) {
 				$account_list = $account_list->where($loan_id_field,'=',$data['loan_id']);
 			} else {
@@ -3525,8 +3531,10 @@
 								);
 			$account_list = DB::table($table)
 				->select($select_array)
-				->join("user","user.Uid","=","{$table}.{$user_id_field}")
-				->where($branch_id_field,"=",$BID);
+				->join("user","user.Uid","=","{$table}.{$user_id_field}");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$account_list = $account_list->where($branch_id_field,"=",$BID);
+				}
 			if(!empty($data['loan_id'])) {
 				$account_list = $account_list->where($loan_id_field,'=',$data['loan_id']);
 			} else {

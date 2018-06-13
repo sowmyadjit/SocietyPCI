@@ -7,6 +7,7 @@
 	use App\Http\Model\SmsModel;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class AccountModel extends Model
 	{
@@ -17,6 +18,7 @@
 		{
 			$this->smsmodel=new SmsModel;
 			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
 		}
 		
 		public function insert($id)
@@ -214,12 +216,15 @@
 			$BID=$uname->Bid;
 				
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%".$q."%' ");
-			return DB::table('createaccount')
+			$ret_data =  DB::table('createaccount')
 			->select(DB::raw('Accid as id, CONCAT(`Old_AccNo`,"-",`AccNum`) as name'))
 			->where('AccNum','like','%SB%')
-			->where('Status','=',"AUTHORISED")
-			->where('createaccount.Bid','=',$BID)
-			->get();
+			->where('Status','=',"AUTHORISED");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where('createaccount.Bid','=',$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		/*public function getvalue($id)
 			{
@@ -879,12 +884,20 @@
 		}
 		public function getrdaccount($q)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%".$q."%' ");
-			return DB::table('createaccount')
+			$ret_data = DB::table('createaccount')
 			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
 			->where('AccNum','like','%RD%')
-			->where('Status','=',"AUTHORISED")
-			->get();
+			->where('Status','=',"AUTHORISED");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where('createaccount.Bid','=',$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function get_running_rd_num($q)
