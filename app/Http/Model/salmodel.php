@@ -494,6 +494,7 @@
 							DB::raw("'--' as 'lop_days'"),
 							DB::raw("`DName` as 'designation'"),
 							DB::raw("'month' as 'month'"),
+							DB::raw("'year' as 'year'"),
 							"rep_date"
 						)
 				->join("user","user.Uid","=","salary.Uid")
@@ -508,6 +509,7 @@
 			}
 
 			$ret_data->month = date("F",strtotime($ret_data->rep_date));
+			$ret_data->year = date("Y",strtotime($ret_data->rep_date));
 
 			return $ret_data;
 		}
