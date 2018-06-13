@@ -779,7 +779,7 @@
 				
 				//salarycontroller
 				Route::get('/salary','salcontroller@showsal');
-				Route::get('/salary_slip','salcontroller@salary_slip');
+				Route::post('/salary_slip','salcontroller@salary_slip');
 				Route::get('/salcreate','salcontroller@show_salcreate');
 				Route::post('/getsal','salcontroller@get_saldet');
 				Route::post('/salaryinsert','salcontroller@create_sal');

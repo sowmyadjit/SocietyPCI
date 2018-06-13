@@ -79,7 +79,7 @@
 							<td>{{$salary->basicpay}}</td>
 							<td>{{$salary->date}}</td>
 							<td>{{$salary->netpay}}</td>
-							<td><button class="salary_slip">view</button></td>
+							<td><button class="salary_slip" onClick="salary_function('{{$salary->salid}}')">view</button></td>
 						</tr>
 
 						@endforeach
@@ -110,7 +110,7 @@
 					</table>
 				</div>	
 			</div>
-			<div id="sal_slip_show" style="height:500px;"></div>
+			<div id="sal_slip_show" style="height:700px;"></div>
 		</div>
 				
 		</div>
@@ -201,14 +201,23 @@
 </script>
 <script>
 $('.salary_slip').click(function(){
+	
+});
+</script>
+<script>
+	function salary_function(sal_id){
+	console.log('sal_id-',sal_id);
 	$.ajax({
 		url: 'salary_slip',
-		type: 'get',
+		type: 'post',
+		data:'sal_id='+sal_id,
 		success: function(data) {
 			$('#salary_list').hide();
 			$('#sal_slip_show').show();
 			$('#sal_slip_show').html(data);
+			document.body.scrollTop = 0;
+    		document.documentElement.scrollTop = 0;
 		}
 	});
-});
+	}
 </script>
