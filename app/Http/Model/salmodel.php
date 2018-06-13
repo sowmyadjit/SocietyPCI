@@ -487,7 +487,7 @@
 			$ret_data = DB::table("salary")
 				->select(
 							DB::raw("rtrim(concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`)) as 'full_name'"),
-							DB::raw("'Joining_Date' as 'date_of_joining'"),
+							DB::raw("`Joining_Date` as 'date_of_joining'"),
 							DB::raw("'--' as 'pf_no'"),
 							DB::raw("`AccNum` as 'sb_no'"),
 							DB::raw("'--' as 'worked_days'"),
