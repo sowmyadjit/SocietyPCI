@@ -492,7 +492,9 @@
 							DB::raw("`AccNum` as 'sb_no'"),
 							DB::raw("'--' as 'worked_days'"),
 							DB::raw("'--' as 'lop_days'"),
-							DB::raw("`DName` as 'designation'")
+							DB::raw("`DName` as 'designation'"),
+							DB::raw("'month' as 'month'"),
+							"rep_date"
 						)
 				->join("user","user.Uid","=","salary.Uid")
 				->join("employee","employee.Uid","=","salary.Uid")
@@ -504,6 +506,8 @@
 			if(empty($ret_data)) {
 				return "Salary entry not found";
 			}
+
+			$ret_data->month = date("F",strtotime($ret_data->rep_date));
 
 			return $ret_data;
 		}
