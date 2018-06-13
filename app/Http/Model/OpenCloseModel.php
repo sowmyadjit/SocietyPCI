@@ -234,8 +234,8 @@
 			$sbtoday=$dte;
 			$id = DB::table('sb_transaction')->select('SBReport_TranDate','TransactionType','Amount','Total_Bal','AccNum','Tranid','particulars','CurrentBalance','SB_resp_No','SB_paymentvoucher_No','Payment_Mode',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
-			->where('SBReport_TranDate',$sbtoday)
 			->join("user","user.Uid","=","createaccount.Uid")
+			->where('SBReport_TranDate',$sbtoday)
 			->where('sb_transaction.Bid','=',$BranchId)
 			->where('Payment_Mode','<>',"CASH")
 			->where('tran_reversed','=',"NO")
@@ -1063,7 +1063,7 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
-			$id=DB::table('purchaseshare')->select('PURSH_Memshareid','PURSH_Totalamt','PURSH_Date', 'receipt_voucher_no as PURSH_Share_resp_no',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			$id=DB::table('purchaseshare')->select('PURSH_Memshareid','PURSH_Totalamt','PURSH_Date', 'receipt_voucher_no as PURSH_Share_resp_no',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","purchaseshare.PURSH_Pid")
 			->join("members","members.Memid","=","purchaseshare.PURSH_Memid")
 			->join("user","user.Uid","=","members.Uid")
@@ -1410,6 +1410,7 @@
 			->join('branch','branch.Bid','=','Branch_Branch1_Id')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
 			->where("receipt_voucher.transaction_category",4)
+			->where("receipt_voucher.bid",$BranchId)
 			->where('Branch_Tran_Date',$dte)
 			->where('Branch_Branch2_Id',$BranchId)
 			->get();
