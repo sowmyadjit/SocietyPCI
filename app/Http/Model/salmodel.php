@@ -496,6 +496,29 @@
 			
 			return;
 		}
+
+		public function salary_slip_data($data){
+			$ret_data = DB::table("salary")
+				->select(
+							DB::raw("rtrim(concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`)) as 'full_name'"),
+							DB::raw("'Joining_Date' as 'date_of_joining'"),
+							DB::raw("'--' as 'pf_no'"),
+							DB::raw("`AccNum` as 'sb_no'"),
+							DB::raw("'--' as 'worked_days'"),
+							DB::raw("'--' as 'lop_days'"),
+							DB::raw("`DName` as 'designation'")
+						)
+				->join("user","user.Uid","=","salary.Uid")
+				->join("employee","employee.Uid","=","salary.Uid")
+				->join("createaccount","createaccount.Accid","=","employee.accid")
+				->join("designation","designation.Did","=","employee.Did")
+				->where("salid",$data["sal_id"])
+				->first();
+
+			if(empty($ret_data)) {
+				return "Salary entry not found";
+			}
+		}
 		
 	}
 

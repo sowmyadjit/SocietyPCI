@@ -266,5 +266,11 @@
 			
 			
 		}
+
+		public function salary_slip_data(Request $request)
+		{
+			$ret_data = $this->salary->salary_slip_data([]);
+			return $ret_data;
+		}
 		
 	}
