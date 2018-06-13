@@ -25,9 +25,10 @@
 			
 		}
 
-		public function salary_slip()
+		public function salary_slip(Request $request)
 		{
-			return view('salary_slip');
+			$salary_slip_data = $this->salary->salary_slip_data([]);
+			return view('salary_slip',compact('salary_slip_data'));
 		}
 
 		public function show_salcreate()
@@ -271,12 +272,6 @@
 			$get=$this->salary->payagentcommision($agentsal);
 			
 			
-		}
-
-		public function salary_slip_data(Request $request)
-		{
-			$ret_data = $this->salary->salary_slip_data([]);
-			return $ret_data;
 		}
 		
 	}
