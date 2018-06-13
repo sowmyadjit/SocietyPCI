@@ -518,6 +518,8 @@
 			if(empty($ret_data)) {
 				return "Salary entry not found";
 			}
+
+			return $ret_data;
 		}
 		
 	}
