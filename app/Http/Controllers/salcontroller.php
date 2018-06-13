@@ -24,6 +24,12 @@
 			return view('sal',compact('s'));
 			
 		}
+
+		public function salary_slip()
+		{
+			return view('salary_slip');
+		}
+
 		public function show_salcreate()
 		{
 			return view('s');

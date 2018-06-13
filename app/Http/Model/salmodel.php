@@ -64,19 +64,16 @@
 				$z=0;
 				for($i=1;$i<$n;$i++)
 				{
-					
 					$charges=explode(",",$chargid);
 					$chaamount=explode(",",$chargamt);
 					$x=$charges[$z];
 					$y=$chaamount[$z];
-					
 					
 					$head_sub=DB::table('chareges')->select('head','subhead')
 					->where('charges_id',$x)
 					->first();
 					$head=$head_sub->head;
 					$subhead=$head_sub->subhead;
-					
 					
 					$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$loannum,'bid'=>$id['bid'],'charg_tran_date'=>$RepayDte,'loantype'=>"sL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
 					$z++;
@@ -93,7 +90,6 @@
 				
 				DB::table('staffloan_allocation')->where('StfLoanAllocID','=',$id['loannum'])->update(['StaffLoan_LoanRemainingAmount'=>$totamt,'LastPaidDate'=>$dte]);
 				
-				
 				DB::table('staffloan_repay')->insertGetId(['SLRepay_Date'=>$dte,'SLRepay_SLAllocID'=>$id['loannum'],'SLRepay_PaidAmt'=>$a,'SLRepay_PayMode'=>"SALARY",'SLRepay_Created_By'=>$id['uid'],'SLRepay_Bid'=>$id['bid'],'SLRepay_Interest'=>$id['slintamt'],'paid_principle'=>$EMI_Amount]);
 			}
 			$iid = DB::table('salary')->insertGetId(['chequeno' => $id['cqno'],'date'=>$dte1,'rep_date'=>$dte,'Did'=>$id['desigid']/*,'sallowance'=>$id['sa']*/,'Eid'=>$id['eid'],'bid'=>$BID,'Uid'=>$id['uid'],'year'=>$id['year'],'gearning'=>$id['ge'],'pftax'=>$id['pt'],'gdeduction'=>$id['gd'],'netpay'=>$id['npay'],'LedgerHeadId'=>'131','SubLedgerId'=>'132' /*,'staffPF'=>$id['staffpf'],'societyPF'=>$id['socpf'],'staffESI'=>$id['esi'],'societyESI'=>$id['socesi']*/]);
@@ -108,7 +104,6 @@
 			$accbal1=DB::table('createaccount')->select('Total_Amount')->where('Accid',$accid)->first();
 			$accbal=$accbal1->Total_Amount;
 			$totbal=$accbal+$netpay;
-			
 			
 			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => $netpay,'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$id['bid'],'CreatedBy'=>$UID]);
 			DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>$totbal]);
@@ -151,7 +146,6 @@
 			->where('Uid','=',$id)
 			->first();
 			
-			
 		}
 		public function getagentsalary($id)
 		{	
@@ -161,7 +155,6 @@
 			$end=$id['enddate'];
 			$cp=$id['cp'];
 			$tds=$id['tds'];
-			
 			
 			$tot=DB::table('pigmi_transaction')
 			->where('Agentid','=',$agentid)
@@ -203,15 +196,11 @@
 			$tds=$id['tds'];
 			$SecurityDepositNeeded=$id['SecurityDepositNeeded'];
 			
-			
-			
 			if($SecurityDepositNeeded == "YES") {
 				$securityDepositRate = 0.10;
 			} else {
 				$securityDepositRate = 0;
 			}
-			
-			
 			
 			$bvc['totamt']=$tot;
 			$agentinterest=(($bvc['totamt']*$cp)/100);
@@ -239,14 +228,12 @@
 			$cp=$id['cp'];
 			$tds=$id['tds'];
 			
-			
 			$tot=DB::table('rd_transaction')
 			->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 			->where('createaccount.Agent_ID','=',$agentid)
 			->where('tran_reversed','=',"NO")
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
 			->sum('RD_Amount');
-			
 			
 			$bvc['totamt']=$tot;
 			$agentinterest=(($bvc['totamt']*$cp)/100);
@@ -262,7 +249,9 @@
 			$totaldecution=$bvc['tds']+$bvc['secutitydeposit'];
 			$bvc['interest']=$agentinterest-$totaldecution;
 			return $bvc;
-		}public function getsaraparasalary($id)
+		}
+		
+		public function getsaraparasalary($id)
 		{	
 			$dte=Date('Y-m-d');
 			$agentid=$id['Auid'];
@@ -295,10 +284,7 @@
 				$bvc['otherincome']=$b;
 			}
 			else
-			
 			{
-				
-			
 			$bvc['totamt']=$tot;
 			//$agentinterest=(($bvc['totamt']*$cp)/100);
 			$agentinterest=$tot;
