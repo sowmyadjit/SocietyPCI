@@ -341,7 +341,7 @@
                         <thead>
                             <tr>
                                 <td class="bg_color_head boldclass">
-                                    Deduction
+                                    Deductions
                                 </td>
                                 <td class="bg_color_head boldclass">
                                     Amounts in Rs.
