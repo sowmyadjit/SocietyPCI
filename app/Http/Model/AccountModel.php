@@ -1394,8 +1394,8 @@
 			$account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$table}.Uid")
-				->join("accounttype","accounttype.AccTid","=","{$table}.AccTid")
-				->where($branch_id_field,"=",$BranchId);
+				->join("accounttype","accounttype.AccTid","=","{$table}.AccTid");
+				// ->where($branch_id_field,"=",$BranchId);
 			if(!empty($data["account_id"])) {
 				$account_list = $account_list
 									->where($account_id_field,"=",$data["account_id"]);

@@ -12,6 +12,7 @@ use Auth;
 use App\Http\Model\OpenCloseModel;
 use App\Http\Model\ReceiptVoucherModel;
 use App\Http\Controllers\ReceiptVoucherController;
+use App\Http\Model\SettingsModel;
 
 class DepositModel extends Model
 {
@@ -20,6 +21,7 @@ class DepositModel extends Model
 	public function __construct() {
 		$this->op = new OpenCloseModel;
 		$this->rv_no = new ReceiptVoucherController;
+		$this->settings = new SettingsModel;
 	}
 	
 	public function insert($id)
@@ -37,7 +39,7 @@ class DepositModel extends Model
 				//$UID=$uname->Uid;
 				$BID=$uname->Bid;
 		
-		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>$dte1,'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$pay_mode,'Bid'=>$BID]);
+		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>$dte1,'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$pay_mode,'Bid'=>$BID,"paid"=>"yes","Deposit_type"=>"Deposit"]);
 		
 			/***********/
 			$fn_data["rv_payment_mode"] = $pay_mode;
@@ -110,7 +112,7 @@ class DepositModel extends Model
 			$UID=$uname->Uid;
 			
 			$BID=$uname->Bid;
-		$tran_id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>date('Y-m-d'),'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$id['paymode'],'Bid'=>$BID,'Deposit_type'=>"WITHDRAWL"]);
+		$tran_id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>date('Y-m-d'),'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$id['paymode'],'Bid'=>$BID,'Deposit_type'=>"WITHDRAWL","paid"=>"yes"]);
 		
 			/***********/
 			$fn_data["rv_payment_mode"] = $id['paymode'];
@@ -172,8 +174,10 @@ class DepositModel extends Model
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->join("pigmitype","pigmitype.PigmiTypeid","=","{$table}.PigmiTypeid")
-				->where($branch_id_field,"=",$BID);
+				->join("pigmitype","pigmitype.PigmiTypeid","=","{$table}.PigmiTypeid");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
 			if(!empty($data['allocation_id'])) {
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
 			} else {
@@ -261,8 +265,10 @@ class DepositModel extends Model
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->join("fdtype","fdtype.FdTid","=","{$table}.FdTid")
-				->where($branch_id_field,"=",$BID);
+				->join("fdtype","fdtype.FdTid","=","{$table}.FdTid");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
 			if($data["category"] == "FD") {//FD
 				$deposit_account_list = $deposit_account_list->where("fdtype.FdTid","!=",1);
 			} else {//KCC
@@ -335,8 +341,10 @@ class DepositModel extends Model
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->where($deleted_field,"=",0)
-				->where($branch_id_field,"=",$BID);
+				->where($deleted_field,"=",0);
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
 			if(!empty($data['allocation_id'])) {
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
 			} else {
@@ -591,8 +599,10 @@ class DepositModel extends Model
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->where($deleted_field,"=",0)
-				->where($branch_id_field,"=",$BID);
+				->where($deleted_field,"=",0);
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
 			if(!empty($data['allocation_id'])) {
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
 			} else {
