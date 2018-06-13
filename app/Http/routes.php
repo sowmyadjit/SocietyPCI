@@ -967,6 +967,7 @@
 		Route::get("aa","LogController@aa");
 		
 //TestController
+		Route::match(["get","post"],"rv","TestController@rv");
 		Route::match(["get","post"],"test","TestController@test");
 		
 

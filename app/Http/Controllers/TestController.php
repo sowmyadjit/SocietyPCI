@@ -8,6 +8,7 @@
 	use App\Http\Controllers\Controller;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	use Input;
 	use DB;
 	use Auth;
@@ -20,9 +21,16 @@
 		public function __construct()
 		{
 			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
+		}
+
+		public function test()
+		{
+			return $this->settings->get_value("allow_inter_branch");
+			return "aaa";
 		}
 		
-		public function test()
+		public function rv()
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			$to_date = date("Y-m-d"); //"2018-06-06";
