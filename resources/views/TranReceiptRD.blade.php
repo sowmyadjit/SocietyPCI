@@ -43,6 +43,11 @@
 						
 			
 			
+			<tr>
+					<th>Particulars:</th>
+					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $FdRec->particulars }}</span></td>
+			</tr>
+			
 			
 			
 			<hr>
