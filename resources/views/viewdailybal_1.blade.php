@@ -80,7 +80,7 @@
 						<tr>
 							<td>{{ $sb->SBReport_TranDate }}</td>
 							<td>{{ $sb->AccNum }}</td>
-							<td>{{ $sb->particulars }} - {{$sb->name}}</td>
+							<td>{{ $sb->particulars }} - {{$sb->name}}({{$sb->Uid}})</td>
 							
 							@if($sb->TransactionType=="Credit"||$sb->TransactionType=="CREDIT"||$sb->TransactionType=="credit")
 									<?php
@@ -112,7 +112,7 @@
 						<tr>
 							<td>{{ $sb->SBReport_TranDate }}</td>
 							<td>{{ $sb->AccNum }}</td>
-							<td>{{ $sb->particulars }} - {{ $name }}</td>
+							<td>{{ $sb->particulars }} - {{ $sb->name }}({{ $sb->Uid }})</td>
 							
 							@if($sb->TransactionType=="Credit"||$sb->TransactionType=="CREDIT"||$sb->TransactionType=="credit")
 								<?php
@@ -171,7 +171,7 @@
 						<tr>	
 							<td>{{ $rd->RDReport_TranDate }}</td>
 							<td>{{ $rd->AccNum }}</td>
-							<td>{{ $rd->RD_Particulars }} - {{ $name }}</td>
+							<td>{{ $rd->RD_Particulars }} - {{ $rd->name }}({{ $rd->Uid }})</td>
 									
 							@if($rd->RD_Trans_Type=="Credit"||$rd->RD_Trans_Type=="CREDIT"||$rd->RD_Trans_Type=="credit"&&$rd->RDPayment_Mode=="CASH")
 								<?php
@@ -201,7 +201,7 @@
 						<tr>	
 							<td>{{ $rd->RDReport_TranDate }}</td>
 							<td>{{ $rd->AccNum }}</td>
-							<td>{{ $rd->RD_Particulars }} - {{ $name }}</td>
+							<td>{{ $rd->RD_Particulars }} - {{ $rd->name }}({{$rd->Uid}})</td>
 									
 							@if($rd->RD_Trans_Type=="Credit"||$rd->RD_Trans_Type=="CREDIT"||$rd->RD_Trans_Type=="credit"&&$rd->RDPayment_Mode=="CASH")
 								<?php
@@ -259,7 +259,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }} - {{ $name }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $pigmy->name }}({{ $pigmy->Uid }})</td>
 									
 							@if($pigmy->Transaction_Type=="Credit"||$pigmy->Transaction_Type=="CREDIT"||$pigmy->Transaction_Type=="credit")
 								<?php
@@ -287,7 +287,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }} - {{ $name }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $pigmy->name }}({{ $pigmy->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							
@@ -315,7 +315,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }} - {{ $name }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $pigmy->name }}({{ $pigmy->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							
@@ -368,7 +368,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount - {{ $name }}</td>
+							<td>Pigmy Paid Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PayableAmount }}</td>
 							<td>-</td>
@@ -385,7 +385,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount - {{ $name }}</td>
+							<td>Pigmy Paid Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PgmTotal_Amt }}</td>
 							<td>-</td>
@@ -402,7 +402,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount - {{ $name }}</td>
+							<td>Pigmy Paid Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -419,7 +419,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount - {{ $name }}</td>
+							<td>Pigmy Paid Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -436,7 +436,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Commission - {{ $name }}</td>
+							<td>Pigmy Pay Deduct Commission - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							
 							<td>{{ $pigmyamt->Deduct_Commission }}</td>
 							<td>-</td>
@@ -454,7 +454,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Amount - {{ $name }}</td>
+							<td>Pigmy Pay Deduct Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							
 							<td>{{ $pigmyamt->Deduct_Amount }}</td>
 							<td>-</td>
@@ -472,7 +472,7 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Commission - {{ $name }}</td>
+							<td>Pigmy Pay Deduct Commission - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->Deduct_Commission }}</td>
@@ -534,7 +534,7 @@
 							<tr>
 								<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
 								<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
-								<td>RD Paid Amount - {{ $name }}</td>
+								<td>RD Paid Amount - {{ $rdamt->name }}({{ $rdamt->Uid }})</td>
 								<td>-</td>
 								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
 								<td>-</td>
@@ -593,7 +593,7 @@
 						<tr>
 							<td>{{ $fdamt->Created_Date }}</td>
 							<td>{{ $fdamt->Fd_CertificateNum }}</td>
-							<td>FD Deposit Amount - {{ $name }}</td>
+							<td>FD Deposit Amount - {{ $fdamt->name }}({{ $fdamt->Uid }})</td>
 							<td>{{ $fdamt->Fd_DepositAmt }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -654,7 +654,7 @@
 						<tr>
 							<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
 							<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-							<td>FD Paid Amount - {{ $name }}</td>
+							<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
 							<td>-</td>
 							<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
 							<td>-</td>
@@ -671,7 +671,7 @@
 						<tr>
 							<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
 							<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-							<td>FD Paid Amount - {{ $name }}</td>
+							<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -700,7 +700,7 @@
 						<tr>
 							<td>{{$row->FD_Date}}</td>
 							<td>{{$row->fdnum}}</td>
-							<td>FD Interest</td>
+							<td>FD Interest  - {{ $row->name }}({{$row->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -759,7 +759,7 @@
 							<tr>
 								<td>{{$row->md_tran_date}}</td>
 								<td>{{$row->md_acc_no}}</td>
-								<td>Maturiy dposit Paid Amount - {{ $name }}</td>
+								<td>Maturiy dposit Paid Amount - {{ $row->name }}({{ $row->Uid }})</td>
 								<td>-</td>
 								<td>{{$cash_db}}</td>
 								<td>-</td>
@@ -775,7 +775,7 @@
 							<tr>
 								<td>{{$row->md_tran_date}}</td>
 								<td>{{$row->md_acc_no}}</td>
-								<td>Maturiy dposit Paid Amount - {{ $name }}</td>
+								<td>Maturiy dposit Paid Amount - {{ $row->name }}({{ $row->Uid }})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
@@ -814,7 +814,7 @@
 						<tr>
 							<td>{{ $share->PURSH_Date }}</td>
 							<td>{{ $share->PURSH_Memshareid }}</td>
-							<td>Purchased Shares - {{ $name }}</td>
+							<td>Purchased Shares - {{ $share->name }}({{ $share->Uid }})</td>
 							<td>{{ $share->PURSH_Totalamt }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -853,7 +853,7 @@
 						<tr>
 							<td>{{ $membshare->CreatedDate }}</td>
 							<td>{{ $membshare->Memid }}</td>
-							<td>Member Fees</td>
+							<td>Member Fees - {{ $membshare->name }}({{$membshare->Uid}})</td>
 							<td>{{ $membshare->Member_Fee }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -891,7 +891,7 @@
 						<tr>
 							<td>{{ $classd->Created_on }}</td>
 							<td>{{ $classd->FirstName }}</td>
-							<td>Class D Fees</td>
+							<td>Class D Fees- {{ $classd->name }}({{$classd->Uid}})</td>
 							<td>{{ $classd->Customer_Fee }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1058,7 +1058,7 @@
 						<tr>
 							<td>{{ $dlallocation->DepLoan_LoanStartDate }}</td>
 							<td>{{ $dlallocation->DepLoan_LoanNum }}</td>
-							<td>-</td>
+							<td> - {{ $dlallocation->name }}({{$dlallocation->Uid}})</td>
 							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanAmount }}</td>
 							<td>-</td>
@@ -1148,7 +1148,7 @@
 						<tr>
 							<td>{{ $dlrepay->DLRepay_Date }}</td>
 							<td>{{ $dlrepay->DepLoan_LoanNum }}</td>
-							<td>-</td>
+							<td>- {{ $dlrepay->name }}({{$dlrepay->Uid}})</td>
 							<td>{{ $dlrepay->DLRepay_PaidAmt }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1213,7 +1213,7 @@
 						<tr>
 							<td>{{ $plallocation->StartDate }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
-							<td>-</td>
+							<td> - {{ $plallocation->name }}({{$plallocation->Uid}})</td>
 							<td>-</td>
 							<td>{{ $plallocation->LoanAmt }}</td>
 							<td>-</td>
@@ -1454,7 +1454,7 @@
 						<tr>
 							<td>{{ $plrepay->PLRepay_Date }}</td>
 							<td>{{ $plrepay->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
 							<td>{{ $plrepay->PLRepay_Amtpaidtoprincpalamt }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1471,7 +1471,7 @@
 						<tr>
 							<td>{{ $plrepay->PLRepay_Date }}</td>
 							<td>{{ $plrepay->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $plrepay->PLRepay_Amtpaidtoprincpalamt }}</td>
@@ -1509,7 +1509,7 @@
 						<tr>
 							<td>{{ $plrepay->PLRepay_Date }}</td>
 							<td>{{ $plrepay->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
 							<td>{{$plrepay_cash_cr}}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1526,7 +1526,7 @@
 						<tr>
 							<td>{{ $plrepay->PLRepay_Date }}</td>
 							<td>{{ $plrepay->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{$plrepay_adj_cr}}</td>
@@ -1570,7 +1570,7 @@
 						<tr>
 							<td>{{ $jlallocation->JewelLoan_StartDate }}</td>
 							<td>{{ $jlallocation->JewelLoan_LoanNumber }}</td>
-							<td>-</td>
+							<td>- {{$jlallocation->name}}({{$jlallocation->Uid}})</td>
 							<td>-</td>
 							<td>{{ $jlallocation->JewelLoan_LoanAmount }}</td>
 							<td>-</td>
@@ -1587,7 +1587,7 @@
 						<tr>
 							<td>{{ $jlallocation->JewelLoan_StartDate }}</td>
 							<td>{{ $jlallocation->JewelLoan_LoanNumber }}</td>
-							<td>-</td>
+							<td>-{{$jlallocation->name}}({{$jlallocation->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -1630,7 +1630,7 @@
 						<tr>
 							<td><?php echo $jlcharges; ?></td>
 							<td>-</td>
-							<td>-</td>
+							<td>-{{$trandaily['jlcharges']['name'][$jlcharges]}}({{$trandaily['jlcharges']['Uid'][$jlcharges]}})</td>
 							<td><?php echo $trandaily['jlcharges']['val'][$jlcharges]; ?></td>
 							<td>-</td>
 							<td>-</td>
@@ -1647,7 +1647,7 @@
 						<tr>
 							<td><?php echo $jlcharges; ?></td>
 							<td>-</td>
-							<td>-</td>
+							<td>-{{$trandaily['jlcharges_adjust']['name'][$jlcharges]}}({{$trandaily['jlcharges_adjust']['Uid'][$jlcharges]}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td><?php echo $trandaily['jlcharges_adjust']['val'][$jlcharges]; ?></td>
@@ -1691,7 +1691,7 @@
 							<tr>
 								<td>{{ $jlrepay->JLRepay_Date }}</td>
 								<td>{{ $jlrepay->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>- {{ $jlrepay->name }}({{$jlrepay->Uid}})</td>
 								<td>{{$jlrepay_cash_cr}}</td>
 								<td>-</td>
 								<td>-</td>
@@ -1707,7 +1707,7 @@
 							<tr>
 								<td>{{ $jlrepay->JLRepay_Date }}</td>
 								<td>{{ $jlrepay->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>- {{ $jlrepay->name }}({{ $jlrepay->Uid }})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{$jlrepay_adj_cr}}</td>
@@ -1748,7 +1748,7 @@
 							<tr>
 								<td>{{ $jlrepay->JLRepay_Date }}</td>
 								<td>{{ $jlrepay->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>-{{ $jlrepay->name }}({{ $jlrepay->Uid }})</td>
 								<td>{{$jlrepay_cash_cr}}</td>
 								<td>-</td>
 								<td>-</td>
@@ -1764,7 +1764,7 @@
 							<tr>
 								<td>{{ $jlrepay->JLRepay_Date }}</td>
 								<td>{{ $jlrepay->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>-{{ $jlrepay->name }}({{ $jlrepay->Uid }})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{$jlrepay_adj_cr}}</td>
@@ -1805,7 +1805,7 @@
 							<tr>
 								<td>{{ $row_jew->tran_date }}</td>
 								<td>{{ $row_jew->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>-{{ $row_jew->name }}({{$row_jew->Uid}})</td>
 								<td>-</td>
 								<td>{{$cash_db}}</td>
 								<td>-</td>
@@ -1821,7 +1821,7 @@
 							<tr>
 								<td>{{ $row_jew->tran_date }}</td>
 								<td>{{ $row_jew->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>-{{ $row_jew->name }}({{$row_jew->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
@@ -1866,7 +1866,7 @@
 							<tr>
 								<td>{{ $slallocation->StartDate }}</td>
 								<td>{{ $slallocation->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $slallocation->name }}({{$slallocation->Uid}})</td>
 								<td>-</td>
 								<td>{{ $slallocation->LoanAmt }}</td>
 								<td>-</td>
@@ -1882,7 +1882,7 @@
 							<tr>
 								<td>{{ $slallocation->StartDate }}</td>
 								<td>{{ $slallocation->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $slallocation->name }}({{$slallocation->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
@@ -1926,7 +1926,7 @@
 							<tr>
 								<td>{{ $slrepay->SLRepay_Date }}</td>
 								<td>{{ $slrepay->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $slrepay->name }}({{$slrepay->Uid}})</td>
 								<td>{{ $slrepay->SLRepay_PaidAmt }}</td>
 								<td>-</td>
 								<td>-</td>
@@ -1942,7 +1942,7 @@
 							<tr>
 								<td>{{ $slrepay->SLRepay_Date }}</td>
 								<td>{{ $slrepay->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $slrepay->name }}({{$slrepay->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $slrepay->SLRepay_PaidAmt }}</td>
@@ -1985,7 +1985,7 @@
 							<tr>
 								<td>{{ $row->SLRepay_Date }}</td>
 								<td>{{ $row->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $row->name }}({{$row->Uid}})</td>
 								<td>{{ $cash_cr }}</td>
 								<td>-</td>
 								<td>-</td>
@@ -2001,7 +2001,7 @@
 							<tr>
 								<td>{{ $row->SLRepay_Date }}</td>
 								<td>{{ $row->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $row->name }}({{$row->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $adj_cr }}</td>
@@ -2364,7 +2364,7 @@
 						?>
 						<tr>
 							<td>{{ $agentcoll_tran->PendPigmy_ReceivedDate }}</td>
-							<td>{{ $agentcoll_tran->FirstName }}{{ $agentcoll_tran->MiddleName }}{{ $agentcoll_tran->LastName }}</td>
+							<td>{{ $agentcoll_tran->FirstName }}{{ $agentcoll_tran->MiddleName }}{{ $agentcoll_tran->LastName }}({{ $agentcoll_tran->Uid }})</td>
 							<td>-</td>
 							<td>{{ $agentcoll_tran->PenPigmy_AmountReceived }}</td>
 							<td>-</td>
@@ -2403,7 +2403,7 @@
 					?>
 					<tr>
 						<td>{{$row->date}}</td>
-						<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+						<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{ $row->Uid }})</td>
 						<td>Salary</td>
 						<td>-</td>
 						<td>-</td>
@@ -2440,7 +2440,7 @@
 					?>
 					<tr>
 						<td>{{$row->Agent_Commission_PaidDate}}</td>
-						<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+						<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
 						<td>Commission</td>
 						<td>-</td>
 						<td>-</td>
@@ -2498,7 +2498,7 @@
 						?>
 						<tr>
 							<td>{{$row->date}}</td>
-							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
 							<td>{{$row->sal_extra_name}}</td>
 							<td>-</td>
 							<td>-</td>
@@ -2534,7 +2534,7 @@
 						?>
 						<tr>
 							<td>{{$row->date}}</td>
-							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
 							<td>{{$row->sal_extra_name}}</td>
 							<td>-</td>
 							<td>-</td>
@@ -2570,7 +2570,7 @@
 						?>
 						<tr>
 							<td>{{$row->date}}</td>
-							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
 							<td>{{$row->sal_extra_name}}</td>
 							<td>-</td>
 							<td>-</td>
