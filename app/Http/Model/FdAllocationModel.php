@@ -8,6 +8,7 @@
 	use App\Http\Model\SmsModel;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class FdAllocationModel extends Model
 	{
@@ -17,6 +18,7 @@
 		{
 			$this->smsmodel=new SmsModel;
 			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
 		}
 		public function InsertFdAlloc($id)
 		{
@@ -255,12 +257,18 @@
 		{
 			//return DB::select("SELECT `Fdid` as id, CONCAT(`Fdid`,'-',`Fd_CertificateNum`) as name FROM `fdallocation` where `Fd_CertificateNum` LIKE '%".$q."%' ");
 			
-			return DB::table('fdallocation')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('fdallocation')
 			->select(DB::raw('Fdid as id,Fd_CertificateNum as name'))
-			->where('Closed','=',"NO")
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+			}
 			//->where('Loan_Allocated','=',"NO")
 			//->where('Status','=',"AUTHORISED")
-			->get();
+			$ret_data = $ret_data->get();
+			return $ret_data;
 			
 		}
 		

@@ -2,11 +2,20 @@
 	
 	namespace App\Http\Model;
 	use DB;
+	use Auth;
 	use Illuminate\Database\Eloquent\Model;
+	use App\Http\Model\SettingsModel;
 	
 	class EmployeeModel extends Model
 	{
 		protected $table='employee';
+
+		public function __construct()
+		{
+			
+			$this->settings = new SettingsModel;
+		}
+
 		public function insert($id)
 		{
 			
@@ -67,13 +76,18 @@
 		
 		public function GetEmployeeName()
 		{
-			return DB::table('employee')
-			
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('employee')
 			->select(DB::raw('user.Uid as id, CONCAT(`ECode`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
-			->join('user','user.Uid','=','employee.Uid')
+			->join('user','user.Uid','=','employee.Uid');
 			//->where('Emp_Type','=',"PERMANENT EMPLOYEE")
 			//->where('Loan_Allocated','=',"NO")
-			->get();
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("employee.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function GetSuretyName()

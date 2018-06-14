@@ -6,6 +6,7 @@
 	use DB;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class MemberModel extends Model
 	{
@@ -14,6 +15,7 @@
 		
 		public function __construct() {
 				$this->rv_no = new ReceiptVoucherController;
+				$this->settings = new SettingsModel;
 		}
 		
 		public function GetMember($m)
@@ -217,11 +219,17 @@
 		}
 		public function GetMembersForPersLoan($id)
 		{
-			return DB::table('members')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('members')
 			->select(DB::raw('Memid as id, CONCAT(`Memid`,"/",`Member_no`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
-			->where('status','=',"AUTHORISED")
+			->where('status','=',"AUTHORISED");
 			//->where('Loan_Allocated','=','NO')
-			->get();
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("members.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		public function tranmember($id)
 		{

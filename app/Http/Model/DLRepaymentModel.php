@@ -629,8 +629,8 @@
 				$ret_data = $ret_data->whereIn('JewelLoan_Bid',$bids);
 			}
 			$ret_data = $ret_data->orWhere("auction_status","=","1")
-			->orWhere("auction_status","=","2")
-			->get();
+				->orWhere("auction_status","=","2")
+				->get();
 			return $ret_data;
 		}
 		public function getplacc_partpayment()
