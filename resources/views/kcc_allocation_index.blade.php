@@ -45,6 +45,8 @@
 										<option value="YES">CLOSED</option>
 									</select>
 								</div>
+								
+								<a href="crtkccallocation" class="btn btn-default crtpal<?php echo $fda['module']->Mid; ?>">KCC ALLOCATION</a>
 								<div class="col-md-5 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchFd" placeholder="SEARCH KCC">
 								</div>

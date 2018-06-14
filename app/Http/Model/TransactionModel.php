@@ -60,10 +60,11 @@
 			if($type=="SB")
 			{
 				$SbReceData = DB::table('sb_transaction')
-				->select('Tranid','sb_transaction.Accid','Old_AccNo','AccNum','TransactionType','sb_transaction.particulars','Amount','CurrentBalance','Total_Amount','SBReport_TranDate','sb_transaction.Bid','Payment_Mode','FirstName','MiddleName','LastName','createaccount.Uid','SB_resp_No','BName','SB_paymentvoucher_No')
+				->select('Tranid','sb_transaction.Accid','Old_AccNo','AccNum','TransactionType','sb_transaction.particulars','Amount','CurrentBalance','Total_Amount','SBReport_TranDate','sb_transaction.Bid','Payment_Mode','FirstName','MiddleName','LastName','createaccount.Uid','receipt_voucher_no as SB_resp_No','BName','receipt_voucher_no as SB_paymentvoucher_No')
 				->join('createaccount','createaccount.Accid','=','sb_transaction.Accid')
 				->join('user','user.Uid','=','createaccount.Uid')
 				->join('branch','branch.Bid','=','sb_transaction.Bid')
+				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","sb_transaction.Tranid")
 				->where('Tranid',$id)
 				->get();
 				//print_r($SbReceData);
