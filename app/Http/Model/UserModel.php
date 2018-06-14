@@ -7,11 +7,17 @@
 	use DB;
 	use Auth;
 	use Input;
+	use App\Http\Model\SettingsModel;
 	
 	class UserModel extends Model
 	{
 		
 		protected $table = 'user';
+
+		public function __construct()
+		{
+			$this->settings = new SettingsModel;
+		}
 		
 		public function insert($id)
 		{
@@ -83,7 +89,7 @@
 				if(Auth::user())
 				$uname= Auth::user();
 				$BID=$uname->Bid;
-				return DB::table('user')
+				$ret_data = DB::table('user')
 				
 				/*->select(DB::raw('user.Uid as id, CONCAT(user.`Uid`,"-",user.`FirstName`,"-",user.`MiddleName`,"-",customer.`SpouseName`,"-",customer.`FatherName`,"-",user.`LastName`,"-",address.`Address`) as name'))
 				->Join('address','address.Aid','=','user.Aid')
@@ -96,10 +102,13 @@
 				->Join('address','address.Aid','=','user.Aid')
 				//->Join('customer','customer.Uid','=','user.Uid')
 				->where('user.AuthStatus','=',"AUTHORISED")
-				->where('UserType','=',"MAJOR")
-				->where('user.Bid','=',$BID)
-				->orwhere('user.Bid','=',"6")
-			->get();
+				->where('UserType','=',"MAJOR");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$ret_data = $ret_data->where('user.Bid','=',$BID);
+				}
+				$ret_data = $ret_data->orwhere('user.Bid','=',"6")
+					->get();
+			return $ret_data;
 			
 			/*$t=Input::all();
 			//print_r($t);
@@ -124,16 +133,17 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BID=$uname->Bid;
-			return DB::table('user')
-			
-			->select(DB::raw('user.Uid as id, CONCAT(`Uid`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
-			->where('AuthStatus','=',"AUTHORISED")
-		->where('UserType','=',"MAJOR")
-		->where('Bid','=',$BID)
-		->orWhere('Bid',"6")
-		->where('Jewelloan','=',"NO")
-		->get();
-		
+			$ret_data = DB::table('user')
+				->select(DB::raw('user.Uid as id, CONCAT(`Uid`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
+				->where('AuthStatus','=',"AUTHORISED")
+				->where('UserType','=',"MAJOR");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where('Bid','=',$BID);
+			}
+			$ret_data = $ret_data->orWhere('Bid',"6")
+				->where('Jewelloan','=',"NO")
+				->get();
+			return $ret_data;
 		}
 		public function getuser_forloan()
 		{
@@ -141,14 +151,18 @@
 				if(Auth::user())
 				$uname= Auth::user();
 				$BID=$uname->Bid;
-				return DB::table('user')
-			->select(DB::raw('user.Uid as id, CONCAT(user.`Uid`,"-",user.`FirstName`,"-",user.`MiddleName`,"-",user.`LastName`,"-",`Member_No`) as name'))
+
+				$ret_data = DB::table('user')
+				->select(DB::raw('user.Uid as id, CONCAT(user.`Uid`,"-",user.`FirstName`,"-",user.`MiddleName`,"-",user.`LastName`,"-",`Member_No`) as name'))
 				//->Join('customer','customer.Uid','=','user.Uid')
 				->where('user.AuthStatus','=',"AUTHORISED")
-				->where('UserType','=',"MAJOR")
-				->where('user.Bid','=',$BID)
+				->where('UserType','=',"MAJOR");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$ret_data = $ret_data->where('user.Bid','=',$BID);
+				}
 				//->orwhere('user.Bid','=',"6")
-			->get();
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function change_branch($data)

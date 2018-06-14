@@ -971,6 +971,7 @@
 //TestController
 		Route::match(["get","post"],"rv","TestController@rv");
 		Route::match(["get","post"],"test","TestController@test");
+		Route::match(["get","post"],"update_settings","TestController@update_settings");
 		
 
 //	CLEAR CACHE

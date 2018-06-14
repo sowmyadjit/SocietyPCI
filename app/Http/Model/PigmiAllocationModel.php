@@ -7,6 +7,7 @@
 	use File;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class PigmiAllocationModel extends Model
 	{
@@ -14,6 +15,7 @@
 		
 		public function __construct() {
 			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
 		}
 		
 		public function insert($id)
@@ -268,15 +270,19 @@
 		
 		public function GetPigmyNumForLoanAlloc($q)
 		{
-			
-			
-			return DB::table('pigmiallocation')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('pigmiallocation')
 			//	->select(DB::raw('PigmiAllocID as id, CONCAT(`PigmiAllocID`,"-",`PigmiAcc_No`) as name'))
 			->select(DB::raw('PigmiAllocID as id, PigmiAcc_No as name'))
 			->where('Status','=',"AUTHORISED")
 			->where('Loan_Allocated','=',"NO")
-			->where('Closed','=',"NO")
-			->get();		
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("pigmiallocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function PigmiPendingAmtView()

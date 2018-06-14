@@ -1258,14 +1258,19 @@
 		{
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%RD%' ");
 			
-			return DB::table('createaccount')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data =  DB::table('createaccount')
 			->select(DB::raw('Accid as id,AccNum as name'))
 			->where('Closed','<>',"YES")
 			->where('Loan_Allocated','=',"NO")
-			->where('AccNum','like','%RD%')
+			->where('AccNum','like','%RD%');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+			}
 			//->where('Status','=',"AUTHORISED")
-			->get();
-			
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function calc_sb_bal($data = 0)

@@ -17,6 +17,7 @@
 							<a class="btn btn-default change_btn" id="4" >JOK</a>
 							<a class="btn btn-default change_btn" id="5" >TAL</a>
 							<a class="btn btn-default change_btn" id="6" >HO</a>
+							Allow inter branch <input type="checkbox" id="ib" />
 						</div>
 					</div>
 					
@@ -40,6 +41,26 @@
 			success:function(data){
 				console.log("done");
 				document.location.reload();
+			}
+		});
+	});
+</script>
+<script>
+	$("#ib").change(function() {
+		var ib = $('#ib').is(":checked");
+		var value;
+		if(ib) {
+			value = 1;
+		} else {
+			value = 0;
+		}
+		var key = "allow_inter_branch";
+		$.ajax({
+			url:"update_settings",
+			data:"&key="+key+"&value="+value,
+			type:"post",
+			success:function(data){
+				console.log("done");
 			}
 		});
 	});

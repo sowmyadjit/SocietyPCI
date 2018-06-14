@@ -1092,14 +1092,20 @@
 		//Get Members For Personal Loan Allocation
 		public function GetMembersForPersLoanAlloc($q)
 		{
-			return DB::table('request_loan')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('request_loan')
 			->join('members','members.Memid','=','request_loan.RL_MemId')
 			->select(DB::raw('Memid as id, CONCAT(`Memid`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
 			->join('loan_type','loan_type.LoanType_ID','=','request_loan.LoanType_ID')
 			->where('Auth_Status','=',"AUTHORISED")
 			->where('Request_LoanAllocated','=',"NO")
-			->where('Loan_CategoryId','=',"1")
-			->get();
+			->where('Loan_CategoryId','=',"1");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("request_loan.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		//Get Members For Personal Loan Allocation
@@ -1118,37 +1124,55 @@
 		//Get Pygmy Account Number for Deposit Loan
 		public function GetPigmyNumForDLAlloc($q) 
 		{
-			return DB::table('request_loan')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('request_loan')
 			->select(DB::Raw('PersLoanAllocID as id, DepLoan_AccNo as name'))
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','request_loan.DepLoan_AccNo')
 			->where('Loan_Allocated','=',"NO")
 			->where('Closed','=',"NO")
-			->where('DepLoan_AccNo','like','%PG%')
-			->get();
+			->where('DepLoan_AccNo','like','%PG%');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("request_loan.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		//Get RD Account Number for Deposit Loan
 		public function GetRDNumForDLAlloc($q) 
 		{
-			return DB::table('request_loan')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('request_loan')
 			->select(DB::Raw('PersLoanAllocID as id, DepLoan_AccNo as name'))
 			->join('createaccount','createaccount.AccNum','=','request_loan.DepLoan_AccNo')
 			->where('Loan_Allocated','=',"NO")
 			->where('Closed','=',"NO")
-			->where('DepLoan_AccNo','like','%RD%')
-			->get();
+			->where('DepLoan_AccNo','like','%RD%');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("request_loan.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		//Get RD Account Number for Deposit Loan
 		public function GetFDNumForDLAlloc($q) 
 		{
-			return DB::table('request_loan')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('request_loan')
 			->select(DB::Raw('PersLoanAllocID as id, DepLoan_AccNo as name'))
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','request_loan.DepLoan_AccNo')
 			->where('Loan_Allocated','=',"NO")
-			->where('Closed','=',"NO")
+			->where('Closed','=',"NO");
 			//->where('DepLoan_AccNo','like','%FD%')
-			->get();
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("request_loan.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		//Get Pygmy detail for DL Allocation
@@ -1221,13 +1245,16 @@
 			$uname= Auth::user();
 			$BID=$uname->Bid;
 			
-			return DB::table('request_loan')
+			$ret_data = DB::table('request_loan')
 			
 			->select(DB::Raw('PersLoanAllocID as id, CONCAT(user.`Uid`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
 			->join('user','user.Uid','=','request_loan.Uid')
-			->where('Request_LoanAllocated','=',"NO")
-			->where('request_loan.Bid','=',$BID)
-			->get();
+			->where('Request_LoanAllocated','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("request_loan.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}	
 		
 		//Get Month Difference for Dep loan EMI calculation
@@ -1248,12 +1275,18 @@
 		//Get Employee Name for Staff Loan Allocation
 		public function GetEmpNameForSLAlloc($id)
 		{
-			return DB::table('request_loan')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('request_loan')
 			->select(DB::Raw('PersLoanAllocID as id, user.FirstName as name'))
 			->join('user','user.Uid','=','request_loan.Uid')
 			->where('Loan_Category','=',"3")
-			->where('Auth_Status','=',"AUTHORISED")
-			->get();
+			->where('Auth_Status','=',"AUTHORISED");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("request_loan.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		public function getdetailsfromrequesttable($id)
 		{
