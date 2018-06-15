@@ -291,6 +291,7 @@
 			->where('RDReport_TranDate',$dtoday)
 			->where('rd_transaction.Bid','=',$BranchId)
 			->where('RDPayment_Mode','=',"CASH")
+			->where('RD_Particulars','!=',"RD INTEREST CAL")
 			//->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->get();
@@ -1764,6 +1765,7 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
+			/* 
 			return DB::table('personalloan_allocation')->select('PersLoan_Number','LoanAmt','StartDate','personalloan_allocation.Bid','receipt_voucher_no as voucher_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_allocation.PersLoanAllocID")
 			->join("members","members.Memid","=","personalloan_allocation.MemId")
@@ -1773,7 +1775,27 @@
 			->where('PayMode','=',"CASH")
 			->where('personalloan_allocation.Bid',$BranchId)
 			->get();
-			
+			 */
+
+			return DB::table("personalloan_payment")
+				->select(
+							'personalloan_allocation.PersLoan_Number',
+							'personalloan_payment.paid_amount',
+							'personalloan_payment.pl_payment_date',
+							'personalloan_allocation.Bid',
+							'receipt_voucher_no as voucher_no',
+							'user.Uid',
+							DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+						)
+				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
+				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_payment.pl_payment_id")
+				->join("members","members.Memid","=","personalloan_allocation.MemId")
+				->join("user","user.Uid","=","members.Uid")
+				->where("receipt_voucher.transaction_category",18)
+				->where('personalloan_payment.pl_payment_date',$dte)
+				->where('personalloan_payment.payment_mode','=',"CASH")
+				->where('personalloan_allocation.Bid',$BranchId)
+				->get();
 			
 		}
 		public function show_plallocationbalance($dte)
@@ -1825,15 +1847,39 @@
 		
 		public function show_plallocationtran_charg($dte)
 		{
+
 			//$dte=date('Y-m-d');
 			$uname='';
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
+
+			/* 
 			return DB::table('personalloan_allocation')->select('PersLoan_Number','LoanAmt','StartDate','Bid','otherCharges','Book_FormCharges','AjustmentCharges','ShareCharges','Insurance')
 			->where('StartDate',$dte)
 			->where('PayMode','<>',"CASH")
 			->where('Bid',$BranchId)
+			->get();
+ */
+			
+			return DB::table('personalloan_payment')
+			->select(
+						'personalloan_allocation.PersLoan_Number',
+						'personalloan_payment.pl_payment_date',
+						'personalloan_allocation.Bid',
+						'personalloan_payment.otherCharges',
+						'personalloan_payment.Book_FormCharges',
+						'personalloan_payment.AjustmentCharges',
+						'personalloan_payment.ShareCharges',
+						'personalloan_payment.Insurance',
+						'receipt_voucher_no as receipt_no'
+					)
+			->leftjoin("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
+			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_payment.pl_payment_id")
+			->where("receipt_voucher.transaction_category",18)
+			->where('personalloan_payment.pl_payment_date',$dte)
+			->where('personalloan_payment.payment_mode','<>',"CASH")
+			->where('personalloan_allocation.Bid',$BranchId)
 			->get();
 		}
 		
@@ -1844,12 +1890,34 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
-			return DB::table('personalloan_allocation')->select('PersLoan_Number','LoanAmt','StartDate','personalloan_allocation.Bid','otherCharges','Book_FormCharges','AjustmentCharges','ShareCharges','Insurance','receipt_voucher_no as receipt_no')
-			->leftjoin("personalloan_payment","personalloan_payment.pl_allocation_id","=","personalloan_allocation.PersLoanAllocID")
+/* 
+			return DB::table('personalloan_allocation')
+				->select('PersLoan_Number','LoanAmt','StartDate','personalloan_allocation.Bid','otherCharges','Book_FormCharges','AjustmentCharges','ShareCharges','Insurance','receipt_voucher_no as receipt_no')
+				->leftjoin("personalloan_payment","personalloan_payment.pl_allocation_id","=","personalloan_allocation.PersLoanAllocID")
+				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_payment.pl_payment_id")
+				->where("receipt_voucher.transaction_category",18)
+				->where('StartDate',$dte)
+				->where('PayMode','=',"CASH")
+				->where('personalloan_allocation.Bid',$BranchId)
+				->get();
+ */
+			return DB::table('personalloan_payment')
+			->select(
+						'personalloan_allocation.PersLoan_Number',
+						'personalloan_payment.pl_payment_date',
+						'personalloan_allocation.Bid',
+						'personalloan_payment.otherCharges',
+						'personalloan_payment.Book_FormCharges',
+						'personalloan_payment.AjustmentCharges',
+						'personalloan_payment.ShareCharges',
+						'personalloan_payment.Insurance',
+						'receipt_voucher_no as receipt_no'
+					)
+			->leftjoin("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_payment.pl_payment_id")
 			->where("receipt_voucher.transaction_category",18)
-			->where('StartDate',$dte)
-			->where('PayMode','=',"CASH")
+			->where('personalloan_payment.pl_payment_date',$dte)
+			->where('personalloan_payment.payment_mode','=',"CASH")
 			->where('personalloan_allocation.Bid',$BranchId)
 			->get();
 		}

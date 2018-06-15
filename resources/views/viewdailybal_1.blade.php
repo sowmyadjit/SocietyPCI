@@ -1207,32 +1207,32 @@
 					?>
 					@foreach ($trandaily['plallocation'] as $plallocation)
 						<?php
-							$pl_cash_db = $plallocation->LoanAmt;
+							$pl_cash_db = $plallocation->paid_amount;
 							$pl_cash_db_total += $pl_cash_db;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td> - {{ $plallocation->name }}({{$plallocation->Uid}})</td>
 							<td>-</td>
-							<td>{{ $plallocation->LoanAmt }}</td>
+							<td>{{ $plallocation->paid_amount }}</td>
 							<td>-</td>
 							<td>{{$plallocation->voucher_no}}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_adjust'] as $plallocation)
 						<?php
-							$pl_adj_db = $plallocation->LoanAmt;
+							$pl_adj_db = $plallocation->paid_amount;
 							$pl_adj_db_total += $pl_adj_db;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>{{ $plallocation->LoanAmt }}</td>
+							<td>{{ $plallocation->paid_amount }}</td>
 							<td>-</td>
 							<td>-</td>
 						</tr>
@@ -1244,7 +1244,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->otherCharges }}</td>
@@ -1262,7 +1262,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->Book_FormCharges }}</td>
@@ -1280,7 +1280,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->AjustmentCharges }}</td>
@@ -1298,7 +1298,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->ShareCharges }}</td>
@@ -1316,7 +1316,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->Insurance }}</td>
@@ -1335,7 +1335,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1353,7 +1353,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1371,7 +1371,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1389,7 +1389,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1405,7 +1405,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
