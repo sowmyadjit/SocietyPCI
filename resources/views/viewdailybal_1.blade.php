@@ -2047,7 +2047,7 @@
 							<tr>
 								<td>{{ $row->charg_tran_date }}</td>
 								<td>{{ $row->ln_no }}</td>
-								<td>{{ $row->lname }} - {{ $row->name }}({{ $row->Uid }})</td>
+								<td>{{ $row->lname }}<?php /* - {{ $row->name }}({{ $row->Uid }}) */ ?></td>
 								<td><p class="text-right"><?php echo $cash_cr; ?></p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
@@ -2063,7 +2063,7 @@
 							<tr>
 								<td>{{ $row->charg_tran_date }}</td>
 								<td>{{ $row->ln_no }}</td>
-								<td>{{ $row->lname }} - {{ $row->name }}({{ $row->Uid }})</td>
+								<td>{{ $row->lname }} <?php /* - {{ $row->name }}({{ $row->Uid }}) */ ?></td>
 								<td><p class="text-right">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center"><?php echo $adj_cr; ?></p></td>
