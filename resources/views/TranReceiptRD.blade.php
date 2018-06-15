@@ -45,7 +45,7 @@
 			
 			<tr>
 					<th>Particulars:</th>
-					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $FdRec->particulars }}</span></td>
+					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $FdRec->RD_Particulars }}</span></td>
 			</tr>
 			
 			
@@ -56,6 +56,12 @@
 			<tr>
 				<th>Amount Paid:</th>
 				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $FdRec->RD_Amount }}&nbsp/-</span></td>
+			</tr>
+
+			<tr>
+				<th>Amount in words:</th>
+				<input type="hiddennnn" name="rupees" value="{{$FdRec->RD_Amount}}" id="rupees" />
+				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container"> </span></span></td>
 			</tr>
 			
 			@endforeach
