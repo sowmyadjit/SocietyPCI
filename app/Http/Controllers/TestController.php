@@ -8,7 +8,7 @@
 	use App\Http\Controllers\Controller;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
-	use App\Http\Model\SettingsModel;
+	use App\Http\Model\salmodel;
 	use Input;
 	use DB;
 	use Auth;
@@ -21,13 +21,24 @@
 		public function __construct()
 		{
 			$this->rv_no = new ReceiptVoucherController;
-			$this->settings = new SettingsModel;
+			$this->test = new salmodel;
 		}
 
 		public function test()
 		{
-			return $this->settings->get_value("allow_inter_branch");
-			return "aaa";
+			$aa = $this->test->salary_slip_data(["sal_id"=>216]);
+			print_r($aa);
+			return;
+		}
+
+		public function update_settings(REQUEST $request)
+		{
+			$data["key"] = $request->input("key");
+			$data["value"] = $request->input("value");
+			DB::table("settings")
+				->where("settings_key",$data["key"])
+				->update(["settings_value"=>$data["value"]]);
+			return "done";
 		}
 		
 		public function rv()
