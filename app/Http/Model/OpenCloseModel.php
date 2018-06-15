@@ -2447,7 +2447,7 @@
 			$bid=$uname->Bid;
 			
 			$loan_charge=DB::table('charges_tran')
-				->select('loanid as ln_no','loanid as pay_mode','amount','charg_tran_date','loanid','lname','loantype','repay_id','loanid as receipt_no')
+				->select('loanid as ln_no','loanid as pay_mode','amount','charg_tran_date','loanid','lname','loantype','repay_id','loanid as receipt_no',DB::raw(" '' as 'name', '' as 'Uid'"))
 				->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
 				->join('legder','legder.lid','=','chareges.subhead')
 				->where('charg_tran_date','=',$date)
@@ -2490,7 +2490,6 @@
 											->where('SLRepay_SLAllocID','=',$row->loanid)
 											->first();
 										
-
 										if(!empty($alloc_row)) {
 											$loan_charge[$key]->pay_mode = $alloc_row->SLRepay_PayMode;
 											$loan_charge[$key]->receipt_no = "";
@@ -2509,20 +2508,34 @@
 									
 									
 									if(!empty($row->repay_id)){
-										$loan_charge[$key]->pay_mode = DB::table('jewelloan_repay')
-											->where('JLRepay_Id','=',$row->repay_id)
-											->value('JLRepay_PayMode');
-										$loan_charge[$key]->receipt_no = DB::table('jewelloan_repay')
+										$alloc_row = DB::table('jewelloan_repay')
+											->select("receipt_voucher_no","JLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 											->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_repay.JLRepay_Id")
+											->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_Id")
+											->join("user","user.Uid","=","jewelloan_allocation.Uid")
 											->where("receipt_voucher.transaction_category",23)
 											->where('JLRepay_Id','=',$row->repay_id)
-											->value('receipt_voucher_no');
+											->first();
+											
+											$loan_charge[$key]->pay_mode = $alloc_row->JLRepay_PayMode;
+											$loan_charge[$key]->receipt_no = $alloc_row->receipt_voucher_no;
+											$loan_charge[$key]->name = $alloc_row->name;
+											$loan_charge[$key]->Uid = $alloc_row->Uid;
 									} else {
-										$loan_charge[$key]->pay_mode = DB::table('jewelloan_repay')
+										$alloc_row = DB::table('jewelloan_repay')
+											->select("JLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+											->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_Id")
+											->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
 											->where('JLRepay_Date','=',$date)
 											->where('JLRepay_JLAllocID','=',$row->loanid)
-											->value('JLRepay_PayMode');
-										$loan_charge[$key]->receipt_no = "";
+											->first();
+
+											if(!empty($alloc_row)) {
+												$loan_charge[$key]->pay_mode = $alloc_row->JLRepay_PayMode;
+												$loan_charge[$key]->receipt_no = "";
+												$loan_charge[$key]->name = $alloc_row->name;
+												$loan_charge[$key]->Uid = $alloc_row->Uid;
+											}
 									}
 									
 									break;
@@ -2534,20 +2547,36 @@
 									
 									
 									if(!empty($row->repay_id)){
-										$loan_charge[$key]->pay_mode = DB::table('personalloan_repay')
-											->where('PLRepay_Id','=',$row->repay_id)
-											->value('PLRepay_PayMode');
-										$loan_charge[$key]->receipt_no = DB::table('personalloan_repay')
+										$alloc_row = DB::table('personalloan_repay')
+											->select("receipt_voucher_no","PLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 											->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_repay.PLRepay_Id")
+											->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_Id")
+											->join("members","members.Memid","=","personalloan_allocation.MemId")
+											->join("user","user.Uid","=","members.Uid")
 											->where("receipt_voucher.transaction_category",22)
 											->where('PLRepay_Id','=',$row->repay_id)
-											->value('receipt_voucher_no');
+											->first();
+											
+											$loan_charge[$key]->pay_mode = $alloc_row->PLRepay_PayMode;
+											$loan_charge[$key]->receipt_no = $alloc_row->receipt_voucher_no;
+											$loan_charge[$key]->name = $alloc_row->name;
+											$loan_charge[$key]->Uid = $alloc_row->Uid;
 									} else {
-										$loan_charge[$key]->pay_mode = DB::table('personalloan_repay')
+										$alloc_row = DB::table('personalloan_repay')
+											->select("PLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+											->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_Id")
+											->join("members","members.Memid","=","personalloan_allocation.MemId")
+											->join("user","user.Uid","=","members.Uid")
 											->where('PLRepay_Date','=',$date)
 											->where('PLRepay_PLAllocID','=',$row->loanid)
-											->value('PLRepay_PayMode');
-										$loan_charge[$key]->receipt_no = "";
+											->first();
+
+											if(!empty($alloc_row)) {
+												$loan_charge[$key]->pay_mode = $alloc_row->PLRepay_PayMode;
+												$loan_charge[$key]->receipt_no = "";
+												$loan_charge[$key]->name = $alloc_row->name;
+												$loan_charge[$key]->Uid = $alloc_row->Uid;
+											}
 									}
 									
 									break;
@@ -2559,20 +2588,34 @@
 									
 									
 									if(!empty($row->repay_id)){
-										$loan_charge[$key]->pay_mode = DB::table('depositeloan_repay')
-											->where('DLRepay_ID','=',$row->repay_id)
-											->value('DLRepay_PayMode');
-										$loan_charge[$key]->receipt_no = DB::table('depositeloan_repay')
+										$alloc_row = DB::table('depositeloan_repay')
+											->select("receipt_voucher_no","DLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 											->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","depositeloan_repay.DLRepay_ID")
+											->join("depositeloan_allocation","depositeloan_allocation.PersLoanAllocID","=","depositeloan_repay.DLRepay_ID")
+											->join("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
 											->where("receipt_voucher.transaction_category",21)
 											->where('DLRepay_ID','=',$row->repay_id)
-											->value('receipt_voucher_no');
+											->first();
+											
+											$loan_charge[$key]->pay_mode = $alloc_row->DLRepay_PayMode;
+											$loan_charge[$key]->receipt_no = $alloc_row->receipt_voucher_no;
+											$loan_charge[$key]->name = $alloc_row->name;
+											$loan_charge[$key]->Uid = $alloc_row->Uid;
 									} else {
-										$loan_charge[$key]->pay_mode = DB::table('depositeloan_repay')
+										$alloc_row = DB::table('depositeloan_repay')
+											->select("DLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+											->join("depositeloan_allocation","depositeloan_allocation.PersLoanAllocID","=","depositeloan_repay.DLRepay_ID")
+											->join("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
 											->where('DLRepay_Date','=',$date)
 											->where('DLRepay_DepAllocID','=',$row->loanid)
-											->value('DLRepay_PayMode');
-										$loan_charge[$key]->receipt_no = "";
+											->first();
+
+											if(!empty($alloc_row)) {
+												$loan_charge[$key]->pay_mode = $alloc_row->DLRepay_PayMode;
+												$loan_charge[$key]->receipt_no = "";
+												$loan_charge[$key]->name = $alloc_row->name;
+												$loan_charge[$key]->Uid = $alloc_row->Uid;
+											}
 									}
 									
 									break;
