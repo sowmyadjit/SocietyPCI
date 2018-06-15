@@ -199,9 +199,10 @@ use App\Http\Model\TransactionModel;
 			$trans['bankid']=$request->input('bankid');
 			$trans['creditbank']=$request->input('creditbank');
 			
-$trans['LedgerId']=$request->input('LedgerId');
+			$trans['LedgerId']=$request->input('LedgerId');
 			$id=$this->acc->insert_tran($trans);
-			return redirect('/');
+			return $id;
+			// return redirect('/');
 			
 		}
 		public function getaccnum(Request $request)
