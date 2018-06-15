@@ -586,6 +586,11 @@
 																	"paid_status"=>"1",
 																	"payment_mode"=>$paymode,
 																	"particulars"=>"PL PAYMENT",
+																	"otherCharges"=>$id['PersOthrChrges'],
+																	"Book_FormCharges"=>$id['PersBkfrmChrg'],
+																	"AjustmentCharges"=>$id['PersAdjChrg'],
+																	"ShareCharges"=>$id['PersShrChrg'],
+																	"Insurance"=>$id['PersPayAmt'],
 																	"SubLedgerId"=>$subhead,
 																	"deleted"=>"0",
 																]);
