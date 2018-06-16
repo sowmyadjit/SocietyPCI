@@ -41,7 +41,9 @@
 					<div class="form-group">
 						<div class="row table-row">
 							<center>
-								<a href="TranReceiptHome" class="btn btn-primary ReceView">RECEIPT</a>
+								<?php $dddd='TranReceiptHome' ?>
+								<div id="qwerty"></div>
+								<a href="TranReceiptHome" class="btn btn-primary ReceView" >RECEIPT</a>
 							</center>
 						</div>
 					</div>
@@ -1899,7 +1901,14 @@
 					type: 'post',
 					data: $('#form_tran').serialize()+'&actid='+accnum+'&actid_adj='+accnum_adj+'&branchid='+brid+'&bankid='+bankid+'&lid='+lid+'&creditbank='+creditbank+'&sb_adj_current_bal='+sb_adj_current_bal,
 					success: function(data) {
-						alert_success();
+						console.log(data);
+						//window.location.href= "TranReceipt/SB/51311";
+						$("#qwerty").attr("href", 'TranReceipt/SB/51311');
+						$("#qwerty").append('<a href="TranReceipt/SB/51311" id="qwertyu"> </a>');
+						// window.location.href = '{{url("TranReceipt/SB/51311")}}';
+    					document.getElementById("qwertyu").click(); // Click on the checkbox
+						// window.location = "TranReceipt/SB/51311"
+						//alert_success();
 //*alert				alert('success');
 						//$('.tranclassid').click();
 					}

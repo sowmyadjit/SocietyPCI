@@ -111,10 +111,28 @@
 			</tr>
 			<tr>
 				<th>Amount in words:</th>
-				<input type="hiddennnn" name="rupees" value="{{$FdRec->Amount}}" id="rupees" />
+				<input type="hidden" name="rupees" value="{{$FdRec->Amount}}" id="rupees" />
 				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container"> </span></span></td>
 				<th>Amount in words:</th>
 				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container2"> </span></span></td>
+			</tr>
+			<tr>
+			<th>
+			<br>
+			Customer
+			</th>
+			<th>
+			<br>
+			Clerk-Manager-Secretary
+			</th>
+			<th>
+			<br>
+			Customer
+			</th>
+			<th>
+			<br>
+			Clerk-Manager-Secretary
+			</th>
 			</tr>
 			@endforeach
 			

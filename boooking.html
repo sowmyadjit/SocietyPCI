@@ -1,0 +1,450 @@
+<script>
+ $(document).ready(function(){
+	 $(window).scrollTop(0);
+});
+</script>
+<style>
+table tr th{
+  background:#337ab7;
+  color:white;
+  text-align:left;
+  vertical-align:center;
+  border: #000;
+}
+</style>
+
+<style>
+	select:invalid {
+    box-shadow: none;
+}
+.calicon button::before {
+    font-family: FontAwesome;
+	content: "\f271";
+	color: #000;
+}
+.calicon button{
+    width: 20%;
+    height: 35px;
+    padding-right: 0px;
+}	
+.payment-form .form-horizontal .form-group .control-label span {
+    color: red;
+    font-size: 16px;
+}
+.grid-containeraaaa {
+  display: grid;
+  grid: 15px ;
+  grid-gap: 10px;
+  
+  padding: 10px;
+  width:10px;
+}
+</style>
+<!-- !PAGE CONTENT! -->
+
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.0/css/responsive.dataTables.min.css">
+<script src="https://cdn.datatables.net/plug-ins/1.10.16/pagination/input.js"></script> -->
+<div class="w3-main w3-white " style="margin-left:250px;margin-top:100px;" ng-controller="customersCtrl">
+	<div class="w3-container">
+		<h4 style="color: #494290;">LIST OF BOOKINGS:</h4>
+		<table ng-if="data1" datatable="ng"  class="table table-bordered bordered table-striped table-condensed datatable" ui-jq="dataTable" ui-options="dataTableOpt" style="background-color: #adadad;" id="example">
+			<thead style="background-color: #494290;color: white;">
+			  <tr>
+				<th>Order</th>
+				<th>Name</th>				
+				<th>Payment Mode</th>
+				
+				<th>From Date</th>
+				<th>To Date</th>
+				<th>Treatment</th>
+				<th>Details</th>
+			  </tr>
+			</thead>
+			<tbody style="background-color: #c7c7c7;" >
+			  <tr ng-repeat="x in data1" ng-style="x.Payment_Mode === 5 && {'background-color': '#cb9bf1'} ||
+			  x.Payment_Mode === 4 && {'background-color': '#f9f46b'}">
+				<td>{{ x.Booking_ID }}</td>
+				<td>{{ x.FirstName }} {{ x.LastName }}</td>
+				<td><span ng-if="x.Payment_Mode==1">Cash</span><span ng-if="x.Payment_Mode==2">Card</span><span ng-if="x.Payment_Mode==3">Online</span><span ng-if="x.Payment_Mode==5">Reserve</span><span ng-if="x.Payment_Mode==4">Blocked</span></td>
+				
+				<td>{{ x.FromDate | date:'dd-MM-yyyy' }}</td>
+				<td>{{ x.ToDate | date:'dd-MM-yyyy' }}</td>
+				<td>{{ x.Treatment_Name }}</td>
+				<td><a href="print.html?id={{x.Booking_ID}}"  onclick="check()" id="value">view</a></td>
+			  </tr>
+			 
+			  
+			</tbody>
+		</table>
+<div>
+	<label>Booked<div class="grid-containeraaaa" style="margin-left: 13px;background-color: #f33d3d;"></div></label>
+	<label>&nbsp;&nbsp;Available<div class="grid-containeraaaa" style="margin-left: 25px;background-color: #008644;"></div></label>
+	<label>&nbsp;&nbsp;Blocked<div class="grid-containeraaaa" style="margin-left: 25px;background-color: #f9f46b;"></div></label>
+	<label>&nbsp;&nbsp;Reserved<div class="grid-containeraaaa" style="margin-left: 25px;background-color: #cb9bf1;"></div></label>
+</div>
+
+			<div>
+			<div style="width:25%;display:inline-block;">
+			<label>From Date :</label>
+			<div class="calicon date" style="width:80%;">
+			<input autocomplete="off" type="text" class="form-control ui-datepicker-trigger" ng-model="from_date" style="border-radius:0px;width: 80%;float:left;" id="from" required/>
+			</div>
+			</div>
+			<div style="width:25%;display:inline-block;">
+			<label>To Date :</label>
+			<div class="calicon date" style="width:80%;">
+			<input autocomplete="off" type="text" class="form-control ui-datepicker-trigger" ng-model="to_date" style="border-radius:0px;width: 80%;float:left;" id="to"  required/>
+			<!-- export-to-csv --> 
+			</div>
+			</div>
+			<div style="width:25%;display:inline-block;">
+			<button ng-click="export_ex()">Export</button>
+			<button ng-click="view_report()">View</button>
+			</div>
+			<div style="width:25%;display:inline-block;">
+					
+			</div>
+			</div>
+
+
+			<!-- <div ng-controller="WithResponsiveCtrl as showCase">
+				<table datatable="" dt-options="showCase.dtOptions" dt-columns="showCase.dtColumns" class="row-border hover" width="100%"></table>
+			</div> -->
+
+			<!-- <script src="https://cdn.datatables.net/responsive/2.1.0/js/dataTables.responsive.min.js"></script> -->
+
+			<!-- <div>
+				<div style="width:30%;display:inline-block;">
+					<label>From Date :</label>
+					<div class="calicon date" style="width:80%;">
+						<input type="text" class="form-control ui-datepicker-trigger" ng-model="from_date_report" style="border-radius:0px;width: 80%;float:left;" id="from_report" required/>
+					</div>
+				</div>
+				<div style="width:30%;display:inline-block;">
+					<label>To Date :</label>
+					<div class="calicon date" style="width:80%;">
+						<input type="text" class="form-control ui-datepicker-trigger" ng-model="to_date_report" style="border-radius:0px;width: 80%;float:left;" id="to_report"  required/>
+					</div>
+				</div>
+				<div style="width:30%;display:inline-block;">
+					<button ng-click="view_report()">View</button>
+				</div>
+			</div> -->
+			<br>
+			<div ng-if="all_report_show" style="overflow:auto;">
+				<table  style="background-color: #bab9bd;color: rgb(0, 0, 0);border: 1px">
+					<thead>
+						<tr>
+							<th ng-style="{'width':'90px'}">Date</th>
+							<th ng-repeat="x in data_report.room_details" ng-style="{'background-color':x.room_color,'text-align': 'center'}"   colspan="{{x.room_quantity}}">{{x.room_code}}</th>
+							<!-- ng-style="{'background-color':x.room_color}" -->
+						</tr>
+					</thead>
+					<tbody style="background-color: #ffffff;color: rgb(0, 0, 0);">
+						<tr ng-repeat="x in data_report.cal_days">
+							<td ng-style="{'width':'90px','border':'1px solid black'}">{{x}}</td>
+
+							<!-- <th ng-repeat="y in data_report.room_details" style="width:200px;"> -->
+								<td ng-repeat="y in data_report.room_details" ng-style="{'border':'1px solid black'}" colspan="{{data_report.booking_schedule_matrix[x][y.room_id].length}}"><table style="width: 100%;height:100%;"><tr><td  style="border: 1px solid black;width: 40px;height: 100%;" ng-repeat="t in data_report.booking_schedule_matrix[x][y.room_id] track by $index" ng-style="((t.Payment_Mode==1||t.Payment_Mode==2||t.Payment_Mode==3) && {'background-color':'#f33d3d','color':'white'}) || t.Payment_Mode==0 && {'background-color': '#008644','color':'white'} || (t.Payment_Mode==4) && {'background-color': '#f9f46b','color':'white'}|| (t.Payment_Mode==5) && {'background-color': '#cb9bf1','color':'white'}" style="color:#ffffff;">{{t.booking_id}}</td></tr></table></td> <!--ng-repeat="z in data_report.booking_schedule_matrix[x][y.room_id] track by $index" >{{z|number}},-->
+								<!-- {{data_report.booking_schedule_matrix[x][y.room_id][0]}} -->
+								<!-- </th> -->
+						</tr>
+					</tbody>	
+				</table>
+			</div>
+			<button export-to-csv id="tgrrr" style="opacity:0;">aaaa</button>
+			<table style="opacity:0;">
+					<tr>
+						<th>Booking ID</th>
+						<th>Name</th>
+						<th>Address</th>
+						<th>Email</th>
+						<th>Mobile</th>
+						<th>Patient ID</th>
+						<th>Booking Date</th>
+						<th>No of Attendant</th>
+						<th>Status</th>
+						<th>Payment Mode</th>
+						<th>Room Details</th>
+					</tr>
+					<tr ng-repeat="x in data_excel.booking_details">
+						<th>{{x.booking_id}}</th>
+						<th>{{x.first_name}} {{x.last_name}}</th>
+						<th>{{x.address}}</th>
+						<th>{{x.email}}</th>
+						<th>{{x.mobile}}</th>
+						<th>{{x.patient_id}}</th>
+						<th>{{x.booking_date}}</th>
+						<th>{{x.no_of_attendents}}</th>
+						<th>{{x.booking_status}}</th>
+						<th>{{x.payment_mode}}</th>
+						<th>{{x.booking_schedule}}</th>
+					</tr>
+			</table>
+
+			
+			
+			<!-- report -->
+			<!-- <table class="table table-bordered bordered">
+				<tr>
+					<th colspan="9" style="text-align: center;">
+						Rooms
+					</th>
+				</tr>
+				<tr>
+						<th>
+							Day
+						</th>
+						<th>
+							Date
+						</th>
+						<th style="background-color: red;">
+							Executive
+						</th>
+						<th style="background-color: blue;">
+							Semi Delux
+						</th>
+						<th style="background-color: green;">
+							Delux
+						</th>
+						<th style="background-color: orange;">
+							Standard
+						</th>
+						<th style="background-color: #46c5c5;">
+							Special Room
+						</th>
+						<th style="background-color: purple;">
+							General Ward(Male)
+						</th>
+						<th style="background-color: rosybrown;">
+							General Ward(Female)
+						</th>
+					</tr>
+					<tr>
+						<th>
+							Mon
+						</th>
+						<th>
+							1
+						</th>
+						<th style="background-color: red;">
+							0
+						</th>
+						<th style="background-color: blue;">
+							1
+						</th>
+						<th style="background-color: green;">
+							2
+						</th>
+						<th style="background-color: orange;">
+							3
+						</th>
+						<th style="background-color: #46c5c5;">
+							5
+						</th>
+						<th style="background-color: purple;">
+							0
+						</th>
+						<th style="background-color: rosybrown;">
+							0
+						</th>
+					</tr>
+					<tr>
+							<th>
+								Tue
+							</th>
+							<th>
+								2
+							</th>
+							<th style="background-color: red;">
+								1
+							</th>
+							<th style="background-color: blue;">
+								2
+							</th>
+							<th style="background-color: green;">
+								2
+							</th>
+							<th style="background-color: orange;">
+								1
+							</th>
+							<th style="background-color: #46c5c5;">
+								3
+							</th>
+							<th style="background-color: purple;">
+								6
+							</th>
+							<th style="background-color: rosybrown;">
+								0
+							</th>
+						</tr>
+						<tr>
+								<th>
+									Wed
+								</th>
+								<th>
+									3
+								</th>
+								<th style="background-color: red;">
+									0
+								</th>
+								<th style="background-color: blue;">
+									1
+								</th>
+								<th style="background-color: green;">
+									2
+								</th>
+								<th style="background-color: orange;">
+									3
+								</th>
+								<th style="background-color: #46c5c5;">
+									5
+								</th>
+								<th style="background-color: purple;">
+									0
+								</th>
+								<th style="background-color: rosybrown;">
+									0
+								</th>
+							</tr>
+							<tr>
+									<th>
+										Thu
+									</th>
+									<th>
+										4
+									</th>
+									<th style="background-color: red;">
+										8
+									</th>
+									<th style="background-color: blue;">
+										6
+									</th>
+									<th style="background-color: green;">
+										2
+									</th>
+									<th style="background-color: orange;">
+										1
+									</th>
+									<th style="background-color: #46c5c5;">
+										9
+									</th>
+									<th style="background-color: purple;">
+										1
+									</th>
+									<th style="background-color: rosybrown;">
+										1
+									</th>
+								</tr>
+			</table> -->
+
+
+		  <!-- <div class="panel-body">
+			  <table class="table table-bordered bordered table-striped table-condensed datatable" ui-jq="dataTable" ui-options="dataTableOpt">
+				  <thead>
+					<tr>
+					 
+					  <th>Name</th>
+					  <th>Room</th>
+					 
+					  <th>From Date</th>
+					  <th>To Date</th>
+					  <th>Treatment</th>
+					  <th>Details</th>
+					</tr>
+				  </thead>
+				<tbody>
+				  <tr ng-repeat="n in data1">
+					
+					<td>{{ n.FirstName }} {{ n.LastName }}</td>
+					<td>{{ n.Rooms_Name }}</td>
+					<td>{{ n.FromDate }}</td>
+					<td>{{ n.ToDate }}</td>
+					
+				
+					<td>{{ n.Treatment_Name }}</td>
+					<td><a>view</a></td>
+					<!--<td><a href="print.html" >view</a></td>
+				  </tr>
+				</tbody>
+			</table>
+		  </div> -->
+		  
+		 <!--  <div class="panel-body">
+			  <table class="table table-bordered bordered table-striped table-condensed datatable" ui-jq="dataTable" ui-options="dataTableOpt">
+				  <thead>
+					<tr>
+					  <th>#</th>
+					  <th>Name</th>
+					  <th>Room</th>
+					  <th>RoomNo</th>
+					  <th>From Date</th>
+					  <th>To Date</th>
+					  <th>Treatment</th>
+					  <th>Details</th>
+					</tr>
+				  </thead>
+				<tbody>
+				  <tr ng-repeat="n in data">
+					<td>{{$index+1}}</td>
+					<td>{{n[0]}}</td>
+					<td>{{n[1]}}</td>
+					<td>{{n[2]}}</td>
+					<td>{{n[3]}}</td>
+					<td>{{n[4] | date:'dd/MM/yyyy'}}</td>
+					<td>{{n[3]}}</td>
+					<td><a>view</a></td>
+					<!--<td><a href="print.html" >view</a></td>
+				  </tr>
+				</tbody>
+			</table>
+		  </div> -->
+	</div>
+ 
+ <br><br><br><br><br>
+ <!-- End page content -->
+</div>
+<script>
+		$('#from').datepicker(
+        { 
+			showOn: "both",
+            buttonImageOnly: false,//true only image
+			dateFormat: "yy-mm-dd"
+
+       });
+$('#to').datepicker(
+        {
+			showOn: "both",
+            buttonImageOnly: false,//true only image
+			dateFormat: "yy-mm-dd"
+	   });
+$('#from_report').datepicker(
+        { 
+			showOn: "both",
+            buttonImageOnly: false,//true only image
+			dateFormat: "yy-mm-dd"
+
+       });
+$('#to_report').datepicker(
+        {
+			showOn: "both",
+            buttonImageOnly: false,//true only image
+			dateFormat: "yy-mm-dd"
+	   });
+</script>
+<!-- <script>
+ angular.module('showcase.withResponsive', ['datatables'])
+.controller('WithResponsiveCtrl', WithResponsiveCtrl);
+
+function WithResponsiveCtrl(DTOptionsBuilder, DTColumnBuilder) {
+    var vm = this;
+    vm.dtOptions = DTOptionsBuilder.fromSource('data_excel.booking_details.json')
+        .withPaginationType('full_numbers')
+        .withOption('responsive', true);
+    vm.dtColumns = [
+        DTColumnBuilder.newColumn('id').withTitle('ID'),
+        DTColumnBuilder.newColumn('firstName').withTitle('First name'),
+        DTColumnBuilder.newColumn('lastName').withTitle('Last name').withClass('none')
+    ];
+}
+</script> -->
