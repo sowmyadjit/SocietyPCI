@@ -263,7 +263,7 @@
 			->select(DB::raw('Fdid as id,Fd_CertificateNum as name'))
 			->where('Closed','=',"NO");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
-				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
 			}
 			//->where('Loan_Allocated','=',"NO")
 			//->where('Status','=',"AUTHORISED")
