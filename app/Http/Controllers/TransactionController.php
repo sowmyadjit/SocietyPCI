@@ -461,4 +461,26 @@ use App\Http\Model\TransactionModel;
 				return view('TranReceiptPG',compact('ReceiptData'));
 			}
 		}
+		
+		public function rv_print(Request $request)
+		{
+			$in_data['tran_category'] = $request->input("tran_category");//JL,SB,..
+			$in_data['tran_type'] = $request->input("tran_type");//CREDIT,DEBIT
+			$in_data['tran_id'] = $request->input("tran_id");
+			switch($in_data['tran_type']) {
+				case "SB" : $data = $this->TranModel->rv_print_sb($in_data);
+							break;
+				case "RD" : $data = $this->TranModel->rv_print_rd($in_data);
+							break;
+				case "JL" : $data = $this->TranModel->rv_print_jl($in_data);
+							break;
+				case "DL" : $data = $this->TranModel->rv_print_dl($in_data);
+							break;
+				case "SL" : $data = $this->TranModel->rv_print_sl($in_data);
+							break;
+				case "PL" : $data = $this->TranModel->rv_print_pl($in_data);
+							break;
+			}
+			return view("blade_name",compact('data'));
+		}
 }
