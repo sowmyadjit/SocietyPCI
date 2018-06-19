@@ -467,6 +467,11 @@ use App\Http\Model\TransactionModel;
 			$in_data['tran_category'] = $request->input("tran_category");//JL,SB,..
 			$in_data['tran_type'] = $request->input("tran_type");//CREDIT,DEBIT
 			$in_data['tran_id'] = $request->input("tran_id");
+			if(empty($in_data["tran_id"])) {
+				$in_data["tran_list"] = "YES";
+			} else {
+				$in_data["tran_list"] = "NO";
+			}
 			switch($in_data['tran_type']) {
 				case "SB" : $data = $this->TranModel->rv_print_sb($in_data);
 							break;

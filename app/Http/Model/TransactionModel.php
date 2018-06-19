@@ -88,14 +88,15 @@
 			}
 		}
 
+		/* -------------------------------------------------- */
 		public function rv_print_sb($data)
 		{
 			$table = "sb_transaction";
-			if($data["tran_type"] == "CREDIT") {
+		/* 	if($data["tran_type"] == "CREDIT") {
 				$receipt_voucher_type = 1;
 			} else {
 				$receipt_voucher_type = 2;
-			}
+			} */
 			$transaction_category = 1;
 
 			$ret_data = '';
@@ -106,15 +107,20 @@
 					"createaccount.Old_AccNo as old_acc_no",
 					"{$table}.SBReport_TranDate as date",
 					"{$table}.Amount as amount",
+					"{$table}.particulars as particulars",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("createaccount","createaccount.Accid","=","{$table}.Accid")
 				->join("user","user.Uid","=","createaccount.Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Tranid")
-				->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
-				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("{$table}.Tranid",$data["tran_id"])
-				->first();
+				// ->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
+				->where("receipt_voucher.transaction_category",$transaction_category);
+			if($data["tran_list" == "YES"]) {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.Tranid",$data["tran_id"])
+					->first();
+			}
 
 			return $ret_data;
 		}
@@ -122,11 +128,6 @@
 		public function rv_print_rd($data)
 		{
 			$table = "rd_transaction";
-			if($data["tran_type"] == "CREDIT") {
-				$receipt_voucher_type = 1;
-			} else {
-				$receipt_voucher_type = 2;
-			}
 			$transaction_category = 2;
 
 			$ret_data = '';
@@ -142,10 +143,13 @@
 				->join("createaccount","createaccount.Accid","=","{$table}.Accid")
 				->join("user","user.Uid","=","createaccount.Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.RD_TransID")
-				->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
-				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("{$table}.RD_TransID",$data["tran_id"])
-				->first();
+				->where("receipt_voucher.transaction_category",$transaction_category);
+				if($data["tran_list" == "YES"]) {
+					$ret_data = $ret_data->get();
+				} else {
+					$ret_data = $ret_data->where("{$table}.RD_TransID",$data["tran_id"])
+						->first();
+				}
 
 			return $ret_data;
 		}
@@ -153,11 +157,6 @@
 		public function rv_print_jl($data)
 		{
 			$table = "jewelloan_allocation";
-			if($data["tran_type"] == "CREDIT") {
-				$receipt_voucher_type = 1;
-			} else {
-				$receipt_voucher_type = 2;
-			}
 			$transaction_category = 20;
 
 			$ret_data = '';
@@ -172,10 +171,13 @@
 				)
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.JewelLoanId")
-				->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
-				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("{$table}.JewelLoanId",$data["tran_id"])
-				->first();
+				->where("receipt_voucher.transaction_category",$transaction_category);
+				if($data["tran_list" == "YES"]) {
+					$ret_data = $ret_data->get();
+				} else {
+					$ret_data = $ret_data->where("{$table}.JewelLoanId",$data["tran_id"])
+						->first();
+				}
 
 			return $ret_data;
 		}
@@ -183,11 +185,6 @@
 		public function rv_print_dl($data)
 		{
 			$table = "depositeloan_allocation";
-			if($data["tran_type"] == "CREDIT") {
-				$receipt_voucher_type = 1;
-			} else {
-				$receipt_voucher_type = 2;
-			}
 			$transaction_category = 17;
 
 			$ret_data = '';
@@ -202,10 +199,13 @@
 				)
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.DepLoanAllocId")
-				->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
-				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("{$table}.DepLoanAllocId",$data["tran_id"])
-				->first();
+				->where("receipt_voucher.transaction_category",$transaction_category);
+				if($data["tran_list" == "YES"]) {
+					$ret_data = $ret_data->get();
+				} else {
+					$ret_data = $ret_data->where("{$table}.DepLoanAllocId",$data["tran_id"])
+						->first();
+				}
 
 			return $ret_data;
 		}
@@ -213,11 +213,6 @@
 		public function rv_print_sl($data)
 		{
 			$table = "staffloan_allocation";
-			if($data["tran_type"] == "CREDIT") {
-				$receipt_voucher_type = 1;
-			} else {
-				$receipt_voucher_type = 2;
-			}
 			$transaction_category = 19;
 
 			$ret_data = '';
@@ -232,10 +227,13 @@
 				)
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.StfLoanAllocID")
-				->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
-				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("{$table}.StfLoanAllocID",$data["tran_id"])
-				->first();
+				->where("receipt_voucher.transaction_category",$transaction_category);
+				if($data["tran_list" == "YES"]) {
+					$ret_data = $ret_data->get();
+				} else {
+					$ret_data = $ret_data->where("{$table}.StfLoanAllocID",$data["tran_id"])
+						->first();
+				}
 
 			return $ret_data;
 		}
@@ -243,11 +241,6 @@
 		public function rv_print_pl($data)
 		{
 			$table = "personalloan_allocation";
-			if($data["tran_type"] == "CREDIT") {
-				$receipt_voucher_type = 1;
-			} else {
-				$receipt_voucher_type = 2;
-			}
 			$transaction_category = 18;
 
 			$ret_data = '';
@@ -263,10 +256,13 @@
 				->join("members","members.Memid","=","{$table}.MemId")
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.PersLoanAllocID")
-				->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
-				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("{$table}.PersLoanAllocID",$data["tran_id"])
-				->first();
+				->where("receipt_voucher.transaction_category",$transaction_category);
+				if($data["tran_list" == "YES"]) {
+					$ret_data = $ret_data->get();
+				} else {
+					$ret_data = $ret_data->where("{$table}.PersLoanAllocID",$data["tran_id"])
+						->first();
+				}
 
 			return $ret_data;
 		}
