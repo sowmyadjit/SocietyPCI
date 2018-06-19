@@ -255,6 +255,10 @@
 			//print_r($cust);
 			$path = 'Upload/'.$user."_".$fnme."_".$mnme."_".$lnme;
 			
+			$employee['empphoto'] = "";
+			$employee['empidp'] = "";
+			$employee['empadpf'] = "";
+			$employee['empsign'] = "";
 			
 			if(!File::exists($path)) {
 				//$result = File::makeDirectory($path);  for WINDOWS
