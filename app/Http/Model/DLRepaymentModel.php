@@ -470,7 +470,7 @@
 						$int_type = 'PREWITHDRAWAL';
 					}
 
-					DB::table('pigmi_payamount')->insertGetId(['Bid'=>$bid,'PayAmount_PigmiAccNum'=>$pg_ac_no,'PayAmount_PaymentMode'=>'DL REPAY','PayAmount_PayableAmount'=>$payAmt,'PayAmountReport_PayDate'=>$RepayDte,'PayAmount_PayDate'=>$PayAmount_PayDate,'PayAmount_IntType'=>$int_type]);
+					DB::table('pigmi_payamount')->insertGetId(['Bid'=>$bid,'PayAmount_PigmiAccNum'=>$pg_ac_no,'PayAmount_PaymentMode'=>'DL REPAY','PayAmount_PayableAmount'=>$id['pgpayamt'],'PayAmountReport_PayDate'=>$RepayDte,'PayAmount_PayDate'=>$PayAmount_PayDate,'PayAmount_IntType'=>$int_type]);
 				}
 /***************** pigmi paid amount entry *************************/
 				
