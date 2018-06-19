@@ -68,6 +68,10 @@
 						->where("table_name","{$tran_table}")
 						->where("deleted",0)
 						->first();
+					$amount_list = DB::table("cash_chitta_amount_fields")
+						->where("deleted",0)
+						->where("cash_chitta_id",$ch_row->cash_chitta_id)
+						->get();
 					
 					if(empty($ch_row)) {
 						print_r($tran_table);
@@ -80,6 +84,27 @@
 											// "{$ch_row->transaction_type} as rv_transaction_type",
 											"{$ch_row->date_field} as rv_date"
 										);
+					
+					if(!empty($ch_row->amount_field) && $ch_row->amount_field != "NA") {
+						$select_ele = DB::raw("{$ch_row->table_name}.{$ch_row->amount_field} as amount");
+						array_push($select_array,$select_ele);
+					} else {
+						$amt_fields = "(";
+						$first_flag = true;
+						//	print_r($amount_list);//exit();
+						foreach($amount_list as $row_amt) {
+							if($first_flag) {
+								$first_flag = false;
+								$amt_fields .= "{$row_amt->amount_table}.{$row_amt->amount_field}";
+							} else {
+								$amt_fields .= " + {$row_amt->amount_table}.{$row_amt->amount_field}";
+							}
+						}
+						$amt_fields .= ")";
+						// var_dump($amt_fields);
+						$select_ele = DB::raw(" {$amt_fields} as 'amount'");
+						array_push($select_array,$select_ele);
+					}
 					if($tran_table == "pending_pigmy" || $tran_table == "members" || $tran_table == "purchaseshare" || $tran_table == "customer") {
 						$raw_obj = DB::raw("'CASH' as 'rv_payment_mode'");
 						array_push($select_array,$raw_obj);
@@ -110,9 +135,7 @@
 						->where("{$ch_row->date_field}","{$cal_day}")
 						->where("{$ch_row->bid_field}",$BID)
 						->get();
-						
 					
-
 					//continue;
 
 					echo "<br />\n";
@@ -121,6 +144,10 @@
 					foreach($table_data as $table_row) {
 						//print_r($table_row);exit();
 
+
+						if($table_row->amount == 0) {
+							continue;
+						}
 						
 						switch($table_row->rv_transaction_type) {
 							case "1"			:	
