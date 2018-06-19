@@ -25,7 +25,7 @@
 			
 			$uid = DB::table('user')->insertGetId(['FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'LoginName'=>$id['loname'],'Password'=>$id['password'],'PassCode'=>$id['passcode'],'Email'=>$id['email'],'Aid'=>$Aid,'Did'=>$id['dsgid'],'Bid'=>$id['brid']]); 
 			
-			$id = DB::table('employee')->insertGetId(['ECode' => $id['empcode'],'Aid'=>$Aid,'Did'=>$id['dsgid'], 'Bid'=>$id['brid'],'basicpay'=>$id['bpay'],'incometax'=>$id['itax'],'pf'=>$id['pf'],'hra'=>$id['hra'],'Uid'=>$uid,'DocProvid'=>$dcid,'Emp_Type'=>$id['emptype'],'Emp_Secutity_Deposit'=>$id['sd'],'esi'=>$id['esi'],'spf'=>$id['spf'],'sesi'=>$id['sesi']]);
+			$id = DB::table('employee')->insertGetId(['ECode' => $id['empcode'],'Aid'=>$Aid,'Did'=>$id['dsgid'], 'Bid'=>$id['brid'],'basicpay'=>$id['bpay'],'incometax'=>$id['itax'],'pf'=>$id['pf'],'hra'=>$id['hra'],'Uid'=>$uid,'DocProvid'=>$dcid,'Emp_Type'=>$id['emptype'],'Emp_Secutity_Deposit'=>$id['sd'],'esi'=>$id['esi'],'spf'=>$id['spf'],'sesi'=>$id['sesi'],"Joining_Date"=>$id["jd"],"PF_Acc_No"=>$id["pf_acc_no"]]);
 			return $id;
 		}
 		
@@ -41,7 +41,7 @@
 			->update(['FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Email'=>$id['email'],'Aid'=>$id['aid'],'Did'=>$id['desgnid'],'Bid'=>$id['branchid']]);
 			
 			$id = DB::table('employee')->where('Eid',$id['eid'])
-			->update(['ECode' => $id['empcode'],'Aid'=>$id['aid'],'Did'=>$id['desgnid'], 'Bid'=>$id['branchid'],'basicpay'=>$id['bpay'],'incometax'=>$id['itax'],'pf'=>$id['pf'],'hra'=>$id['hra'],'Emp_Type'=>$id['emptype']]);
+			->update(['ECode' => $id['empcode'],'Aid'=>$id['aid'],'Did'=>$id['desgnid'], 'Bid'=>$id['branchid'],'basicpay'=>$id['bpay'],'incometax'=>$id['itax'],'pf'=>$id['pf'],'hra'=>$id['hra'],'Emp_Type'=>$id['emptype'],'PF_Acc_No'=>$id['pf_acc_no'],'Joining_Date'=>$id['jd']]);
 			return $id;
 		}
 		
@@ -57,7 +57,7 @@
 		}
 		
 		public function GetEmployee($id){
-			return DB::table('employee')->select('Eid','ECode','employee.Aid','basicpay','incometax','pf','hra','Gender','MaritalStatus','Occupation','Age','Birthdate','user.Email','Address','District','City','State','PhoneNo','MobileNo','Pincode','BName','DName','user.FirstName','user.MiddleName','user.LastName','employee.Bid','employee.Did','ID_Proof','Address_Proof','Photo','Signature','employee.DocProvid','user.Uid','employee.Emp_Type')
+			return DB::table('employee')->select('Eid','ECode','employee.Aid','basicpay','incometax','pf','hra','Gender','MaritalStatus','Occupation','Age','Birthdate','user.Email','Address','District','City','State','PhoneNo','MobileNo','Pincode','BName','DName','user.FirstName','user.MiddleName','user.LastName','employee.Bid','employee.Did','ID_Proof','Address_Proof','Photo','Signature','employee.DocProvid','user.Uid','employee.Emp_Type','PF_Acc_No','Joining_Date')
 			->leftJoin('designation','designation.Did','=','employee.Did')
 			->leftJoin('branch','branch.Bid', '=' , 'employee.Bid')
 			->leftJoin('address','address.Aid','=','employee.Aid')

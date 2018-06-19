@@ -240,6 +240,20 @@
 							</div>
 						</div>
 						
+						<div class="form-group">
+							<label class="control-label col-sm-4">PF Account No.:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="pf_acc_no" name="pf_acc_no" value="{{$employee->PF_Acc_No}}" <?php if($edit=='edit'){}else {echo 'readonly';} ?>>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="control-label col-sm-4">Joining Date:</label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" id="jd" name="jd" value="{{$employee->Joining_Date}}" <?php if($edit=='edit'){}else {echo 'readonly';} ?>>
+							</div>
+						</div>
+						
 						
 				@endforeach
 						

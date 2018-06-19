@@ -95,6 +95,7 @@
 			$employee['esi']=$request->input('esi');
 			$employee['sesi']=$request->input('sesi');
 			$employee['spf']=$request->input('spf');
+			$employee['pf_acc_no']=$request->input('pf_acc_no');
 			
 			$usr=$request->input('usrid');
 			
@@ -240,6 +241,8 @@
 			$employee['itax']=$request->input('itax');
 			$employee['pf']=$request->input('pf');
 			$employee['hra']=$request->input('hra');
+			$employee['pf_acc_no']=$request->input('pf_acc_no');
+			$employee['jd']=$request->input('jd');
 			
 			$employee['emptype']=$request->input('emptype');
 			
