@@ -1902,15 +1902,9 @@
 					data: $('#form_tran').serialize()+'&actid='+accnum+'&actid_adj='+accnum_adj+'&branchid='+brid+'&bankid='+bankid+'&lid='+lid+'&creditbank='+creditbank+'&sb_adj_current_bal='+sb_adj_current_bal,
 					success: function(data) {
 						console.log(data);
-						//window.location.href= "TranReceipt/SB/51311";
-						$("#qwerty").attr("href", 'TranReceipt/SB/51311');
-						$("#qwerty").append('<a href="TranReceipt/SB/51311" id="qwertyu"> </a>');
-						// window.location.href = '{{url("TranReceipt/SB/51311")}}';
-    					document.getElementById("qwertyu").click(); // Click on the checkbox
-						// window.location = "TranReceipt/SB/51311"
-						//alert_success();
-//*alert				alert('success');
-						//$('.tranclassid').click();
+						var tran_id = data;
+						var win = window.open("TranReceipt/SB/"+tran_id, "print","width=1000, height=600");
+						$('.tranclassid').click();
 					}
 				});
 			}
@@ -2543,3 +2537,11 @@
 </script>
 
 
+
+<button id="test"">test</button>
+<script>
+	
+	$("#test").click(function() {
+		var win = window.open("http://10.0.0.7:7500/TranReceipt/SB/51313", "print","width=1000, height=600");
+	});
+</script>
