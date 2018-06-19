@@ -1904,7 +1904,7 @@
 						console.log(data);
 						var tran_id = data;
 						var win = window.open("TranReceipt/SB/"+tran_id, "print","width=1000, height=600");
-						$('.tranclassid').click();
+						// $('.tranclassid').click();
 					}
 				});
 			}
@@ -2293,6 +2293,8 @@
 					data: $('#form_tran').serialize()+'&rdactid='+rdaccnum+'&rdbranch='+rdbrid+'&LedgerId='+LedgerId+'&AccId='+acct,
 					success: function(data) {
 						alert('success');
+						var tran_id = data;
+						var win = window.open("TranReceipt/RD/"+tran_id, "print","width=1000, height=600");
 						//$('.tranclassid').click();
 					}
 				});

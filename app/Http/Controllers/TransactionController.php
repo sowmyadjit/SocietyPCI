@@ -338,7 +338,8 @@ use App\Http\Model\TransactionModel;
 		
 			$rdtrans['LedgerId']=$request->input('LedgerId');
 			$id=$this->acc->insert_rdtran($rdtrans);
-			return redirect('/');
+			return $id;
+			// return redirect('/');
 	}
 	
 	
