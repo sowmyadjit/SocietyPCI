@@ -1903,7 +1903,8 @@
 					success: function(data) {
 						console.log(data);
 						var tran_id = data;
-						var win = window.open("TranReceipt/SB/"+tran_id, "print","width=1000, height=600");
+						$('.box').load("TranReceipt/SB/"+tran_id);
+						//var win = window.open("TranReceipt/SB/"+tran_id, "print","width=1000, height=600");
 						// $('.tranclassid').click();
 					}
 				});
@@ -2294,7 +2295,8 @@
 					success: function(data) {
 						alert('success');
 						var tran_id = data;
-						var win = window.open("TranReceipt/RD/"+tran_id, "print","width=1000, height=600");
+						//var win = window.open("TranReceipt/RD/"+tran_id, "print","width=1000, height=600");
+						$('.box').load("TranReceipt/RD/"+tran_id);
 						//$('.tranclassid').click();
 					}
 				});
@@ -2540,10 +2542,14 @@
 
 
 
-<button id="test"">test</button>
+<button id="test">test</button>
 <script>
-	
-	$("#test").click(function() {
-		var win = window.open("http://10.0.0.7:7500/TranReceipt/SB/51313", "print","width=1000, height=600");
+	$("#test123").click(function() {
+		$('.box').load($(this).attr('href'));
+		// var win = window.open("http://localhost:8000/TranReceipt/SB/51313", "print","width=1000, height=600");
+	});
+	$('#test').click(function(e){
+		e.preventDefault();
+		$('.box').load("http://localhost:8000/TranReceipt/SB/51313");
 	});
 </script>
