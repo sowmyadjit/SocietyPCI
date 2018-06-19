@@ -812,9 +812,9 @@
 				$tr_date = $id['rddte'];
 				$td_date = date("Y-m-d");
 				
-				$diff = abs(strtotime($td_date) - strtotime($tr_date));
-				$diff_in_hrs = $diff/60/60;
-				echo "diff_in_hrs="; print_r("$diff_in_hrs");
+				// $diff = abs(strtotime($td_date) - strtotime($tr_date));
+				// $diff_in_hrs = $diff/60/60;
+				// echo "diff_in_hrs="; print_r("$diff_in_hrs");
 				
 				
 				
