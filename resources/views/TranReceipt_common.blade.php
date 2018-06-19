@@ -4,7 +4,6 @@
 		<link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
 		<link href="css/bootstrap-cerulean.min.css" rel='stylesheet' type="text/css" media="all">
 		<!--this css should be inside the toprint div , for printing the table borders-->	
-		@foreach ($ReceiptData as $FdRec)
 		&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp
 						Kumbarara Gudi Kaigarika Sahakara Sangha
 						&nbsp &nbsp &nbsp &nbsp &nbsp  
@@ -24,11 +23,11 @@
 		
 		<div>
 		<span style="font-weight:bold;float:right;" class="receipt_date">
-		<?php $strdate=date("d-m-Y",strtotime($FdRec->SBReport_TranDate)); 
+		<?php $strdate=date("d-m-Y",strtotime($data->Report_TranDate)); 
 		// echo $strdate;
 		?></span>
 		<span style="font-weight:bold;float:left;" class="receipt_date">
-		<?php $strdate=date("d-m-Y",strtotime($FdRec->SBReport_TranDate)); 
+		<?php $strdate=date("d-m-Y",strtotime($data->Report_TranDate)); 
 		//echo $strdate;
 		?></span>
 		<table class="table table-striped bootstrap-datatable datatable responsive"></div>
@@ -45,47 +44,47 @@
 			</tr>
 			<tr>
 				<th>Receipt No:</th>
-				@if($FdRec->TransactionType=="CREDIT")
+				@if($data->TransactionType=="CREDIT")
 					<td>
-						{{ $FdRec->SB_resp_No}}
+						{{ $data->resp_No}}
 					</td>
-				@elseif($FdRec->TransactionType=="DEBIT")
+				@elseif($data->TransactionType=="DEBIT")
 					<td>
-						{{ $FdRec->SB_paymentvoucher_No}}
+						{{ $data->paymentvoucher_No}}
 					</td>
 				@endif
 
 				<th>Receipt No:</th>
-				@if($FdRec->TransactionType=="CREDIT")
+				@if($data->TransactionType=="CREDIT")
 					<td>
-						{{ $FdRec->SB_resp_No}}
+						{{ $data->resp_No}}
 					</td>
-				@elseif($FdRec->TransactionType=="DEBIT")
+				@elseif($data->TransactionType=="DEBIT")
 					<td>
-						{{ $FdRec->SB_paymentvoucher_No}}
+						{{ $data->paymentvoucher_No}}
 					</td>
 				@endif
 			</tr>
 			
 			<tr>
-				<th>SB Account Number:</th>
+				<th> Account Number:</th>
 				<td>
-					{{ $FdRec->AccNum}}  /  {{ $FdRec->Old_AccNo}}
+					{{$data->AccNum}}  /  {{$data->Old_AccNo}}
 				</td>
 				<th>SB Account Number:</th>
 				<td>
-					{{ $FdRec->AccNum}}  /  {{ $FdRec->Old_AccNo}}
+					{{$data->AccNum}}  /  {{$data->Old_AccNo}}
 				</td>
 			</tr>
 			
 			<tr>
 				<th>Customer Name: Mr/Mrs</th>
 				<td>
-					{{ $FdRec->FirstName}}.{{ $FdRec->MiddleName }}.{{ $FdRec->LastName }}
+					{{ $data->FirstName}}.{{ $data->MiddleName }}.{{ $data->LastName }}
 				</td>
 				<th>Customer Name: Mr/Mrs</th>
 				<td>
-					{{ $FdRec->FirstName}}.{{ $FdRec->MiddleName }}.{{ $FdRec->LastName }}
+					{{ $data->FirstName}}.{{ $data->MiddleName }}.{{ $data->LastName }}
 				</td>
 				</tr>
 			
@@ -93,20 +92,20 @@
 			
 			<tr>
 					<th>Particulars:</th>
-					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $FdRec->particulars }}</span></td>
+					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $data->particulars }}</span></td>
 					<th>Particulars:</th>
-					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $FdRec->particulars }}</span></td>
+					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $data->particulars }}</span></td>
 				</tr>
 			
 			<tr>
 				<th>Amount Paid:</th>
-				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $FdRec->Amount }}&nbsp/-</span></td>
+				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $data->Amount }}&nbsp/-</span></td>
 				<th>Amount Paid:</th>
-				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $FdRec->Amount }}&nbsp/-</span></td>
+				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $data->Amount }}&nbsp/-</span></td>
 			</tr>
 			<tr>
 				<th>Amount in words:</th>
-				<input type="hidden" name="rupees" value="{{$FdRec->Amount}}" id="rupees" />
+				<input type="hidden" name="rupees" value="{{$data->Amount}}" id="rupees" />
 				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container"> </span></span></td>
 				<th>Amount in words:</th>
 				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container2"> </span></span></td>
@@ -129,7 +128,6 @@
 			Clerk-Manager-Secretary
 			</th>
 			</tr>
-			@endforeach
 		</table>
 	</div>
 	
@@ -359,7 +357,7 @@
 			document.getElementById('rupees').value = actual_val;
 		}
 	</script>
-		<?php	/*				<!-- <input type="" name="rupees" value="{{$FdRec->Amount}}" id="rupees" /> --> 
+		<?php	/*				<!-- <input type="" name="rupees" value="{{$data->Amount}}" id="rupees" /> --> 
 							<input type="" name="rupees" value="100.01" id="rupees" />  */ ?>
 
 	<script>

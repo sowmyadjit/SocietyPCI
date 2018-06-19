@@ -444,7 +444,6 @@ use App\Http\Model\TransactionModel;
 		
 		public function TranReceipt($type,$id)
 		{
-			
 			if($type=="SB")
 			{
 				$ReceiptData=$this->TranModel->TranReceipt($type,$id);

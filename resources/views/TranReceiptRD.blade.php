@@ -6,31 +6,19 @@
 		@foreach ($ReceiptData as $FdRec)
 		&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp
 						Kumbarara Gudi Kaigarika Sahakara Sangha
-						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-						
-					
-						 
-						
+						&nbsp &nbsp &nbsp &nbsp &nbsp 
 						Kumbarara Gudi Kaigarika Sahakara Sangha</br>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp  
 						Niyamita, Chakrasowdha, Kulai
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-						&nbsp 
-						
 						Niyamita, Chakrasowdha, Kulai</br>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  
 						<b>RD RECEIPT - (office copy)<b>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp  
-						
-						
 						<b>RD RECEIPT - (customer copy)<b>
 		
 		<table class="table table-striped bootstrap-datatable datatable responsive">
@@ -182,7 +170,7 @@
 			
 			var divContents = $("#toprint").html();
             var printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>SB RECEIPT</title>');
+            printWindow.document.write('<html><head><title>RD RECEIPT</title>');
             printWindow.document.write('</head><body>');
             printWindow.document.write(divContents);
             printWindow.document.write('</body></html>');
