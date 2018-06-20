@@ -225,6 +225,38 @@
 	</form>
 	
 	<script>
+
+		function convert_amount_into_rupees_paisa(){
+			var val = document.getElementById('rupees').value;
+			if(val.length==0 || val=='00'|| val=='0'|| val=='0.00'|| val=='0.0'|| val=='00.00'|| val=='00.0') {
+				document.getElementById('container').innerHTML="Zero Rupees Only";
+				return false;
+			}
+			var finalWord1 = test_value();
+			var finalWord2 = "";
+			var val = document.getElementById('rupees').value;
+			var actual_val = document.getElementById('rupees').value;
+			document.getElementById('rupees').value = val;
+			if(val.indexOf('.')!=-1) {
+				val = val.substring(val.indexOf('.')+1,val.length);
+				if(val.length==0 || val=='00'|| val=='0') {
+					finalWord2 = "zero paisa only";
+				} else {
+					document.getElementById('rupees').value = val;
+					finalWord2 = test_value() + " paisa only";
+				}
+				var n=finalWord1.match(false);
+				if(n=='false')
+					document.getElementById('container').innerHTML=finalWord2+ " paisa only";
+				else
+					document.getElementById('container').innerHTML=finalWord1 +" Rupees and "+finalWord2;
+			} else{
+				//finalWord2 = " Zero paisa only";
+				document.getElementById('container').innerHTML=finalWord1 +" Rupees Only";
+			}
+			document.getElementById('rupees').value = actual_val;
+		}
+
 		$("#save_denominations").click(function(e) {
 			e.preventDefault();
 			var form_data = $("#form_denominations").serialize();
@@ -421,34 +453,4 @@
 			return finalWord;
 		}
 
-		function convert_amount_into_rupees_paisa(){
-			var val = document.getElementById('rupees').value;
-			if(val.length==0 || val=='00'|| val=='0'|| val=='0.00'|| val=='0.0'|| val=='00.00'|| val=='00.0') {
-				document.getElementById('container').innerHTML="Zero Rupees Only";
-				return false;
-			}
-			var finalWord1 = test_value();
-			var finalWord2 = "";
-			var val = document.getElementById('rupees').value;
-			var actual_val = document.getElementById('rupees').value;
-			document.getElementById('rupees').value = val;
-			if(val.indexOf('.')!=-1) {
-				val = val.substring(val.indexOf('.')+1,val.length);
-				if(val.length==0 || val=='00'|| val=='0') {
-					finalWord2 = "zero paisa only";
-				} else {
-					document.getElementById('rupees').value = val;
-					finalWord2 = test_value() + " paisa only";
-				}
-				var n=finalWord1.match(false);
-				if(n=='false')
-					document.getElementById('container').innerHTML=finalWord2+ " paisa only";
-				else
-					document.getElementById('container').innerHTML=finalWord1 +" Rupees and "+finalWord2;
-			} else{
-				//finalWord2 = " Zero paisa only";
-				document.getElementById('container').innerHTML=finalWord1 +" Rupees Only";
-			}
-			document.getElementById('rupees').value = actual_val;
-		}
 	</script>
