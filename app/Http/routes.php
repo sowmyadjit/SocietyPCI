@@ -683,7 +683,7 @@
 				Route::get('/TranReceiptHome','TransactionController@TranReceiptHome'); 
 				Route::get('/TransactionReceiptView','TransactionController@TransactionReceiptView'); //M 23-06-16
 				Route::get('/TranReceipt/{type}/{id}','TransactionController@TranReceipt'); 
-				Route::post('/rv_print','TransactionController@rv_print'); 
+				Route::post('/rv_print','TransactionController@rv_print');
 				//UnclearedCheque Controller
 				Route::get('/unclearsb','UnclearedChequeController@show_detail');
 				Route::get('/unclearedcheque','UnclearedChequeController@show_uncleareddetail');

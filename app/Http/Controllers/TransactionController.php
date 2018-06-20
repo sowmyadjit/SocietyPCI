@@ -485,6 +485,10 @@ use App\Http\Model\TransactionModel;
 				case "PL" : $data = $this->TranModel->rv_print_pl($in_data);
 							break;
 			}
-			return view("blade_name",compact('data'));
+			if(empty($in_data["tran_id"])) {
+				return $data;
+			} else {
+				return view("blade_name",compact('data'));
+			}
 		}
 }
