@@ -48,8 +48,9 @@
 						<th>DEBIT</th>
 						<th>ADJUSTMENT CREDIT</th>
 						<th>ADJUSTMENT DEBIT</th>
-						<th>RECEIPT NUM</th>
-						<th>PAYMENT VOUCHER NUM</th>
+						<th>REC. NUM</th>
+						<th>VOUCH. NUM</th>
+						<th>ADJ NUM</th>
 						
 						
 					</tr>
@@ -93,6 +94,7 @@
 								<td><p class="text-center">-</p></td>
 								<td>{{ $sb->SB_resp_No }}</td>
 								<td><p class="text-center">-</p></td>
+								<td><p class="text-center">-</p></td>
 							@else
 								<?php
 									$sb_cash_db=$sb->Amount;
@@ -104,6 +106,7 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td>{{ $sb->SB_paymentvoucher_No }}</td>
+								<td><p class="text-center">-</p></td>
 							@endif
 						</tr>
 					@endforeach
@@ -133,8 +136,9 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-right"><?php echo $sb_adj_db; ?></p></td>
 							@endif
-							<td>{{ $sb->SB_resp_No }}</td>
-							<td>{{ $sb->SB_paymentvoucher_No }}</td>
+							<td><p class="text-center">-</p></td>
+							<td><p class="text-center">-</p></td>
+							<td>{{ $sb->adj_no }}</td>
 						</tr>
 					@endforeach
 					
@@ -144,6 +148,7 @@
 						<td class="text-right"><?php echo $sb_cash_db_total ?></td>
 						<td class="text-right"><?php echo $sb_adj_cr_total ?></td>
 						<td class="text-right"><?php echo $sb_adj_db_total ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -222,8 +227,9 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-right"><?php echo $rd_adj_db; ?></p></td>
 							@endif
-							<td>{{ $rd->RD_resp_No}}</td>
 							<td>-</td>
+							<td>-</td>
+							<td>{{ $rd->adj_no }}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -232,6 +238,7 @@
 						<td class="text-right"><?php echo $rd_cash_db_total ?></td>
 						<td class="text-right"><?php echo $rd_adj_cr_total ?></td>
 						<td class="text-right"><?php echo $rd_adj_db_total ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -408,7 +415,8 @@
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PayableAmount }}</td>
 							<td>-</td>
-							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_per_adjust'] as $pigmyamt)
@@ -425,7 +433,8 @@
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PayableAmount }}</td>
 							<td>-</td>
-							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt)
@@ -462,6 +471,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt)
@@ -479,7 +489,8 @@
 							
 							<td>-</td>
 							<td>-</td>
-							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 						<?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Amount;
@@ -495,7 +506,8 @@
 							
 							<td>-</td>
 							<td>-</td>
-							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -556,7 +568,8 @@
 								<td>-</td>
 								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
 								<td>-</td>
-								<td>{{ $rdamt->RD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+								<td>{{ $rdamt->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -600,6 +613,7 @@
 							<td>-</td>
 							<td>{{ $fdamt->FD_resp_No }}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach	
 					@foreach ($trandaily['fdallocamt_adjust'] as $fdamt)
@@ -615,8 +629,9 @@
 							<td>-</td>
 							<td>{{ $fdamt->Fd_DepositAmt }}</td>
 							<td>-</td>
-							<td>{{ $fdamt->FD_resp_No }}</td>
 							<td>-</td>
+							<td>-</td>
+							<td>{{ $fdamt->adj_no }}</td>
 						</tr>
 					@endforeach	
 					<tr>
@@ -676,7 +691,9 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-							<td>-</td><td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td><td>{{ $fdpayamt->adj_no }}</td>
 						</tr>
 					@endforeach
 					
@@ -766,6 +783,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{$row->voucher_no}}</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -781,7 +799,8 @@
 								<td>-</td>
 								<td>{{$adj_db}}</td>
 								<td>-</td>
-								<td>{{$row->voucher_no}}</td>
+								<td>-</td>
+								<td>{{$row->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -941,6 +960,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $expencetran->Expence_PamentVoucher }}</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -956,7 +976,8 @@
 								<td>-</td>
 								<td>{{ $expencetran->amount }}</td>
 								<td>-</td>
-								<td>{{ $expencetran->Expence_PamentVoucher }}</td>
+								<td>-</td>
+								<td>{{ $expencetran->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1001,6 +1022,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $income->Income_Expence_PamentVoucher }}</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -1016,7 +1038,8 @@
 								<td>{{ $income->Income_amount }}</td>
 								<td>-</td>
 								<td>-</td>
-								<td>{{ $income->Income_Expence_PamentVoucher }}</td>
+								<td>-</td>
+								<td>{{ $income->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1065,6 +1088,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{$dlallocation->voucher_no}}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['dlallocation_adjust'] as $dlallocation)
@@ -1081,6 +1105,7 @@
 							<td>{{ $dlallocation->DepLoan_LoanAmount }}</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$dlallocation->adj_no}}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['dlallocation_charg'] as $dlallocation)
@@ -1095,6 +1120,7 @@
 							<td>{{ $dlallocation->DepLoan_LoanCharge }}</td>
 							<td>-</td>
 							<td>{{$dlallocation->receipt_no}}</td>
+							<td>-</td>
 							<td>-</td>
 						</tr>
 					@endforeach		
@@ -1111,6 +1137,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$dlallocation->adj_no}}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -1155,6 +1182,7 @@
 							<td>-</td>
 							<td>{{ $dlrepay->dL_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['dlrepay_adjust'] as $dlrepay)
@@ -1170,8 +1198,9 @@
 							<td>-</td>
 							<td>{{ $dlrepay->DLRepay_PaidAmt }}</td>
 							<td>-</td>
-							<td>{{ $dlrepay->dL_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
+							<td>{{ $dlrepay->adj_no }}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -1218,6 +1247,7 @@
 							<td>{{ $plallocation->paid_amount }}</td>
 							<td>-</td>
 							<td>{{$plallocation->voucher_no}}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_adjust'] as $plallocation)
@@ -1235,6 +1265,7 @@
 							<td>{{ $plallocation->paid_amount }}</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$plallocation->adj_no}}</td>
 						</tr>
 					@endforeach
 					
@@ -1637,6 +1668,7 @@
 							<td>-</td>
 							<td>{{$trandaily['jlcharges']['receipt_no'][$jlcharges]}}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['jlcharges_adjust']['num'] as $jlcharges)
@@ -1654,6 +1686,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$trandaily['jlcharges']['adj_no'][$jlcharges]}}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -1698,6 +1731,7 @@
 								<td>-</td>
 								<td>{{ $jlrepay->jL_ReceiptNum }}</td>
 								<td>-</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -1712,8 +1746,9 @@
 								<td>-</td>
 								<td>{{$jlrepay_adj_cr}}</td>
 								<td>-</td>
-								<td>{{ $jlrepay->jL_ReceiptNum }}</td>
 								<td>-</td>
+								<td>-</td>
+								<td>{{ $jlrepay->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1755,6 +1790,7 @@
 								<td>-</td>
 								<td>{{ $jlrepay->jL_ReceiptNum }}</td>
 								<td>-</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -1769,8 +1805,9 @@
 								<td>-</td>
 								<td>{{$jlrepay_adj_cr}}</td>
 								<td>-</td>
-								<td>{{ $jlrepay->jL_ReceiptNum }}</td>
 								<td>-</td>
+								<td>-</td>
+								<td>{{ $jlrepay->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1810,8 +1847,9 @@
 								<td>{{$cash_db}}</td>
 								<td>-</td>
 								<td>-</td>
-								<td></td>
+								<td>-</td>
 								<td>{{$row_jew->voucher_no}}</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -1826,8 +1864,9 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{$adj_db}}</td>
-								<td></td>
 								<td>-</td>
+								<td>-</td>
+								<td>{{$row_jew->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1873,6 +1912,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{$slallocation->voucher_no}}</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -1889,6 +1929,7 @@
 								<td>{{ $slallocation->LoanAmt }}</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$slallocation->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1933,6 +1974,7 @@
 								<td>-</td>
 								<td>{{$slrepay->receipt_no}}</td>
 								<td>-</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -1949,6 +1991,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$slrepay->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1992,6 +2035,7 @@
 								<td>-</td>
 								<td>{{$row->receipt_no}}</td>
 								<td>-</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -2008,6 +2052,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$row->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -2122,6 +2167,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{$branch_branch_tran->voucher_no}}</td>
+								<td>-</td>
 							</tr>
 						@else	<?php /*DEBIT ADJUSTMENT*/?>
 						<?php
@@ -2138,6 +2184,7 @@
 								<td>{{ $branch_branch_tran->Branch_Amount }}</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$branch_branch_tran->adj_no}}</td>
 							</tr>
 							
 						@endif
@@ -2225,6 +2272,7 @@
 										<td>-</td>
 										<td>{{$Bank_Branch->receipt_no}}</td>
 										<td>-</td>
+										<td>-</td>
 									</tr>
 						<?php
 								} else {
@@ -2241,6 +2289,7 @@
 										<td>-</td>
 										<td>-</td>
 										<td>-</td>
+										<td>{{$Bank_Branch->adj_no}}</td>
 									</tr>
 						<?php
 								}
@@ -2259,6 +2308,7 @@
 										<td>-</td>
 										<td>-</td>
 										<td>{{$Bank_Branch->voucher_no}}</td>
+										<td>-</td>
 									</tr>
 						<?php
 								} else {
@@ -2275,6 +2325,7 @@
 										<td>{{ $Bank_Branch->amount }}</td>
 										<td>-</td>
 										<td>-</td>
+										<td>{{$Bank_Branch->adj_no}}</td>
 									</tr>
 						<?php
 								}
@@ -2299,6 +2350,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>-</td>
 							</tr>
 					@endforeach
 			
@@ -2318,6 +2370,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $adj_db }}</td>
+								<td>-</td>
 								<td>-</td>
 								<td>-</td>
 							</tr>
