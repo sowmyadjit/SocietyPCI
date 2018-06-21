@@ -1686,7 +1686,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>{{$trandaily['jlcharges']['adj_no'][$jlcharges]}}</td>
+							<td>{{$trandaily['jlcharges_adjust']['adj_no'][$jlcharges]}}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -2424,6 +2424,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{$agentcoll_tran->receipt_no}}</td>
+							<td>-</td>
 							<td>-</td>
 						</tr>
 					@endforeach
