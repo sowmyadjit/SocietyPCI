@@ -23,6 +23,7 @@
 
 		const RECEIPT = 1;
 		const VOUCHER = 2;
+		const ADJUSTMENT = 3;
 
 		const SB_TRAN = 1;
 		const RD_TRAN = 2;
@@ -254,7 +255,7 @@
 
 			$last_voucher_no = DB::table($this->tbl)
 				->where($this->bid_field,$BID)
-				->where($this->receipt_voucher_type_field,self::VOUCHER)
+				->whereIn($this->receipt_voucher_type_field, [self::VOUCHER,self::ADJUSTMENT])
 				->where($this->deleted_field,0)
 				->whereBetween($this->date_field,[$from_date,$to_date])
 				->max($this->receipt_voucher_no_field);
@@ -263,6 +264,44 @@
 			}
 			$next_voucher_no = $last_voucher_no + 1;
 			return $next_voucher_no;
+		}
+
+		public function get_next_adjustment_no($data = NULL)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			
+			if(!empty($data["bid"])) {
+				$BID = $data["bid"];
+			}
+			if(!empty($data["date"])) {
+				$year = date("Y",strtotime($data["date"]));
+				$month = date("m",strtotime($data["date"]));
+			} else {
+				$year = date("Y");
+				$month = date("m");
+			}
+
+			if($month <= 3) {//BEFORE 31TS MARCH
+				$from_year = $year - 1;
+			} else {//AFTER 31TS MARCH
+				$from_year = $year;
+			}
+			$to_year = $from_year + 1;
+
+			$from_date = "{$from_year}-04-01";
+			$to_date = "{$to_year}-03-31";
+
+			$last_adjustment_no = DB::table($this->tbl)
+				->where($this->bid_field,$BID)
+				->whereIn($this->receipt_voucher_type_field, [self::VOUCHER,self::ADJUSTMENT])
+				->where($this->deleted_field,0)
+				->whereBetween($this->date_field,[$from_date,$to_date])
+				->max($this->receipt_voucher_no_field);
+			if(empty($last_adjustment_no)) {
+				$last_adjustment_no = 0;
+			}
+			$next_adjustment_no = $last_adjustment_no + 1;
+			return $next_adjustment_no;
 		}
 
 		public function exists($data)
