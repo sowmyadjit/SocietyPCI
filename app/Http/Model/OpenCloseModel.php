@@ -236,7 +236,7 @@
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
 			->join("user","user.Uid","=","createaccount.Uid")
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","sb_transaction.Tranid")
-			->where("receipt_voucher.receipt_voucher_type",3)
+			// ->where("receipt_voucher.transaction_category",1)
 			->where('SBReport_TranDate',$sbtoday)
 			->where('sb_transaction.Bid','=',$BranchId)
 			->where('Payment_Mode','<>',"CASH")
@@ -2960,12 +2960,13 @@
 							"md_transaction.payment_mode",
 							"receipt_voucher_no as voucher_no",
 							DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),
-							'receipt_voucher_no as adj_no'
+							'receipt_voucher_no as adj_no',
+							"user.Uid"
 						)
 				->join("maturity_deposit","maturity_deposit.md_id","=","md_transaction.md_id")
 				->join("user","user.Uid","=","maturity_deposit.uid")
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","md_transaction.md_tran_id")
-				->where("receipt_voucher.transaction_category",2)
+				->where("receipt_voucher.transaction_category",10)
 				->where("md_transaction.deleted",0)
 				->where("md_transaction.bid",$BID)
 				->where("md_tran_date",$date)
