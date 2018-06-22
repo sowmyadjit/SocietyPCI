@@ -515,9 +515,18 @@ class DepositModel extends Model
 													);
 								
 								
-								DB::table($table)
+								$sb_tran_id = DB::table($table)
 									->insertGetId($insert_array);
 								unset($insert_array);
+								/***********/
+								$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+								$fn_data["rv_transaction_id"] = $sb_tran_id;
+								$fn_data["rv_transaction_type"] = "CREDIT";
+								$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+								$fn_data["rv_date"] = date("Y-m-d",$tran_date);
+								$this->rv_no->save_rv_no($fn_data);
+								unset($fn_data);
+								/***********/
 								
 								break;
 			}
