@@ -108,6 +108,9 @@
 					"{$table}.SBReport_TranDate as date",
 					"{$table}.Amount as amount",
 					"{$table}.particulars as particulars",
+					"{$table}.TransactionType as transaction_type",
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("createaccount","createaccount.Accid","=","{$table}.Accid")
@@ -115,7 +118,7 @@
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Tranid")
 				// ->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category);
-			if($data["tran_list" == "YES"]) {
+			if($data["tran_list"] == "YES") {
 				$ret_data = $ret_data->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Tranid",$data["tran_id"])

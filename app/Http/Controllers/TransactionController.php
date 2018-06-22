@@ -471,7 +471,7 @@ use App\Http\Model\TransactionModel;
 			} else {
 				$in_data["tran_list"] = "NO";
 			}
-			switch($in_data['tran_type']) {
+			switch($in_data['tran_category']) {
 				case "SB" : $data = $this->TranModel->rv_print_sb($in_data);
 							break;
 				case "RD" : $data = $this->TranModel->rv_print_rd($in_data);
@@ -486,7 +486,8 @@ use App\Http\Model\TransactionModel;
 							break;
 			}
 			if(empty($in_data["tran_id"])) {
-				return $data;
+				// return $data;
+				 return view("TransactionReceiptListComman",compact('data'));
 			} else {
 				return view("blade_name",compact('data'));
 			}

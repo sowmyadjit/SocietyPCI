@@ -96,9 +96,6 @@
 								</tbody>
 							</table>
 							
-							<div id='pagei<?php echo $id['module']->Mid; ?>'>
-								{!! $id['customer']->render() !!}
-							</div>
 						</div>
 					</div>
 				</div>

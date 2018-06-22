@@ -170,7 +170,7 @@
 				$id = $id->where('customer.Bid','=',$BID);
 			}
 			$id = $id->orderBy('Custid','desc')
-			->paginate(10);
+			->get();
 			
 			return $id;
 		}

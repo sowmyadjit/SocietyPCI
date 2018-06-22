@@ -65,16 +65,25 @@
 		}
 		else
 		{
+			// $.ajax({
+			// 	url:'TransactionReceiptView',
+			// 	type:'get',
+			// 	data:'&ReceiptTypeDD='+ReceDD,
+			// 	success:function(data)
+			// 	{
+			// 		$('.SearchRes').html('');
+			// 		$('.SearchRes').html(data);
+			// 	}
+			// });
+
 			$.ajax({
-				url:'TransactionReceiptView',
-				type:'get',
-				data:'&ReceiptTypeDD='+ReceDD,
+				url:'rv_print',
+				type:'post',
+				data:'&tran_category=SB',
 				success:function(data)
 				{
-					
 					$('.SearchRes').html('');
 					$('.SearchRes').html(data);
-					
 				}
 			});
 		}
