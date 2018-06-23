@@ -7,8 +7,7 @@
 				<th>Account Number</th>
 				<th>Name</th>
 				<th>Date</th>
-				<th>Receipt Num</th>
-				
+				<th>Receipt/Voucher Num</th>
 				<th>Transaction Type</th>
 				<th>Perticulars</th>
 				<!--<th>Previous Balance</th>-->
@@ -50,7 +49,8 @@
 				<td>
 					<div class="form-group">
 						<div class="col-sm-12">
-	<input type="button" value="RECEIPT" class="btn btn-info btn-sm ReceiptPrint" href="TranReceipt/SB/{{ $RSB->tran_id }}"/>
+							<?php /*		<input type="button"  data="{{$RSB->tran_id}}" value="RECEIPT" class="btn btn-info btn-sm ReceiptPrint" href="TranReceipt/SB/{{ $RSB->tran_id }}"/> */?>
+							<input type="button"  data="{{$RSB->tran_id}}"class="btn btn-info btn-sm rv_print_btn" value="RECEIPT" />
 						</div>
 					</div>	
 					
@@ -91,3 +91,24 @@
 		$('.companyclassid').click();
 	}); 
 </script>
+
+
+<script>
+
+	$('.rv_print_btn').click(function(e){
+		var tran_category=$('#ReceiptTypeDD').val();
+		console.log(tran_category);
+		var tran_id = $(this).attr("data");
+			$.ajax({
+				url:'rv_print',
+				type:'post',
+				data:'&tran_category='+tran_category+"&tran_id="+tran_id,
+				success:function(data)
+				{
+					$("#toprint").html(data);
+				}
+			});
+		
+	});
+</script>
+	

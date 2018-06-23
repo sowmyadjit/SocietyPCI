@@ -19,7 +19,17 @@
 									<option value=""> SELECT RECEIPT TYPE</option>
 									<option value="SB"> SB RECEIPT </option>
 									<option value="RD"> RD RECEIPT </option>
-									<option value="JL"> JL RECEIPT </option>
+									<option value="JL"> JL ALLOCATE RECEIPT </option>
+									<option value="DL"> DL ALLOCATE RECEIPT </option>
+									<option value="SL"> SL ALLOCATE RECEIPT </option>
+									<option value="PL"> PL ALLOCATE RECEIPT </option>
+									<option value="JL_PAY"> JL PAY RECEIPT </option>
+									<option value="DL_PAY"> DL PAY RECEIPT </option>
+									<option value="SL_PAY"> SL PAY RECEIPT </option>
+									<option value="PL_PAY"> PL PAY RECEIPT </option>
+									<option value="MEM_FEE"> MEMBER FEE RECEIPT </option>
+									<option value="CUST_FEE"> CUSTOMER FEE RECEIPT </option>
+									<option value="PG_PEND"> PIGMY PENDING RECEIPT </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
 								</select>
 							</label>
@@ -79,7 +89,7 @@
 			$.ajax({
 				url:'rv_print',
 				type:'post',
-				data:'&tran_category=SB',
+				data:'&tran_category='+ReceDD,
 				success:function(data)
 				{
 					$('.SearchRes').html('');

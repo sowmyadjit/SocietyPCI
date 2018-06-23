@@ -16,18 +16,18 @@
 						Niyamita, Chakrasowdha, Kulai</br>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  
-						<b>SB RECEIPT - (office copy)<b>
+						<b>{{$data->tran_category_name}} RECEIPT - (office copy)<b>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-			      		<b>SB RECEIPT - (customer copy)<b>
+			      		<b>{{$data->tran_category_name}} RECEIPT - (customer copy)<b>
 		
 		<div>
 		<span style="font-weight:bold;float:right;" class="receipt_date">
-		<?php $strdate=date("d-m-Y",strtotime($data->Report_TranDate)); 
+		<?php $strdate=date("d-m-Y",strtotime($data->date)); 
 		// echo $strdate;
 		?></span>
 		<span style="font-weight:bold;float:left;" class="receipt_date">
-		<?php $strdate=date("d-m-Y",strtotime($data->Report_TranDate)); 
+		<?php $strdate=date("d-m-Y",strtotime($data->date)); 
 		//echo $strdate;
 		?></span>
 		<table class="table table-striped bootstrap-datatable datatable responsive"></div>
@@ -44,24 +44,24 @@
 			</tr>
 			<tr>
 				<th>Receipt No:</th>
-				@if($data->TransactionType=="CREDIT")
+				@if($data->transaction_type=="CREDIT")
 					<td>
-						{{ $data->resp_No}}
+						{{ $data->receipt_voucher_no}}
 					</td>
-				@elseif($data->TransactionType=="DEBIT")
+				@elseif($data->transaction_type=="DEBIT")
 					<td>
-						{{ $data->paymentvoucher_No}}
+						{{ $data->receipt_voucher_no}}
 					</td>
 				@endif
 
 				<th>Receipt No:</th>
-				@if($data->TransactionType=="CREDIT")
+				@if($data->transaction_type=="CREDIT")
 					<td>
-						{{ $data->resp_No}}
+						{{ $data->receipt_voucher_no}}
 					</td>
-				@elseif($data->TransactionType=="DEBIT")
+				@elseif($data->transaction_type=="DEBIT")
 					<td>
-						{{ $data->paymentvoucher_No}}
+						{{ $data->receipt_voucher_no}}
 					</td>
 				@endif
 			</tr>
@@ -69,22 +69,22 @@
 			<tr>
 				<th> Account Number:</th>
 				<td>
-					{{$data->AccNum}}  /  {{$data->Old_AccNo}}
+					{{$data->acc_no}}  /  {{$data->old_acc_no}}
 				</td>
 				<th>SB Account Number:</th>
 				<td>
-					{{$data->AccNum}}  /  {{$data->Old_AccNo}}
+					{{$data->acc_no}}  /  {{$data->old_acc_no}}
 				</td>
 			</tr>
 			
 			<tr>
 				<th>Customer Name: Mr/Mrs</th>
 				<td>
-					{{ $data->FirstName}}.{{ $data->MiddleName }}.{{ $data->LastName }}
+					{{ $data->name }}
 				</td>
 				<th>Customer Name: Mr/Mrs</th>
 				<td>
-					{{ $data->FirstName}}.{{ $data->MiddleName }}.{{ $data->LastName }}
+					{{ $data->name }}
 				</td>
 				</tr>
 			
@@ -99,13 +99,13 @@
 			
 			<tr>
 				<th>Amount Paid:</th>
-				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $data->Amount }}&nbsp/-</span></td>
+				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $data->amount }}&nbsp/-</span></td>
 				<th>Amount Paid:</th>
-				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $data->Amount }}&nbsp/-</span></td>
+				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $data->amount }}&nbsp/-</span></td>
 			</tr>
 			<tr>
 				<th>Amount in words:</th>
-				<input type="hidden" name="rupees" value="{{$data->Amount}}" id="rupees" />
+				<input type="hidden" name="rupees" value="{{$data->amount}}" id="rupees" />
 				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container"> </span></span></td>
 				<th>Amount in words:</th>
 				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container2"> </span></span></td>
@@ -178,7 +178,12 @@
             printWindow.document.write(divContents);
             printWindow.document.write('</body></html>');
             printWindow.document.close();
-            printWindow.print();
+			setTimeout(function () {
+        		printWindow.print();
+    		}, 500);
+        	//printWindow.print();
+        	
+
 		});
 	});
 	

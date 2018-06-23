@@ -91,6 +91,8 @@
 		/* -------------------------------------------------- */
 		public function rv_print_sb($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
 			$table = "sb_transaction";
 		/* 	if($data["tran_type"] == "CREDIT") {
 				$receipt_voucher_type = 1;
@@ -111,18 +113,22 @@
 					"{$table}.TransactionType as transaction_type",
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("createaccount","createaccount.Accid","=","{$table}.Accid")
 				->join("user","user.Uid","=","createaccount.Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Tranid")
 				// ->where("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
-				->where("receipt_voucher.transaction_category",$transaction_category);
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
 				$ret_data = $ret_data->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Tranid",$data["tran_id"])
 					->first();
+				$ret_data->tran_category_name = "SB";
 			}
 
 			return $ret_data;
@@ -130,6 +136,8 @@
 
 		public function rv_print_rd($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
 			$table = "rd_transaction";
 			$transaction_category = 2;
 
@@ -141,17 +149,24 @@
 					"createaccount.Old_AccNo as old_acc_no",
 					"{$table}.RDReport_TranDate as date",
 					"{$table}.RD_Amount as amount",
+					"{$table}.RD_Particulars as particulars",
+					"{$table}.RD_Trans_Type as transaction_type",
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("createaccount","createaccount.Accid","=","{$table}.Accid")
 				->join("user","user.Uid","=","createaccount.Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.RD_TransID")
-				->where("receipt_voucher.transaction_category",$transaction_category);
-				if($data["tran_list" == "YES"]) {
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+				if($data["tran_list"] == "YES") {
 					$ret_data = $ret_data->get();
 				} else {
 					$ret_data = $ret_data->where("{$table}.RD_TransID",$data["tran_id"])
 						->first();
+					$ret_data->tran_category_name = "RD";
 				}
 
 			return $ret_data;
@@ -159,6 +174,8 @@
 
 		public function rv_print_jl($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
 			$table = "jewelloan_allocation";
 			$transaction_category = 20;
 
@@ -170,23 +187,43 @@
 					"{$table}.jewelloan_Oldloan_No as old_acc_no",
 					"{$table}.JewelLoan_StartDate as date",
 					"{$table}.JewelLoan_LoanAmount as amount",
+					DB::raw("(`JewelLoan_SaraparaCharge`+`JewelLoan_InsuranceCharge`+`JewelLoan_BookAndFormCharge`+`JewelLoan_OtherCharge`) as 'charges_sum'"),
+					DB::raw("'Jewel Loan Allocation' as particulars"),
+					DB::raw("'DEBIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.JewelLoanId")
-				->where("receipt_voucher.transaction_category",$transaction_category);
-				if($data["tran_list" == "YES"]) {
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+				if($data["tran_list"] == "YES") {
 					$ret_data = $ret_data->get();
+					foreach($ret_data as $key_jl=>$row_jl) {
+						if($row_jl->receipt_voucher_type == 1) {
+							$ret_data[$key_jl]->amount = $row_jl->charges_sum;
+							$ret_data[$key_jl]->transaction_type = "CREDIT";
+						}
+					}
 				} else {
 					$ret_data = $ret_data->where("{$table}.JewelLoanId",$data["tran_id"])
 						->first();
+					if($ret_data->receipt_voucher_type == 1) {
+						$ret_data->amount = $row_jl->charges_sum;
+						$ret_data->transaction_type = "CREDIT";
+					}
+					$ret_data->tran_category_name = "JL";
 				}
+
 
 			return $ret_data;
 		}
 
 		public function rv_print_dl($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
 			$table = "depositeloan_allocation";
 			$transaction_category = 17;
 
@@ -198,23 +235,44 @@
 					"{$table}.Old_loan_number as old_acc_no",
 					"{$table}.DepLoan_LoanStartDate as date",
 					"{$table}.DepLoan_LoanAmount as amount",
+					DB::raw("(`DepLoan_LoanCharge`) as 'charges_sum'"),
+					DB::raw("'Deposit Loan Allocation' as particulars"),
+					DB::raw("'DEBIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
-				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
+				->join("user","user.Uid","=","{$table}.DepLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.DepLoanAllocId")
-				->where("receipt_voucher.transaction_category",$transaction_category);
-				if($data["tran_list" == "YES"]) {
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+				if($data["tran_list"] == "YES") {
 					$ret_data = $ret_data->get();
+					foreach($ret_data as $key_dl=>$row_dl) {
+						if($row_dl->receipt_voucher_type == 1) {
+							$ret_data[$key_dl]->amount = $row_dl->charges_sum;
+							$ret_data[$key_dl]->transaction_type = "CREDIT";
+						}
+					}
 				} else {
 					$ret_data = $ret_data->where("{$table}.DepLoanAllocId",$data["tran_id"])
 						->first();
+					if($ret_data->receipt_voucher_type == 1) {
+						$ret_data->amount = $row_dl->charges_sum;
+						$ret_data->transaction_type = "CREDIT";
+						$ret_data->tran_category = $data['tran_category'];
+					}
+					$ret_data->tran_category_name = "DL";
 				}
+
 
 			return $ret_data;
 		}
 
 		public function rv_print_sl($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
 			$table = "staffloan_allocation";
 			$transaction_category = 19;
 
@@ -226,23 +284,31 @@
 					"{$table}.old_saffloan_no as old_acc_no",
 					"{$table}.StartDate as date",
 					"{$table}.LoanAmt as amount",
+					DB::raw("'Staff Loan Allocation' as particulars"),
+					DB::raw("'DEBIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
-				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
+				->join("user","user.Uid","=","{$table}.Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.StfLoanAllocID")
-				->where("receipt_voucher.transaction_category",$transaction_category);
-				if($data["tran_list" == "YES"]) {
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+				if($data["tran_list"] == "YES") {
 					$ret_data = $ret_data->get();
 				} else {
 					$ret_data = $ret_data->where("{$table}.StfLoanAllocID",$data["tran_id"])
 						->first();
 				}
+				$ret_data->tran_category_name = "SL";
 
 			return $ret_data;
 		}
 
 		public function rv_print_pl($data)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
 			$table = "personalloan_allocation";
 			$transaction_category = 18;
 
@@ -254,19 +320,277 @@
 					"{$table}.PersLoanAllocID as old_acc_no",
 					"{$table}.StartDate as date",
 					"{$table}.LoanAmt as amount",
+					DB::raw("'Personal Loan Allocation' as particulars"),
+					DB::raw("'DEBIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("members","members.Memid","=","{$table}.MemId")
-				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
+				->join("user","user.Uid","=","members.Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.PersLoanAllocID")
-				->where("receipt_voucher.transaction_category",$transaction_category);
-				if($data["tran_list" == "YES"]) {
-					$ret_data = $ret_data->get();
-				} else {
-					$ret_data = $ret_data->where("{$table}.PersLoanAllocID",$data["tran_id"])
-						->first();
-				}
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.PersLoanAllocID",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "PL";
+			}
 
+			return $ret_data;
+		}
+		
+		public function rv_print_jl_pay($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "jewelloan_repay";
+			$transaction_category = 23;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.JLRepay_Id as tran_id",
+					"jewelloan_allocation.JewelLoan_LoanNumber as acc_no",
+					"jewelloan_allocation.jewelloan_Oldloan_No as old_acc_no",
+					"{$table}.JLRepay_Date as date",
+					"{$table}.JLRepay_PaidAmt as amount",
+					DB::raw("'JL Repayment' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_JLAllocID")
+				->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.JLRepay_Id")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.JLRepay_Id",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "JL";
+			}
+			return $ret_data;
+		}
+		
+		public function rv_print_dl_pay($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "depositeloan_repay";
+			$transaction_category = 21;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.DLRepay_ID as tran_id",
+					"depositeloan_allocation.DepLoan_LoanNum as acc_no",
+					"depositeloan_allocation.Old_loan_number as old_acc_no",
+					"{$table}.DLRepay_Date as date",
+					"{$table}.DLRepay_PaidAmt as amount",
+					DB::raw("'DL Repayment' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("depositeloan_allocation","depositeloan_allocation.DepLoanAllocId","=","{$table}.DLRepay_DepAllocID")
+				->join("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.DLRepay_ID")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.DLRepay_ID",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "DL";
+			}
+			return $ret_data;
+		}
+		
+		public function rv_print_sl_pay($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "staffloan_repay";
+			$transaction_category = 24;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.SLRepay_Id as tran_id",
+					"staffloan_allocation.StfLoan_Number as acc_no",
+					"staffloan_allocation.old_saffloan_no as old_acc_no",
+					"{$table}.SLRepay_Date as date",
+					"{$table}.SLRepay_PaidAmt as amount",
+					DB::raw("'SL Repayment' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","{$table}.SLRepay_SLAllocID")
+				->join("user","user.Uid","=","staffloan_allocation.Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.SLRepay_Id")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.SLRepay_Id",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "SL";
+			}
+			return $ret_data;
+		}
+		
+		public function rv_print_pl_pay($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "personalloan_repay";
+			$transaction_category = 22;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.PLRepay_Id as tran_id",
+					"personalloan_allocation.PersLoan_Number as acc_no",
+					"personalloan_allocation.Old_PersLoan_Number as old_acc_no",
+					"{$table}.PLRepay_Date as date",
+					"{$table}.PLRepay_PaidAmt as amount",
+					DB::raw("'PL Repayment' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","{$table}.PLRepay_PLAllocID")
+				->join("members","members.Memid","=","personalloan_allocation.MemId")
+				->join("user","user.Uid","=","members.Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.PLRepay_Id")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.PLRepay_Id",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "PL";
+			}
+			return $ret_data;
+		}
+		
+		public function rv_print_mem_fee($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "members";
+			$transaction_category = 22;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.Memid as tran_id",
+					"{$table}.Memid as acc_no",
+					"{$table}.Member_no as old_acc_no",
+					"{$table}.CreatedDate as date",
+					"{$table}.Member_Fee as amount",
+					DB::raw("'Member Fee' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("user","user.Uid","=","members.Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Memid")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.Memid",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "MEMBER";
+			}
+			return $ret_data;
+		}
+		
+		public function rv_print_cust_fee($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "customer";
+			$transaction_category = 28;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.Custid as tran_id",
+					"{$table}.Custid as acc_no",
+					DB::raw("'-' as old_acc_no"),
+					"{$table}.Created_on as date",
+					"{$table}.Customer_Fee as amount",
+					DB::raw("'Customer Fee' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("user","user.Uid","=","{$table}.Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Custid")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0)
+				->where("{$table}.Customer_Fee","!=",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.Custid",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "CUSTOMER";
+			}
+			return $ret_data;
+		}
+		
+		public function rv_print_pg_pend($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "pending_pigmy";
+			$transaction_category = 9;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.PpId as tran_id",
+					"{$table}.PendPigmy_AgentUid as acc_no",
+					DB::raw("'-' as old_acc_no"),
+					"{$table}.PendPigmy_ReceivedDate as date",
+					"{$table}.PenPigmy_AmountReceived as amount",
+					DB::raw("'Agent Collection' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("user","user.Uid","=","{$table}.PendPigmy_AgentUid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.PpId")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.PpId",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "AGENT";
+			}
 			return $ret_data;
 		}
 		

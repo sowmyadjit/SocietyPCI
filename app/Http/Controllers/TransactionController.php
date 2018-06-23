@@ -466,30 +466,45 @@ use App\Http\Model\TransactionModel;
 			$in_data['tran_category'] = $request->input("tran_category");//JL,SB,..
 			$in_data['tran_type'] = $request->input("tran_type");//CREDIT,DEBIT
 			$in_data['tran_id'] = $request->input("tran_id");
+			// var_dump($in_data['tran_id']);
 			if(empty($in_data["tran_id"])) {
 				$in_data["tran_list"] = "YES";
 			} else {
 				$in_data["tran_list"] = "NO";
 			}
 			switch($in_data['tran_category']) {
-				case "SB" : $data = $this->TranModel->rv_print_sb($in_data);
-							break;
-				case "RD" : $data = $this->TranModel->rv_print_rd($in_data);
-							break;
-				case "JL" : $data = $this->TranModel->rv_print_jl($in_data);
-							break;
-				case "DL" : $data = $this->TranModel->rv_print_dl($in_data);
-							break;
-				case "SL" : $data = $this->TranModel->rv_print_sl($in_data);
-							break;
-				case "PL" : $data = $this->TranModel->rv_print_pl($in_data);
-							break;
+				case "SB" 		:	$data = $this->TranModel->rv_print_sb($in_data);
+									break;
+				case "RD" 		:	$data = $this->TranModel->rv_print_rd($in_data);
+									break;
+				case "JL" 		:	$data = $this->TranModel->rv_print_jl($in_data);
+									break;
+				case "DL" 		:	$data = $this->TranModel->rv_print_dl($in_data);
+									break;
+				case "SL" 		:	$data = $this->TranModel->rv_print_sl($in_data);
+									break;
+				case "PL" 		:	$data = $this->TranModel->rv_print_pl($in_data);
+									break;
+				case "JL_PAY"	:	$data = $this->TranModel->rv_print_jl_pay($in_data);
+									break;
+				case "DL_PAY"	:	$data = $this->TranModel->rv_print_dl_pay($in_data);
+									break;
+				case "SL_PAY"	:	$data = $this->TranModel->rv_print_sl_pay($in_data);
+									break;
+				case "PL_PAY"	:	$data = $this->TranModel->rv_print_pl_pay($in_data);
+									break;
+				case "MEM_FEE"	:	$data = $this->TranModel->rv_print_mem_fee($in_data);
+									break;
+				case "CUST_FEE"	:	$data = $this->TranModel->rv_print_cust_fee($in_data);
+									break;
+				case "PG_PEND"	:	$data = $this->TranModel->rv_print_pg_pend($in_data);
+									break;
 			}
 			if(empty($in_data["tran_id"])) {
 				// return $data;
-				 return view("TransactionReceiptListComman",compact('data'));
+				 return view("TransactionReceiptListCommon",compact('data'));
 			} else {
-				return view("blade_name",compact('data'));
+				return view("TranReceipt_common",compact('data'));
 			}
 		}
 }
