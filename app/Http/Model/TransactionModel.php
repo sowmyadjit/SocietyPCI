@@ -514,11 +514,14 @@
 			$ret_data = DB::table($table)
 				->select(
 					"{$table}.JLRepay_Id as tran_id",
+					"jewelloan_allocation.JewelLoanId as allocation_id",
 					"jewelloan_allocation.JewelLoan_LoanNumber as acc_no",
 					"jewelloan_allocation.jewelloan_Oldloan_No as old_acc_no",
 					"{$table}.JLRepay_Date as date",
 					"{$table}.JLRepay_PaidAmt as amount",
-					DB::raw("'JL Repayment' as particulars"),
+					"{$table}.JLRepay_paidtoprincipalamt as principle",
+					"{$table}.JLRepay_interestpaid as interest",
+					DB::raw("'' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -536,6 +539,21 @@
 				$ret_data = $ret_data->where("{$table}.JLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "JL";
+
+				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
+				$charges_transacton = DB::table("charges_tran")
+					->select(
+							"chareges.charges_name",
+							"charges_tran.amount"
+							)
+					->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
+					->where("loantype","JL")
+					->where("loanid",$ret_data->allocation_id)
+					->where("charg_tran_date",$ret_data->date)
+					->get();
+				foreach($charges_transacton as $part) {
+					$ret_data->particulars .= "\n{$part->charges_name}:{$part->amount}";
+				}
 			}
 			return $ret_data;
 		}
@@ -550,11 +568,14 @@
 			$ret_data = DB::table($table)
 				->select(
 					"{$table}.DLRepay_ID as tran_id",
+					"depositeloan_allocation.DepLoanAllocId as allocation_id",
 					"depositeloan_allocation.DepLoan_LoanNum as acc_no",
 					"depositeloan_allocation.Old_loan_number as old_acc_no",
 					"{$table}.DLRepay_Date as date",
 					"{$table}.DLRepay_PaidAmt as amount",
-					DB::raw("'DL Repayment' as particulars"),
+					"{$table}.DLRepay_PrincipalPaid as principle",
+					"{$table}.DLRepay_InterestPaid as interest",
+					DB::raw("'' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -572,6 +593,21 @@
 				$ret_data = $ret_data->where("{$table}.DLRepay_ID",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "DL";
+
+				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
+				$charges_transacton = DB::table("charges_tran")
+					->select(
+							"chareges.charges_name",
+							"charges_tran.amount"
+							)
+					->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
+					->where("loantype","DL")
+					->where("loanid",$ret_data->allocation_id)
+					->where("charg_tran_date",$ret_data->date)
+					->get();
+				foreach($charges_transacton as $part) {
+					$ret_data->particulars .= "\n{$part->charges_name}:{$part->amount}";
+				}
 			}
 			return $ret_data;
 		}
@@ -586,11 +622,14 @@
 			$ret_data = DB::table($table)
 				->select(
 					"{$table}.SLRepay_Id as tran_id",
+					"staffloan_allocation.StfLoanAllocID as allocation_id",
 					"staffloan_allocation.StfLoan_Number as acc_no",
 					"staffloan_allocation.old_saffloan_no as old_acc_no",
 					"{$table}.SLRepay_Date as date",
 					"{$table}.SLRepay_PaidAmt as amount",
-					DB::raw("'SL Repayment' as particulars"),
+					"{$table}.paid_principle as principle",
+					"{$table}.SLRepay_Interest as interest",
+					DB::raw("'' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -608,6 +647,21 @@
 				$ret_data = $ret_data->where("{$table}.SLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "SL";
+
+				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
+				$charges_transacton = DB::table("charges_tran")
+					->select(
+							"chareges.charges_name",
+							"charges_tran.amount"
+							)
+					->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
+					->where("loantype","SL")
+					->where("loanid",$ret_data->allocation_id)
+					->where("charg_tran_date",$ret_data->date)
+					->get();
+				foreach($charges_transacton as $part) {
+					$ret_data->particulars .= "\n{$part->charges_name}:{$part->amount}";
+				}
 			}
 			return $ret_data;
 		}
@@ -622,11 +676,14 @@
 			$ret_data = DB::table($table)
 				->select(
 					"{$table}.PLRepay_Id as tran_id",
+					"personalloan_allocation.PersLoanAllocID as allocation_id",
 					"personalloan_allocation.PersLoan_Number as acc_no",
 					"personalloan_allocation.Old_PersLoan_Number as old_acc_no",
 					"{$table}.PLRepay_Date as date",
 					"{$table}.PLRepay_PaidAmt as amount",
-					DB::raw("'PL Repayment' as particulars"),
+					"{$table}.PLRepay_Amtpaidtoprincpalamt as principle",
+					"{$table}.PLRepay_PaidInterest as interest",
+					DB::raw("'' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -645,6 +702,21 @@
 				$ret_data = $ret_data->where("{$table}.PLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "PL";
+
+				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
+				$charges_transacton = DB::table("charges_tran")
+					->select(
+							"chareges.charges_name",
+							"charges_tran.amount"
+							)
+					->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
+					->where("loantype","PL")
+					->where("loanid",$ret_data->allocation_id)
+					->where("charg_tran_date",$ret_data->date)
+					->get();
+				foreach($charges_transacton as $part) {
+					$ret_data->particulars .= "\n{$part->charges_name}:{$part->amount}";
+				}
 			}
 			return $ret_data;
 		}
