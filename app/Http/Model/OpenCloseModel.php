@@ -950,11 +950,35 @@
 			->where("receipt_voucher.transaction_category",8)
 			->where('Created_Date',$dte)
 			->where('FDPayment_Mode','=',"CASH")
+			->where('FdTid','!=',1)
 			
 			->where('fdallocation.Bid',$BranchId)
 			->get();
 			return $id;
 		}
+
+
+		public function show_dailykccallocamtbalance($dte)
+		{
+			//$dte=date('Y-m-d');
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BranchId=$uname->Bid;
+			
+			$id=DB::table('fdallocation')->select('Fd_CertificateNum','Fd_DepositAmt','Created_Date','receipt_voucher_no as FD_resp_No','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
+			->join("user","user.Uid","=","fdallocation.Uid")
+			->where("receipt_voucher.transaction_category",8)
+			->where('Created_Date',$dte)
+			->where('FDPayment_Mode','=',"CASH")
+			->where('FdTid','=',1)
+			
+			->where('fdallocation.Bid',$BranchId)
+			->get();
+			return $id;
+		}
+
 		public function show_dailyfdallocamttotbalance($dte)
 		{
 			//$dte=date('Y-m-d');
@@ -980,11 +1004,33 @@
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
 			->where('Created_Date',$dte)
 			->where('FDPayment_Mode','<>',"CASH")
+			->where('FdTid','!=',1)
 			
 			->where('fdallocation.Bid',$BranchId)
 			->get();
 			return $id;
 		}
+
+		public function show_dailykccallocamtbalance_adjust($dte)
+		{
+			//$dte=date('Y-m-d');
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BranchId=$uname->Bid;
+			
+			$id=DB::table('fdallocation')
+			->select('Fd_CertificateNum','Fd_DepositAmt','Created_Date','FD_resp_No','receipt_voucher_no as adj_no')
+			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
+			->where('Created_Date',$dte)
+			->where('FDPayment_Mode','<>',"CASH")
+			->where('FdTid','=',1)
+			
+			->where('fdallocation.Bid',$BranchId)
+			->get();
+			return $id;
+		}
+
 		public function show_dailyfdallocamttotbalance_adjust($dte)
 		{
 			//$dte=date('Y-m-d');

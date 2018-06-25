@@ -648,6 +648,68 @@
 						$gt_adj_cr += $fd_adj_cr_total;
 					?>
 					
+
+
+
+					
+					<tr><td colspan="9"><h5><b><center>KCC DEPOSIT AMOUNT<center></b></h5></td></tr>
+					<?php
+						$fd_cash_cr = 0;
+						$fd_adj_cr = 0;
+						
+						$fd_cash_cr_total = 0;
+						$fd_adj_cr_total = 0;
+					?>
+					@foreach ($trandaily['kccallocamt'] as $fdamt)
+						<?php
+							$fd_cash_cr = $fdamt->Fd_DepositAmt;
+							$fd_cash_cr_total += $fd_cash_cr;
+						?>
+						<tr>
+							<td>{{ $fdamt->Created_Date }}</td>
+							<td>{{ $fdamt->Fd_CertificateNum }}</td>
+							<td>KCC Deposit Amount - {{ $fdamt->name }}({{ $fdamt->Uid }})</td>
+							<td>{{ $fdamt->Fd_DepositAmt }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $fdamt->FD_resp_No }}</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endforeach	
+					@foreach ($trandaily['kccallocamt_adjust'] as $fdamt)
+						<?php
+							$fd_adj_cr = $fdamt->Fd_DepositAmt;
+							$fd_adj_cr_total += $fd_adj_cr;
+						?>
+						<tr>
+							<td>{{ $fdamt->Created_Date }}</td>
+							<td>{{ $fdamt->Fd_CertificateNum }}</td>
+							<td>KCC Deposit Amount</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $fdamt->Fd_DepositAmt }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $fdamt->adj_no }}</td>
+						</tr>
+					@endforeach	
+					<tr>
+						<th colspan =3>Total KCC Deposit Amount </th>
+						<td><?php echo $fd_cash_cr_total; ?></td>
+						<td>-</td>
+						<td><?php echo $fd_adj_cr_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $fd_cash_cr_total;
+						$gt_adj_cr += $fd_adj_cr_total;
+					?>
+					
 					
 					
 					
