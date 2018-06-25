@@ -426,7 +426,7 @@
 				$sbamt=$id['fdsbamount'];
 				$sbrem=$id['sbavailable'];
 				
-				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $id['bid'],'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for FD Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$id['fdallocreport'],'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $id['bid'],'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for KCC Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$id['fdallocreport'],'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
 			}
 			if($pmode=="CASH")
 			{

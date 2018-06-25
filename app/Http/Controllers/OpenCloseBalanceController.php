@@ -103,9 +103,11 @@
 			$trandaily['rdpayamttot']=$this->op->show_dailyrdpayamttotbalance($dte);
 			
 			$trandaily['fdallocamt']=$this->op->show_dailyfdallocamtbalance($dte);
+			$trandaily['kccallocamt']=$this->op->show_dailykccallocamtbalance($dte);
 			$trandaily['fdallocamttot']=$this->op->show_dailyfdallocamttotbalance($dte);
 			
 			$trandaily['fdallocamt_adjust']=$this->op->show_dailyfdallocamtbalance_adjust($dte);
+			$trandaily['kccallocamt_adjust']=$this->op->show_dailykccallocamtbalance_adjust($dte);
 			$trandaily['fdallocamttot_adjust']=$this->op->show_dailyfdallocamttotbalance_adjust($dte);
 			
 			$trandaily['fdpayamt']=$this->op->show_dailyfdpayamtbalance($dte);
