@@ -187,8 +187,12 @@
 					"{$table}.jewelloan_Oldloan_No as old_acc_no",
 					"{$table}.JewelLoan_StartDate as date",
 					"{$table}.JewelLoan_LoanAmount as amount",
+					"{$table}.JewelLoan_SaraparaCharge",
+					"{$table}.JewelLoan_InsuranceCharge",
+					"{$table}.JewelLoan_BookAndFormCharge",
+					"{$table}.JewelLoan_OtherCharge",
 					DB::raw("(`JewelLoan_SaraparaCharge`+`JewelLoan_InsuranceCharge`+`JewelLoan_BookAndFormCharge`+`JewelLoan_OtherCharge`) as 'charges_sum'"),
-					DB::raw("'Jewel Loan Allocation' as particulars"),
+					DB::raw("'' as particulars"),
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -211,12 +215,96 @@
 					$ret_data = $ret_data->where("{$table}.JewelLoanId",$data["tran_id"])
 						->first();
 					if($ret_data->receipt_voucher_type == 1) {
-						$ret_data->amount = $row_jl->charges_sum;
+						$ret_data->amount = $ret_data->charges_sum;
 						$ret_data->transaction_type = "CREDIT";
 					}
 					$ret_data->tran_category_name = "JL";
+					$ret_data->particulars .= "
+							Sarapara charge - {$ret_data->JewelLoan_SaraparaCharge}, 
+							Insurance charge - {$ret_data->JewelLoan_InsuranceCharge}, 
+							Books and forms charge - {$ret_data->JewelLoan_BookAndFormCharge}, 
+							Other charge - {$ret_data->JewelLoan_OtherCharge}
+						";
 				}
 
+			return $ret_data;
+		}
+
+		public function rv_print_jl_cr($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
+			$table = "jewelloan_allocation";
+			$transaction_category = 20;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.JewelLoanId as tran_id",
+					"{$table}.JewelLoan_LoanNumber as acc_no",
+					"{$table}.jewelloan_Oldloan_No as old_acc_no",
+					"{$table}.JewelLoan_StartDate as date",
+					DB::raw("(`JewelLoan_SaraparaCharge`+`JewelLoan_InsuranceCharge`+`JewelLoan_BookAndFormCharge`+`JewelLoan_OtherCharge`) as 'amount'"),
+					"{$table}.JewelLoan_SaraparaCharge",
+					"{$table}.JewelLoan_InsuranceCharge",
+					"{$table}.JewelLoan_BookAndFormCharge",
+					"{$table}.JewelLoan_OtherCharge",
+					DB::raw("'' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.JewelLoanId")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.receipt_voucher_type",1)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+				
+				$ret_data = $ret_data->where("{$table}.JewelLoanId",$data["tran_id"])
+					->first();
+					
+				$ret_data->tran_category_name = "JL";
+				$ret_data->particulars .= "Sarapara charge - {$ret_data->JewelLoan_SaraparaCharge},\nInsurance charge - {$ret_data->JewelLoan_InsuranceCharge},\nBooks and forms charge - {$ret_data->JewelLoan_BookAndFormCharge},\nOther charge - {$ret_data->JewelLoan_OtherCharge}";
+
+			return $ret_data;
+		}
+
+		public function rv_print_jl_db($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
+			$table = "jewelloan_allocation";
+			$transaction_category = 20;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.JewelLoanId as tran_id",
+					"{$table}.JewelLoan_LoanNumber as acc_no",
+					"{$table}.jewelloan_Oldloan_No as old_acc_no",
+					"{$table}.JewelLoan_StartDate as date",
+					"{$table}.JewelLoan_LoanAmount as amount",
+					DB::raw("(`JewelLoan_SaraparaCharge`+`JewelLoan_InsuranceCharge`+`JewelLoan_BookAndFormCharge`+`JewelLoan_OtherCharge`) as 'charges_sum'"),
+					DB::raw("'Jewel Loan Allocation' as particulars"),
+					DB::raw("'DEBIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.JewelLoanId")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.receipt_voucher_type",2)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+				
+				//TRAN LIST = NO
+				$ret_data = $ret_data->where("{$table}.JewelLoanId",$data["tran_id"])
+					->first();
+					
+				$ret_data->tran_category_name = "JL";
 
 			return $ret_data;
 		}
@@ -258,14 +346,86 @@
 				} else {
 					$ret_data = $ret_data->where("{$table}.DepLoanAllocId",$data["tran_id"])
 						->first();
+
 					if($ret_data->receipt_voucher_type == 1) {
-						$ret_data->amount = $row_dl->charges_sum;
+						$ret_data->amount = $ret_data->charges_sum;
 						$ret_data->transaction_type = "CREDIT";
 						$ret_data->tran_category = $data['tran_category'];
 					}
 					$ret_data->tran_category_name = "DL";
 				}
 
+			return $ret_data;
+		}
+
+		public function rv_print_dl_cr($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "depositeloan_allocation";
+			$transaction_category = 17;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.DepLoanAllocId as tran_id",
+					"{$table}.DepLoan_LoanNum as acc_no",
+					"{$table}.Old_loan_number as old_acc_no",
+					"{$table}.DepLoan_LoanStartDate as date",
+					"{$table}.DepLoan_LoanCharge as amount",
+					DB::raw("'Books and forms charges' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("user","user.Uid","=","{$table}.DepLoan_Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.DepLoanAllocId")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.receipt_voucher_type",1)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+				
+				$ret_data = $ret_data->where("{$table}.DepLoanAllocId",$data["tran_id"])
+					->first();
+
+				$ret_data->tran_category = $data['tran_category'];
+				$ret_data->tran_category_name = "DL";
+				
+			return $ret_data;
+		}
+
+		public function rv_print_dl_db($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "depositeloan_allocation";
+			$transaction_category = 17;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.DepLoanAllocId as tran_id",
+					"{$table}.DepLoan_LoanNum as acc_no",
+					"{$table}.Old_loan_number as old_acc_no",
+					"{$table}.DepLoan_LoanStartDate as date",
+					"{$table}.DepLoan_LoanAmount as amount",
+					DB::raw("(`DepLoan_LoanCharge`) as 'charges_sum'"),
+					DB::raw("'Deposit Loan Allocation' as particulars"),
+					DB::raw("'DEBIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("user","user.Uid","=","{$table}.DepLoan_Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.DepLoanAllocId")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.receipt_voucher_type",2)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+				
+				$ret_data = $ret_data->where("{$table}.DepLoanAllocId",$data["tran_id"])
+					->first();
+
+				$ret_data->tran_category_name = "DL";
 
 			return $ret_data;
 		}
@@ -300,8 +460,9 @@
 				} else {
 					$ret_data = $ret_data->where("{$table}.StfLoanAllocID",$data["tran_id"])
 						->first();
+					
+					$ret_data->tran_category_name = "SL";
 				}
-				$ret_data->tran_category_name = "SL";
 
 			return $ret_data;
 		}
@@ -502,7 +663,7 @@
 					"{$table}.Member_no as old_acc_no",
 					"{$table}.CreatedDate as date",
 					"{$table}.Member_Fee as amount",
-					DB::raw("'Member Fee' as particulars"),
+					DB::raw("'Entrance Fee' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -537,7 +698,7 @@
 					DB::raw("'-' as old_acc_no"),
 					"{$table}.Created_on as date",
 					"{$table}.Customer_Fee as amount",
-					DB::raw("'Customer Fee' as particulars"),
+					DB::raw("'Entrance Fee' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -569,11 +730,12 @@
 			$ret_data = DB::table($table)
 				->select(
 					"{$table}.PpId as tran_id",
-					"{$table}.PendPigmy_AgentUid as acc_no",
+					DB::raw("'-' as acc_no"),
 					DB::raw("'-' as old_acc_no"),
 					"{$table}.PendPigmy_ReceivedDate as date",
 					"{$table}.PenPigmy_AmountReceived as amount",
 					DB::raw("'Agent Collection' as particulars"),
+					"{$table}.PendPigmy_CollectionDate as collection_date",
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -590,6 +752,7 @@
 				$ret_data = $ret_data->where("{$table}.PpId",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "AGENT";
+				$ret_data->particulars .= " - " . $ret_data->collection_date;
 			}
 			return $ret_data;
 		}

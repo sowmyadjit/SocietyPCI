@@ -33,12 +33,13 @@
 			
 			
 			<?php $temp=$RSB->receipt_voucher_no; echo $temp; ?>
+			<?php $rec_vouch = "RECEIPT"; ?>
 			
 			
 			@elseif($RSB->transaction_type=="DEBIT")
 			
 				<?php $temp=$RSB->receipt_voucher_no; echo $temp; ?>
-				
+				<?php $rec_vouch = "VOUCHER"; ?>
 			
 			@endif
 				</td>
@@ -50,7 +51,7 @@
 					<div class="form-group">
 						<div class="col-sm-12">
 							<?php /*		<input type="button"  data="{{$RSB->tran_id}}" value="RECEIPT" class="btn btn-info btn-sm ReceiptPrint" href="TranReceipt/SB/{{ $RSB->tran_id }}"/> */?>
-							<input type="button"  data="{{$RSB->tran_id}}"class="btn btn-info btn-sm rv_print_btn" value="RECEIPT" />
+							<input type="button"  data-id="{{$RSB->tran_id}}" data-tran_type="{{$RSB->transaction_type}}" class="btn btn-info btn-sm rv_print_btn" value="{{$rec_vouch}}" />
 						</div>
 					</div>	
 					
@@ -98,11 +99,12 @@
 	$('.rv_print_btn').click(function(e){
 		var tran_category=$('#ReceiptTypeDD').val();
 		console.log(tran_category);
-		var tran_id = $(this).attr("data");
+		var tran_id = $(this).attr("data-id");
+		var tran_type = $(this).attr("data-tran_type");
 			$.ajax({
 				url:'rv_print',
 				type:'post',
-				data:'&tran_category='+tran_category+"&tran_id="+tran_id,
+				data:'&tran_category='+tran_category+'&tran_type='+tran_type+"&tran_id="+tran_id,
 				success:function(data)
 				{
 					$("#toprint").html(data);

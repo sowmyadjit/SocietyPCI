@@ -477,9 +477,27 @@ use App\Http\Model\TransactionModel;
 									break;
 				case "RD" 		:	$data = $this->TranModel->rv_print_rd($in_data);
 									break;
-				case "JL" 		:	$data = $this->TranModel->rv_print_jl($in_data);
+				case "JL" 		:	
+									if($in_data["tran_list"] == "YES") {
+										$data = $this->TranModel->rv_print_jl($in_data);
+									} else {
+										if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+											$data = $this->TranModel->rv_print_jl_cr($in_data);
+										} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+											$data = $this->TranModel->rv_print_jl_db($in_data);
+										}
+									}
 									break;
-				case "DL" 		:	$data = $this->TranModel->rv_print_dl($in_data);
+				case "DL" 		:	
+									if($in_data["tran_list"] == "YES") {
+										$data = $this->TranModel->rv_print_dl($in_data);
+									} else {
+										if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+											$data = $this->TranModel->rv_print_dl_cr($in_data);
+										} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+											$data = $this->TranModel->rv_print_dl_db($in_data);
+										}
+									}
 									break;
 				case "SL" 		:	$data = $this->TranModel->rv_print_sl($in_data);
 									break;

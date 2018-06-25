@@ -16,10 +16,22 @@
 						Niyamita, Chakrasowdha, Kulai</br>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  
-						<b>{{$data->tran_category_name}} RECEIPT - (office copy)<b>
+						<b>{{$data->tran_category_name}} 
+						@if($data->transaction_type=="CREDIT")
+							RECEIPT
+						@elseif($data->transaction_type=="DEBIT")
+							VOUCHER
+						@endif
+						 - (office copy)<b>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-			      		<b>{{$data->tran_category_name}} RECEIPT - (customer copy)<b>
+			      		<b>{{$data->tran_category_name}} 
+						@if($data->transaction_type=="CREDIT")
+							RECEIPT
+						@elseif($data->transaction_type=="DEBIT")
+							VOUCHER
+						@endif
+						 - (customer copy)<b>
 		
 		<div>
 		<span style="font-weight:bold;float:right;" class="receipt_date">
@@ -37,78 +49,85 @@
 			
 			
 			<tr>
-				<th>Transaction Date:</th>
-				<td>{{$strdate}}</td>
-				<th>Transaction Date:</th>
-				<td>{{$strdate}}</td>
-			</tr>
-			<tr>
-				<th>Receipt No:</th>
-				@if($data->transaction_type=="CREDIT")
-					<td>
-						{{ $data->receipt_voucher_no}}
-					</td>
-				@elseif($data->transaction_type=="DEBIT")
-					<td>
-						{{ $data->receipt_voucher_no}}
-					</td>
-				@endif
+				<th>Date:
+				{{$strdate}}
+				</th>
 
-				<th>Receipt No:</th>
+				<th>
 				@if($data->transaction_type=="CREDIT")
-					<td>
-						{{ $data->receipt_voucher_no}}
-					</td>
+					
+				Receipt No:	{{ $data->receipt_voucher_no}}
+					
 				@elseif($data->transaction_type=="DEBIT")
-					<td>
-						{{ $data->receipt_voucher_no}}
-					</td>
+					
+				Voucher No:	{{ $data->receipt_voucher_no}}
+					
 				@endif
+				</th>
+
+				<th>Date:
+				{{$strdate}}
+				</th>
+
+				<th>
+				@if($data->transaction_type=="CREDIT")
+					
+				Receipt No:	{{ $data->receipt_voucher_no}}
+					
+				@elseif($data->transaction_type=="DEBIT")
+					
+				Voucher No:	{{ $data->receipt_voucher_no}}
+					
+				@endif
+				</th>
+
 			</tr>
 			
+
 			<tr>
-				<th> Account Number:</th>
+				<th>Customer Name:</th>
+				<td>
+				Mr/Mrs. {{ $data->name }}
+				</td>
+				<th>Customer Name:</th>
+				<td>
+				Mr/Mrs. {{ $data->name }}
+				</td>
+			</tr>
+
+			<tr>
+				<th>A/C No.:</th>
 				<td>
 					{{$data->acc_no}}  /  {{$data->old_acc_no}}
 				</td>
-				<th>SB Account Number:</th>
+				<th>A/C No.:</th>
 				<td>
 					{{$data->acc_no}}  /  {{$data->old_acc_no}}
 				</td>
 			</tr>
 			
-			<tr>
-				<th>Customer Name: Mr/Mrs</th>
-				<td>
-					{{ $data->name }}
-				</td>
-				<th>Customer Name: Mr/Mrs</th>
-				<td>
-					{{ $data->name }}
-				</td>
-				</tr>
 			
 			<hr>
 			
 			<tr>
 					<th>Particulars:</th>
-					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $data->particulars }}</span></td>
+					<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
 					<th>Particulars:</th>
-					<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> {{ $data->particulars }}</span></td>
+					<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
 				</tr>
 			
 			<tr>
-				<th>Amount Paid:</th>
-				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $data->amount }}&nbsp/-</span></td>
-				<th>Amount Paid:</th>
-				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px">Rs. {{ $data->amount }}&nbsp/-</span></td>
+				<th>Total:</th>
+				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> >Rs. {{ $data->amount }}&nbsp/-</span></td>
+				<th>Total:</th>
+				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> >Rs. {{ $data->amount }}&nbsp/-</span></td>
 			</tr>
 			<tr>
-				<th>Amount in words:</th>
+				<th>In words:</th>
 				<input type="hidden" name="rupees" value="{{$data->amount}}" id="rupees" />
-				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container"> </span></span></td>
-				<th>Amount in words:</th>
-				<td><span class="receipt_amt" style="font-weight:bold;font-size:18px"> <span id="container2"> </span></span></td>
+				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> > <span id="container"> </span></span></td>
+				<th>In words:</th>
+				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> > <span id="container2"> </span></span></td>
 			</tr>
 			<tr>
 			<th>
