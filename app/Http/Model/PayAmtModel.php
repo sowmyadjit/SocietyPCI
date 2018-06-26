@@ -100,6 +100,30 @@
 				
 				DB::table('addbank')->where('Bankid','=',$BankId)
 				->update(['TotalAmt'=>$ResultAmt]);
+				
+				//
+				$addbank = DB::table('addbank')
+				->where('Bankid','=',$BankId)
+				->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = $paydate;
+				$insert_array["date"] = $paydatereport;
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "CHEQUE";
+				$insert_array["cheque_no"] = $id['PigPayChequeNum'];
+				$insert_array["cheque_date"] = $id['PigPayChequeDate'];
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $id['PigPayableAmt'];
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = "PIGMY PAY AMOUNT THROUGH CHEQUE";
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = "WITHDRAWL";
+
+				DB::table("deposit")
+					->insertGetId($insert_array);
 			}
 			
 			else if($PayMode=="CASH")
@@ -359,6 +383,31 @@
 				
 				DB::table('addbank')->where('Bankid','=',$BankId)
 				->update(['TotalAmt'=>$ResultAmt]);
+
+				//
+				$addbank = DB::table('addbank')
+				->where('Bankid','=',$BankId)
+				->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = $paydate;
+				$insert_array["date"] = $paydatereport;
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "CHEQUE";
+				$insert_array["cheque_no"] = $id['FDPayChequeNum'];
+				$insert_array["cheque_date"] = $id['FDPayChequeDate'];
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $id['FDPayableAmt'];
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = "FD PAY AMOUNT THROUGH CHEQUE";
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = "WITHDRAWL";
+
+				DB::table("deposit")
+					->insertGetId($insert_array);
+
 			}
 			
 			else if($FDPayMode=="CASH")
