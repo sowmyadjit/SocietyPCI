@@ -16,7 +16,7 @@
 						Niyamita, Chakrasowdha, Kulai</br>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  
-						<b>{{$data->tran_category_name}} 
+						<b> <?php /*{{$data->tran_category_name}} */?>
 						@if($data->transaction_type=="CREDIT")
 							RECEIPT
 						@elseif($data->transaction_type=="DEBIT")
@@ -25,7 +25,7 @@
 						 - (office copy)<b>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-			      		<b>{{$data->tran_category_name}} 
+			      		<b> <?php /*{{$data->tran_category_name}} */?>
 						@if($data->transaction_type=="CREDIT")
 							RECEIPT
 						@elseif($data->transaction_type=="DEBIT")
@@ -87,11 +87,11 @@
 			<tr>
 				<th>Customer Name:</th>
 				<td>
-				Mr/Mrs. {{ $data->name }}
+				Mr/Mrs. {{ $data->name }}({{$data->uid}})
 				</td>
 				<th>Customer Name:</th>
 				<td>
-				Mr/Mrs. {{ $data->name }}
+				Mr/Mrs. {{ $data->name }}({{$data->uid}})
 				</td>
 			</tr>
 
@@ -108,13 +108,14 @@
 			
 			
 			<hr>
-			
-			<tr>
+			@if($data->tran_category_name != "SB" && $data->tran_category_name != "RD")			
+				<tr>
 					<th>Particulars:</th>
 					<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
 					<th>Particulars:</th>
 					<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
 				</tr>
+			@endif
 			
 			<tr>
 				<th>Total:</th>

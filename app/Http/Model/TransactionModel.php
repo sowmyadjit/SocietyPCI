@@ -114,6 +114,7 @@
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("createaccount","createaccount.Accid","=","{$table}.Accid")
@@ -153,6 +154,7 @@
 					"{$table}.RD_Trans_Type as transaction_type",
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("createaccount","createaccount.Accid","=","{$table}.Accid")
@@ -196,6 +198,7 @@
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
@@ -253,6 +256,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
@@ -291,6 +295,7 @@
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
@@ -328,6 +333,7 @@
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.DepLoan_Uid")
@@ -376,6 +382,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.DepLoan_Uid")
@@ -413,6 +420,7 @@
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.DepLoan_Uid")
@@ -448,6 +456,7 @@
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.Uid")
@@ -485,6 +494,7 @@
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("members","members.Memid","=","{$table}.MemId")
@@ -525,6 +535,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_JLAllocID")
@@ -579,6 +590,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("depositeloan_allocation","depositeloan_allocation.DepLoanAllocId","=","{$table}.DLRepay_DepAllocID")
@@ -633,6 +645,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","{$table}.SLRepay_SLAllocID")
@@ -687,6 +700,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","{$table}.PLRepay_PLAllocID")
@@ -739,6 +753,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","members.Uid")
@@ -774,6 +789,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.Uid")
@@ -811,6 +827,7 @@
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("user","user.Uid","=","{$table}.PendPigmy_AgentUid")
