@@ -806,7 +806,7 @@
 					DB::raw("'-' as old_acc_no"),
 					"{$table}.PendPigmy_ReceivedDate as date",
 					"{$table}.PenPigmy_AmountReceived as amount",
-					DB::raw("'Agent Collection' as particulars"),
+					DB::raw("'NN Suspense' as particulars"),
 					"{$table}.PendPigmy_CollectionDate as collection_date",
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
