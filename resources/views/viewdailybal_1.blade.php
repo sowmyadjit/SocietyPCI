@@ -66,7 +66,7 @@
 				
 				
 				<tbody>
-					<tr><td colspan="9"><h5><b><center>SB TRANSACTION<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>SB TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$sb_cash_cr = 0;
 						$sb_cash_db = 0;
@@ -161,7 +161,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>RD TRANSACTION<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>RD TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$rd_cash_cr = 0;
 						$rd_cash_db = 0;
@@ -250,7 +250,7 @@
 					?>
 						
 						
-					<tr><td colspan="9"><h5><b><center>PIGMY TRANSACTION<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PIGMY TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$pigmy_cash_cr = 0;
 						$pigmy_cash_db = 0;
@@ -357,7 +357,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>PIGMY PAID AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PIGMY PAID AMOUNT<center></b></h5></td></tr>
 					<?php
 						$pigmypay_cash_db = 0;
 						$pigmypay_adj_db = 0;
@@ -529,7 +529,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>RD PAID AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>RD PAID AMOUNT<center></b></h5></td></tr>
 					<?php
 						$rd_cash_db = 0;
 						$rd_adj_db = 0;
@@ -590,7 +590,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>FD DEPOSIT AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>FD DEPOSIT AMOUNT<center></b></h5></td></tr>
 					<?php
 						$fd_cash_cr = 0;
 						$fd_adj_cr = 0;
@@ -652,7 +652,7 @@
 
 
 					
-					<tr><td colspan="9"><h5><b><center>KCC DEPOSIT AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>KCC DEPOSIT AMOUNT<center></b></h5></td></tr>
 					<?php
 						$fd_cash_cr = 0;
 						$fd_adj_cr = 0;
@@ -715,7 +715,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>FD PAID AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>FD PAID AMOUNT<center></b></h5></td></tr>
 					<?php
 						$fd_cash_db = 0;
 						$fd_adj_db = 0;
@@ -821,7 +821,7 @@
 		
 					
 				<!------------------ MD PAID AMOUNT  -------------------->
-					<tr><td colspan="9"><h5><b><center>MATURITY DEPOSIT PAID AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>MATURITY DEPOSIT PAID AMOUNT<center></b></h5></td></tr>
 					<?php
 						$cash_db = 0;
 						$adj_db = 0;
@@ -882,7 +882,7 @@
 				<!------------------ MD PAID AMOUNT END -------------------->
 					
 					
-					<tr><td colspan="9"><h5><b><center>Share Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Share Allocated<center></b></h5></td></tr>
 					<?php
 						$share_cash_cr = 0;
 						$share_cash_cr_total = 0;
@@ -921,7 +921,7 @@
 							
 							
 							
-					<tr><td colspan="9"><h5><b><center>Member Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Member Allocated<center></b></h5></td></tr>
 					<?php
 						$member_cash_cr = 0;
 						$member_cash_cr_total = 0;
@@ -959,7 +959,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>D Class<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>D Class<center></b></h5></td></tr>
 					<?php
 						$classd_cash_cr = 0;
 						$classd_cash_cr_total = 0;
@@ -999,7 +999,7 @@
 
 
 
-					<tr><td colspan="9"><h5><b><center>Expence<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Expence<center></b></h5></td></tr>
 					<?php
 						$exp_cash_db = 0;
 						$exp_adj_db = 0;
@@ -1061,7 +1061,7 @@
 						
 						
 						
-					<tr><td colspan="9"><h5><b><center>Income<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Income<center></b></h5></td></tr>
 					<?php
 						$inc_cash_cr = 0;
 						$inc_adj_cr = 0;
@@ -1124,7 +1124,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>DL Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>DL Allocated<center></b></h5></td></tr>
 					<?php
 						$dl_cash_cr = 0;
 						$dl_cash_db = 0;
@@ -1222,7 +1222,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>DL REPAY<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>DL REPAY<center></b></h5></td></tr>
 					<?php
 						$dlrepay_cash_cr = 0;
 						$dlrepay_adj_cr = 0;
@@ -1284,7 +1284,7 @@
 						
 						
 						
-					<tr><td colspan="9"><h5><b><center>PL Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PL Allocated<center></b></h5></td></tr>
 					<?php
 						$pl_cash_cr = 0;
 						$pl_cash_db = 0;
@@ -1532,7 +1532,7 @@
 						
 						
 						
-					<tr><td colspan="9"><h5><b><center>PL REPAY<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PL REPAY<center></b></h5></td></tr>
 					<?php
 						$plrepay_cash_cr = 0;
 						$plrepay_adj_cr = 0;
@@ -1587,7 +1587,7 @@
 						$gt_adj_cr += $plrepay_adj_cr_total;
 					?>
 						
-					<tr><td colspan="9"><h5><b><center>PL REPAY INTEREST<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PL REPAY INTEREST<center></b></h5></td></tr>
 					<?php
 						$plrepay_cash_cr = 0;
 						$plrepay_adj_cr = 0;
@@ -1647,7 +1647,7 @@
 					
 					
 			
-					<tr><td colspan="9"><h5><b><center>JL Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL Allocated<center></b></h5></td></tr>
 					<?php
 						$jl_cash_db = 0;
 						$jl_adj_db = 0;
@@ -1707,7 +1707,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>JL charges<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL charges<center></b></h5></td></tr>
 					<?php
 						$jl_cash_cr = 0;
 						$jl_adj_cr = 0;
@@ -1769,7 +1769,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>JL REPAY<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL REPAY<center></b></h5></td></tr>
 					<?php
 						$jlrepay_cash_cr = 0;
 						$jlrepay_adj_cr = 0;
@@ -1828,7 +1828,7 @@
 						$gt_adj_cr += $jlrepay_adj_cr_total;
 					?>
 					
-					<tr><td colspan="9"><h5><b><center>JL REPAY INTEREST<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL REPAY INTEREST<center></b></h5></td></tr>
 					<?php
 						$jlrepay_cash_cr = 0;
 						$jlrepay_adj_cr = 0;
@@ -1887,7 +1887,7 @@
 						$gt_adj_cr += $jlrepay_adj_cr_total;
 					?>
 					
-					<tr><td colspan="9"><h5><b><center>JL AUCTION ACCOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL AUCTION ACCOUNT<center></b></h5></td></tr>
 					<?php
 						$cash_db = 0;
 						$adj_db = 0;
@@ -1950,7 +1950,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>SL Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>SL Allocated<center></b></h5></td></tr>
 					<?php
 						$sl_cash_db = 0;
 						$sl_adj_db = 0;
@@ -2012,7 +2012,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>SL REPAY<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>SL REPAY<center></b></h5></td></tr>
 					<?php
 						$slrepay_cash_cr = 0;
 						$slrepay_adj_cr = 0;
@@ -2073,7 +2073,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>SL REPAY INTEREST<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>SL REPAY INTEREST<center></b></h5></td></tr>
 					<?php
 						$cash_cr = 0;
 						$adj_cr = 0;
@@ -2137,7 +2137,7 @@
 <!-- ------------------------------- loan charges ------------------------------- -->
 
 
-					<tr><td colspan="9"><h5><b><center>LOAN CHARGES TRANSACTION<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>LOAN CHARGES TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$cash_cr = 0;
 						$adj_cr = 0;
@@ -2200,7 +2200,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>Branch-To-Branch<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Branch-To-Branch<center></b></h5></td></tr>
 					<?php
 						$b2b_cash_cr = 0;
 						$b2b_cash_db = 0;
@@ -2317,6 +2317,44 @@
 					
 					
 					
+						
+						
+						
+						
+						
+						
+					<tr>
+						<th colspan =3>Branch To Branch </th>
+						<td><?php echo $b2b_cash_cr_total; ?></td>
+						<td><?php echo $b2b_cash_db_total; ?></td>
+						<td><?php echo $b2b_adj_cr_total; ?></td>
+						<td><?php echo $b2b_adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $b2b_cash_cr_total;
+						$gt_cash_db += $b2b_cash_db_total;
+						$gt_adj_cr += $b2b_adj_cr_total;
+						$gt_adj_db += $b2b_adj_db_total;
+					?>
+					
+					
+					
+		<!-- BANK TRANSACTIONS -->
+					<tr><td colspan="10"><h5><b><center>Bank Transactions<center></b></h5></td></tr>
+					<?php
+						$b2b_cash_cr = 0;
+						$b2b_cash_db = 0;
+						$b2b_adj_cr = 0;
+						$b2b_adj_db = 0;
+						
+						$b2b_cash_cr_total = 0;
+						$b2b_cash_db_total = 0;
+						$b2b_adj_cr_total = 0;
+						$b2b_adj_db_total = 0;
+					?>
+					
 					@foreach ($trandaily['Bank_Branch'] as $Bank_Branch)
 						<?php
 							if(strcasecmp($Bank_Branch->Deposit_type, 'WITHDRAWL') == 0) {
@@ -2393,10 +2431,8 @@
 								}
 						?>
 					@endforeach
-						
-						
-			<?php /******* opposite entry for expense cheque *******/?>
-						
+
+					<?php /******* opposite entry for expense cheque *******/?>
 					@foreach ($trandaily['expense_cheque'] as $row)
 						<?php
 							$adj_cr = $row->amount;
@@ -2415,42 +2451,36 @@
 								<td>-</td>
 							</tr>
 					@endforeach
-			
-			<?php /******* opposite entry for expense cheque *******/?>
-			<?php /******* opposite entry for income cheque *******/?>
-						
-					@foreach ($trandaily['income_cheque'] as $row)
-						<?php
-							$adj_db = $row->Income_amount;
-							$b2b_adj_db_total += $adj_db;
-						?>
-							<tr>
-								<td>{{ $row->Income_date }}</td>
-								<td>{{ $row->lname }}</td>
-								<td>{{ $row->Income_Particulars }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $adj_db }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-							</tr>
-					@endforeach
-			
-			<?php /******* opposite entry for income cheque *******/?>
-						
-						
-						
-						
-						
-						
+					<?php /******* opposite entry for expense cheque *******/?>
+
+					<?php /******* opposite entry for income cheque *******/?>
+							@foreach ($trandaily['income_cheque'] as $row)
+								<?php
+									$adj_db = $row->Income_amount;
+									$b2b_adj_db_total += $adj_db;
+								?>
+									<tr>
+										<td>{{ $row->Income_date }}</td>
+										<td>{{ $row->lname }}</td>
+										<td>{{ $row->Income_Particulars }}</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>{{ $adj_db }}</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+									</tr>
+							@endforeach
+					<?php /******* opposite entry for income cheque *******/?>
+
 					<tr>
-						<th colspan =3>Branch To Branch </th>
+						<th colspan =3>Bank Transactions</th>
 						<td><?php echo $b2b_cash_cr_total; ?></td>
 						<td><?php echo $b2b_cash_db_total; ?></td>
 						<td><?php echo $b2b_adj_cr_total; ?></td>
 						<td><?php echo $b2b_adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -2460,13 +2490,16 @@
 						$gt_adj_cr += $b2b_adj_cr_total;
 						$gt_adj_db += $b2b_adj_db_total;
 					?>
+		<!-- BANK TRANSACTIONS -->
+					
+					
+
+
+
 					
 					
 					
-					
-					
-					
-					<tr><td colspan="9"><h5><b><center>Agent collection<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Agent collection<center></b></h5></td></tr>
 					<?php
 						$agent_cash_cr = 0;
 						
@@ -2507,7 +2540,7 @@
 					
 	<!-- -------------salary----------------- -->
 	
-				<tr><td colspan="9"><h5><b><center>Employee Salary<center></b></h5></td></tr>
+				<tr><td colspan="10"><h5><b><center>Employee Salary<center></b></h5></td></tr>
 				<?php
 					$adj_db = 0;
 					$adj_db_total = 0;
@@ -2544,7 +2577,7 @@
 				?>
 					
 					
-				<tr><td colspan="9"><h5><b><center>Agent Salary<center></b></h5></td></tr>
+				<tr><td colspan="10"><h5><b><center>Agent Salary<center></b></h5></td></tr>
 				<?php
 					$adj_db = 0;
 					$adj_db_total = 0;
@@ -2587,7 +2620,7 @@
 	
 	<!-- -------------salary Extra Pay----------------- -->
 	<!-- -------------Staff Addition----------------- -->
-				<tr><td colspan="9"><h5><b><center>Employee Salary Extra<center></b></h5></td></tr>
+				<tr><td colspan="10"><h5><b><center>Employee Salary Extra<center></b></h5></td></tr>
 								
 				<?php
 					$cash_cr = 0;
@@ -2601,7 +2634,7 @@
 					$adj_db_total = 0;
 				?>
 				
-				<tr><td colspan="9"><b><center>Staff Additions<center></b></td></tr>
+				<tr><td colspan="10"><b><center>Staff Additions<center></b></td></tr>
 				<?php
 					$adj_db_1 = 0;//1 - Staff Additions
 					$adj_db_total_1 = 0;
@@ -2637,7 +2670,7 @@
 				</tr>
 	<!-- -------------Staff Addition----------------- -->
 	<!-- -------------Staff Addition----------------- -->
-				<tr><td colspan="9"><b><center>Staff Deductions<center></b></td></tr>
+				<tr><td colspan="10"><b><center>Staff Deductions<center></b></td></tr>
 				<?php
 					$adj_cr_2 = 0;//2 - Staff Deductions
 					$adj_cr_total_2 = 0;
@@ -2673,7 +2706,7 @@
 				</tr>
 	<!-- -------------Staff Addition----------------- -->
 	<!-- -------------Staff Addition----------------- -->
-				<tr><td colspan="9"><b><center>Society Contribution<center></b></td></tr>
+				<tr><td colspan="10"><b><center>Society Contribution<center></b></td></tr>
 				<?php
 					$adj_db_3 = 0;
 					$adj_db_total_3 = 0;
@@ -2709,7 +2742,7 @@
 				</tr>
 	<!-- -------------Staff Addition----------------- -->
 	<!-- -------------Staff Addition----------------- -->
-				<tr><td colspan="9"><b><center>Agent Deductions<center></b></td></tr>
+				<tr><td colspan="10"><b><center>Agent Deductions<center></b></td></tr>
 				<?php
 					$cash_cr_4 = 0;
 					$adj_cr_4 = 0;
@@ -2787,7 +2820,7 @@
 	
 	
 					<tr>
-						<td colspan="9">&nbsp;</td>
+						<td colspan="10">&nbsp;</td>
 					</tr>
 					<tr>
 						<th colspan =3>Grand Total</th>

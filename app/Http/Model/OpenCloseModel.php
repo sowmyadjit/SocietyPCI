@@ -1450,6 +1450,7 @@
 			->join('branch','branch.Bid','=','Branch_Branch2_Id')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
 			->where("receipt_voucher.transaction_category",4)
+			->where("receipt_voucher.bid",$BranchId)
 			->where('Branch_Tran_Date',$dte)
 			->where('Branch_Branch1_Id',$BranchId)
 			->get();
@@ -1482,6 +1483,7 @@
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
 			->where("receipt_voucher.transaction_category",4)
 			->where("receipt_voucher.bid",$BranchId)
+			->where("receipt_voucher.bid",$BranchId)
 			->where('Branch_Tran_Date',$dte)
 			->where('Branch_Branch2_Id',$BranchId)
 			->get();
@@ -1495,13 +1497,24 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('deposit')->select('deposit.date','BankName','amount','reason','pay_mode','Deposit_type','receipt_voucher_no as receipt_no','receipt_voucher_no as voucher_no','receipt_voucher_no as adj_no')
+			$id1=DB::table('deposit')->select('deposit.date','BankName','amount','reason','pay_mode','Deposit_type','receipt_voucher_no as receipt_no','receipt_voucher_no as voucher_no','receipt_voucher_no as adj_no')
 			->leftJoin('addbank','addbank.Bankid','=','deposit.depo_bank_id')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","deposit.d_id")
 			->where("receipt_voucher.transaction_category",6)
 			->where('deposit.Bid',$BranchId)
 			->where('deposit.date',$dte)
 			->get();
+
+			/******* ADJUSTMENT CREDIT *****/
+			$id2=DB::table('deposit')->select('deposit.date','BankName','amount','reason','pay_mode','Deposit_type',DB::raw("'' as receipt_no"),DB::raw("'' as voucher_no"),DB::raw("'' as adj_no"))
+			->leftJoin('addbank','addbank.Bankid','=','deposit.depo_bank_id')
+			->where('deposit.Bid',$BranchId)
+			->where('deposit.date',$dte)
+			->where('deposit.Deposit_type',"WITHDRAWL")
+			->where('deposit.pay_mode',"!=","INHAND")
+			->get();
+			/******* ADJUSTMENT CREDIT *****/
+			$id = array_merge($id1,$id2);
 			return $id;
 			
 		}
@@ -2248,6 +2261,10 @@
 				->where("receipt_voucher.receipt_voucher_type",3)
 				->where('JewelLoan_LoanNumber',$jl)
 				->first();
+
+				if(empty($jldetails1)) {
+					continue;
+				}
 				
 				$JewelLoan_SaraparaCharge=$jldetails1->JewelLoan_SaraparaCharge;
 				$JewelLoan_InsuranceCharge=$jldetails1->JewelLoan_InsuranceCharge;
