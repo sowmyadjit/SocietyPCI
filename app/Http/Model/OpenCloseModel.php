@@ -3064,6 +3064,14 @@
 			print_r($ret_data);exit();
 			return $ret_data;
 		}
+
+		public function get_did()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $Branchid=$uname->Bid; $UID=$uname->Uid;
+			return DB::table("user")
+				->where("Uid",$UID)
+				->value("Did");
+		}
 		
 		
 	}

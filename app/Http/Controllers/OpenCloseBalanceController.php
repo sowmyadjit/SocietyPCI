@@ -27,6 +27,7 @@
 			$Url="openclose";
 			$OpCls['module']=$this->Modules->GetAnyMid($Url);
 			$OpCls['is_day_open'] = $this->op->is_day_open(date("Y-m-d"));
+			$OpCls['did'] = $this->op->get_did();
 			//$OpCls=$this->op->GetOpClsModule();
 			return view('openclose',compact('OpCls'));
 		}
