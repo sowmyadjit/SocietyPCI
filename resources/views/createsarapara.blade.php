@@ -332,6 +332,11 @@
 				$('#sdpodis').val(data['secutitydeposit']);
 				$('#sdpo').val(data['secutitydeposit']);
 				$('#ot').val(data['otherincome']);
+
+				/**************/
+				var temp_cvommission = parseFloat($('#totalamtdis').val()) - parseFloat($('#sdpodis').val()) - parseFloat($('#ot').val()) - parseFloat($('#tdsvaldis').val());
+				$('#commdis').val(temp_cvommission);
+				/**************/
 				
 				
 			}
