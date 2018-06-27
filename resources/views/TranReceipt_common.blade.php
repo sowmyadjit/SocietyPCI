@@ -95,17 +95,19 @@
 				</td>
 			</tr>
 
-			<tr>
-				<th>A/C No.:</th>
-				<td>
-					{{$data->acc_no}}  /  {{$data->old_acc_no}}
-				</td>
-				<th>A/C No.:</th>
-				<td>
-					{{$data->acc_no}}  /  {{$data->old_acc_no}}
-				</td>
-			</tr>
-			
+			@if($data->tran_category == "PG_PEND")
+			@else
+				<tr>
+					<th>A/C No.:</th>
+					<td>
+						{{$data->acc_no}}  /  {{$data->old_acc_no}}
+					</td>
+					<th>A/C No.:</th>
+					<td>
+						{{$data->acc_no}}  /  {{$data->old_acc_no}}
+					</td>
+				</tr>
+			@endif
 			
 			<hr>
 			@if($data->tran_category_name != "SB" && $data->tran_category_name != "RD")			

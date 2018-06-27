@@ -130,6 +130,7 @@
 				$ret_data = $ret_data->where("{$table}.Tranid",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "SB";
+				$ret_data->tran_category = $data["tran_category"];
 			}
 
 			return $ret_data;
@@ -169,6 +170,7 @@
 					$ret_data = $ret_data->where("{$table}.RD_TransID",$data["tran_id"])
 						->first();
 					$ret_data->tran_category_name = "RD";
+					$ret_data->tran_category = $data["tran_category"];
 				}
 
 			return $ret_data;
@@ -222,6 +224,7 @@
 						$ret_data->transaction_type = "CREDIT";
 					}
 					$ret_data->tran_category_name = "JL";
+					$ret_data->tran_category = $data["tran_category"];
 					$ret_data->particulars .= "
 							Sarapara charge - {$ret_data->JewelLoan_SaraparaCharge}, 
 							Insurance charge - {$ret_data->JewelLoan_InsuranceCharge}, 
@@ -270,7 +273,8 @@
 					->first();
 					
 				$ret_data->tran_category_name = "JL";
-				$ret_data->particulars .= "Sarapara charge - {$ret_data->JewelLoan_SaraparaCharge},\nInsurance charge - {$ret_data->JewelLoan_InsuranceCharge},\nBooks and forms charge - {$ret_data->JewelLoan_BookAndFormCharge},\nOther charge - {$ret_data->JewelLoan_OtherCharge}";
+				$ret_data->tran_category = $data["tran_category"];
+				$ret_data->particulars .= "Appraiser commission - {$ret_data->JewelLoan_SaraparaCharge},\nInsurance charge - {$ret_data->JewelLoan_InsuranceCharge},\nBooks and forms charge - {$ret_data->JewelLoan_BookAndFormCharge},\nOther charge - {$ret_data->JewelLoan_OtherCharge}";
 
 			return $ret_data;
 		}
@@ -310,6 +314,7 @@
 					->first();
 					
 				$ret_data->tran_category_name = "JL";
+				$ret_data->tran_category = $data["tran_category"];
 
 			return $ret_data;
 		}
@@ -434,6 +439,7 @@
 					->first();
 
 				$ret_data->tran_category_name = "DL";
+				$ret_data->tran_category = $data["tran_category"];
 
 			return $ret_data;
 		}
@@ -471,6 +477,7 @@
 						->first();
 					
 					$ret_data->tran_category_name = "SL";
+					$ret_data->tran_category = $data["tran_category"];
 				}
 
 			return $ret_data;
@@ -509,6 +516,7 @@
 				$ret_data = $ret_data->where("{$table}.PersLoanAllocID",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "PL";
+				$ret_data->tran_category = $data["tran_category"];
 			}
 
 			return $ret_data;
@@ -550,6 +558,7 @@
 				$ret_data = $ret_data->where("{$table}.JLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "JL";
+				$ret_data->tran_category = $data["tran_category"];
 
 				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
 				$charges_transacton = DB::table("charges_tran")
@@ -605,6 +614,7 @@
 				$ret_data = $ret_data->where("{$table}.DLRepay_ID",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "DL";
+				$ret_data->tran_category = $data["tran_category"];
 
 				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
 				$charges_transacton = DB::table("charges_tran")
@@ -660,6 +670,7 @@
 				$ret_data = $ret_data->where("{$table}.SLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "SL";
+				$ret_data->tran_category = $data["tran_category"];
 
 				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
 				$charges_transacton = DB::table("charges_tran")
@@ -716,6 +727,7 @@
 				$ret_data = $ret_data->where("{$table}.PLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "PL";
+				$ret_data->tran_category = $data["tran_category"];
 
 				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
 				$charges_transacton = DB::table("charges_tran")
@@ -767,6 +779,7 @@
 				$ret_data = $ret_data->where("{$table}.Memid",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "MEMBER";
+				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
 		}
@@ -782,10 +795,10 @@
 				->select(
 					"{$table}.Custid as tran_id",
 					"{$table}.Custid as acc_no",
-					DB::raw("'-' as old_acc_no"),
+					DB::raw("'' as old_acc_no"),
 					"{$table}.Created_on as date",
 					"{$table}.Customer_Fee as amount",
-					DB::raw("'Entrance Fee' as particulars"),
+					DB::raw("'D CLASS MEMBERSHIP' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -804,6 +817,7 @@
 				$ret_data = $ret_data->where("{$table}.Custid",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "CUSTOMER";
+				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
 		}
@@ -818,8 +832,9 @@
 			$ret_data = DB::table($table)
 				->select(
 					"{$table}.PpId as tran_id",
-					DB::raw("'-' as acc_no"),
-					DB::raw("'-' as old_acc_no"),
+					// DB::raw("'-' as acc_no"),
+					"user.Uid as acc_no",
+					DB::raw("'' as old_acc_no"),
 					"{$table}.PendPigmy_ReceivedDate as date",
 					"{$table}.PenPigmy_AmountReceived as amount",
 					DB::raw("'NN Suspense' as particulars"),
@@ -841,6 +856,7 @@
 				$ret_data = $ret_data->where("{$table}.PpId",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "AGENT";
+				$ret_data->tran_category = $data["tran_category"];
 				$ret_data->particulars .= " - " . $ret_data->collection_date;
 			}
 			return $ret_data;

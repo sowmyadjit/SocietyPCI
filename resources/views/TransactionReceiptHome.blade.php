@@ -23,12 +23,12 @@
 									<option value="DL"> DL ALLOCATE RECEIPT </option>
 									<option value="SL"> SL ALLOCATE RECEIPT </option>
 									<option value="PL"> PL ALLOCATE RECEIPT </option>
-									<option value="JL_PAY"> JL PAY RECEIPT </option>
-									<option value="DL_PAY"> DL PAY RECEIPT </option>
-									<option value="SL_PAY"> SL PAY RECEIPT </option>
-									<option value="PL_PAY"> PL PAY RECEIPT </option>
+									<option value="JL_PAY"> JL REPAY RECEIPT </option>
+									<option value="DL_PAY"> DL REPAY RECEIPT </option>
+									<option value="SL_PAY"> SL REPAY RECEIPT </option>
+									<option value="PL_PAY"> PL REPAY RECEIPT </option>
 									<option value="MEM_FEE"> MEMBER FEE RECEIPT </option>
-									<option value="CUST_FEE"> CUSTOMER FEE RECEIPT </option>
+									<option value="CUST_FEE"> D CLASS </option>
 									<option value="PG_PEND"> PIGMY PENDING RECEIPT </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
 								</select>

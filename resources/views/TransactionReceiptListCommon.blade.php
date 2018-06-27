@@ -29,18 +29,14 @@
 				<td>{{ $RSB->name }}</td>
 				<td><?php $trandate=date("d-m-Y",strtotime($RSB->date)); echo $trandate; ?> </td>
 				<td>
-			@if($RSB->transaction_type=="CREDIT")
-			
-			
-			<?php $temp=$RSB->receipt_voucher_no; echo $temp; ?>
-			<?php $rec_vouch = "RECEIPT"; ?>
-			
-			
-			@elseif($RSB->transaction_type=="DEBIT")
-			
+			@if(strcasecmp($RSB->transaction_type, "CREDIT") == 0)
+				<?php $temp=$RSB->receipt_voucher_no; echo $temp; ?>
+				<?php $rec_vouch = "RECEIPT"; ?>
+			@elseif(strcasecmp($RSB->transaction_type, "DEBIT") == 0)
 				<?php $temp=$RSB->receipt_voucher_no; echo $temp; ?>
 				<?php $rec_vouch = "VOUCHER"; ?>
-			
+			@else
+				<?php $rec_vouch = "_"; ?>
 			@endif
 				</td>
 				
