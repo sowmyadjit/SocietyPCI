@@ -761,6 +761,7 @@
 					"{$table}.Member_no as old_acc_no",
 					"{$table}.CreatedDate as date",
 					"{$table}.Member_Fee as amount",
+					// DB::raw("{$table}.Member_Fee + purchaseshare.PURSH_Totalamt as amount"),
 					DB::raw("'Entrance Fee' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
@@ -770,6 +771,8 @@
 				)
 				->join("user","user.Uid","=","members.Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Memid")
+				->leftjoin("purchaseshare","purchaseshare.PURSH_Memid","=","members.Memid")
+				->whereRaw("purchaseshare.PURSH_Date = members.CreatedDate")
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
