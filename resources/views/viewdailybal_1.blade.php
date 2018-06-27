@@ -2160,7 +2160,8 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td>{{$row->receipt_no}}</td>
-								<td>{{$row->pay_mode}}</td>
+								<td>-</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -2175,8 +2176,9 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center"><?php echo $adj_cr; ?></p></td>
 								<td><p class="text-center">-</p></td>
-								<td></td>
-								<td>{{$row->pay_mode}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
 							</tr>
 						@endif
 					@endforeach

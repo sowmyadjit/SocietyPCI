@@ -2711,7 +2711,7 @@
 										$alloc_row = DB::table('jewelloan_repay')
 											->select("receipt_voucher_no","JLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 											->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_repay.JLRepay_Id")
-											->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_Id")
+											->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_JLAllocID")
 											->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
 											->where("receipt_voucher.transaction_category",23)
 											->where('JLRepay_Id','=',$row->repay_id)
@@ -2724,7 +2724,7 @@
 									} else {
 										$alloc_row = DB::table('jewelloan_repay')
 											->select("JLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
-											->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_Id")
+											->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_JLAllocID")
 											->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
 											->where('JLRepay_Date','=',$date)
 											->where('JLRepay_JLAllocID','=',$row->loanid)
