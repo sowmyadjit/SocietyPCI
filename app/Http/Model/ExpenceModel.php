@@ -468,18 +468,7 @@
 			{
 				//$inh=$id['ta1'];
 				//echo "hai".$inh;
-				$id = DB::table('income')->insertGetId(['Income_date'=>$trandate,'Bid'=>$id['branchid'],'Income_pay_mode'=>$id['paydone'],'Income_amount'=>$amount1,'Income_Particulars'=>$particlr,'Income_ExpenseBy'=>$uid,'Income_Head_lid'=>$id['incomehead'],'Income_SubHead_lid'=>$id['incomesubhead'],'Income_Expence_PamentVoucher'=>$r1]);
-				
-				/***********/
-				$fn_data["rv_payment_mode"] = $paydone;
-				$fn_data["rv_transaction_id"] = $id;
-				$fn_data["rv_transaction_type"] = "CREDIT";
-				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::INCOME;//constant INCOME is declared in ReceiptVoucherModel
-				$fn_data["rv_date"] = $trandate;
-				$fn_data["rv_bid"] = null;
-				$this->rv_no->save_rv_no($fn_data);
-				unset($fn_data);
-				/***********/
+				$income_id = DB::table('income')->insertGetId(['Income_date'=>$trandate,'Bid'=>$id['branchid'],'Income_pay_mode'=>$id['paydone'],'Income_amount'=>$amount1,'Income_Particulars'=>$particlr,'Income_ExpenseBy'=>$uid,'Income_Head_lid'=>$id['incomehead'],'Income_SubHead_lid'=>$id['incomesubhead'],'Income_Expence_PamentVoucher'=>$r1]);
 				
 				$incash=DB::table('cash')->select('InHandCash')
 				->where('BID','=',$b)
@@ -501,7 +490,7 @@
 				
 				$bankID=$id['bankid'];
 				
-				$id = DB::table('income')->insertGetId(['Income_date'=> $trandate,'Income_cheque_date'=>$id['chdate'],'Income_cheque_no'=>$id['chqno'],'Bid'=>$id['branchid'],'Income_bank'=>$id['bankName'],'Income_bank_id'=>$id['bankid'],'Income_pay_mode'=>$id['paydone'],'Income_amount'=>$amount1,'Income_Particulars'=>$particlr,'Income_ChequeClear_State'=>$id['unclearedval'],'Income_ExpenseBy'=>$uid,'Income_Head_lid'=>$id['incomehead'],'Income_SubHead_lid'=>$id['incomesubhead'],'Income_Expence_PamentVoucher'=>$r1]);
+				$income_id = DB::table('income')->insertGetId(['Income_date'=> $trandate,'Income_cheque_date'=>$id['chdate'],'Income_cheque_no'=>$id['chqno'],'Bid'=>$id['branchid'],'Income_bank'=>$id['bankName'],'Income_bank_id'=>$id['bankid'],'Income_pay_mode'=>$id['paydone'],'Income_amount'=>$amount1,'Income_Particulars'=>$particlr,'Income_ChequeClear_State'=>$id['unclearedval'],'Income_ExpenseBy'=>$uid,'Income_Head_lid'=>$id['incomehead'],'Income_SubHead_lid'=>$id['incomesubhead'],'Income_Expence_PamentVoucher'=>$r1]);
 				
 				$totamt=DB::table('addbank')->select('TotalAmt')
 				->where('Bankid','=',$bankID)
@@ -512,6 +501,41 @@
 				$amt=$tt+$amount1;
 				DB::table('addbank')->where('Bankid','=',$bankID)
 				->update(['TotalAmt'=>$amt]);
+
+				//
+				$addbank = DB::table('addbank')
+				->where('Bankid','=',$bankID)
+				->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = $dte;
+				$insert_array["date"] = $trandate;
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "CHEQUE";
+				$insert_array["cheque_no"] = $id['chqno'];
+				$insert_array["cheque_date"] = $id['chdate'];
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $amount1;
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = "INCOME THROUGH CHEQUE";
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = "Deposit";
+
+				$deposit_id = DB::table("deposit")
+					->insertGetId($insert_array);
+					
+				/***********/
+				$fn_data["rv_payment_mode"] = $paydone;
+				$fn_data["rv_transaction_id"] = $deposit_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $trandate;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			}
 			else if($paydone=="SB")
 			{
@@ -529,7 +553,7 @@
 			{
 				$bankID=$id['bankid2'];
 				
-				$id = DB::table('income')->insertGetId(['Income_date'=> $trandate,'Income_cheque_date'=>'adjustment','Income_cheque_no'=>'adjustment','Bid'=>$id['branchid'],'Income_bank'=>$id['bankName2'],'Income_bank_id'=>$id['bankid2'],'Income_pay_mode'=>$id['paydone'],'Income_amount'=>$amount1,'Income_Particulars'=>$particlr,'Income_ChequeClear_State'=>'','Income_ExpenseBy'=>$uid,'Income_Head_lid'=>$id['incomehead'],'Income_SubHead_lid'=>$id['incomesubhead'],'Income_Expence_PamentVoucher'=>$r1]);
+				$income_id = DB::table('income')->insertGetId(['Income_date'=> $trandate,'Income_cheque_date'=>'adjustment','Income_cheque_no'=>'adjustment','Bid'=>$id['branchid'],'Income_bank'=>$id['bankName2'],'Income_bank_id'=>$id['bankid2'],'Income_pay_mode'=>$id['paydone'],'Income_amount'=>$amount1,'Income_Particulars'=>$particlr,'Income_ChequeClear_State'=>'','Income_ExpenseBy'=>$uid,'Income_Head_lid'=>$id['incomehead'],'Income_SubHead_lid'=>$id['incomesubhead'],'Income_Expence_PamentVoucher'=>$r1]);
 				
 				$totamt=DB::table('addbank')->select('TotalAmt')
 				->where('Bankid','=',$bankID)
@@ -541,6 +565,17 @@
 				->update(['TotalAmt'=>$amt]);
 			}
 /*EDIT END 22SEP2017*/
+
+				/***********/
+				$fn_data["rv_payment_mode"] = $paydone;
+				$fn_data["rv_transaction_id"] = $income_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::INCOME;//constant INCOME is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $trandate;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 		}
 		
 		public function GetIncomeReceipt($id)

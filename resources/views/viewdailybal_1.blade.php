@@ -2160,7 +2160,7 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td>{{$row->receipt_no}}</td>
-								<td></td>
+								<td>{{$row->pay_mode}}</td>
 							</tr>
 						@else
 							<?php
@@ -2176,7 +2176,7 @@
 								<td><p class="text-center"><?php echo $adj_cr; ?></p></td>
 								<td><p class="text-center">-</p></td>
 								<td></td>
-								<td></td>
+								<td>{{$row->pay_mode}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -2431,48 +2431,6 @@
 								}
 						?>
 					@endforeach
-
-					<?php /******* opposite entry for expense cheque *******/?>
-					@foreach ($trandaily['expense_cheque'] as $row)
-						<?php
-							$adj_cr = $row->amount;
-							$b2b_adj_cr_total += $adj_cr;
-						?>
-							<tr>
-								<td>{{ $row->e_date }}</td>
-								<td>{{ $row->lname }}</td>
-								<td>{{ $row->Particulars }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $adj_cr }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-							</tr>
-					@endforeach
-					<?php /******* opposite entry for expense cheque *******/?>
-
-					<?php /******* opposite entry for income cheque *******/?>
-							@foreach ($trandaily['income_cheque'] as $row)
-								<?php
-									$adj_db = $row->Income_amount;
-									$b2b_adj_db_total += $adj_db;
-								?>
-									<tr>
-										<td>{{ $row->Income_date }}</td>
-										<td>{{ $row->lname }}</td>
-										<td>{{ $row->Income_Particulars }}</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-										<td>{{ $adj_db }}</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-									</tr>
-							@endforeach
-					<?php /******* opposite entry for income cheque *******/?>
 
 					<tr>
 						<th colspan =3>Bank Transactions</th>

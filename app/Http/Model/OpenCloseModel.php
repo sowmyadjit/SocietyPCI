@@ -1681,12 +1681,25 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
-			$id=DB::table('income')->select('lname','Income_amount','Income_date','receipt_voucher_no as Income_Expence_PamentVoucher', 'Income_pay_mode','Income_Particulars','receipt_voucher_no as adj_no')
-			->join('legder','legder.lid','=','Income_SubHead_lid')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","income.Income_id")
-			->where("receipt_voucher.transaction_category",7)
-			->where('Income_date',$dte)
-			->where('income.Bid',$BranchId)->get();
+			$id1 = DB::table('income')
+				->select('lname','Income_amount','Income_date','receipt_voucher_no as Income_Expence_PamentVoucher', 'Income_pay_mode','Income_Particulars','receipt_voucher_no as adj_no')
+				->join('legder','legder.lid','=','Income_SubHead_lid')
+				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","income.Income_id")
+				->where("receipt_voucher.transaction_category",7)
+				->where('Income_date',$dte)
+				->where('income.Bid',$BranchId)
+				->get();
+
+			/******* ADJUSTMENT CREDIT *****/
+				$id2 = DB::table('income')
+					->select('lname','Income_amount','Income_date',DB::raw("'' as Income_Expence_PamentVoucher"), 'Income_pay_mode','Income_Particulars',DB::raw("'' as adj_no"))
+					->join('legder','legder.lid','=','Income_SubHead_lid')
+					->where('Income_date',$dte)
+					->where('income.Bid',$BranchId)
+					->where('income.Income_pay_mode',"!=","INHAND")
+					->get();
+			/******* ADJUSTMENT CREDIT *****/
+			$id = array_merge($id1,$id2);
 			return $id;
 			
 		}
