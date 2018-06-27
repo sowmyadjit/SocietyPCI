@@ -215,18 +215,7 @@
 			{
 				//$inh=$id['ta1'];
 				//echo "hai".$inh;
-				$id = DB::table('expense')->insertGetId(['e_date'=>$trandate,'Bid'=>$id['branchid'],'pay_mode'=>$id['paydone'],'amount'=>$id['ta1'],'Particulars'=>$id['parti1'],'ExpenseBy'=>$uid,'Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Expence_PamentVoucher'=>$r1]);
-					
-					/***********/
-					$fn_data["rv_payment_mode"] = $paydone;
-					$fn_data["rv_transaction_id"] = $id;
-					$fn_data["rv_transaction_type"] = "DEBIT";
-					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::EXPENSE;//constant EXPENSE is declared in ReceiptVoucherModel
-					$fn_data["rv_date"] = $trandate;
-					$fn_data["rv_bid"] = null;
-					$this->rv_no->save_rv_no($fn_data);
-					unset($fn_data);
-					/***********/
+				$expense_id = DB::table('expense')->insertGetId(['e_date'=>$trandate,'Bid'=>$id['branchid'],'pay_mode'=>$id['paydone'],'amount'=>$id['ta1'],'Particulars'=>$id['parti1'],'ExpenseBy'=>$uid,'Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Expence_PamentVoucher'=>$r1]);
 				
 				$incash=DB::table('cash')->select('InHandCash')
 				->where('BID','=',$b)
@@ -248,7 +237,7 @@
 				
 				$bankID=$id['bankid'];
 				
-				$id = DB::table('expense')->insertGetId(['e_date'=> $trandate,'cheque_date'=>$id['chdate'],'cheque_no'=>$id['chqno'],'Bid'=>$id['branchid'],'bank'=>$id['bankName'],'bank_id'=>$id['bankid'],'pay_mode'=>$id['paydone'],'amount'=>$id['ta'],'Particulars'=>$id['parti'],'ChequeClear_State'=>$id['unclearedval'],'ExpenseBy'=>$uid,'Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Expence_PamentVoucher'=>$r1]);
+				$expense_id = DB::table('expense')->insertGetId(['e_date'=> $trandate,'cheque_date'=>$id['chdate'],'cheque_no'=>$id['chqno'],'Bid'=>$id['branchid'],'bank'=>$id['bankName'],'bank_id'=>$id['bankid'],'pay_mode'=>$id['paydone'],'amount'=>$id['ta'],'Particulars'=>$id['parti'],'ChequeClear_State'=>$id['unclearedval'],'ExpenseBy'=>$uid,'Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Expence_PamentVoucher'=>$r1]);
 				
 				$totamt=DB::table('addbank')->select('TotalAmt')
 				->where('Bankid','=',$bankID)
@@ -259,6 +248,31 @@
 				$amt=$tt-$amount1_cheq;
 				DB::table('addbank')->where('Bankid','=',$bankID)
 				->update(['TotalAmt'=>$amt]);
+				
+				//
+				$addbank = DB::table('addbank')
+				->where('Bankid','=',$bankID)
+				->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = $dte;
+				$insert_array["date"] = $trandate;
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "CHEQUE";
+				$insert_array["cheque_no"] = $id['chqno'];
+				$insert_array["cheque_date"] = $id['chdate'];
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $id['ta'];
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = "EXPENSE THROUGH CHEQUE";
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = "WITHDRAWL";
+
+				DB::table("deposit")
+					->insertGetId($insert_array);
+				//NO NEED TO GENERATE RECEIPT/VOUCHER NO FOR ADJ CREDIT TRANSACTION
 			}
 			else if($paydone=="SB")
 			{
@@ -267,7 +281,7 @@
 				$tot=$ca+$amount1;
 				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$accnum,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>$particlr1,'Amount'=>$amount1,'CurrentBalance'=>$ca,'tran_Date'=>$dte,'SBReport_TranDate'=>$trandate,'Time'=>$tm,'Month'=>$m,'Year'=>$y,'Total_Bal'=>$tot,'Bid'=>$BID,'Payment_Mode'=>"SB",'CreatedBy'=>$UID]);
 				
-				DB::table('expense')->insertGetId(['Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Bid'=>$BID,'e_date'=>$trandate,'pay_mode'=>"SB",'amount'=>$amount1,'Particulars'=>$particlr1,'ExpenseBy'=>$uid]);
+				$expense_id = DB::table('expense')->insertGetId(['Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Bid'=>$BID,'e_date'=>$trandate,'pay_mode'=>"SB",'amount'=>$amount1,'Particulars'=>$particlr1,'ExpenseBy'=>$uid]);
 				
 				DB::table('createaccount')
 				->where('Accid',$accnum)
@@ -277,7 +291,7 @@
 			{
 				$bankID=$id['bankid'];
 				
-				$id = DB::table('expense')->insertGetId(['e_date'=> $trandate,'cheque_date'=>'0000-00-00','cheque_no'=>'0','Bid'=>$BID,'bank'=>$id['bankName'],'bank_id'=>$id['bankid'],'pay_mode'=>$id['paydone'],'amount'=>$id['ta'],'Particulars'=>$id['parti'],'ChequeClear_State'=>$id['unclearedval'],'ExpenseBy'=>$uid,'Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Expence_PamentVoucher'=>$r1]);
+				$expense_id = DB::table('expense')->insertGetId(['e_date'=> $trandate,'cheque_date'=>'0000-00-00','cheque_no'=>'0','Bid'=>$BID,'bank'=>$id['bankName'],'bank_id'=>$id['bankid'],'pay_mode'=>$id['paydone'],'amount'=>$id['ta'],'Particulars'=>$id['parti'],'ChequeClear_State'=>$id['unclearedval'],'ExpenseBy'=>$uid,'Head_lid'=>$id['exphead'],'SubHead_lid'=>$id['expsubhead'],'Expence_PamentVoucher'=>$r1]);
 				
 				$totamt=DB::table('addbank')->select('TotalAmt')
 				->where('Bankid','=',$bankID)
@@ -289,6 +303,19 @@
 				DB::table('addbank')->where('Bankid','=',$bankID)
 				->update(['TotalAmt'=>$amt]);
 			}
+
+				/***********/
+				$fn_data["rv_payment_mode"] = $paydone;
+				$fn_data["rv_transaction_id"] = $expense_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::EXPENSE;//constant EXPENSE is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $trandate;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
+			return;
 		}
 		
 		public function GetExpenceData()

@@ -124,6 +124,7 @@
 
 				DB::table("deposit")
 					->insertGetId($insert_array);
+				//NO NEED TO GENERATE RECEIPT/VOUCHER NO FOR ADJ CREDIT TRANSACTION
 			}
 			
 			else if($PayMode=="CASH")
