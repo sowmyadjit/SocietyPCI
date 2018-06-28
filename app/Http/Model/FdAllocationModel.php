@@ -80,6 +80,7 @@
 				$paccno3=intval($paccno2)+1;
 				$fdcertnum="PCIS".$branchcd."FD".$paccno3;
 				
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
 				$got_unique = false;
 				while(!$got_unique) {
 					$existing_count = DB::table("fdallocation")
@@ -92,6 +93,7 @@
 						$got_unique = true;
 					}
 				}
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
 
 
 				$FdReceipt=$branchcd.$RecYear."FDA".$paccno3;
