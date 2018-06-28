@@ -467,18 +467,49 @@
 			
 			print_r($ex_key);
 			for($i=0;$i<$count;$i++) {
-					$data['date']= date("Y-m-d");
-					$data['bid']= $BID;
-					$data['sal_id']= $sal_id;
-					$data['employee_type']= $emp_type;
-					$data['sal_extra_id'] = $temp_key =  $ex_key[$i];
-					//$data['sal_extra_type']= $sal_extra_list[$temp_key];
-					$data['salpay_extra_amt']= $value[$i];
-					$data['salpay_extra_particulars']= $part[$i];
-					$data['LedgerHeadId']= $sal_extra_list[$temp_key]->head;
-					$data['SubLedgerId']= $sal_extra_list[$temp_key]->sub_head;
-			DB::table('salary_extra_pay')
-				->insertGetId($data);
+				$data['date']= date("Y-m-d");
+				$data['bid']= $BID;
+				$data['sal_id']= $sal_id;
+				$data['employee_type']= $emp_type;
+				$data['sal_extra_id'] = $temp_key =  $ex_key[$i];
+				//$data['sal_extra_type']= $sal_extra_list[$temp_key];
+				$data['salpay_extra_amt']= $value[$i];
+				$data['salpay_extra_particulars']= $part[$i];
+				$data['LedgerHeadId']= $sal_extra_list[$temp_key]->head;
+				$data['SubLedgerId']= $sal_extra_list[$temp_key]->sub_head;
+				DB::table('salary_extra_pay')
+					->insertGetId($data);
+
+				/******* ADJ ENTRY TO H.O. ******/
+					$sal_extra_type = DB::table("salary_extra")
+						->where("sal_extra_id",$data['sal_extra_id'])
+						->value("sal_extra_type");
+					if($sal_extra_type == 2 || $sal_extra_type == 4 ) {
+						$insert_array["Branch_Branch1_Id"] = $BID;
+						$insert_array["Branch_Branch2_Id"] = 6;
+						$insert_array["Branch_Tran_Date"] = $data['date'];
+						$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+						$insert_array["LedgerHeadId"] = $data['LedgerHeadId'];
+						$insert_array["SubLedgerId"] = $data['SubLedgerId'];
+						$insert_array["Branch_Amount"] = $data['salpay_extra_amt'];
+						$insert_array["Branch_per"] = $data['salpay_extra_particulars'];
+
+						$branch_to_branch_id = DB::table("branch_to_branch")
+							->insertGetId($insert_array);
+						//GENERATE ADJ NO. FOR THIS BRANCH
+						/***********/
+						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+						$fn_data["rv_transaction_type"] = "DEBIT";
+						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+						$fn_data["rv_date"] = $data['date'];
+						$fn_data["rv_bid"] = null;
+						$this->rv_no->save_rv_no($fn_data);
+						unset($fn_data);
+						/***********/
+						//NO ADJ NO. FOR H.O. (ADJ CREDIT)
+					}
+				/******* ADJ ENTRY TO H.O. ******/
 			}
 			
 			return;
