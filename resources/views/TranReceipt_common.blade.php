@@ -1,4 +1,14 @@
-
+<style>
+table th {
+    font-weight: normal !important;
+	padding: 5px !important;
+}
+table td {
+    font-weight: normal !important;
+	padding: 5px !important;
+	/* max-width:300px !important; */
+}
+</style>
 <div class="box-content">
 	<div  id="toprint">
 		<link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
@@ -85,11 +95,11 @@
 			
 
 			<tr>
-				<th>Customer Name:</th>
+				<th>Cus Name:</th>
 				<td>
 				Mr/Mrs. {{ $data->name }}({{$data->uid}})
 				</td>
-				<th>Customer Name:</th>
+				<th>Cus Name:</th>
 				<td>
 				Mr/Mrs. {{ $data->name }}({{$data->uid}})
 				</td>
@@ -127,10 +137,10 @@
 			@if(strcasecmp($data->transaction_type, "CREDIT") == 0)
 				@if($data->tran_category_name != "RD")
 					<tr>
-						<th>Particulars:</th>
-						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
-						<th>Particulars:</th>
-						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
+						<th><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> ></span></td>
+						<th><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> ></span></td>
 					</tr>
 				@endif
 			@else
