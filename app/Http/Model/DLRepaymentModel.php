@@ -1164,7 +1164,8 @@
 			DB::table('jewelloan_allocation')
 			->where('JewelLoanId',$DepAlID)
 			->update(['JewelLoan_LoanRemainingAmount'=>$pendingloanamt,'JewelLoan_remaininginterest'=>$remaininginterst,'JewelLoan_lastpaiddate'=>$RepayDte]);
-			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="ADJUSTMENT")
+			// if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="ADJUSTMENT")
+			if($paymode!="CHEQUE")
 			{
 				if($pendingloanamt<=0)
 				{
