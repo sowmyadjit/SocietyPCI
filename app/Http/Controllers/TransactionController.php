@@ -473,52 +473,58 @@ use App\Http\Model\TransactionModel;
 				$in_data["tran_list"] = "NO";
 			}
 			switch($in_data['tran_category']) {
-				case "SB" 		:	$data = $this->TranModel->rv_print_sb($in_data);
-									break;
-				case "RD" 		:	$data = $this->TranModel->rv_print_rd($in_data);
-									break;
-				case "JL" 		:	
-									if($in_data["tran_list"] == "YES") {
-										$data = $this->TranModel->rv_print_jl($in_data);
-									} else {
-										if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
-											$data = $this->TranModel->rv_print_jl_cr($in_data);
-										} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
-											$data = $this->TranModel->rv_print_jl_db($in_data);
+				case "SB" 			:	$data = $this->TranModel->rv_print_sb($in_data);
+										break;
+				case "RD" 			:	$data = $this->TranModel->rv_print_rd($in_data);
+										break;
+				case "JL" 			:	
+										if($in_data["tran_list"] == "YES") {
+											$data = $this->TranModel->rv_print_jl($in_data);
+										} else {
+											if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+												$data = $this->TranModel->rv_print_jl_cr($in_data);
+											} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+												$data = $this->TranModel->rv_print_jl_db($in_data);
+											}
 										}
-									}
-									break;
-				case "DL" 		:	
-									if($in_data["tran_list"] == "YES") {
-										$data = $this->TranModel->rv_print_dl($in_data);
-									} else {
-										if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
-											$data = $this->TranModel->rv_print_dl_cr($in_data);
-										} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
-											$data = $this->TranModel->rv_print_dl_db($in_data);
+										break;
+				case "DL" 			:	
+										if($in_data["tran_list"] == "YES") {
+											$data = $this->TranModel->rv_print_dl($in_data);
+										} else {
+											if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+												$data = $this->TranModel->rv_print_dl_cr($in_data);
+											} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+												$data = $this->TranModel->rv_print_dl_db($in_data);
+											}
 										}
-									}
-									break;
-				case "SL" 		:	$data = $this->TranModel->rv_print_sl($in_data);
-									break;
-				case "PL" 		:	$data = $this->TranModel->rv_print_pl($in_data);
-									break;
-				case "JL_PAY"	:	$data = $this->TranModel->rv_print_jl_pay($in_data);
-									break;
-				case "DL_PAY"	:	$data = $this->TranModel->rv_print_dl_pay($in_data);
-									break;
-				case "SL_PAY"	:	$data = $this->TranModel->rv_print_sl_pay($in_data);
-									break;
-				case "PL_PAY"	:	$data = $this->TranModel->rv_print_pl_pay($in_data);
-									break;
-				case "MEM_FEE"	:	$data = $this->TranModel->rv_print_mem_fee($in_data);
-									break;
-				case "CUST_FEE"	:	$data = $this->TranModel->rv_print_cust_fee($in_data);
-									break;
-				case "PG_PEND"	:	$data = $this->TranModel->rv_print_pg_pend($in_data);
-									break;
-				case "SHARE"	:	$data = $this->TranModel->rv_print_share($in_data);
-									break;
+										break;
+				case "SL" 			:	$data = $this->TranModel->rv_print_sl($in_data);
+										break;
+				case "PL" 			:	$data = $this->TranModel->rv_print_pl($in_data);
+										break;
+				case "JL_PAY"		:	$data = $this->TranModel->rv_print_jl_pay($in_data);
+										break;
+				case "DL_PAY"		:	$data = $this->TranModel->rv_print_dl_pay($in_data);
+										break;
+				case "SL_PAY"		:	$data = $this->TranModel->rv_print_sl_pay($in_data);
+										break;
+				case "PL_PAY"		:	$data = $this->TranModel->rv_print_pl_pay($in_data);
+										break;
+				case "FD_PAY_AMT"	:	$data = $this->TranModel->rv_print_fd_pay_amt($in_data);
+										break;
+				case "RD_PAY_AMT"	:	$data = $this->TranModel->rv_print_rd_pay_amt($in_data);
+										break;
+				case "PG_PAY_AMT"	:	$data = $this->TranModel->rv_print_pg_pay_amt($in_data);
+										break;
+				case "MEM_FEE"		:	$data = $this->TranModel->rv_print_mem_fee($in_data);
+										break;
+				case "CUST_FEE"		:	$data = $this->TranModel->rv_print_cust_fee($in_data);
+										break;
+				case "PG_PEND"		:	$data = $this->TranModel->rv_print_pg_pend($in_data);
+										break;
+				case "SHARE"		:	$data = $this->TranModel->rv_print_share($in_data);
+										break;
 			}
 			if(empty($in_data["tran_id"])) {
 				// return $data;
