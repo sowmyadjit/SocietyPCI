@@ -109,7 +109,8 @@
 					"createaccount.Old_AccNo as old_acc_no",
 					"{$table}.SBReport_TranDate as date",
 					"{$table}.Amount as amount",
-					"{$table}.particulars as particulars",
+					// "{$table}.particulars as particulars",
+					DB::raw(" 'SB DEPOSIT' as particulars"),
 					"{$table}.TransactionType as transaction_type",
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -131,6 +132,9 @@
 					->first();
 				$ret_data->tran_category_name = "SB";
 				$ret_data->tran_category = $data["tran_category"];
+				if(strcasecmp($ret_data->transaction_type,"DEBIT") == 0) {
+					$ret_data->particulars = "SB WITHDRAWAL";
+				}
 			}
 
 			return $ret_data;
@@ -861,6 +865,46 @@
 				$ret_data->tran_category_name = "AGENT";
 				$ret_data->tran_category = $data["tran_category"];
 				$ret_data->particulars .= " - " . $ret_data->collection_date;
+			}
+			return $ret_data;
+		}
+		
+		public function rv_print_share($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "purchaseshare";
+			$transaction_category = 12;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.PURSH_Pid as tran_id",
+					// "{$table}. as acc_no",
+					DB::raw(" '' as acc_no "),
+					// "{$table}. as old_acc_no",
+					DB::raw(" '' as old_acc_no "),
+					"{$table}.PURSH_Date as date",
+					"{$table}.PURSH_Totalamt as amount",
+					DB::raw("'Share suspence a/c' as particulars"),
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("members","members.Memid","=","purchaseshare.PURSH_Memid")
+				->join("user","user.Uid","=","members.Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.PURSH_Pid")
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.PURSH_Pid",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "SHARE";
+				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
 		}

@@ -517,6 +517,8 @@ use App\Http\Model\TransactionModel;
 									break;
 				case "PG_PEND"	:	$data = $this->TranModel->rv_print_pg_pend($in_data);
 									break;
+				case "SHARE"	:	$data = $this->TranModel->rv_print_share($in_data);
+									break;
 			}
 			if(empty($in_data["tran_id"])) {
 				// return $data;

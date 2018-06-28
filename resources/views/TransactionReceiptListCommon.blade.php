@@ -34,7 +34,7 @@
 				<?php $rec_vouch = "RECEIPT"; ?>
 			@elseif(strcasecmp($RSB->transaction_type, "DEBIT") == 0)
 				<?php $temp=$RSB->receipt_voucher_no; echo $temp; ?>
-				<?php $rec_vouch = "VOUCHER"; ?>
+				<?php $rec_vouch = "PAYMENT"; ?>
 			@else
 				<?php $rec_vouch = "_"; ?>
 			@endif

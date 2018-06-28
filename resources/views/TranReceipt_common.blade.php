@@ -17,18 +17,18 @@
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  
 						<b> <?php /*{{$data->tran_category_name}} */?>
-						@if($data->transaction_type=="CREDIT")
+						@if(strcasecmp($data->transaction_type,"CREDIT") == 0)
 							RECEIPT
-						@elseif($data->transaction_type=="DEBIT")
+						@elseif(strcasecmp($data->transaction_type,"DEBIT") == 0)
 							VOUCHER
 						@endif
 						 - (office copy)<b>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 			      		<b> <?php /*{{$data->tran_category_name}} */?>
-						@if($data->transaction_type=="CREDIT")
+						@if(strcasecmp($data->transaction_type,"CREDIT") == 0)
 							RECEIPT
-						@elseif($data->transaction_type=="DEBIT")
+						@elseif(strcasecmp($data->transaction_type,"DEBIT") == 0)
 							VOUCHER
 						@endif
 						 - (customer copy)<b>
@@ -95,6 +95,19 @@
 				</td>
 			</tr>
 
+			@if(strcasecmp($data->transaction_type, "DEBIT") == 0)
+				<tr>
+					<th>Account Head:</th>
+					<td>
+						{{$data->tran_category_name}}
+					</td>
+					<th>Account Head:</th>
+					<td>
+						{{$data->tran_category_name}}
+					</td>
+				</tr>
+			@endif
+
 			@if($data->tran_category == "PG_PEND")
 			@else
 				<tr>
@@ -110,13 +123,25 @@
 			@endif
 			
 			<hr>
-			@if($data->tran_category_name != "SB" && $data->tran_category_name != "RD")			
-				<tr>
-					<th>Particulars:</th>
-					<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
-					<th>Particulars:</th>
-					<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
-				</tr>
+
+			@if(strcasecmp($data->transaction_type, "CREDIT") == 0)
+				@if($data->tran_category_name != "RD")
+					<tr>
+						<th>Particulars:</th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
+						<th>Particulars:</th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
+					</tr>
+				@endif
+			@else
+				@if($data->tran_category_name != "RD")
+					<tr>
+						<th>Remarks:</th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
+						<th>Remarks:</th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
+					</tr>
+				@endif
 			@endif
 			
 			<tr>
