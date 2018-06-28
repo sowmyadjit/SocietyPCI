@@ -236,5 +236,115 @@
 			
 			return $cal_days;
 		}
+
+		public function chq()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			$start_date = "2018-04-01";
+			$pigmi_payamount_list = DB::table("pigmi_payamount")
+				->select(
+					"PayId as payamt_id",
+					"PayAmount_BankId as bank_id",
+					"PayAmountReport_PayDate as date",
+					"PayAmount_ChequeNum as cheque_no",
+					"PayAmount_ChequeDate as cheque_date",
+					"PayAmount_PayableAmount as amount",
+					DB::raw(" 'PG' as 'type' ")
+				)
+				->where("PayAmountReport_PayDate",">=",$start_date)
+				->where("PayAmount_PaymentMode","CHEQUE")
+				->where("PayAmount_ChequeNum","!=","")
+				->where("Bid",$BID)
+				->get();
+				
+			$rd_payamount_list = DB::table("rd_payamount")
+				->select(
+					"RDPayId as payamt_id",
+					"RDPayAmt_BankId as bank_id",
+					"RDPayAmtReport_PayDate as date",
+					"RDPayAmt_ChequeNum as cheque_no",
+					"RDPayAmt_ChequeDate as cheque_date",
+					"RDPayAmt_PayableAmount as amount",
+					DB::raw(" 'RD' as 'type' ")
+				)
+				->where("RDPayAmtReport_PayDate",">=",$start_date)
+				->where("RDPayAmt_PaymentMode","CHEQUE")
+				->where("RDPayAmt_ChequeNum","!=","")
+				->where("Bid",$BID)
+				->get();
+				
+			$fd_payamount_list = DB::table("fd_payamount")
+				->select(
+					"FDPayId as payamt_id",
+					"FDPayAmt_BankId as bank_id",
+					"FDPayAmtReport_PayDate as date",
+					"FDPayAmt_ChequeNum as cheque_no",
+					"FDPayAmt_ChequeDate as cheque_date",
+					"FDPayAmt_PayableAmount as amount",
+					DB::raw(" 'FD' as 'type' ")
+				)
+				->where("FDPayAmtReport_PayDate",">=",$start_date)
+				->where("FDPayAmt_PaymentMode","CHEQUE")
+				->where("FDPayAmt_ChequeNum","!=","")
+				->where("Bid",$BID)
+				->get();
+
+			$payamt_list = array_merge($pigmi_payamount_list, $rd_payamount_list, $fd_payamount_list);
+			// print_r($payamt_list);exit();
+
+			foreach($payamt_list as $row) {
+
+				$type = $row->type;
+				$payamt_id = $row->payamt_id;
+
+				$bank_id = $row->bank_id;
+				$date = $row->date;
+				$cheque_no = $row->cheque_no;
+				$cheque_date = $row->cheque_date;
+				$amount = $row->amount;
+				$reason = "PIGMY PAY AMOUNT THROUGH CHEQUE";
+				$Deposit_type = "WITHDRAWL";
+
+				// CHECK FOR DUPLICATE ENTRY
+				echo "<br />\nTYPE:{$type} ";
+				echo "- PAYAMT ID:{$payamt_id} ";
+				echo "- cheque no:{$cheque_no} ";
+
+				$existing_entries = DB::table("deposit")
+					->where("cheque_no",$cheque_no)
+					->count();
+
+				if($existing_entries > 0) {
+					echo "<font color='blue'>EXISTS</font>";
+					continue;
+				}
+				
+				$addbank = DB::table('addbank')
+				->where('Bankid','=',$bank_id)
+				->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = date("d-m-Y",strtotime($date));
+				$insert_array["date"] = date("Y-m-d",strtotime($date));
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "CHEQUE";
+				$insert_array["cheque_no"] = $cheque_no;
+				$insert_array["cheque_date"] = $cheque_date;
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $amount;
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = $reason;
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = $Deposit_type;
+
+				$insert_id = DB::table("deposit")
+					->insertGetId($insert_array);
+					
+				echo "- <font color='green'>instered</font> ({$insert_id}) ";
+			}
+
+		}
 		
 	}
