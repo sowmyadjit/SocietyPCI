@@ -1324,12 +1324,12 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('personalloan_repay')->select('PersLoan_Number','PLRepay_Date','PL_ReceiptNum','PLRepay_PaidAmt',"PLRepay_Amtpaidtoprincpalamt","PLRepay_PaidInterest",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id=DB::table('personalloan_repay')->select('PersLoan_Number','PLRepay_Date','PL_ReceiptNum','PLRepay_PaidAmt',"PLRepay_Amtpaidtoprincpalamt","PLRepay_PaidInterest",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),DB::raw("'' as 'adj_no'"))
 			->join('personalloan_allocation','personalloan_allocation.PersLoanAllocID','=','PLRepay_PLAllocID')
 			->join("members","members.Memid","=","personalloan_allocation.MemId")
 			->join("user","user.Uid","=","members.Uid")
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_repay.PLRepay_Id")
-			->where("receipt_voucher.receipt_voucher_type",3)
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_repay.PLRepay_Id")//NO ADJ NO. FOR ADJ CREDIT
+			// ->where("receipt_voucher.receipt_voucher_type",3)
 			->where('PLRepay_PayMode','<>',"CASH")
 			->where('PLRepay_Date',$dte)
 			->where('PLRepay_Bid',$BranchId)
@@ -1478,15 +1478,27 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('branch_to_branch')->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as receipt_no')
-			->join('branch','branch.Bid','=','Branch_Branch1_Id')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
-			->where("receipt_voucher.transaction_category",4)
-			->where("receipt_voucher.bid",$BranchId)
-			->where("receipt_voucher.bid",$BranchId)
-			->where('Branch_Tran_Date',$dte)
-			->where('Branch_Branch2_Id',$BranchId)
-			->get();
+			$id1=DB::table('branch_to_branch')
+				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as receipt_no')
+				->join('branch','branch.Bid','=','Branch_Branch1_Id')
+				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
+				->where("receipt_voucher.transaction_category",4)
+				->where("receipt_voucher.bid",$BranchId)
+				->where("receipt_voucher.bid",$BranchId)
+				->where('Branch_Tran_Date',$dte)
+				->where('Branch_Branch2_Id',$BranchId)
+				->get();
+
+			/******* ADJUSTMENT CREDIT *****/
+			$id2 = DB::table('branch_to_branch')
+				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'receipt_no' "))
+				->join('branch','branch.Bid','=','Branch_Branch1_Id')
+				->where('Branch_Tran_Date',$dte)
+				->where('Branch_Branch2_Id',$BranchId)
+				->get();
+			/******* ADJUSTMENT CREDIT *****/
+			$id = array_merge($id1,$id2);
+			/******* END *****/
 			
 			return $id;
 		}
@@ -1515,6 +1527,7 @@
 			->get();
 			/******* ADJUSTMENT CREDIT *****/
 			$id = array_merge($id1,$id2);
+			/******* END *****/
 			return $id;
 			
 		}

@@ -1554,6 +1554,7 @@
 							<td>-</td>
 							<td>{{ $plrepay->PL_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plrepay_adjust'] as $plrepay)
@@ -1571,6 +1572,7 @@
 							<td>-</td>
 							<td>{{ $plrepay->PL_ReceiptNum }}</td>	
 							<td>-</td>				
+							<td>-</td>				
 						</tr>
 					@endforeach
 					<tr>
@@ -1578,6 +1580,7 @@
 						<td><?php echo $plrepay_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $plrepay_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1609,6 +1612,7 @@
 							<td>-</td>
 							<td>{{ $plrepay->PL_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plrepay_adjust'] as $plrepay)
@@ -1625,7 +1629,8 @@
 							<td>{{$plrepay_adj_cr}}</td>
 							<td>-</td>
 							<td>{{ $plrepay->PL_ReceiptNum }}</td>	
-							<td>-</td>				
+							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -1633,6 +1638,7 @@
 						<td><?php echo $plrepay_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $plrepay_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
