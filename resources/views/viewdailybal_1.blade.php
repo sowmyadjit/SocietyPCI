@@ -2543,7 +2543,7 @@
 				?>
 					
 					
-				<tr><td colspan="10"><h5><b><center>Agent Salary<center></b></h5></td></tr>
+				<tr><td colspan="10"><h5><b><center>Pigmy Commission<center></b></h5></td></tr>
 				<?php
 					$adj_db = 0;
 					$adj_db_total = 0;
