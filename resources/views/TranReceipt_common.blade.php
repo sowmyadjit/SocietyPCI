@@ -8,6 +8,15 @@ table td {
 	padding: 5px !important;
 	/* max-width:300px !important; */
 }
+
+.table {
+	/* margin-left: 50px; */
+}
+
+#toprint {
+	/* margin-left: 60px; */
+}
+
 </style>
 <div class="box-content">
 	<div  id="toprint">
@@ -137,10 +146,10 @@ table td {
 			@if(strcasecmp($data->transaction_type, "CREDIT") == 0)
 				@if($data->tran_category_name != "RD")
 					<tr>
-						<th><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></th>
-						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> ></span></td>
-						<th><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></th>
-						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> ></span></td>
+						<th>Particulars:</th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
+						<th>Particulars:</th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
 					</tr>
 				@endif
 			@else

@@ -680,7 +680,8 @@
 				Route::post('/retrieveloanacc','TransactionController@Retrieve_Loaninfo');
 				Route::post('/RetrieveSBAmt','TransactionController@RetriveSB_Amt');
 				Route::post('/inserloantrans','TransactionController@Create_LoanTrans');
-				Route::get('/TranReceiptHome','TransactionController@TranReceiptHome'); 
+				Route::get('/TranReceiptHome','TransactionController@TranReceiptHome');
+				Route::get('/TranPaymentHome','TransactionController@TranPaymentHome');
 				Route::get('/TransactionReceiptView','TransactionController@TransactionReceiptView'); //M 23-06-16
 				Route::get('/TranReceipt/{type}/{id}','TransactionController@TranReceipt'); 
 				Route::post('/rv_print','TransactionController@rv_print');

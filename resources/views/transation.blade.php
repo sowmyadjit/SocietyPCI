@@ -44,6 +44,7 @@
 								<?php $dddd='TranReceiptHome' ?>
 								<div id="qwerty"></div>
 								<a href="TranReceiptHome" class="btn btn-primary ReceView" >RECEIPT</a>
+								<a href="TranPaymentHome" class="btn btn-primary PayView" >PAYMENT</a>
 							</center>
 						</div>
 					</div>
@@ -1247,6 +1248,10 @@
 <script>
 	
 	$('.ReceView').click(function(e){
+		e.preventDefault();
+		$('.box').load($(this).attr('href'));
+	});
+	$('.PayView').click(function(e){
 		e.preventDefault();
 		$('.box').load($(this).attr('href'));
 	});

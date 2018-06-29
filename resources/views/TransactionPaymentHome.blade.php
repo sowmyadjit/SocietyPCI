@@ -6,7 +6,7 @@
 		<div class="box col-md-12">
 			<div class="box-inner">
 				<div class="box-header well" data-original-title="">
-					<h2><i class="glyphicon glyphicon-globe"></i>  Transaction Receipt</h2>
+					<h2><i class="glyphicon glyphicon-globe"></i>  Transaction Payment</h2>
 				</div>
 				<div class="col-md-12">
 					<div class="form-group">
@@ -14,24 +14,18 @@
 							<!--<div class="col-md-4">
 								<input class="SearchTypeahead form-control" id="searchacc" type="text" name="searchacc" placeholder="SELECT PIGMY ACCOUNT"> 
 							</div>-->
-							<label class="control-label inline col-md-4 col-md-offset-4">Receipt Type:
+							<label class="control-label inline col-md-4 col-md-offset-4">Payment Type:
 								<select class="form-control ReceiptTypeDD"  id="ReceiptTypeDD" name="ReceiptTypeDD">  
-									<option value=""> SELECT RECEIPT TYPE</option>
-									<option value="SB"> SB RECEIPT </option>
-									<option value="RD"> RD RECEIPT </option>
+									<option value=""> SELECT PAYMENT TYPE</option>
+									<option value="SB"> SB PAYMENT </option>
+									<option value="RD"> RD PAYMENT </option>
 									<option value="JL"> JL ALLOCATE RECEIPT </option>
 									<option value="DL"> DL ALLOCATE RECEIPT </option>
-									<option value="JL_PAY"> JL REPAY RECEIPT </option>
-									<option value="DL_PAY"> DL REPAY RECEIPT </option>
-									<option value="SL_PAY"> SL REPAY RECEIPT </option>
-									<option value="PL_PAY"> PL REPAY RECEIPT </option>
+									<option value="SL"> SL ALLOCATE RECEIPT </option>
+									<option value="PL"> PL ALLOCATE RECEIPT </option>
 									<option value="FD_PAY_AMT"> FD PAY AMOUNT </option>
 									<option value="RD_PAY_AMT"> RD PAY AMOUNT </option>
 									<option value="PG_PAY_AMT"> PG PAY AMOUNT </option>
-									<option value="MEM_FEE"> MEMBER FEE RECEIPT </option>
-									<option value="CUST_FEE"> D CLASS </option>
-									<option value="PG_PEND"> PIGMY PENDING RECEIPT </option>
-									<option value="SHARE"> SHARE ALLOCATION </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
 								</select>
 							</label>
@@ -91,7 +85,7 @@
 			$.ajax({
 				url:'rv_print',
 				type:'post',
-				data:'&tran_category='+ReceDD+"&tran_type=CREDIT",
+				data:'&tran_category='+ReceDD+"&tran_type=DEBIT",
 				success:function(data)
 				{
 					$('.SearchRes').html('');

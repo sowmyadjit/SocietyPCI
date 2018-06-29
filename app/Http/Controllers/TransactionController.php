@@ -414,9 +414,15 @@ use App\Http\Model\TransactionModel;
 		$id['remtotal']=$get->LoanAlloc_LoanAmt;*/
 		return $id;
 	}
-	public function TranReceiptHome()
+
+		public function TranReceiptHome()
 		{
 			return view('TransactionReceiptHome');
+		}
+
+		public function TranPaymentHome()
+		{
+			return view('TransactionPaymentHome');
 		}
 		
 		
@@ -513,9 +519,19 @@ use App\Http\Model\TransactionModel;
 										break;
 				case "FD_PAY_AMT"	:	$data = $this->TranModel->rv_print_fd_pay_amt($in_data);
 										break;
-				case "RD_PAY_AMT"	:	$data = $this->TranModel->rv_print_rd_pay_amt($in_data);
+				case "RD_PAY_AMT"	:	
+										if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+											$data = $this->TranModel->rv_print_rd_pay_amt_cr($in_data);
+										} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+											$data = $this->TranModel->rv_print_rd_pay_amt_db($in_data);
+										}
 										break;
-				case "PG_PAY_AMT"	:	$data = $this->TranModel->rv_print_pg_pay_amt($in_data);
+				case "PG_PAY_AMT"	:	
+										if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+											$data = $this->TranModel->rv_print_pg_pay_amt_cr($in_data);
+										} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+											$data = $this->TranModel->rv_print_pg_pay_amt_db($in_data);
+										}
 										break;
 				case "MEM_FEE"		:	$data = $this->TranModel->rv_print_mem_fee($in_data);
 										break;
