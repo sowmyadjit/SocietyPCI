@@ -443,6 +443,8 @@
 					"{$table}.DepLoan_LoanAmount as amount",
 					DB::raw("(`DepLoan_LoanCharge`) as 'charges_sum'"),
 					DB::raw("'Deposit Loan Allocation' as particulars"),
+					"{$table}.DepLoan_DepositeType as dl_type",
+					"{$table}.DepLoan_AccNum as dep_acc_no",
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -461,6 +463,28 @@
 
 				$ret_data->tran_category_name = "DL";
 				$ret_data->tran_category = $data["tran_category"];
+
+				$dep_acc_amt = 0;
+				switch($ret_data->dl_type) {
+					case "FD"	:
+										$dep_acc_amt = DB::table("fdallocation")
+											->where("Fd_CertificateNum",$ret_data->dep_acc_no)
+											->value("Fd_TotalAmt");
+										break;
+					case "RD"	:
+										$dep_acc_amt = DB::table("createaccount")
+											->where("AccNum",$ret_data->dep_acc_no)
+											->value("Total_Amount");
+										break;
+					case "PIGMY"	:
+										$dep_acc_amt = DB::table("pigmiallocation")
+											->where("PigmiAcc_No",$ret_data->dep_acc_no)
+											->value("Total_Amount");
+										break;
+
+				}
+
+				$ret_data->particulars .= " - {$ret_data->dl_type} ({$ret_data->dep_acc_no})(Dep. Amt. :{$dep_acc_amt})";
 
 			return $ret_data;
 		}
