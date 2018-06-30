@@ -2618,13 +2618,13 @@
 			$bid=$uname->Bid;
 			
 			$agent_sal_extra=DB::table('salary_extra_pay')
-				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','paymentmode','receipt_voucher_no as receipt_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','paymentmode',DB::raw(" '' as 'receipt_no' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 				->leftjoin('agent_commission_payment','agent_commission_payment.Agent_Commission_Id','=','salary_extra_pay.sal_id')
 				->join('user','user.Uid','=','agent_commission_payment.Agent_Commission_Uid')
 				->join('salary_extra','salary_extra.sal_extra_id','=','salary_extra_pay.sal_extra_id')
 				->join('legder','legder.lid','=','salary_extra.sub_head')
-				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","agent_commission_payment.Agent_Commission_Id")
-				->where("receipt_voucher.transaction_category",24)
+				// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","agent_commission_payment.Agent_Commission_Id")
+				// ->where("receipt_voucher.transaction_category",24)
 				->where('salary_extra_pay.date','=',$date)
 				->where('salary_extra_pay.bid','=',$bid)
 				->get();
