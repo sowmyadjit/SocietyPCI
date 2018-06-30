@@ -825,6 +825,7 @@
 		if(isNaN(tds_val)) {
 			tds_val = 0;
 		}
+		tds_val = Math.round(tds_val);
 		$('#er'+tds_box_no).val(tds_val);
 		
 		
@@ -839,6 +840,7 @@
 		if(isNaN(sd_val)) {
 			sd_val = 0;
 		}
+		sd_val = Math.round(sd_val);
 		$('#er'+sd_box_no).val(sd_val);
 		
 		
