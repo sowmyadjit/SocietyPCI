@@ -848,6 +848,9 @@
 					"fdallocation.Fd_OldCertificateNum as old_acc_no",
 					"{$table}.FDPayAmtReport_PayDate as date",
 					"{$table}.FDPayAmt_PayableAmount as amount",
+					"{$table}.FDPayAmt_IntType as int_type",
+					"fdallocation.Fd_DepositAmt as principle",
+					"fdallocation.interest_amount as interest",
 					DB::raw(" 'FD Pay Amount' as particulars"),
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
@@ -869,6 +872,10 @@
 					->first();
 				$ret_data->tran_category_name = "FD PAY AMOUNT";
 				$ret_data->tran_category = $data["tran_category"];
+				if($ret_data->int_type == "MATURED") {
+					$ret_data->sub_amt["Principle"] = $ret_data->principle;
+					$ret_data->sub_amt["Interest"] = $ret_data->interest;
+				}
 			}
 			return $ret_data;
 		}
@@ -940,6 +947,7 @@
 					"{$table}.RDPayAmtReport_PayDate as date",
 					"{$table}.RDPayAmt_PayableAmount as amount",
 					DB::raw(" 'RD Pay Amount' as particulars"),
+					"{$table}.RDPayAmt_IntType as int_type",
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -960,6 +968,17 @@
 					->first();
 				$ret_data->tran_category_name = "RD PAY AMOUNT";
 				$ret_data->tran_category = $data["tran_category"];
+				if($ret_data->int_type == "INTEREST") {
+					$rd_row = DB::table("rd_interest")
+					->select(
+						"rd_interest.Principle_Amount as principle",
+						"rd_interest.Interest_Amt as interest"
+					)
+					->where("rd_interest.RdAcc_No",$ret_data->acc_no)
+					->first();
+					$ret_data->sub_amt["Principle"] = $rd_row->principle;
+					$ret_data->sub_amt["Interest"] = $rd_row->interest;
+				}
 			}
 			return $ret_data;
 		}
@@ -1033,6 +1052,7 @@
 					"{$table}.PayAmountReport_PayDate as date",
 					"{$table}.PayAmount_PayableAmount as amount",
 					DB::raw(" 'PG PAY AMOUNT' as particulars"),
+					"{$table}.PayAmount_IntType as int_type",
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -1040,7 +1060,7 @@
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("pigmiallocation","pigmiallocation.PigmiAcc_No","=","{$table}.PayAmount_PigmiAccNum")
-				->join("pigmi_prewithdrawal","pigmi_prewithdrawal.PigmiAcc_No","=","{$table}.PayAmount_PigmiAccNum")
+				// ->join("pigmi_prewithdrawal","pigmi_prewithdrawal.PigmiAcc_No","=","{$table}.PayAmount_PigmiAccNum")
 				->join("user","user.Uid","=","pigmiallocation.UID")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.PayId")
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
@@ -1054,8 +1074,20 @@
 						->first();
 					$ret_data->tran_category_name = "PG PAY AMOUNT";
 					$ret_data->tran_category = $data["tran_category"];
+					if($ret_data->int_type == "INTEREST") {
+						$pg_row = DB::table("pigmi_interest")
+						->select(
+							"pigmi_interest.Principle_Amount as principle",
+							"pigmi_interest.Interest_Amt as interest"
+						)
+						->where("PigmiAcc_No",$ret_data->acc_no)
+						->first();
+						$ret_data->sub_amt["Principle"] = $pg_row->principle;
+						$ret_data->sub_amt["Interest"] = $pg_row->interest;
+					}
+
+					// print_r($ret_data);exit();
 				}
-				
 			return $ret_data;
 		}
 		
