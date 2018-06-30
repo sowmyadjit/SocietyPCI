@@ -2554,11 +2554,21 @@
 			$bid=$uname->Bid;
 			
 			$emp_sal=DB::table('salary')
-				->select('date','FirstName','MiddleName','LastName','netpay','gearning','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+				->select('salid','date','FirstName','MiddleName','LastName','netpay','gearning','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 				->join('user','user.Uid','=','salary.Uid')
 				->where('date','=',$date)
 				->where('user.Bid','=',$bid)
 				->get();
+
+			foreach($emp_sal as $key=>$row)
+			{
+				$staff_additions = DB::table("salary_extra_pay")
+					->join("salary_extra","salary_extra.sal_extra_id","=","salary_extra_pay.sal_extra_id")
+					->where("salary_extra.sal_extra_type",1)
+					->where("sal_id",$row->salid)
+					->sum("salpay_extra_amt");
+				$emp_sal[$key]->gearning = $row->gearning - $staff_additions;
+			}//print_r($emp_sal);exit();
 				
 			return $emp_sal;
 		}
