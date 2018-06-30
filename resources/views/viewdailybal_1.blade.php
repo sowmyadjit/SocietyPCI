@@ -738,6 +738,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
@@ -784,6 +785,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{$row->amount}}</td>
+							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 						</tr>
