@@ -70,14 +70,14 @@
 				$Agreed_Amount=100;
 				
 				$Agreed_Amount = str_pad($Agreed_Amount, 8, " ", STR_PAD_LEFT);
-				
+				/* 
 				$tra=DB::table('pigmiallocation')
 				->join('pigmi_transaction','pigmi_transaction.PigmiAllocID','=','pigmiallocation.PigmiAllocID')
 				->where('PigmiAcc_No',$Account_No1)
 				->max('PigmiTrans_ID');
 				
 				$lasttran=DB::table('pigmi_transaction')->select('PigReport_TranDate')->where('PigmiTrans_ID','=',$tra)->first();
-				
+				 */
 				
 				//$Closing_Balance_Date=$lasttran->PigReport_TranDate;
 				//$Last_Transaction_Date=$lasttran->PigReport_TranDate;
