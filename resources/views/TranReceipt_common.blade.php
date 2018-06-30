@@ -162,6 +162,22 @@ table td {
 					</tr>
 				@endif
 			@endif
+
+		<?php
+			if(isset($data->sub_amt)) {
+				foreach($data->sub_amt as $key=>$value) {
+		?>
+					<tr>
+						<th>{{$key}}:</th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{$value}}</span></td>
+						<th>{{$key}}:</th>
+						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{$value}}</span></td>
+					</tr>
+		<?php
+				}
+			}
+		?>
+
 			
 			<tr>
 				<th>Total:</th>
