@@ -484,7 +484,7 @@
 					$sal_extra_type = DB::table("salary_extra")
 						->where("sal_extra_id",$data['sal_extra_id'])
 						->value("sal_extra_type");
-					if($sal_extra_type == 2 || $sal_extra_type == 4 ) {
+					if($sal_extra_type == 3) {
 						$insert_array["Branch_Branch1_Id"] = $BID;
 						$insert_array["Branch_Branch2_Id"] = 6;
 						$insert_array["Branch_Tran_Date"] = $data['date'];
