@@ -1257,10 +1257,10 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('depositeloan_repay')->select('DepLoan_LoanNum','DLRepay_Date','dL_ReceiptNum','DLRepay_PaidAmt','receipt_voucher_no as adj_no')
+			$id=DB::table('depositeloan_repay')->select('DepLoan_LoanNum','DLRepay_Date','dL_ReceiptNum','DLRepay_PaidAmt',DB::raw(" '' as adj_no "))
 			->join('depositeloan_allocation','depositeloan_allocation.DepLoanAllocId','=','DLRepay_DepAllocID')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","depositeloan_repay.DLRepay_ID")
-			->where("receipt_voucher.transaction_category",21)
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","depositeloan_repay.DLRepay_ID")
+			// ->where("receipt_voucher.transaction_category",21)
 			->where('DLRepay_Date',$dte)
 			->where('DLRepay_PayMode','<>',"CASH")
 			->where('DLRepay_Bid',$BranchId)
@@ -2557,7 +2557,7 @@
 				->select('salid','date','FirstName','MiddleName','LastName','netpay','gearning','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 				->join('user','user.Uid','=','salary.Uid')
 				->where('date','=',$date)
-				->where('user.Bid','=',$bid)
+				->where('salary.bid','=',$bid)
 				->get();
 
 			foreach($emp_sal as $key=>$row)
