@@ -484,9 +484,9 @@
 					$sal_extra_type = DB::table("salary_extra")
 						->where("sal_extra_id",$data['sal_extra_id'])
 						->value("sal_extra_type");
-					if($sal_extra_type == 3) {
-						$insert_array["Branch_Branch1_Id"] = $BID;
-						$insert_array["Branch_Branch2_Id"] = 6;
+					if($sal_extra_type == 3) { // ONLY FOR SOCIETY CONTRIBUTION
+						$insert_array["Branch_Branch1_Id"] = 6;
+						$insert_array["Branch_Branch2_Id"] = $BID;
 						$insert_array["Branch_Tran_Date"] = $data['date'];
 						$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
 						$insert_array["LedgerHeadId"] = $data['LedgerHeadId'];
@@ -496,18 +496,18 @@
 
 						$branch_to_branch_id = DB::table("branch_to_branch")
 							->insertGetId($insert_array);
-						//GENERATE ADJ NO. FOR THIS BRANCH
+						//GENERATE ADJ NO. FOR H.O.
 						/***********/
 						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
 						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
 						$fn_data["rv_transaction_type"] = "DEBIT";
 						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
 						$fn_data["rv_date"] = $data['date'];
-						$fn_data["rv_bid"] = null;
+						$fn_data["rv_bid"] = 6;
 						$this->rv_no->save_rv_no($fn_data);
 						unset($fn_data);
 						/***********/
-						//NO ADJ NO. FOR H.O. (ADJ CREDIT)
+						//NO ADJ NO. FOR THIS BRANCH (ADJ CREDIT)
 					}
 				/******* ADJ ENTRY TO H.O. ******/
 			}
