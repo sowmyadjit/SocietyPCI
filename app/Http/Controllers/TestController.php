@@ -346,5 +346,72 @@
 			}
 
 		}
+
+		public function soc_cont()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			$start_date = date("Y-m-d");
+			$salary_extra_pay_list = DB::table("salary_extra_pay")
+				->select(
+					"salary_extra_pay.salpay_extra_id",
+					"salary_extra_pay.sal_extra_id",
+					"salary_extra_pay.date",
+					"salary_extra_pay.LedgerHeadId",
+					"salary_extra_pay.SubLedgerId",
+					"salary_extra_pay.salpay_extra_amt",
+					"salary_extra_pay.salpay_extra_particulars"
+				)
+				->join("salary_extra","salary_extra.sal_extra_id","=","salary_extra_pay.sal_extra_id")
+				->where("salary_extra_pay.date",">=",$start_date)
+				->where("salary_extra_pay.bid",$BID)
+				->where("salary_extra.sal_extra_type",3)
+				->get();
+
+			foreach($salary_extra_pay_list as $row_sep) {
+				echo "<br />\n";
+				echo "sal_extra_pay {$row_sep->salpay_extra_id} :";
+				// CHECKING FOR EXISTING ENTRIES
+					$existing_entries = DB::table("branch_to_branch")
+						->where("Branch_Branch1_Id",6)
+						->where("Branch_Branch2_Id",$BID)
+						->where("Branch_Tran_Date",$row_sep->date)
+						->where("Branch_Amount",$row_sep->salpay_extra_amt)
+						->count();
+					if($existing_entries > 0) {
+						echo "EXISTS";
+						continue;
+					}
+				/******* ADJ ENTRY TO H.O. ******/
+					$sal_extra_type = DB::table("salary_extra")
+					->where("sal_extra_id",$row_sep->sal_extra_id)
+					->value("sal_extra_type");
+				
+					$insert_array["Branch_Branch1_Id"] = 6;
+					$insert_array["Branch_Branch2_Id"] = $BID;
+					$insert_array["Branch_Tran_Date"] = $row_sep->date;
+					$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+					$insert_array["LedgerHeadId"] = $row_sep->LedgerHeadId;
+					$insert_array["SubLedgerId"] = $row_sep->SubLedgerId;
+					$insert_array["Branch_Amount"] = $row_sep->salpay_extra_amt;
+					$insert_array["Branch_per"] = $row_sep->salpay_extra_particulars;
+
+					$branch_to_branch_id = DB::table("branch_to_branch")
+						->insertGetId($insert_array);
+					//GENERATE ADJ NO. FOR H.O.
+						/***********/
+						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+						$fn_data["rv_transaction_type"] = "DEBIT";
+						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+						$fn_data["rv_date"] = $row_sep->date;
+						$fn_data["rv_bid"] = 6;
+						$adj_no = $this->rv_no->save_rv_no($fn_data);
+						unset($fn_data);
+						echo " adj no: {$adj_no}";
+						/***********/
+					//NO ADJ NO. FOR THIS BRANCH (ADJ CREDIT)
+				/******* ADJ ENTRY TO H.O. ******/
+			}
+		}
 		
 	}
