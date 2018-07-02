@@ -972,6 +972,7 @@
 //TestController
 		Route::match(["get","post"],"rv","TestController@rv");
 		Route::match(["get","post"],"chq","TestController@chq");
+		Route::match(["get","post"],"soc_cont","TestController@soc_cont");
 		Route::match(["get","post"],"test","TestController@test");
 		Route::match(["get","post"],"update_settings","TestController@update_settings");
 		
