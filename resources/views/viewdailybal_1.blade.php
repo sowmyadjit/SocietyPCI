@@ -1166,7 +1166,8 @@
 							<td>{{ $dlallocation->DepLoan_LoanStartDate }}</td>
 							<td>{{ $dlallocation->DepLoan_LoanNum }}</td>
 							<td>-</td>
-							<td>-</td><td>-</td>
+							<td>-</td>
+							<td>-</td>
 							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanAmount }}</td>
 							<td>-</td>
@@ -1185,6 +1186,8 @@
 							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanCharge }}</td>
 							<td>-</td>
+							<td>-</td>
+							<td>-</td>
 							<td>{{$dlallocation->receipt_no}}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1198,7 +1201,9 @@
 						<tr>
 							<td>{{ $dlallocation->DepLoan_LoanStartDate }}</td>
 							<td>{{ $dlallocation->DepLoan_LoanNum }}</td>
-							<td>-</td><td>-</td><td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanCharge }}</td>
 							<td>-</td>
 							<td>-</td>
