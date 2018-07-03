@@ -2270,7 +2270,7 @@
 					
 					
 					
-					<tr><td colspan="10"><h5><b><center>Branch-To-Branch<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Head Office<center></b></h5></td></tr>
 					<?php
 						$b2b_cash_cr = 0;
 						$b2b_cash_db = 0;
@@ -2623,7 +2623,7 @@
 				?>
 					
 					
-				<tr><td colspan="10"><h5><b><center>Pigmy Commission<center></b></h5></td></tr>
+				<tr><td colspan="10"><h5><b><center>Commission<center></b></h5></td></tr>
 				<?php
 					$adj_db = 0;
 					$adj_db_total = 0;
