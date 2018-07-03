@@ -88,6 +88,7 @@
 	});
 	
 	$("#closed_status").change(function() {
+		$("#account_list_box").html("Loading...");
 		account_list("");
 	});
 	
