@@ -169,8 +169,10 @@
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$id = $id->where('customer.Bid','=',$BID);
 			}
-			$id = $id->orderBy('Custid','desc')
-			->get();
+			$id = $id->where("customer.AuthStatus","AUTHORISED")
+				->orderBy('Custid','desc')
+				->paginate(10);
+				// ->get();
 			
 			return $id;
 		}
@@ -263,6 +265,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')
 			->where('custtyp','=',"CLASS D")
 			->where('user.Bid','=',$BID)
+			->where('customer.AuthStatus','AUTHORISED')
 			//->orderBy('Member_No','desc')
 			->orderBy('Custid','desc')
 			->get();
