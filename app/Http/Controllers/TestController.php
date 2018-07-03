@@ -350,7 +350,7 @@
 		public function soc_cont()
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
-			$start_date = date("Y-m-d");
+			$start_date = date("Y-m-d",strtotime("2018-04-01"));
 			$salary_extra_pay_list = DB::table("salary_extra_pay")
 				->select(
 					"salary_extra_pay.salpay_extra_id",
