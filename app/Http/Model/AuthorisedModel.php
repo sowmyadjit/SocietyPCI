@@ -314,15 +314,44 @@
 			DB::table('inhandcash_trans')
 			->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Pigmy Account Rejected",'InhandTrans_Cash'=>$ob,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Debit",'Present_Inhandcash'=>$totcash,'Total_InhandCash'=>$totinhand]);
 			
-			$id=DB::table('pigmiallocation')->where('PigmiAllocID',$id)
+			DB::table('pigmiallocation')->where('PigmiAllocID',$id)
 			->update(['Status'=>"rejected",'AuthorisedBy'=>$UID]);
 			
-			
-			
-			return $id;								   
-			
-			
+			/******** REJECT *******/
+				$pigmiallocation = DB::table("pigmiallocation")
+					->select(
+						"pending_pigmy.PpId",
+						"pigmiallocation.Agentid",
+						"pigmiallocation.StartDate",
+						"pigmiallocation.Opening_Balance",
+						"pending_pigmy.PendPigmy_Bid"
+					)
+					->join("pending_pigmy","pending_pigmy.PendPigmy_AgentUid","=","pigmiallocation.Agentid")
+					->where("pigmiallocation.PigmiAllocID",$id)
+					->where("pending_pigmy.PendPigmy_Status","PENDING")
+					// ->where("pigmiallocation.StartDate","=","pending_pigmy.PendPigmy_CollectionDate")
+					// ->where("pigmiallocation.Opening_Balance","=","pending_pigmy.PendPigmy_PendingAmount")
+					->get();
+					
+					foreach($pigmiallocation as $row_pg) {
+						$temp = DB::table("pending_pigmy")
+							->where("pending_pigmy.PpId",$row_pg->PpId)
+							->where("pending_pigmy.PendPigmy_AgentUid",$row_pg->Agentid)
+							->where("pending_pigmy.PendPigmy_CollectionDate",$row_pg->StartDate)
+							->where("pending_pigmy.PendPigmy_PendingAmount",$row_pg->Opening_Balance)
+							->where("pending_pigmy.PendPigmy_Bid",$row_pg->PendPigmy_Bid)
+							->first();
+						if(!empty($temp)) {
+							DB::table("pending_pigmy")
+								->where("PpId",$temp->PpId)
+								->update(["PendPigmy_Status"=>"REJECTED"]);
+							break;
+						}
+					}
+			/******** REJECT *******/
+			return;
 		}
+		
 		public function GetAuthEmployee()
 		{
 			$id = DB::table('employee')->select('Eid','ECode','basicpay','incometax','pf','hra','Gender','MaritalStatus','Occupation','Age','Birthdate','user.Email','Address','District','City','State','PhoneNo','MobileNo','Pincode','BName','DName','user.FirstName','user.MiddleName','user.LastName')
