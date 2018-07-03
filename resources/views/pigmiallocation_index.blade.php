@@ -36,7 +36,7 @@
 						<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
 						<div class="alert alert-info" style="height:123px;">
 							<div class="col-md-12">
-								<div class="col-md-5" style="height:38px;">
+								<div class="col-md-4" style="height:38px;">
 									AGENT NAME:
 									<select id="agent_id" style="height:38px;">
 										@foreach($agent_data as $row)
@@ -45,12 +45,13 @@
 									</select>
 								</div>
 								
-								<div class="col-md-3" style="height:38px;">
+								<div class="col-md-4" style="height:38px;">
 									ACCOUNT TYPE:
 									<select id="closed_status" style="height:38px;">
 										<option value="NO">LIVE</option>
 										<option value="YES">CLOSED</option>
 									</select>
+									<button class="btn-sm"><span class="glyphicon glyphicon-refresh" id="refresh" /></button>
 								</div>
 								<div class="col-md-4 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
@@ -85,7 +86,12 @@
 	});
 	
 	$("#closed_status, #agent_id").change(function() {
+		$("#deposit_account_list_box").html("Loading...");
 		deposit_account_list("");
+	});
+
+	$("#refresh").click(function() {
+		$("#closed_status").trigger("change");
 	});
 	
 	$("#search_box").change(function() {

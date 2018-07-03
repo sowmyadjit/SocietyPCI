@@ -33,7 +33,13 @@
 							<tbody>
 								<?php $i=0;?>
 								<tr>
+									<?php
+										$total_dep_amt = 0;
+									?>
 									@foreach ($ret_data['deposit_details'] as $row)
+										<?php
+											$total_dep_amt += $row['total_amount'];
+										?>
 										<tr>
 											<td>{{++$i}}</td>
 											<td>{{ $row['user_id'] }}</td>
@@ -73,6 +79,18 @@
 											</td>
 										</tr>
 									@endforeach
+									<tr>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td><b>{{$total_dep_amt}}</b></td>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>
 								</tbody>
 							</table>
 							
