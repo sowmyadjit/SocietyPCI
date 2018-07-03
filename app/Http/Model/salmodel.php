@@ -452,6 +452,11 @@
 			$sal_extra_all = $sal_extra_data['sal_extra_all'];
 			$sal_id = $sal_extra_data['sal_id'];
 			$emp_type = $sal_extra_data['emp_type'];
+			if(isset($sal_extra_data['date'])) {
+				$tran_date = $sal_extra_data['date'];//IF DATE PROVIDED
+			} else {
+				$tran_date = date("Y-m-d");//OTHER WISE TAKE TODAY'S DATE
+			}
 			
 			$sal_extra_arr = explode('|',$sal_extra_all);
 			$sal_extra = array();
@@ -479,7 +484,7 @@
 			
 			print_r($ex_key);
 			for($i=0;$i<$count;$i++) {
-				$data['date']= date("Y-m-d");
+				$data['date']= $tran_date;
 				$data['bid']= $BID;
 				$data['sal_id']= $sal_id;
 				$data['employee_type']= $emp_type;

@@ -21,16 +21,17 @@
 		public function __construct()
 		{
 			$this->rv_no = new ReceiptVoucherController;
-			$this->test = new salmodel;
+			$this->sal = new salmodel;
+			// $this->test = new salmodel;
 		}
-
+/* 
 		public function test()
 		{
 			$aa = $this->test->salary_slip_data(["sal_id"=>216]);
 			print_r($aa);
 			return;
 		}
-
+ */
 		public function update_settings(REQUEST $request)
 		{
 			$data["key"] = $request->input("key");
@@ -413,5 +414,52 @@
 				/******* ADJ ENTRY TO H.O. ******/
 			}
 		}
+
+		public function agent_ded()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			$start_date = date("Y-m-d");
+			$ag_com_list = DB::table("agent_commission_payment")
+				->select(
+					"agent_commission_payment.Agent_Commission_Id",
+					"agent_commission_payment.Agent_Commission_Bid",
+					"agent_commission_payment.Agent_Commission_PaidDate",
+					"agent_commission_payment.Tds",
+					"agent_commission_payment.securityDeposit"
+				)
+				->where("agent_commission_payment.Agent_Commission_PaidDate",">=",$start_date)
+				->where("agent_commission_payment.Agent_Commission_Bid",">=",$BID)
+				->get();
+
+			foreach($ag_com_list as $row_ag) {
+				//ECHO ID
+				echo "<br />\nAgent_Commission_Id: {$row_ag->Agent_Commission_Id} - ";
+
+				//CHECK FOR EXISTING ENTRY
+				$existing_entries = DB::table("salary_extra_pay")
+					->where("salary_extra_pay.bid",$row_ag->Agent_Commission_Bid)
+					->where("salary_extra_pay.date",$row_ag->Agent_Commission_PaidDate)
+					->where("salary_extra_pay.employee_type",2)
+					->where("salary_extra_pay.sal_id",$row_ag->Agent_Commission_Id)
+					->count();
+				if($existing_entries > 0) {
+					echo "EXISTS";
+					continue;
+				}
+
+				//INSERT
+				/*********** sarafara tds,sd ***********/
+					$temp_sal_extra_all = "9#{$row_ag->Tds}#TDS|11#{$row_ag->securityDeposit}#SD";
+					$sal_extra_data['sal_extra_all'] = $temp_sal_extra_all;
+					$sal_extra_data['sal_id'] = $row_ag->Agent_Commission_Id;
+					$sal_extra_data['emp_type'] = 2;//AGENT
+					$sal_extra_data['date'] = $row_ag->Agent_Commission_PaidDate;// DATE
+					$this->sal->insertSalExtraPay($sal_extra_data);
+				/*********** sarafara tds,sd ***********/
+				echo " rows INSERTED";
+			}
+		}
+
+
 		
 	}
