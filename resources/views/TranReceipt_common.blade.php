@@ -118,11 +118,11 @@ table td {
 				<tr>
 					<th>Account Head:</th>
 					<td>
-						{{$data->tran_category_name}}
+						{{$data->account_head}}
 					</td>
 					<th>Account Head:</th>
 					<td>
-						{{$data->tran_category_name}}
+						{{$data->account_head}}
 					</td>
 				</tr>
 			@endif
@@ -153,7 +153,7 @@ table td {
 					</tr>
 				@endif
 			@else
-				@if($data->tran_category_name != "RD")
+				@if($data->tran_category_name != "RD" && $data->tran_category != "JL" && $data->tran_category != "DL" && $data->tran_category != "SL" && $data->tran_category != "PL" && $data->tran_category != "RD_PAY_AMT" && $data->tran_category != "PG_PAY_AMT")
 					<tr>
 						<th>Remarks:</th>
 						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>

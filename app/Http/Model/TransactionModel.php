@@ -109,8 +109,8 @@
 					"createaccount.Old_AccNo as old_acc_no",
 					"{$table}.SBReport_TranDate as date",
 					"{$table}.Amount as amount",
-					// "{$table}.particulars as particulars",
-					DB::raw(" 'SB DEPOSIT' as particulars"),
+					"{$table}.particulars as particulars",
+					// DB::raw(" 'SB DEPOSIT' as particulars"),
 					"{$table}.TransactionType as transaction_type",
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -130,9 +130,10 @@
 				$ret_data = $ret_data->where("{$table}.Tranid",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "SB";
+				$ret_data->account_head = "SB";
 				$ret_data->tran_category = $data["tran_category"];
 				if(strcasecmp($ret_data->transaction_type,"DEBIT") == 0) {
-					$ret_data->particulars = "SB WITHDRAWAL";
+					// $ret_data->particulars = "SB WITHDRAWAL";
 				}
 			}
 
@@ -179,6 +180,7 @@
 					$ret_data = $ret_data->where("{$table}.RD_TransID",$data["tran_id"])
 						->first();
 					$ret_data->tran_category_name = "RD";
+					$ret_data->account_head = "RD";
 					$ret_data->tran_category = $data["tran_category"];
 				}
 
@@ -239,6 +241,7 @@
 						$ret_data->transaction_type = "CREDIT";
 					}
 					$ret_data->tran_category_name = "JL";
+					$ret_data->account_head = "Jewel Loan";
 					$ret_data->tran_category = $data["tran_category"];
 					$ret_data->particulars .= "
 							Sarapara charge - {$ret_data->JewelLoan_SaraparaCharge}, 
@@ -288,6 +291,7 @@
 					->first();
 					
 				$ret_data->tran_category_name = "JL";
+				$ret_data->account_head = "Jewel Loan";
 				$ret_data->tran_category = $data["tran_category"];
 				$ret_data->particulars .= "Appraiser commission - {$ret_data->JewelLoan_SaraparaCharge},\nInsurance charge - {$ret_data->JewelLoan_InsuranceCharge},\nBooks and forms charge - {$ret_data->JewelLoan_BookAndFormCharge},\nOther charge - {$ret_data->JewelLoan_OtherCharge}";
 
@@ -329,6 +333,7 @@
 					->first();
 					
 				$ret_data->tran_category_name = "JL";
+				$ret_data->account_head = "Jewel Loan";
 				$ret_data->tran_category = $data["tran_category"];
 
 			return $ret_data;
@@ -354,7 +359,7 @@
 					"{$table}.DepLoan_LoanStartDate as date",
 					"{$table}.DepLoan_LoanAmount as amount",
 					DB::raw("(`DepLoan_LoanCharge`) as 'charges_sum'"),
-					DB::raw("'Deposit Loan Allocation' as particulars"),
+					DB::raw(" 'Deposit Loan Allocation' as particulars"),
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -385,6 +390,7 @@
 						$ret_data->tran_category = $data['tran_category'];
 					}
 					$ret_data->tran_category_name = "DL";
+					$ret_data->account_head = "Deposit Loan";
 				}
 
 			return $ret_data;
@@ -423,6 +429,7 @@
 
 				$ret_data->tran_category = $data['tran_category'];
 				$ret_data->tran_category_name = "DL";
+				$ret_data->account_head = "Deposit Loan";
 				
 			return $ret_data;
 		}
@@ -442,7 +449,7 @@
 					"{$table}.DepLoan_LoanStartDate as date",
 					"{$table}.DepLoan_LoanAmount as amount",
 					DB::raw("(`DepLoan_LoanCharge`) as 'charges_sum'"),
-					DB::raw("'Deposit Loan Allocation' as particulars"),
+					DB::raw("'' as particulars"),
 					"{$table}.DepLoan_DepositeType as dl_type",
 					"{$table}.DepLoan_AccNum as dep_acc_no",
 					DB::raw("'DEBIT' as transaction_type"),
@@ -462,7 +469,9 @@
 					->first();
 
 				$ret_data->tran_category_name = "DL";
+				$ret_data->account_head = "Jewel Loan";
 				$ret_data->tran_category = $data["tran_category"];
+				$ret_data->account_head = "Deposit Loan";
 
 				$dep_acc_amt = 0;
 				switch($ret_data->dl_type) {
@@ -484,7 +493,7 @@
 
 				}
 
-				$ret_data->particulars .= " - {$ret_data->dl_type} ({$ret_data->dep_acc_no})(Dep. Amt. :{$dep_acc_amt})";
+				$ret_data->particulars .= "{$ret_data->dl_type} ({$ret_data->dep_acc_no})(Dep. Amt. :{$dep_acc_amt})";
 
 			return $ret_data;
 		}
@@ -528,6 +537,7 @@
 						->first();
 					
 					$ret_data->tran_category_name = "SL";
+					$ret_data->account_head = "Staff Loan";
 					$ret_data->tran_category = $data["tran_category"];
 				}
 
@@ -573,6 +583,7 @@
 				$ret_data = $ret_data->where("{$table}.PersLoanAllocID",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "PL";
+				$ret_data->account_head = "Personal Loan";
 				$ret_data->tran_category = $data["tran_category"];
 			}
 
@@ -621,6 +632,7 @@
 				$ret_data = $ret_data->where("{$table}.JLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "JL";
+				$ret_data->account_head = "Jewel Loan";
 				$ret_data->tran_category = $data["tran_category"];
 
 				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
@@ -683,6 +695,7 @@
 				$ret_data = $ret_data->where("{$table}.DLRepay_ID",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "DL";
+				$ret_data->account_head = "Deposit Loan";
 				$ret_data->tran_category = $data["tran_category"];
 
 				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
@@ -745,6 +758,7 @@
 				$ret_data = $ret_data->where("{$table}.SLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "SL";
+				$ret_data->account_head = "Staff Loan";
 				$ret_data->tran_category = $data["tran_category"];
 
 				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
@@ -808,6 +822,7 @@
 				$ret_data = $ret_data->where("{$table}.PLRepay_Id",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "PL";
+				$ret_data->account_head = "Personal Loan";
 				$ret_data->tran_category = $data["tran_category"];
 
 				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
@@ -850,8 +865,9 @@
 					"{$table}.FDPayAmt_PayableAmount as amount",
 					"{$table}.FDPayAmt_IntType as int_type",
 					"fdallocation.Fd_DepositAmt as principle",
-					"fdallocation.interest_amount as interest",
+					"fdallocation.fd_renewed as renew",
 					DB::raw(" 'FD Pay Amount' as particulars"),
+					"fdallocation.interest_amount as interest",
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -871,7 +887,15 @@
 				$ret_data = $ret_data->where("{$table}.FDPayId",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "FD PAY AMOUNT";
+				$ret_data->account_head = "Fixed Deposit";
 				$ret_data->tran_category = $data["tran_category"];
+
+				if(strcasecmp($ret_data->renew, "YES") == 0) {
+					$ret_data->particulars = "Renewal";
+				} else {
+					$ret_data->particulars = "Closed";
+				}
+
 				if($ret_data->int_type == "MATURED") {
 					$ret_data->sub_amt["Principle"] = $ret_data->principle;
 					$ret_data->sub_amt["Interest"] = $ret_data->interest;
@@ -921,6 +945,7 @@
 				$ret_data = $ret_data->where("{$table}.RDPayId",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "RD PAY AMOUNT";
+				$ret_data->account_head = "RD";
 				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
@@ -967,6 +992,7 @@
 				$ret_data = $ret_data->where("{$table}.RDPayId",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "RD PAY AMOUNT";
+				$ret_data->account_head = "RD";
 				$ret_data->tran_category = $data["tran_category"];
 				if($ret_data->int_type == "INTEREST") {
 					$rd_row = DB::table("rd_interest")
@@ -1025,6 +1051,7 @@
 					$ret_data = $ret_data->where("{$table}.PayId",$data["tran_id"])
 						->first();
 					$ret_data->tran_category_name = "PG Deduct Amount";
+					$ret_data->account_head = "Pigmy";
 					$ret_data->tran_category = $data["tran_category"];
 				}
 				
@@ -1051,7 +1078,7 @@
 					"pigmiallocation.old_pigmiaccno as old_acc_no",
 					"{$table}.PayAmountReport_PayDate as date",
 					"{$table}.PayAmount_PayableAmount as amount",
-					DB::raw(" 'PG PAY AMOUNT' as particulars"),
+					DB::raw(" '' as particulars"),
 					"{$table}.PayAmount_IntType as int_type",
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
@@ -1073,8 +1100,10 @@
 					$ret_data = $ret_data->where("{$table}.PayId",$data["tran_id"])
 						->first();
 					$ret_data->tran_category_name = "PG PAY AMOUNT";
+					$ret_data->account_head = "Pigmy";
 					$ret_data->tran_category = $data["tran_category"];
 					if($ret_data->int_type == "INTEREST") {
+						
 						$pg_row = DB::table("pigmi_interest")
 						->select(
 							"pigmi_interest.Principle_Amount as principle",
@@ -1132,6 +1161,7 @@
 				$ret_data = $ret_data->where("{$table}.Memid",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "MEMBER";
+				$ret_data->account_head = "";
 				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
@@ -1176,6 +1206,7 @@
 				$ret_data = $ret_data->where("{$table}.Custid",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "CUSTOMER";
+				$ret_data->account_head = "";
 				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
@@ -1221,6 +1252,7 @@
 				$ret_data = $ret_data->where("{$table}.PpId",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "AGENT";
+				$ret_data->account_head = "";
 				$ret_data->tran_category = $data["tran_category"];
 				$ret_data->particulars .= " - " . $ret_data->collection_date;
 			}
@@ -1268,6 +1300,7 @@
 				$ret_data = $ret_data->where("{$table}.PURSH_Pid",$data["tran_id"])
 					->first();
 				$ret_data->tran_category_name = "SHARE";
+				$ret_data->account_head = "SHARE";
 				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
