@@ -418,7 +418,7 @@
 		public function agent_ded()
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
-			$start_date = date("Y-m-d");
+			$start_date = date("Y-m-d",strtotime("2018-04-01"));
 			$ag_com_list = DB::table("agent_commission_payment")
 				->select(
 					"agent_commission_payment.Agent_Commission_Id",
@@ -428,7 +428,7 @@
 					"agent_commission_payment.securityDeposit"
 				)
 				->where("agent_commission_payment.Agent_Commission_PaidDate",">=",$start_date)
-				->where("agent_commission_payment.Agent_Commission_Bid",">=",$BID)
+				->where("agent_commission_payment.Agent_Commission_Bid","=",$BID)
 				->get();
 
 			foreach($ag_com_list as $row_ag) {
@@ -443,7 +443,7 @@
 					->where("salary_extra_pay.sal_id",$row_ag->Agent_Commission_Id)
 					->count();
 				if($existing_entries > 0) {
-					echo "EXISTS";
+					echo "EXISTS({$existing_entries})";
 					continue;
 				}
 
