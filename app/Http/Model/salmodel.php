@@ -400,6 +400,18 @@
 				$this->insertSalExtraPay($sal_extra_data);
 			}
 /*************edit**************/
+
+/*********** sarafara tds,sd ***********/
+			if(isset($id['sarafara_payment'])) {
+				if($id['sarafara_payment'] == true) {
+					$temp_sal_extra_all = "9#{$id['tdsval']}#TDS|11#{$id['sdpo']}#SD";
+					$sal_extra_data['sal_extra_all'] = $temp_sal_extra_all;
+					$sal_extra_data['sal_id'] = $agt_cmm_id;
+					$sal_extra_data['emp_type'] = 2;//AGENT
+					$this->insertSalExtraPay($sal_extra_data);
+				}
+			}
+/*********** sarafara tds,sd ***********/
 			
 			return $agt_cmm_id;
 		}

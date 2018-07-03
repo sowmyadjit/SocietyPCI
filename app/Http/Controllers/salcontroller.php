@@ -268,6 +268,7 @@
 			
 /*************edit**************/
 			$agentsal['sal_extra_all']=$request->input('sal_extra_all');
+			$agentsal['sarafara_payment'] = true;
 /*************edit end**************/
 
 			$get=$this->salary->payagentcommision($agentsal);
