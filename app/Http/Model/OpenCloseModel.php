@@ -1184,6 +1184,7 @@
 			->where('customer.Created_on',$dte)
 			->where('customer.Bid',$BranchId)
 			->where('custtyp', 'CLASS D')
+			->where('customer.AuthStatus', 'AUTHORISED')
 			->get();
 			return $id;
 		}
@@ -1225,7 +1226,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('depositeloan_repay')->select('DepLoan_LoanNum','DLRepay_Date','receipt_voucher_no as dL_ReceiptNum','DLRepay_PaidAmt','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+			$id=DB::table('depositeloan_repay')->select('DepLoan_LoanNum','DLRepay_Date','receipt_voucher_no as dL_ReceiptNum','DLRepay_PaidAmt','DLRepay_PrincipalPaid','DLRepay_InterestPaid','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 			->join('depositeloan_allocation','depositeloan_allocation.DepLoanAllocId','=','DLRepay_DepAllocID')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","depositeloan_repay.DLRepay_ID")
 			->join("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
@@ -1257,7 +1258,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('depositeloan_repay')->select('DepLoan_LoanNum','DLRepay_Date','dL_ReceiptNum','DLRepay_PaidAmt',DB::raw(" '' as adj_no "))
+			$id=DB::table('depositeloan_repay')->select('DepLoan_LoanNum','DLRepay_Date','dL_ReceiptNum','DLRepay_PaidAmt','DLRepay_PrincipalPaid','DLRepay_InterestPaid',DB::raw(" '' as adj_no "))
 			->join('depositeloan_allocation','depositeloan_allocation.DepLoanAllocId','=','DLRepay_DepAllocID')
 			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","depositeloan_repay.DLRepay_ID")
 			// ->where("receipt_voucher.transaction_category",21)
@@ -1491,7 +1492,7 @@
 
 			/******* ADJUSTMENT CREDIT *****/
 			$id2 = DB::table('branch_to_branch')
-				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'receipt_no' "))
+				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'adj_no' "))
 				->join('branch','branch.Bid','=','Branch_Branch1_Id')
 				->where('Branch_Tran_Date',$dte)
 				->where('Branch_Branch2_Id',$BranchId)

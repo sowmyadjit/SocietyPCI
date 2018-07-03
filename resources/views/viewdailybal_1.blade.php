@@ -981,11 +981,13 @@
 							<td>-</td>
 							<td>{{ $classd->Customer_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					<tr>
 						<th colspan =3>Total D class Fee </th>
 						<td><?php echo $classd_cash_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1233,14 +1235,14 @@
 					?>
 					@foreach ($trandaily['dlrepay'] as $dlrepay)
 						<?php
-							$dlrepay_cash_cr = $dlrepay->DLRepay_PaidAmt;
+							$dlrepay_cash_cr = $dlrepay->DLRepay_PrincipalPaid;
 							$dlrepay_cash_cr_total += $dlrepay_cash_cr;
 						?>
 						<tr>
 							<td>{{ $dlrepay->DLRepay_Date }}</td>
 							<td>{{ $dlrepay->DepLoan_LoanNum }}</td>
 							<td>- {{ $dlrepay->name }}({{$dlrepay->Uid}})</td>
-							<td>{{ $dlrepay->DLRepay_PaidAmt }}</td>
+							<td>{{ $dlrepay->DLRepay_PrincipalPaid }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -1251,7 +1253,7 @@
 					@endforeach
 					@foreach ($trandaily['dlrepay_adjust'] as $dlrepay)
 						<?php
-							$dlrepay_adj_cr = $dlrepay->DLRepay_PaidAmt;
+							$dlrepay_adj_cr = $dlrepay->DLRepay_PrincipalPaid;
 							$dlrepay_adj_cr_total += $dlrepay_adj_cr;
 						?>
 						<tr>
@@ -1260,7 +1262,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>{{ $dlrepay->DLRepay_PaidAmt }}</td>
+							<td>{{ $dlrepay->DLRepay_PrincipalPaid }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -1281,6 +1283,64 @@
 						$gt_adj_cr += $dlrepay_adj_cr_total;
 					?>
 						
+					
+					
+					<tr><td colspan="10"><h5><b><center>DL REPAY INTEREST<center></b></h5></td></tr>
+					<?php
+						$dlrepay_cash_cr = 0;
+						$dlrepay_adj_cr = 0;
+						$dlrepay_cash_cr_total = 0;
+						$dlrepay_adj_cr_total = 0;
+					?>
+					@foreach ($trandaily['dlrepay'] as $dlrepay)
+						<?php
+							$dlrepay_cash_cr = $dlrepay->DLRepay_InterestPaid;
+							$dlrepay_cash_cr_total += $dlrepay_cash_cr;
+						?>
+						<tr>
+							<td>{{ $dlrepay->DLRepay_Date }}</td>
+							<td>{{ $dlrepay->DepLoan_LoanNum }}</td>
+							<td>- {{ $dlrepay->name }}({{$dlrepay->Uid}})</td>
+							<td>{{ $dlrepay->DLRepay_InterestPaid }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $dlrepay->dL_ReceiptNum }}</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endforeach
+					@foreach ($trandaily['dlrepay_adjust'] as $dlrepay)
+						<?php
+							$dlrepay_adj_cr = $dlrepay->DLRepay_InterestPaid;
+							$dlrepay_adj_cr_total += $dlrepay_adj_cr;
+						?>
+						<tr>
+							<td>{{ $dlrepay->DLRepay_Date }}</td>
+							<td>{{ $dlrepay->DepLoan_LoanNum }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $dlrepay->DLRepay_InterestPaid }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $dlrepay->adj_no }}</td>
+						</tr>
+					@endforeach
+					<tr>
+						<th colspan =3>Total Deposit Loan repay interest</th>
+						<td><?php echo $dlrepay_cash_cr_total; ?></td>
+						<td>-</td>
+						<td><?php echo $dlrepay_adj_cr_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $dlrepay_cash_cr_total;
+						$gt_adj_cr += $dlrepay_adj_cr_total;
+					?>
 						
 						
 						
@@ -2279,6 +2339,24 @@
 								<td>{{$branch_branch_tran->receipt_no}}</td>
 								<td>-</td>
 							</tr>
+						@else	<?php /*CREDIT ADJUSTMENT*/?>
+						<?php
+							$b2b_adj_cr = $branch_branch_tran->Branch_Amount;
+							$b2b_adj_cr_total += $b2b_adj_cr;
+						?>
+							<tr>
+								<td>{{ $branch_branch_tran->Branch_Tran_Date }}</td>
+								<td>{{ $branch_branch_tran->BName }}</td>
+								<td>{{ $branch_branch_tran->Branch_per }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $branch_branch_tran->Branch_Amount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$branch_branch_tran->adj_no}}</td>
+							</tr>
+							
 						@endif
 					@endforeach
 						
