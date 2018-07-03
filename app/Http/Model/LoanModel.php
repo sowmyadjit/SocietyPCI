@@ -590,7 +590,7 @@
 																	"Book_FormCharges"=>$id['PersBkfrmChrg'],
 																	"AjustmentCharges"=>$id['PersAdjChrg'],
 																	"ShareCharges"=>$id['PersShrChrg'],
-																	"Insurance"=>$id['PersPayAmt'],
+																	"Insurance"=>$id['Insurance'],
 																	"SubLedgerId"=>$subhead,
 																	"deleted"=>"0",
 																]);
