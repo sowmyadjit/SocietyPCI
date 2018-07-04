@@ -69,6 +69,10 @@
 						->where("table_name","{$tran_table}")
 						->where("deleted",0)
 						->first();
+					$join_list = DB::table("cash_chitta_joining_tables")
+						->where("deleted",0)
+						->where("cash_chitta_id",$ch_row->cash_chitta_id)
+						->get();
 					$amount_list = DB::table("cash_chitta_amount_fields")
 						->where("deleted",0)
 						->where("cash_chitta_id",$ch_row->cash_chitta_id)
@@ -80,10 +84,10 @@
 					}
 					
 					$select_array = array(
-											"{$ch_row->pk_field} as rv_transaction_id",
+											"{$tran_table}.{$ch_row->pk_field} as rv_transaction_id",
 											// "{$ch_row->payment_mode_field} as rv_payment_mode",
 											// "{$ch_row->transaction_type} as rv_transaction_type",
-											"{$ch_row->date_field} as rv_date"
+											"{$tran_table}.{$ch_row->date_field} as rv_date"
 										);
 					
 					if(!empty($ch_row->amount_field) && $ch_row->amount_field != "NA") {
@@ -131,11 +135,19 @@
 					}
 					array_push($select_array,$raw_obj);
 
-					$table_data = DB::table("{$tran_table}")
-						->select($select_array)
-						->where("{$ch_row->date_field}","{$cal_day}")
-						->where("{$ch_row->bid_field}",$BID)
-						->get();
+					//QUERY STARTS HERE
+						$table_data = DB::table("{$tran_table}")
+						->select($select_array);
+						
+						//JOINS
+						foreach($join_list as $row_jo) {
+							$table_data = $table_data->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
+													"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
+						}
+
+						$table_data = $table_data->where("{$tran_table}.{$ch_row->date_field}","{$cal_day}")
+							->where("{$ch_row->table_containing_bid}.{$ch_row->bid_field}",$BID)
+							->get();
 					
 					//continue;
 
@@ -323,6 +335,11 @@
 				$addbank = DB::table('addbank')
 				->where('Bankid','=',$bank_id)
 				->first();
+
+				if(empty($addbank)) {
+					echo "- <font color='red'>bank_id not found({$bank_id})</font>";
+					continue;
+				}
 
 				$insert_array["Bid"] = $BID;
 				$insert_array["d_date"] = date("d-m-Y",strtotime($date));
