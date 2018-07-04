@@ -2791,6 +2791,7 @@
 					//->where("Closed","=","NO")
 					->where("Agentid","=",$data["agent_uid"])
 					->where("{$table}.Bid","=",$Bid)
+					->where("{$table}.Status","=","AUTHORISED")
 					//->limit(500)
 					->get();
 			}
