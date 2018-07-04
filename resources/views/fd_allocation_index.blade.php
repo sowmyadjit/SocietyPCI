@@ -79,7 +79,6 @@
 		$("#closed_status").trigger("change");
 	});
 
-	
 	$("#search_box").change(function() {
 		$("#search_box").val("");
 		var allocation_id = $(this).attr("data-value");
