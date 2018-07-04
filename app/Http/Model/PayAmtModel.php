@@ -543,7 +543,7 @@
 		public function GetRDIntDetailsForPayAmt($id) //for PayAmt
 		{
 			$id= DB::table('rd_interest')
-			->select('rd_interest.Amount_Payable','rd_interest.Total_Amount','rd_interest.Interest_Amt','user.FirstName','user.MiddleName','user.LastName','user.Uid')
+			->select('rd_interest.Amount_Payable','rd_interest.Total_Amount','rd_interest.Interest_Amt','user.FirstName','user.MiddleName','user.LastName','user.Uid','rd_interest.Principle_Amount')
 			->leftJoin('createaccount','createaccount.AccNum','=','rd_interest.RdAcc_No')
 			->leftJoin('user','user.Uid','=','createaccount.UID')
 			->where('rd_interest.RdAcc_No','=',$id)

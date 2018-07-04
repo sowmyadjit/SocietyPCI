@@ -310,6 +310,7 @@
 			$id['uid']=$get->Uid;
 			$id['mtot']=$get->Total_Amount;
 			$id['intrst']=$get->Interest_Amt;
+			$id['principle']=$get->Principle_Amount;
 			return $id;
 		}
 		
