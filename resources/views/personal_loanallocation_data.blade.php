@@ -9,10 +9,10 @@
 									<th>Loan Amount</th>
 									<th>Start Date</th>
 									<th>End Date</th>
-								<?php /*	<th>Pending Amount</th> */?>
+									<th>Pending Amount</th> <?php /* */?>
 									<th>Close</th>
 									<th>Interest Paid Till</th>
-								<?php /*	<th>Paid Principle Amt.</th> */?>
+									<th>Paid Principle Amt.</th> <?php /**/?>
 									<th>EMI Amount</th>
 									<th>Loan Type</th>
 									<th>
@@ -30,11 +30,13 @@
 									<?php
 										$total_ln_amt = 0;
 										$total_rm_amt = 0;
+										$total_paid_amt = 0;
 									?>
 									@foreach ($ret_data['loan_details'] as $row)
 										<?php
 											$total_ln_amt += $row['loan_amount'];
 											$total_rm_amt += $row['ramaining_amount'];
+											$total_paid_amt += $row['paid_principle_amt'];
 										?>
 										<tr>
 											<td>{{++$i}}</td>
@@ -44,10 +46,10 @@
 											<td>{{ $row['loan_amount']}}</td>
 											<td>{{ $row['start_date']}}</td>
 											<td>{{ $row['end_date']}}</td>
-										<?php /*	<td>{{ $row['ramaining_amount']}}</td> */?>
+											<td>{{ $row['ramaining_amount']}}</td> <?php /**/?>
 											<td>{{ $row['closed']}}</td>
 											<td>{{ $row['interest_paid_upto']}}</td>
-										<?php /*	<td>{{ $row['paid_principle_amt']}}</td> */?>
+											<td>{{ $row['paid_principle_amt']}}</td> <?php /**/?>
 											<td>
 													<input value="{{$row["emi"]}}" class="edit_emi" data="{{ $row['loan_id'] }}" style="width: 50px;" />
 											</td>
@@ -89,9 +91,10 @@
 										<td><b>{{$total_ln_amt}}</b></td>
 										<td></td>
 										<td></td>
-									<?php /*	<td><b>{{$total_rm_amt}}</b></td> */ ?>
+										<td><b>{{$total_rm_amt}}</b></td> <?php /**/ ?>
 										<td></td>
 										<td></td>
+										<td><b>{{$total_paid_amt}}</b></td> <?php /**/ ?>
 										<td></td>
 										<td></td>
 										<td></td>

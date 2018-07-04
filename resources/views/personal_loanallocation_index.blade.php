@@ -49,14 +49,15 @@
 							<div class="col-md-3">
 								<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH JEWEL ACCOUNT">
 							</div>
-							<div class="col-md-3" style="height:38px;">
+							<div class="col-md-4" style="height:38px;">
 								ACCOUNT TYPE:
 								<select id="closed_status" style="height:38px;">
 									<option value="NO">LIVE</option>
 									<option value="YES">CLOSED</option>
 								</select>
+								<button class="btn-sm" id="refresh" ><span class="glyphicon glyphicon-refresh" /></button>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<select class="form-control" id="ExportType" name="ExportType">
 									<option value="">SELECT TYPE TO EXPORT</option>
 									<option value="word">WORD</option>
@@ -95,6 +96,10 @@
 		var loan_id = $(this).attr("data-value");
 		console.log(loan_id);
 		account_list(loan_id);
+	});
+	
+	$("#refresh").click(function() {
+		$("#closed_status").trigger("change");
 	});
 	
 	function account_list(loan_id) {
