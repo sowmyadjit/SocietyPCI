@@ -171,8 +171,8 @@
 			}
 			$id = $id->where("customer.AuthStatus","AUTHORISED")
 				->orderBy('Custid','desc')
-				->paginate(10);
-				// ->get();
+				// ->paginate(10);
+				->get();
 			
 			return $id;
 		}
