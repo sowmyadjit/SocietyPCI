@@ -152,7 +152,7 @@
 			
 			
 			$id = DB::table('customer')->where('Uid',$id['uid'])//->where('Custid',$id['cid'])
-			->update(['Aid'=>$id['aid'],'FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Bid'=>$id['branchid'],'FatherName'=>$id['fthrnme'],'SpouseName'=>$id['spousenme'],'Kan_FatherName'=>$id['KaFather'],'Kan_SpouseName'=>$id['KaSpouse']]);
+			->update(['Aid'=>$id['aid'],'FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Bid'=>$id['branchid'],'FatherName'=>$id['fthrnme'],'SpouseName'=>$id['spousenme'],'Kan_FatherName'=>$id['KaFather'],'Kan_SpouseName'=>$id['KaSpouse'],'Customer_Fee'=>$id['Customer_Fee']]);
 			return $id;
 		}
 		
@@ -189,7 +189,7 @@
 		
 		public function GetCustomer($id)
 		{
-			return DB::table('customer')->select('Custid','customer.Nid','customer.Aid','user.FirstName','user.Kan_FirstName','user.MiddleName','FatherName','user.LastName','user.Kan_MiddleName','Kan_FatherName','user.Kan_LastName','BName','AccNum','Gender','OpeningBalance','user.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','Kan_Address','Kan_City','Kan_District','Kan_State','MobileNo','Pincode','PhoneNo','ID_Proof','Address_Proof','photo','Signature','customer.DocProvid','customer.Bid','customer.Uid','SpouseName','Kan_SpouseName','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Kan_Nom_FirstName','Kan_Nom_MiddleName','Kan_Nom_LastName','Kan_Relationship','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_State','Customer_ReceiptNum','custtyp','Customer_Fee','customer.Created_on','user.Member_No')
+			return DB::table('customer')->select('Custid','customer.Nid','customer.Aid','user.FirstName','user.Kan_FirstName','user.MiddleName','FatherName','user.LastName','user.Kan_MiddleName','Kan_FatherName','user.Kan_LastName','BName','AccNum','Gender','OpeningBalance','user.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','Kan_Address','Kan_City','Kan_District','Kan_State','MobileNo','Pincode','PhoneNo','ID_Proof','Address_Proof','photo','Signature','customer.DocProvid','customer.Bid','customer.Uid','SpouseName','Kan_SpouseName','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Kan_Nom_FirstName','Kan_Nom_MiddleName','Kan_Nom_LastName','Kan_Relationship','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_State','Customer_ReceiptNum','custtyp','Customer_Fee','customer.Created_on','user.Member_No','customer.Customer_Fee')
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
 			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')

@@ -452,6 +452,7 @@
 			$customer['spousenme']=$request->input('spousenme');
 			$customer['KaSpouse']=$request->input('KaSpouse');
 			$customer['Member_No']=$request->input('mem_no');
+			$customer['Customer_Fee']=$request->input('cust_fee');
 			
 			
 			

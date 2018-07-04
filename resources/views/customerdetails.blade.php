@@ -298,6 +298,13 @@
 								</div>
 							</div>
 							
+							<div class="form-group">
+								<label class="control-label col-sm-4">CUSTOMER FEE:</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="cust_fee" name="cust_fee" value="{{ $customer->Customer_Fee }}" <?php if($edit=='edit'){}else {echo 'readonly';} ?>>
+								</div>
+							</div>
+							
 							
 							
 						</div> <!--CUSTOMER alert-INFO div ends-->
