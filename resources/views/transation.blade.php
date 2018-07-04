@@ -1908,7 +1908,20 @@
 					success: function(data) {
 						console.log(data);
 						var tran_id = data;
-						$('.box').load("TranReceipt/SB/"+tran_id);
+						var tran_type = $("#trantyp").val();
+						
+							$.ajax({
+								url:'rv_print',
+								type:'post',
+								data:'&tran_category=SB'+'&tran_type='+tran_type+"&tran_id="+tran_id,
+								success:function(data)
+								{
+									$('.box').html(data);
+								}
+							});
+
+
+						// $('.box').load("TranReceipt/SB/"+tran_id);
 						//var win = window.open("TranReceipt/SB/"+tran_id, "print","width=1000, height=600");
 						// $('.tranclassid').click();
 					}
@@ -2300,8 +2313,22 @@
 					success: function(data) {
 						alert('success');
 						var tran_id = data;
+						var tran_type = $("#rdtrantypreadonly").val();
+						
+							$.ajax({
+								url:'rv_print',
+								type:'post',
+								data:'&tran_category=RD'+'&tran_type='+tran_type+"&tran_id="+tran_id,
+								success:function(data)
+								{
+									$('.box').html(data);
+								}
+							});
+
+
+
 						//var win = window.open("TranReceipt/RD/"+tran_id, "print","width=1000, height=600");
-						$('.box').load("TranReceipt/RD/"+tran_id);
+						// $('.box').load("TranReceipt/RD/"+tran_id);
 						//$('.tranclassid').click();
 					}
 				});
@@ -2547,7 +2574,7 @@
 
 
 
-<button id="test">test</button>
+<button id="test" class="hidden">test</button>
 <script>
 	$("#test123").click(function() {
 		$('.box').load($(this).attr('href'));
