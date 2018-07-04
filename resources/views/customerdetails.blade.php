@@ -291,6 +291,13 @@
 								</div>
 							</div>
 							
+							<div class="form-group">
+								<label class="control-label col-sm-4">MEMBER NO.:</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="mem_no" name="mem_no" value="{{ $customer->Member_No }}" <?php if($edit=='edit'){}else {echo 'readonly';} ?>>
+								</div>
+							</div>
+							
 							
 							
 						</div> <!--CUSTOMER alert-INFO div ends-->

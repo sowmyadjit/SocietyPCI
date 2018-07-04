@@ -451,6 +451,7 @@
 			$customer['KaFather']=$request->input('KaFather');
 			$customer['spousenme']=$request->input('spousenme');
 			$customer['KaSpouse']=$request->input('KaSpouse');
+			$customer['Member_No']=$request->input('mem_no');
 			
 			
 			
