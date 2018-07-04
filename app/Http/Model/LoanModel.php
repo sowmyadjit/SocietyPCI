@@ -3460,6 +3460,7 @@
 			$ret_data['loan_category'] = $data["category"];
 			$table = "personalloan_allocation";
 			$closed_field = "Closed";
+			$pl_type_field = "LoanType_ID";
 			$branch_id_field = "{$table}.Bid";
 			$loan_id_field = "PersLoanAllocID";
 			$select_array = array(
@@ -3488,6 +3489,23 @@
 				$account_list = $account_list->where($loan_id_field,'=',$data['loan_id']);
 			} else {
 				$account_list = $account_list->where($closed_field,"=",$data['closed']);
+
+				$ln_type_arr = array();
+				switch($data["pl_type"]) {
+					case "ASL"	:	
+									$ln_type_arr = [5,13,23,27];	// FROM loan_type TABLE
+									break;
+					case "CSL"	:	
+									$ln_type_arr = [6,14,17,22,24];
+									break;
+					case "AMTL"	:	
+									$ln_type_arr = [7,15,21];
+									break;
+					case "CMTL"	:	
+									$ln_type_arr = [8,16,18,25,26];
+									break;
+				}
+				$account_list = $account_list->whereIn($pl_type_field,$ln_type_arr);
 			}
 			$account_list = $account_list//->limit(1)
 										->get();

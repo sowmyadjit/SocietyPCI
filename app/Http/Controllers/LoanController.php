@@ -1352,6 +1352,7 @@
 		{
 			$in_data['category'] = $request->input("category");
 			$in_data['closed'] = $request->input("closed");
+			$in_data['pl_type'] = $request->input("pl_type");
 			$in_data['loan_id'] = $request->input("loan_id");
 			switch($in_data['category']) {
 				case "JL":	$ret_data = $this->loan->account_list_jl($in_data);
