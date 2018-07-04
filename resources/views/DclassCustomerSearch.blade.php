@@ -21,6 +21,7 @@
 								<th>MOBILE NUMBER</th>
 								<th>PHONE NUMBER</th>
 								<th>CUSTOMER TYPE</th>
+								<th>CUSTOMER FEE</th>
 								<th>MEMBER NUMBER</th>
 								<th colspan=2><center>ACTION</center></th>
 								
@@ -28,7 +29,13 @@
 						</thead>
 						
 						<tbody>
+							<?php
+								$total_cust_fee = 0;
+							?>
 							@foreach ($c['data'] as $customer)
+							<?php
+								$total_cust_fee += $customer->Customer_Fee;
+							?>
 							<tr>
 								<td class="hidden">{{ $customer->Custid }}</td>
 								<td><a  href="customerdetails/{{ $customer->Custid }}" class="custdet<?php echo $c['module']->Mid; ?>">{{ $customer->FirstName }}</a></td>
@@ -38,6 +45,7 @@
 								<td>{{ $customer->MobileNo }}</td>
 								<td>{{ $customer->PhoneNo }}</td>
 								<td>{{ $customer->custtyp }}</td>
+								<td>{{ $customer->Customer_Fee }}</td>
 								<td>{{ $customer->Member_No }}</td>
 								
 								<td>
@@ -63,6 +71,19 @@
 								
 							</tr>
 							@endforeach
+									<tr>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td><b>{{$total_cust_fee}}</b></td> <?php /**/ ?>
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>
 						</tbody>
 					</table>
 				</div>	
