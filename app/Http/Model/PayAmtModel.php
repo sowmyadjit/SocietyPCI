@@ -146,7 +146,10 @@
 				$reportdte=date('Y-m-d');
 				$mnt=date('m');
 				$year=date('Y');
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>"Credited from Pygmy Account",'Amount' =>$id['PigPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'bid'=>$BID,'Payment_Mode'=>"PIGMY"]);
+
+				$sb_particulars = "Credited from Pygmy Account ({$PigAccNum})";
+
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$sb_particulars,'Amount' =>$id['PigPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'bid'=>$BID,'Payment_Mode'=>"PIGMY"]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
@@ -277,7 +280,10 @@
 				$reportdte=date('Y-m-d');
 				$mnt=date('m');
 				$year=date('Y');
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>"Credited from RD Account",'Amount' =>$id['RDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u]);
+
+				$temp_particulars = "Credited from RD Account ({$RDAccNum})";
+
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['RDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
@@ -431,7 +437,10 @@
 				$reportdte=date('Y-m-d');
 				$mnt=date('m');
 				$year=date('Y');
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'Payment_Mode'=>$FDPayMode,'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>"Credited from FD Account",'Amount' =>$id['FDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,"Bid"=>$udetail->Bid]);
+
+				$temp_particulars =  "Credited from FD Account ({$id["fdaccount"]})";
+
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'Payment_Mode'=>$FDPayMode,'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['FDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,"Bid"=>$udetail->Bid]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);

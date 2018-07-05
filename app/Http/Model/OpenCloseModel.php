@@ -2491,13 +2491,15 @@
 				$accid=$ada->Accid;
 				$totamt=$ada->amount;
 				$accno1=$ada->fdnum;
+
+				$sb_particulars = "FD Interest ({$accno1})";
 				
 				$sbtotamt1=DB::table('createaccount')->select('Total_Amount')->where('Accid',$accid)->first();
 				$sbtotamt=$sbtotamt1->Total_Amount;
 				$totamount=$sbtotamt+$totamt;
 				DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>$totamount]);
 				
-				$sbid=DB::table('sb_transaction')->insertGetId(['Accid'=>$accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"FD Interest",'Amount' =>$totamt,'CurrentBalance'=>$sbtotamt,'Total_Bal'=>$totamount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$month,'Year'=>$yer,'Payment_Mode'=>"FD Interest",'Bid'=>$Branchid,'CreatedBy'=>$UID,'ignore_for_service_charge'=>1]); 
+				$sbid=DB::table('sb_transaction')->insertGetId(['Accid'=>$accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>$sb_particulars,'Amount' =>$totamt,'CurrentBalance'=>$sbtotamt,'Total_Bal'=>$totamount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$month,'Year'=>$yer,'Payment_Mode'=>"FD Interest",'Bid'=>$Branchid,'CreatedBy'=>$UID,'ignore_for_service_charge'=>1]); 
 				
 				DB::table('fdallocation')->where('Fd_CertificateNum',$accno1)
 				->update(['lastinterestpaid'=>$dte]);
@@ -2653,7 +2655,7 @@
 			$fd_int = DB::table("sb_transaction")
 				->select(DB::raw('`tran_Date` as `FD_Date`,`Amount` as `amount`, `fake_value` as `fdnum` '))
 				->where("tran_Date","=",$date)
-				->where("particulars","=","FD Interest")
+				->where("particulars","LIKE","%FD Interest%")
 				->where('Bid','=',$bid)
 				->get();
 			}
