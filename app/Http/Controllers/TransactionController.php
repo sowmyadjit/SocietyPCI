@@ -541,6 +541,14 @@ use App\Http\Model\TransactionModel;
 										break;
 				case "SHARE"		:	$data = $this->TranModel->rv_print_share($in_data);
 										break;
+				case "INCOME"		:	$data = $this->TranModel->rv_print_income($in_data);
+										break;
+				case "EXPENSE"		:	$data = $this->TranModel->rv_print_expense($in_data);
+										break;
+				case "BANK_DEP"		:	$data = $this->TranModel->rv_print_bank_dep($in_data);
+										break;
+				case "BANK_WID"		:	$data = $this->TranModel->rv_print_bank_wid($in_data);
+										break;
 			}
 			if(empty($in_data["tran_id"])) {
 				// return $data;

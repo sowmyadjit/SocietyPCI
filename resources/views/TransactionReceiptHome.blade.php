@@ -32,6 +32,8 @@
 									<option value="CUST_FEE"> D CLASS </option>
 									<option value="PG_PEND"> PIGMY PENDING RECEIPT </option>
 									<option value="SHARE"> SHARE ALLOCATION </option>
+									<option value="INCOME"> INCOME RECEIPT </option>
+									<option value="BANK_WID"> BANK WITHDRAWAL </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
 								</select>
 							</label>

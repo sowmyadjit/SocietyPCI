@@ -19,13 +19,15 @@
 									<option value=""> SELECT PAYMENT TYPE</option>
 									<option value="SB"> SB PAYMENT </option>
 									<option value="RD"> RD PAYMENT </option>
-									<option value="JL"> JL ALLOCATE RECEIPT </option>
-									<option value="DL"> DL ALLOCATE RECEIPT </option>
-									<option value="SL"> SL ALLOCATE RECEIPT </option>
-									<option value="PL"> PL ALLOCATE RECEIPT </option>
+									<option value="JL"> JL ALLOCATE </option>
+									<option value="DL"> DL ALLOCATE </option>
+									<option value="SL"> SL ALLOCATE </option>
+									<option value="PL"> PL ALLOCATE </option>
 									<option value="FD_PAY_AMT"> FD PAY AMOUNT </option>
 									<option value="RD_PAY_AMT"> RD PAY AMOUNT </option>
 									<option value="PG_PAY_AMT"> PG PAY AMOUNT </option>
+									<option value="EXPENSE"> EXPENESE </option>
+									<option value="BANK_DEP"> BANK DEPOSIT </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
 								</select>
 							</label>
