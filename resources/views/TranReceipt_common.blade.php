@@ -130,6 +130,19 @@ table td {
 				</tr>
 			@endif
 
+			@if(strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0)
+				<tr>
+					<th>Account Subhead:</th>
+					<td>
+						{{$data->account_subhead}}
+					</td>
+					<th>Account Subhead:</th>
+					<td>
+						{{$data->account_subhead}}
+					</td>
+				</tr>
+			@endif
+
 			@if($data->tran_category == "PG_PEND" || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 )
 			@else
 				<tr>

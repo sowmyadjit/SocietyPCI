@@ -1326,6 +1326,7 @@
 					"{$table}.Income_date as date",
 					"{$table}.Income_amount as amount",
 					"{$table}.Income_Particulars as particulars",
+					"legder.lname as account_subhead",
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -1335,6 +1336,7 @@
 					DB::raw(" '' as name")
 				)
 				// ->join("user","user.Uid","=",".")
+				->join("legder","legder.lid","=","{$table}.Income_SubHead_lid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Income_id")
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
@@ -1347,6 +1349,7 @@
 					->first();
 				$ret_data->tran_category_name = "INCOME";
 				$ret_data->account_head = "INCOME";
+				$ret_data->account_subhead = $ret_data->account_subhead;
 				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
@@ -1372,6 +1375,7 @@
 					"{$table}.e_date as date",
 					"{$table}.amount as amount",
 					"{$table}.Particulars as particulars",
+					"legder.lname as account_subhead",
 					DB::raw("'DEBIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -1381,6 +1385,7 @@
 					DB::raw(" '' as name")
 				)
 				// ->join("user","user.Uid","=",".")
+				->join("legder","legder.lid","=","{$table}.SubHead_lid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.id")
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
@@ -1393,6 +1398,7 @@
 					->first();
 				$ret_data->tran_category_name = "EXPENSE";
 				$ret_data->account_head = "EXPENSE";
+				$ret_data->account_subhead = $ret_data->account_subhead;
 				$ret_data->tran_category = $data["tran_category"];
 			}
 			return $ret_data;
