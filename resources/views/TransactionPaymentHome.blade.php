@@ -28,7 +28,7 @@
 									<option value="PG_PAY_AMT"> PG PAY AMOUNT </option>
 									<option value="EXPENSE"> EXPENESE </option>
 									<option value="BANK_DEP"> BANK DEPOSIT </option>
-									<option value="B2B_DB"> BRANCH TO BRANCH </option>
+									<option value="B2B_DB"> HEAD OFFICE </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
 								</select>
 							</label>

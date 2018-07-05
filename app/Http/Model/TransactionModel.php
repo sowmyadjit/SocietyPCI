@@ -1030,7 +1030,7 @@
 					"{$table}.PayAmountReport_PayDate as date",
 					// "{$table}.PayAmount_PayableAmount as amount",
 					DB::raw(" pigmi_prewithdrawal.Deduct_Commission + pigmi_prewithdrawal.Deduct_Amount as amount "),
-					DB::raw(" 'PG Deduct Amount' as particulars"),
+					DB::raw(" 'Commission and other charges' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -1050,7 +1050,7 @@
 				} else {
 					$ret_data = $ret_data->where("{$table}.PayId",$data["tran_id"])
 						->first();
-					$ret_data->tran_category_name = "PG Deduct Amount";
+					$ret_data->tran_category_name = "Commission and other charges";
 					$ret_data->account_head = "Pigmy";
 					$ret_data->tran_category = $data["tran_category"];
 				}
