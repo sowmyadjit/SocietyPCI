@@ -356,9 +356,19 @@
 			return ($this->get_PayAmt->GetFDAccForPayAmt($request->search));
 		}
 		
+		public function GetKCCAccForPayAmt(Request $request)
+		{
+			return ($this->get_PayAmt->GetKCCAccForPayAmt($request->search));
+		}
+		
 		public function GetFDMatuAccForPayAmt(Request $request)
 		{
 			return ($this->get_PayAmt->GetFDMatuAccForPayAmt($request->search));
+		}
+		
+		public function GetKCCMatuAccForPayAmt(Request $request)
+		{
+			return ($this->get_PayAmt->GetKCCMatuAccForPayAmt($request->search));
 		}
 		
 		public function GetSalary(Request $request)

@@ -337,8 +337,10 @@
 			
 			if($fd_type == 1) {
 				$sub_head_id = '40';
+				$fd_type_name = "KCC";
 			} else {
 				$sub_head_id = '41';
+				$fd_type_name = "FD";
 			}
 /***********************/
 			$fd_payamount_id = DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$id['fdaccount'],'FDPayAmt_PaymentMode'=>$id['FDPayMode'],'Bid'=>$BID,'FDPayAmt_ChequeNum'=>$id['FDPayChequeNum'],'FDPayAmt_ChequeDate'=>$id['FDPayChequeDate'],'FDPayAmt_PayableAmount'=>$id['FDPayableAmt'],'FDPayAmt_PayDate'=>$paydate,'FDPayAmtReport_PayDate'=>$paydatereport,'FDPayAmt_BankId'=>$id['BankId'],'FDPayAmt_IntType'=>$id['FDPaymntMode'],'FD_PayAmount_ReceiptNum'=>$ReceiptNum,'FD_PayAmount_pamentvoucher'=>$r1,'LedgerHeadId'=>'38','SubLedgerId'=>$sub_head_id]);
@@ -408,7 +410,7 @@
 				$insert_array["bank_name"] = "";
 				$insert_array["amount"] = $id['FDPayableAmt'];
 				$insert_array["paid"] = "yes";
-				$insert_array["reason"] = "FD PAY AMOUNT THROUGH CHEQUE";
+				$insert_array["reason"] = "{$fd_type_name} PAY AMOUNT THROUGH CHEQUE";
 				// $insert_array["cd"] = "";
 				$insert_array["Deposit_type"] = "WITHDRAWL";
 
@@ -430,7 +432,7 @@
 				$bid=$udetail->Bid;
 				//$totcash=$inhandcash1+$amount1;
 				DB::table('inhandcash_trans')
-				->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Paid to FD Customer",'InhandTrans_Cash'=>$PayableAmt,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Debit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$tot]);
+				->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Paid to {$fd_type_name} Customer",'InhandTrans_Cash'=>$PayableAmt,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Debit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$tot]);
 			}
 			else
 			{
@@ -438,7 +440,7 @@
 				$mnt=date('m');
 				$year=date('Y');
 
-				$temp_particulars =  "Credited from FD Account ({$id["fdaccount"]})";
+				$temp_particulars =  "Credited from {$fd_type_name} Account ({$id["fdaccount"]})";
 
 				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'Payment_Mode'=>$FDPayMode,'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['FDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,"Bid"=>$udetail->Bid]);
 				
@@ -533,6 +535,16 @@
 			->get();
 		}
 		
+		public function GetKCCAccForPayAmt() //For AmtPay
+		{
+			return DB::table('fd_prewithdrawal')
+			->select(DB::raw('FdPrewithdraw_ID as id, FdAcc_No as name'))
+			->join("fdallocation","fdallocation.Fd_CertificateNum","=","fd_prewithdrawal.FdAcc_No")
+			->where('CashPaid_State','=',"UNPAID")
+			->where('fdallocation.FdTid',1)
+			->get();
+		}
+		
 		public function GetRDIntAccForPayAmt() //For AmtPay
 		{
 			return DB::table('rd_interest')
@@ -549,6 +561,17 @@
 			->where('Fd_Withdraw','=',"YES")
 			->get();
 		}
+		
+		public function GetKCCMatuAccForPayAmt() //For AmtPay
+		{
+			return DB::table('fdallocation')
+				->select(DB::raw('Fdid as id, Fd_CertificateNum as name'))
+				->where('Paid_State','=',"UNPAID")
+				->where('Fd_Withdraw','=',"YES")
+				->where('fdallocation.FdTid','=',1)
+				->get();
+		}
+
 		public function GetRDIntDetailsForPayAmt($id) //for PayAmt
 		{
 			$id= DB::table('rd_interest')
@@ -766,6 +789,26 @@
 			->paginate(15);
 			//->get();
 			//print_r($id);
+			return $id;
+			
+		}
+		
+		public function GetKCCPayData() //M 15-4-16
+		{
+			$id = DB::table('fd_payamount')
+				->select(
+					'FDPayId',
+					'FDPayAmtReport_PayDate',
+					'FDPayAmt_AccNum','FirstName',
+					'MiddleName','LastName','FdType'
+				)
+				->leftJoin('fdallocation', 'fdallocation.Fd_CertificateNum', '=' , 'fd_payamount.FDPayAmt_AccNum')
+				->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
+				->leftJoin('user', 'user.Uid', '=' , 'fdallocation.Uid')
+				->orderBy('FDPayId','desc')
+				->where('FDPayId','>',"102")
+				->where('fdallocation.FdTid',1)
+				->get();
 			return $id;
 			
 		}

@@ -247,7 +247,9 @@
 				Route::post('/crtkccalloc','FdAllocationController@crtkccalloc');
 				Route::get('/crtkccallocation','FdAllocationController@crtkccallocation');
 				Route::post('/fdrenew','FdAllocationController@fdrenew');
+				Route::post('/kccrenew','FdAllocationController@kccrenew');
 				Route::post('/fdrenewdetails','FdAllocationController@fdrenewdetails');
+				Route::post('/kccrenewdetails','FdAllocationController@kccrenewdetails');
 				//InterestController
 				Route::get('/pigmiinterest','InterestController@pigmiInterest');
 				Route::post('/pigmiInterestCalc','InterestController@pigmiInterestCalc');
@@ -589,8 +591,10 @@
 				Route::get('/GetBranchForExpenseTran','SearchController@GetBranch');
 				Route::get('/GetRDAccForPayAmt','SearchController@GetRDAccForPayAmt'); 
 				Route::get('/GetRDIntAccForPayAmt','SearchController@GetRDIntAccForPayAmt'); 
-				Route::get('/GetFDAccForPayAmt','SearchController@GetFDAccForPayAmt'); 
-				Route::get('/GetFDMatuAccForPayAmt','SearchController@GetFDMatuAccForPayAmt'); 
+				Route::get('/GetFDAccForPayAmt','SearchController@GetFDAccForPayAmt');
+				Route::get('/GetKCCAccForPayAmt','SearchController@GetKCCAccForPayAmt');
+				Route::get('/GetFDMatuAccForPayAmt','SearchController@GetFDMatuAccForPayAmt');
+				Route::get('/GetKCCMatuAccForPayAmt','SearchController@GetKCCMatuAccForPayAmt');
 				Route::get('/GetSearchSbAccWithOldAcc','SearchController@GetSearchSbAccWithOldAcc');//31-03-16
 				Route::get('/GetSearchRdAccWithOldAcc','SearchController@GetSearchRdAccWithOldAcc');//04-04-16
 				Route::get('/GetSearchFdAccWithOldAcc','SearchController@GetSearchFdAccWithOldAcc');//04-04-16
@@ -737,6 +741,7 @@
 				Route::get('/PigmyPayAmountView','PayAmtController@PigmyPayAmountView');
 				Route::get('/RdPayAmountView','PayAmtController@RdPayAmountView');
 				Route::get('/FDPayAmountView','PayAmtController@FDPayAmountView');
+				Route::get('/KCCPayAmountView','PayAmtController@KCCPayAmountView');
 				Route::post('/PigmyPayAmount','PayAmtController@PigmyPayAmount');
 				Route::get('/GetPigmyDetailsForPayAmt','PayAmtController@GetPigmyDetailsForPayAmt');//For PayAmt PigmyAccNum
 				Route::get('/GetBankDetailsForPayAmt','PayAmtController@GetBankDetailsForPayAmt');//For PayAmt PigmyAccNum
@@ -752,6 +757,7 @@
 				Route::get('/GetPigmyIntDetailsForPayAmt','PayAmtController@GetPigmyIntDetailsForPayAmt');//For PayAmt get Interest Detail (Newly Added)
 				Route::get('/RDPayAmountIndex','PayAmtController@RDPayAmountIndex');//For RD Pay Amount Home
 				Route::get('/FDPayAmountIndex','PayAmtController@FDPayAmountIndex');//For FD Pay Amount home
+				Route::get('/KCCPayAmountIndex','PayAmtController@KCCPayAmountIndex');//For KCC Pay Amount home
 				Route::get('/GetRDIntDetailsForPayAmt','PayAmtController@GetRDIntDetailsForPayAmt');//For PayAmt get Interest Detail
 				Route::get('/GetRDDetailsForPayAmt','PayAmtController@GetRDDetailsForPayAmt');//For PayAmt get perwithdraw Detail	
 				Route::post('/GetSBForRDPayAmt','PayAmtController@GetSBForRDPayAmt');//For PayAmt get perwithdraw Detail 

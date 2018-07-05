@@ -104,6 +104,28 @@
 		}
 			return view('FdPayAmountHome',compact('PayAmount'));
 		}
+
+		
+		public function KCCPayAmountIndex()
+		{
+			$Url="RDPayAmountIndex";
+			$PayAmount['module']=$this->Modules->GetAnyMid($Url);
+			
+			$PayAmount['data']=$this->PayAmtMod->GetKCCPayData();
+			$PayAmount['open']=$this->OP_model->openstate();
+			$PayAmount['close']=$this->OP_model->openclosestate();
+			if(empty($PayAmount['open'])) {
+				$PayAmount['open']=0;
+			} else {
+				$PayAmount['open']=1;
+			}
+			if(empty($PayAmount['close'])) {
+				$PayAmount['close']=0;
+			} else {
+				$PayAmount['close']=1;
+			}
+			return view('KccPayAmountHome',compact('PayAmount'));
+		}
 		
 		public function PigmyPayAmountView()
 		{
@@ -114,9 +136,15 @@
 		{
 			return view('RDPayAmt');
 		}
+
 		public function FDPayAmountView()
 		{
 			return view('FDPayAmt');
+		}
+		
+		public function KCCPayAmountView()
+		{
+			return view('KCCPayAmt');
 		}
 		
 		public function PigmyPayAmount(Request $request)

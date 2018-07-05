@@ -11,7 +11,7 @@
 			<div class="box col-md-12">
 				<div class="box-inner">
 					<div class="box-header well" data-original-title="">
-						<h2><i class="glyphicon glyphicon-random"></i>		&nbsp FD Pay Amount</h2>
+						<h2><i class="glyphicon glyphicon-random"></i>		&nbsp KCC Pay Amount</h2>
 						<div class="box-icon">
 							<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
 							<a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
@@ -48,7 +48,7 @@
 							</div>
 						</div>	
 						
-						<div class="col-md-4 ">
+						<div class="col-md-4 hidden">
 							<input type="text" class="form-control" id="fdaccount" name="fdaccount">
 						</div>
 						
@@ -323,7 +323,7 @@
 <script>
 	
 	$('#account').change( function(e) {
-		usr=$('#account').attr('data-value');
+		usr=$('#account').data('value');
 		$.ajax({
 			url:'GetSBForFDPayAmt',
 			type:'post',
@@ -359,8 +359,8 @@
 	});
 	
 	$('input.typeahead').typeahead({
-		ajax: '/Getaccnum'
-		//source:Getaccnum
+		//ajax: '/Getaccnum'
+		source:Getaccnum
 	});
 	//Typeahead for Bank Branch Name from AddBank Table
 	$('input.BankNameTypeAhead').typeahead({
@@ -369,12 +369,12 @@
 	
 	//Typeahead for Pigmy Account Number from PreWithdrawel Table
 	$('input.FDAccNumTypeAhead').typeahead({
-		ajax:'/GetFDAccForPayAmt'
+		ajax:'/GetKCCAccForPayAmt'
 	});
 	
 	//Typeahead for Pigmy Account Number from Interest Table (Newly Added)
 	$('input.FDMatuAccNumTypeAhead').typeahead({
-		ajax:'/GetFDMatuAccForPayAmt'
+		ajax:'/GetKCCMatuAccForPayAmt'
 	});
 	
 	// Hide and show
@@ -620,7 +620,7 @@
 		fdmatureaccno=$('#FDMatuAccnum').data('value');
 		
 		$.ajax({
-			url: 'fdrenew',
+			url: 'kccrenew',
 			type: 'post',
 			data: '&fdtype='+fdtype+'&fdaccno='+fdaccno+'&fdmatureaccno='+fdmatureaccno,
 			success: function(data) {
