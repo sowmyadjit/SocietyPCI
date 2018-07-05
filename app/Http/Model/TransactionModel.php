@@ -293,8 +293,11 @@
 				$ret_data->tran_category_name = "JL";
 				$ret_data->account_head = "Jewel Loan";
 				$ret_data->tran_category = $data["tran_category"];
-				$ret_data->particulars .= "Appraiser commission - {$ret_data->JewelLoan_SaraparaCharge},\nInsurance charge - {$ret_data->JewelLoan_InsuranceCharge},\nBooks and forms charge - {$ret_data->JewelLoan_BookAndFormCharge},\nOther charge - {$ret_data->JewelLoan_OtherCharge}";
-
+				// $ret_data->particulars .= "Appraiser commission - {$ret_data->JewelLoan_SaraparaCharge},\nInsurance charge - {$ret_data->JewelLoan_InsuranceCharge},\nBooks and forms charge - {$ret_data->JewelLoan_BookAndFormCharge},\nOther charge - {$ret_data->JewelLoan_OtherCharge}";
+				$ret_data->sub_amt["Appraiser commission"] = $ret_data->JewelLoan_SaraparaCharge;
+				$ret_data->sub_amt["Insurance charge"] = $ret_data->JewelLoan_InsuranceCharge;
+				$ret_data->sub_amt["Books and forms charge"] = $ret_data->JewelLoan_BookAndFormCharge;
+				$ret_data->sub_amt["Other charge"] = $ret_data->JewelLoan_OtherCharge;
 			return $ret_data;
 		}
 
