@@ -1498,5 +1498,97 @@
 			return $ret_data;
 		}
 		
+		public function rv_print_b2b_cr($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "branch_to_branch";
+			$transaction_category = 4;
+			if($data["tran_type"] == "CREDIT") {
+				$receipt_voucher_type = [1];
+			} else {
+				$receipt_voucher_type = [2,3];
+			}
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.Branch_Id as tran_id",
+					DB::raw(" '' as acc_no "),
+					DB::raw(" '' as old_acc_no "),
+					"{$table}.Branch_Tran_Date as date",
+					"{$table}.Branch_Amount as amount",
+					"{$table}.Branch_per as particulars",
+					DB::raw("'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					// "user.Uid as uid",
+					DB::raw(" '' as uid"),
+					// DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+					DB::raw(" '' as name")
+				)
+				// ->join("user","user.Uid","=",".")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Branch_Id")
+				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.Branch_Id",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "BRANCH TO BRANCH";
+				$ret_data->account_head = "HEAD OFFICE";
+				$ret_data->tran_category = $data["tran_category"];
+			}
+			return $ret_data;
+		}
+		
+		public function rv_print_b2b_db($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+			$table = "branch_to_branch";
+			$transaction_category = 4;
+			if($data["tran_type"] == "CREDIT") {
+				$receipt_voucher_type = [1];
+			} else {
+				$receipt_voucher_type = [2,3];
+			}
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.Branch_Id as tran_id",
+					DB::raw(" '' as acc_no "),
+					DB::raw(" '' as old_acc_no "),
+					"{$table}.Branch_Tran_Date as date",
+					"{$table}.Branch_Amount as amount",
+					"{$table}.Branch_per as particulars",
+					DB::raw("'DEBIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					// "user.Uid as uid",
+					DB::raw(" '' as uid"),
+					// DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+					DB::raw(" '' as name")
+				)
+				// ->join("user","user.Uid","=",".")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.Branch_Id")
+				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.Branch_Id",$data["tran_id"])
+					->first();
+				$ret_data->tran_category_name = "BRANCH TO BRANCH";
+				$ret_data->account_head = "HEAD OFFICE";
+				$ret_data->tran_category = $data["tran_category"];
+			}
+			return $ret_data;
+		}
+		
 		
 	}

@@ -34,6 +34,7 @@
 									<option value="SHARE"> SHARE ALLOCATION </option>
 									<option value="INCOME"> INCOME RECEIPT </option>
 									<option value="BANK_WID"> BANK WITHDRAWAL </option>
+									<option value="B2B_CR"> BRANCH TO BRANCH </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
 								</select>
 							</label>

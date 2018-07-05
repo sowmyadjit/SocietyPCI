@@ -549,6 +549,10 @@ use App\Http\Model\TransactionModel;
 										break;
 				case "BANK_WID"		:	$data = $this->TranModel->rv_print_bank_wid($in_data);
 										break;
+				case "B2B_CR"		:	$data = $this->TranModel->rv_print_b2b_cr($in_data);
+										break;
+				case "B2B_DB"		:	$data = $this->TranModel->rv_print_b2b_db($in_data);
+										break;
 			}
 			if(empty($in_data["tran_id"])) {
 				// return $data;

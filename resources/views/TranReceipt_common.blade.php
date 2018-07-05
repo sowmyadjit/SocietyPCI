@@ -102,7 +102,7 @@ table td {
 
 			</tr>
 			
-			@if(strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 )
+			@if(strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 || strcasecmp($data->tran_category, "B2B_CR") == 0 || strcasecmp($data->tran_category, "B2B_DB") == 0 )
 			<?php /* DONOT DISPLAY NAME FOR INCOME, EXPENSE, BANK_DEP, BANK_WID */ ?>
 			@else
 				<tr>
@@ -143,7 +143,7 @@ table td {
 				</tr>
 			@endif
 
-			@if($data->tran_category == "PG_PEND" || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 )
+			@if($data->tran_category == "PG_PEND" || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 || strcasecmp($data->tran_category, "B2B_CR") == 0 || strcasecmp($data->tran_category, "B2B_DB") == 0 )
 			@else
 				<tr>
 					<th>A/C No.:</th>
