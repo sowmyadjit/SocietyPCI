@@ -174,7 +174,8 @@ class DepositModel extends Model
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->join("pigmitype","pigmitype.PigmiTypeid","=","{$table}.PigmiTypeid");
+				->join("pigmitype","pigmitype.PigmiTypeid","=","{$table}.PigmiTypeid")
+				->where("{$table}.Status","AUTHORISED");
 				if($this->settings->get_value("allow_inter_branch") == 0) {
 					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
 				}
