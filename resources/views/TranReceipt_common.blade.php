@@ -102,19 +102,22 @@ table td {
 
 			</tr>
 			
+			@if(strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 )
+			<?php /* DONOT DISPLAY NAME FOR INCOME, EXPENSE, BANK_DEP, BANK_WID */ ?>
+			@else
+				<tr>
+					<th>Cus Name:</th>
+					<td>
+					Mr/Mrs. {{ $data->name }}({{$data->uid}})
+					</td>
+					<th>Cus Name:</th>
+					<td>
+					Mr/Mrs. {{ $data->name }}({{$data->uid}})
+					</td>
+				</tr>
+			@endif
 
-			<tr>
-				<th>Cus Name:</th>
-				<td>
-				Mr/Mrs. {{ $data->name }}({{$data->uid}})
-				</td>
-				<th>Cus Name:</th>
-				<td>
-				Mr/Mrs. {{ $data->name }}({{$data->uid}})
-				</td>
-			</tr>
-
-			@if(strcasecmp($data->transaction_type, "DEBIT") == 0)
+			@if(strcasecmp($data->transaction_type, "DEBIT") == 0 || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 )
 				<tr>
 					<th>Account Head:</th>
 					<td>
@@ -127,7 +130,7 @@ table td {
 				</tr>
 			@endif
 
-			@if($data->tran_category == "PG_PEND")
+			@if($data->tran_category == "PG_PEND" || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 )
 			@else
 				<tr>
 					<th>A/C No.:</th>
