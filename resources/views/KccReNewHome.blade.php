@@ -1,3 +1,11 @@
+<?php
+	
+	$maturity_amt = $fdrenew['data']->Fd_DepositAmt * 2;
+
+?>
+
+
+
 <script src="js/bootstrap-typeahead.js"></script>
 <link href="css/daterangepicker.css" rel='stylesheet'>
 
@@ -98,10 +106,10 @@
 								<div class="form-group">
 									<label class="control-label col-sm-4">Maturity Amount:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="mamtreadonly" name="mamtreadonly" disabled>
+										<input type="text" class="form-control" id="mamtreadonly" name="mamtreadonly" value="{{$maturity_amt}}" disabled>
 									</div>
 								</div>
-								<input type="text" class="form-control hidden" id="mamt" name="mamt" >
+								<input type="text" class="form-control hidden" id="mamt" name="mamt" value="{{$maturity_amt}}">
 								
 								
 								
@@ -137,35 +145,35 @@
 								<div class="form-group" >
 									<label class="control-label col-sm-4">First Name:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nfname" name="nfname" placeholder="FIRST NAME" required>
+										<input type="text" class="form-control" id="nfname" name="nfname" placeholder="FIRST NAME" value="<?php echo $fdrenew['data']->Nom_FirstName; ?>" required>
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Middle Name:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nmname" name="nmname" placeholder="MIDDLE NAME">
+										<input type="text" class="form-control" id="nmname" name="nmname" placeholder="MIDDLE NAME" value="<?php echo $fdrenew['data']->Nom_MiddleName; ?>">
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Last Name:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nlname" name="nlname" placeholder="LAST NAME">
+										<input type="text" class="form-control" id="nlname" name="nlname" placeholder="LAST NAME" value="<?php echo $fdrenew['data']->Nom_LastName; ?>">
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Relationship:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="reltn" name="reltn" placeholder="RELATIONSHIP" required>
+										<input type="text" class="form-control" id="reltn" name="reltn" placeholder="RELATIONSHIP" value="<?php echo $fdrenew['data']->Relationship; ?>" required>
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">EMail ID:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nemail" name="nemail" placeholder="EMAIL ID">
+										<input type="text" class="form-control" id="nemail" name="nemail" placeholder="EMAIL ID" value="<?php echo $fdrenew['data']->Nom_Email; ?>">
 									</div>
 								</div>
 								
@@ -194,70 +202,70 @@
 								<div class="form-group">
 									<label class="control-label col-sm-4">Age:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nage" name="nage" placeholder="AGE">
+										<input type="text" class="form-control" id="nage" name="nage" placeholder="AGE" value="<?php echo $fdrenew['data']->Nom_Age; ?>">
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Birth Date:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nbdate" name="nbdate" placeholder="BIRTH DATE">
+										<input type="text" class="form-control" id="nbdate" name="nbdate" placeholder="BIRTH DATE" value="<?php echo $fdrenew['data']->Nom_Birthdate; ?>">
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Occupation:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="noccup" name="noccup" placeholder="OCCUPATION">
+										<input type="text" class="form-control" id="noccup" name="noccup" placeholder="OCCUPATION" value="<?php echo $fdrenew['data']->Nom_Occupation; ?>">
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Mobile Number:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nmno" name="nmno" placeholder="MOBILE NUMBER" required>
+										<input type="text" class="form-control" id="nmno" name="nmno" placeholder="MOBILE NUMBER" value="<?php echo $fdrenew['data']->Nom_MobNo; ?>"  required>
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Phone Number:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="npno" name="npno" placeholder="PHONE NUMBER">
+										<input type="text" class="form-control" id="npno" name="npno" placeholder="PHONE NUMBER" value="<?php echo $fdrenew['data']->Nom_PhoneNo; ?>">
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Address:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nadd" name="nadd" placeholder="ADDRESS" required>
+										<input type="text" class="form-control" id="nadd" name="nadd" placeholder="ADDRESS" value="<?php echo $fdrenew['data']->Nom_Address; ?>" required>
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">City:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="ncity" name="ncity" placeholder="CITY" required>
+										<input type="text" class="form-control" id="ncity" name="ncity" placeholder="CITY" value="<?php echo $fdrenew['data']->Nom_City; ?>" required>
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">District:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="ndist" name="ndist" placeholder="DISTRICT" required>
+										<input type="text" class="form-control" id="ndist" name="ndist" placeholder="DISTRICT" value="<?php echo $fdrenew['data']->Nom_District; ?>" required>
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">State:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="nstate" name="nstate" placeholder="STATE" required>
+										<input type="text" class="form-control" id="nstate" name="nstate" placeholder="STATE" value="<?php echo $fdrenew['data']->Nom_state; ?>" required>
 									</div>
 								</div>
 								
 								<div class="form-group">
 									<label class="control-label col-sm-4">Pincode:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="npin" name="npin" placeholder="PINCODE" required>
+										<input type="text" class="form-control" id="npin" name="npin" placeholder="PINCODE" value="<?php echo $fdrenew['data']->Nom_Pincode; ?>" required>
 									</div>
 								</div>
 								
@@ -320,7 +328,8 @@ document.getElementById('fdedtereadonly').value = c_end_date;
 document.getElementById('fdedte').value = c_end_date;*/
 
 var year1=$('#NumberOfYears').val();
-		var dateObj = new Date();
+		var start_date = $("#fdallocreport").val();
+		var dateObj = new Date(start_date);
 		var month = dateObj.getUTCMonth() + 1; //months from 1-12
 		var day = dateObj.getUTCDate();
 		var year = dateObj.getUTCFullYear();
@@ -429,11 +438,13 @@ var year1=$('#NumberOfYears').val();
 			branch=$('#branchname').data('value');
 			//alert(branch);
 			e.preventDefault();
+
+			var old_kcc_id = {{$fdrenew['data']->old_kcc_id}};
 			$.ajax({
 				
-				url: 'crtkccalloc',
+				url: 'kccrenewdetails',
 				type: 'post',
-				data: $('#form_fdalloc').serialize() + '&accid=' + acc +'&fdtid='+fd+'&bid='+branch+'&userid='+user,//+'&accid='+acc1,
+				data: $('#form_fdalloc').serialize() + '&accid=' + acc +'&fdtid='+fd+'&bid='+branch+'&userid='+user+'&old_kcc_id='+old_kcc_id,//+'&accid='+acc1,
 				success: function(data) {
 					alert('success');
 					$('.kccallocclassid').click();

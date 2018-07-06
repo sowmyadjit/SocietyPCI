@@ -602,14 +602,32 @@
 			$uname= Auth::user();
 			$UID=$uname->Uid;
 			$BID=$uname->Bid;
-			$respit1=DB::table('branch')->select('Recp_No','BCode')->where('Bid',$BID)->first();
+			$respit1=DB::table('branch')->select('Recp_No')->where('Bid',$BID)->first();
 			$respit=$respit1->Recp_No;
-			$branchcd=$respit1->BCode;
 			$r=$respit+1;
 			DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r]);
+			$udetail= DB::table('user')->select('Uid','user.FirstName','user.MiddleName','user.LastName','BName','branch.Bid')
+			
+			->leftJoin('branch','branch.Bid','=','user.Bid')
+			->where('user.Uid','=',$UID)
+			->first();
+			
+			//$b=$udetail->BName;
+			$bid=$udetail->Bid;
+			
 			$RecYear=date('my');
 			$dte=date('Y-m-d');
-			$reportenddate=$id['fdedte'];
+			$respit1=DB::table('branch')->select('Recp_No','BCode')->where('Bid',$BID)->first();
+			$branchcd=$respit1->BCode;
+			// $branchcd=$id['branchcode'];
+			$countinc=1;
+			$pmode=$id['fdpaymode'];
+			//$edr=$id['fdedte'];
+			$fdamt=$id['fddep'];
+			$tempsDate = explode('/',$id['fdedte']);
+			$consDate = $tempsDate[2]."-".$tempsDate[1]."-".$tempsDate[0];
+			//$sdate=date('Y-m-d',strtotime($consDate));
+			$reportenddate=date('Y-m-d',strtotime($consDate));
 			
 
 			$maxid=DB::table('fdallocation')->where('Bid','=',$BID)->where('FDkcc','=',"KCC")->max('Fdid');
@@ -627,27 +645,32 @@
 				$paccno3=intval($paccno2)+1;
 			}
 			$fdcertnum="PCIS".$branchcd."KCC".$paccno3;
+
 			
-			$depamt=$id['depositamount'];
+			$depamt=$id['fddep'];
 			$amtpayable=$id['mamt'];
 			$intamt=$amtpayable-$depamt;
 			
-			$Nid=DB::table('nominee')->insertGetId(['Nom_Address'=>$id['nadd'],'Nom_Age'=>$id['nage'],'Nom_Birthdate'=>$id['nbdate'],'Nom_City'=>$id['ncity'],'Nom_District'=>$id['ndist'],'Nom_Email'=>$id['nemail'],'Nom_FirstName'=>$id['nfname'],'Nom_Gender'=>$id['ngender'],'Nom_LastName'=>$id['nlname'],'Nom_Marital_Status'=>$id['nmstate'],'Nom_MiddleName'=>$id['nmname'],'Nom_MobNo'=>$id['nmno'],'Nom_Occupation'=>$id['noccup'],'Nom_PhoneNo'=>$id['npno'],'Nom_Pincode'=>$id['npin'],'Nom_State'=>$id['nstate'],'Uid'=>$id['userid'],'Relationship'=>$id['reltn']]);
+			$Nid=DB::table('nominee')->insertGetId(['Nom_Address'=>$id['nadd'],'Nom_Age'=>$id['nage'],'Nom_Birthdate'=>$id['nbdate'],'Nom_City'=>$id['ncity'],'Nom_District'=>$id['ndist'],'Nom_Email'=>$id['nemail'],'Nom_FirstName'=>$id['nfname'],'Nom_Gender'=>$id['ngender'],'Nom_LastName'=>$id['nlname'],'Nom_Marital_Status'=>$id['nmstate'],'Nom_MiddleName'=>$id['nmname'],'Nom_MobNo'=>$id['nmno'],'Nom_Occupation'=>$id['noccup'],'Nom_PhoneNo'=>$id['npno'],'Nom_Pincode'=>$id['npin'],'Nom_State'=>$id['nstate'],'Uid'=>$id['uid'],'Relationship'=>$id['reltn']]);
 			
-			$fd= DB::table('fdallocation')->insertGetId(['FdTid'=> $id['interest'],'Fd_DepositAmt'=> $id['depositamount'],'Created_Date'=> $dte,'Fd_StartDate'=> $id['fdallocstaet'],'FdReport_StartDate'=>$id['fdallocstaet'],'Fd_CertificateNum'=> $fdcertnum,'Fd_MatureDate'=>  $id['fdedte'],'FdReport_MatureDate'=> $id['fdedte'],'Fd_TotalAmt'=>$id['mamt'],'Bid'=>$id['branchid'],'FDPayment_Mode'=>"RENEWAL",'Nid'=>$Nid,'Uid'=>$id['userid'],'interest_amount'=>$intamt,'FD_resp_No'=>$r,'intrest_needed'=>$id['intneeded'],'fdmonth'=>$id['month'],'interstmonth'=>$id['monthinterest'],'lastinterestpaid'=>$id['fdallocstaet'],'Accid'=>$id['accid'],'Days'=>$id['days']]);
-			$fdid=$id['fdallocid'];
-			 
-			$fd1=DB::table('fdallocation')->select('Fd_TotalAmt','Fd_CertificateNum')->where('Fdid','=',$fdid)->first();
+			$days = DB::table("fdtype")
+				->where("FdTid","=",$id['fdtid'])
+				->value("NumberOfDays");
+			
+			$fdid= DB::table('fdallocation')->insertGetId(['Accid'=> $id['accid'],'FdTid'=> $id['fdtid'],'Fd_DepositAmt'=> $id['fddep'],'Created_Date'=> $dte,'Fd_StartDate'=> $id['fdalloc'],'FdReport_StartDate'=> $id['fdallocreport'],'Fd_CertificateNum'=> $fdcertnum,'Fd_Remarks'=> $id['fdrem'],'Fd_MatureDate'=> $id['fdedte'],'FdReport_MatureDate'=> $reportenddate,'Fd_TotalAmt'=>$id['mamt'],'Bid'=>$BID,'FDPayment_Mode'=>$id['fdpaymode'],'FDChq_No'=>$id['fdchequeno'],'FDChq_Date'=>$id['fdchdate'],'FDBnk_Name'=>$id['FdBankName'],'FDIFSC_Code'=>$id['fdifsccode'],'FDSB_Amt'=>$id['fdsbamount'],'FDBnk_Branch'=>$id['fdbankbranch'],'FDUnclear_Bal'=>$id['fduncleared'],'FDCleared_State'=>$id['fdunclearedval'],'Nid'=>$Nid,'Uid'=>$id['userid'],'interest_amount'=>$intamt,'FD_resp_No'=>$r,'lastinterestpaid'=>$dte,'Accid'=>$id['accid'],'FDkcc'=>"KCC",'LedgerHeadId'=>"38",'SubLedgerId'=>"40","Days"=>$days]);
+			
+			$old_kcc_id = $id["old_kcc_id"];
+			$fd1=DB::table('fdallocation')->select('Fd_TotalAmt','Fd_CertificateNum')->where('Fdid','=',$old_kcc_id)->first();
 			$fd=$fd1->Fd_TotalAmt;
 			$fdacc=$fd1->Fd_CertificateNum;
-			$remainamt=$fd-$depamt;
+			$remainamt=$fd-$depamt;// var_dump($remainamt);
 			if($remainamt <= 0)
 			{
-				DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Paid_State'=>"PAID"]);
+				DB::table('fdallocation')->where('Fdid','=',$old_kcc_id)->update(['Paid_State'=>"PAID"]);
 			}
-			DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['depositamount'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
-			DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['mamt']]);
-			
+			DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['fddep'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
+			DB::table('fdallocation')->where('Fdid','=',$old_kcc_id)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['fddep']]);
+			// var_dump($id['fddep']);
 			return "done";
 		}
 
