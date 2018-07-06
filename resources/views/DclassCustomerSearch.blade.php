@@ -41,8 +41,11 @@
 								<td>{{ $customer->MobileNo }}</td>
 								<td>{{ $customer->PhoneNo }}</td>
 								<td>{{ $customer->custtyp }}</td>
-								<?php /* <td>{{ $customer->Customer_Fee }}</td> */?>
-								 <td class="td_cf" data="{{$customer->Custid}}">
+							<?php /* 
+								<td>{{ $customer->Customer_Fee }}</td>
+								<td>{{ $customer->Member_No }}</td>
+							 */?>
+								 <td class="td_cf" data="{{$customer->Custid}}" style="user-select:none">
 										<div class="show_cf" id="show_cf_{{$customer->Custid}}">
 											{{ $customer->Customer_Fee }}
 										</div>
@@ -51,7 +54,15 @@
 											<button class="save_cf btn-xs" data="{{$customer->Custid}}"><span class="glyphicon glyphicon-ok"></span></button>
 										</div>
 								</td>
-								<td>{{ $customer->Member_No }}</td>
+								<td class="td_mn" data="{{$customer->Uid}}"  style="user-select:none">
+									   <div class="show_mn" id="show_mn_{{$customer->Uid}}">
+										   {{ $customer->Member_No }}
+									   </div>
+									   <div class="edit_mn" id="edit_mn_{{$customer->Uid}}">
+										   <input id="ip_edit_mn_{{$customer->Uid}}" style="width:50px;" value="{{$customer->Member_No}}" />
+										   <button class="save_mn btn-xs" data="{{$customer->Uid}}"><span class="glyphicon glyphicon-ok"></span></button>
+									   </div>
+							   </td>
 								
 								<td>
 									<div class="form-group">
@@ -133,40 +144,74 @@
 </script>
 
 <script>
-	var flag = "show_cf";
+	var flag_cf = "show_cf";// cf - CUSTOMER FEE
 	$(".show_cf").show();
 	$(".edit_cf").hide();
 	$(".td_cf").dblclick(function() {
 		var cust_id = $(this).attr("data"); // console.log("td_cust_id: "+cust_id);
 		
-		tgle(cust_id);
+		tgle_cf(cust_id);
 	});
 
-	$(".save_cf").click(function() {
+	var flag_mn = "show_mn";// mn - MEMBER NO
+	$(".show_mn").show();
+	$(".edit_mn").hide();
+	$(".td_mn").dblclick(function() {
+		var user_id = $(this).attr("data"); // console.log("td_user_id: "+user_id);
+		
+		tgle_mn(user_id);
+	});
+
+	$(".save_cf").click(function() {// CUSTOMER FEE
 		//save value
 		var cust_id = $(this).attr("data");
 		var cf_val = $("#ip_edit_cf_"+cust_id).val();
 		$("#show_cf_"+cust_id).html(cf_val);
 		save_cf(cust_id,cf_val);
-		tgle(cust_id);
+		tgle_cf(cust_id);
+	});
+	$(".save_mn").click(function() {// MEMBER NO
+		//save value
+		var user_id = $(this).attr("data");
+		var mn_val = $("#ip_edit_mn_"+user_id).val();
+		$("#show_mn_"+user_id).html(mn_val);
+		save_mn(user_id,mn_val);
+		tgle_mn(user_id);
 	});
 
-	function tgle(cust_id) {
-		if(flag == "show_cf") {
-			flag = "edit_cf";
+	function tgle_cf(cust_id) {// CUSTOMER FEE
+		if(flag_cf == "show_cf") {
+			flag_cf = "edit_cf";
 			$("#show_cf_"+cust_id).hide();
 			$("#edit_cf_"+cust_id).show();
 		} else {
-			flag = "show_cf";
+			flag_cf = "show_cf";
 			$("#show_cf_"+cust_id).show();
 			$("#edit_cf_"+cust_id).hide();
 		}
 	}
+	function tgle_mn(user_id) {// MEMBER NO
+		if(flag_mn == "show_mn") {
+			flag_mn = "edit_mn";
+			$("#show_mn_"+user_id).hide();
+			$("#edit_mn_"+user_id).show();
+		} else {
+			flag_mn = "show_mn";
+			$("#show_mn_"+user_id).show();
+			$("#edit_mn_"+user_id).hide();
+		}
+	}
 
-	function save_cf(pk_value,field_value)  {
+	function save_cf(pk_value,field_value)  {// CUSTOMER FEE
 		var table = "customer";
 		var pk = "Custid";
 		var field_name = "Customer_Fee";
+		save(table,pk,pk_value,field_name,field_value)
+	}
+	function save_mn(pk_value,field_value)  {// MEMBER NO
+		var table = "user";
+		var pk = "Uid";
+		var field_name = "Member_No";
 		save(table,pk,pk_value,field_name,field_value)
 	}
 
