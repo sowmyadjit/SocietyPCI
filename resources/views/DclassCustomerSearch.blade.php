@@ -50,7 +50,7 @@
 											{{ $customer->Customer_Fee }}
 										</div>
 										<div class="edit_cf" id="edit_cf_{{$customer->Custid}}">
-											<input id="ip_edit_cf_{{$customer->Custid}}" style="width:50px;" value="{{$customer->Customer_Fee}}" />
+											<input class="ip_edit_cf" id="ip_edit_cf_{{$customer->Custid}}" style="width:50px;" value="{{$customer->Customer_Fee}}" />
 											<button class="save_cf btn-xs" data="{{$customer->Custid}}"><span class="glyphicon glyphicon-ok"></span></button>
 										</div>
 								</td>
@@ -93,9 +93,7 @@
 										<td></td>
 										<td></td>
 										<td></td>
-										<td></td>
-										<td></td>
-										<td><b>{{$total_cust_fee}}</b></td> <?php /**/ ?>
+										<td><b> <span id="total_cf">{{$total_cust_fee}}</span> </b></td> <?php /**/ ?>
 										<td></td>
 										<td></td>
 										<td></td>
@@ -150,7 +148,7 @@
 	$(".td_cf").dblclick(function() {
 		var cust_id = $(this).attr("data"); // console.log("td_cust_id: "+cust_id);
 		
-		tgle_cf(cust_id);
+		tgle_cf(cust_id,"on");
 	});
 
 	var flag_mn = "show_mn";// mn - MEMBER NO
@@ -159,7 +157,7 @@
 	$(".td_mn").dblclick(function() {
 		var user_id = $(this).attr("data"); // console.log("td_user_id: "+user_id);
 		
-		tgle_mn(user_id);
+		tgle_mn(user_id,"on");
 	});
 
 	$(".save_cf").click(function() {// CUSTOMER FEE
@@ -168,7 +166,7 @@
 		var cf_val = $("#ip_edit_cf_"+cust_id).val();
 		$("#show_cf_"+cust_id).html(cf_val);
 		save_cf(cust_id,cf_val);
-		tgle_cf(cust_id);
+		tgle_cf(cust_id,"off");
 	});
 	$(".save_mn").click(function() {// MEMBER NO
 		//save value
@@ -176,27 +174,23 @@
 		var mn_val = $("#ip_edit_mn_"+user_id).val();
 		$("#show_mn_"+user_id).html(mn_val);
 		save_mn(user_id,mn_val);
-		tgle_mn(user_id);
+		tgle_mn(user_id,"off");
 	});
 
-	function tgle_cf(cust_id) {// CUSTOMER FEE
-		if(flag_cf == "show_cf") {
-			flag_cf = "edit_cf";
+	function tgle_cf(cust_id,flag) {// CUSTOMER FEE
+		if(flag == "on") {
 			$("#show_cf_"+cust_id).hide();
 			$("#edit_cf_"+cust_id).show();
 		} else {
-			flag_cf = "show_cf";
 			$("#show_cf_"+cust_id).show();
 			$("#edit_cf_"+cust_id).hide();
 		}
 	}
-	function tgle_mn(user_id) {// MEMBER NO
-		if(flag_mn == "show_mn") {
-			flag_mn = "edit_mn";
+	function tgle_mn(user_id,flag) {// MEMBER NO
+		if(flag == "on") {
 			$("#show_mn_"+user_id).hide();
 			$("#edit_mn_"+user_id).show();
 		} else {
-			flag_mn = "show_mn";
 			$("#show_mn_"+user_id).show();
 			$("#edit_mn_"+user_id).hide();
 		}
@@ -206,13 +200,14 @@
 		var table = "customer";
 		var pk = "Custid";
 		var field_name = "Customer_Fee";
-		save(table,pk,pk_value,field_name,field_value)
+		save(table,pk,pk_value,field_name,field_value);
+		calc_total_cf();
 	}
 	function save_mn(pk_value,field_value)  {// MEMBER NO
 		var table = "user";
 		var pk = "Uid";
 		var field_name = "Member_No";
-		save(table,pk,pk_value,field_name,field_value)
+		save(table,pk,pk_value,field_name,field_value);
 	}
 
 	function save(table,pk,pk_value,field_name,field_value) {
@@ -224,5 +219,15 @@
 				console.log("save_to_db : done");
 			}
 		});
+	}
+</script>
+
+<script>
+	function calc_total_cf() {
+		var total_cf = 0;
+		$(".ip_edit_cf").each(function() {
+			total_cf += parseFloat($(this).val());
+		});
+		$("#total_cf").html(total_cf);
 	}
 </script>
