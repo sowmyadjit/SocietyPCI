@@ -626,19 +626,14 @@
 								return this;
 							};
 							
-							// var myDate = new Date();
-							// var result1 = myDate.addMonths(6);
-							
-							var result1 = new Date();
-							var numberOfDaysToAdd = 180;// FOR 6 MONTH CONSIDER 180 DAYS
-							result1.setDate(result1.getDate() + numberOfDaysToAdd -1); //-1 FOR INCLUDING START DATE
+							var myDate = new Date();
+							var result1 = myDate.addMonths(6);
 							
 							var dateObj1 = new Date(result1);
 							var month = dateObj1.getUTCMonth() + 1; //months from 1-12
 							var day = dateObj1.getUTCDate();
 							var year = dateObj1.getUTCFullYear();
 							var newdate5 = day + "/" + month + "/" + year;
-
 							
 							
 							
@@ -694,12 +689,8 @@
 								return this;
 							};
 							
-							// var myDate = new Date();
-							// var result1 = myDate.addMonths(12);
-							
-							var result1 = new Date();
-							var numberOfDaysToAdd = 365;// FOR 1 YEAR CONSIDER 365 DAYS
-							result1.setDate(result1.getDate() + numberOfDaysToAdd -1);  //-1 FOR INCLUDING START DATE
+							var myDate = new Date();
+							var result1 = myDate.addMonths(12);
 							
 							var dateObj1 = new Date(result1);
 							var month = dateObj1.getUTCMonth() + 1; //months from 1-12
