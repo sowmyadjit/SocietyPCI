@@ -477,6 +477,20 @@
 			}
 		}
 
+		public function save_to_db(Request $request)
+		{
+			$table = $request->input("table");
+			$pk = $request->input("pk");
+			$pk_value = $request->input("pk_value");
+			$field_name = $request->input("field_name");
+			$field_value = $request->input("field_value");
+
+			DB::table($table)
+				->where($pk,$pk_value)
+				->update([$field_name=>$field_value]);
+			return "done";
+		}
+
 
 		
 	}

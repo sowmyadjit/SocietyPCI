@@ -1033,7 +1033,7 @@
 					"{$table}.PayAmountReport_PayDate as date",
 					// "{$table}.PayAmount_PayableAmount as amount",
 					DB::raw(" pigmi_prewithdrawal.Deduct_Commission + pigmi_prewithdrawal.Deduct_Amount as amount "),
-					DB::raw(" 'Commission and other charges' as particulars"),
+					DB::raw(" 'Commission and other income' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",

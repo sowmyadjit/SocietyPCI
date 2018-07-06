@@ -14,9 +14,7 @@
 						
 						<thead>
 							<tr>
-								<th>FIRST NAME</th>
-								<th>MIDDLE NAME</th>
-								<th>LAST NAME</th>
+								<th>NAME</th>
 								<th>BRANCH NAME</th>
 								<th>MOBILE NUMBER</th>
 								<th>PHONE NUMBER</th>
@@ -36,16 +34,23 @@
 							<?php
 								$total_cust_fee += $customer->Customer_Fee;
 							?>
-							<tr>
+							<tr  id="td_{{$customer->Custid}}">
 								<td class="hidden">{{ $customer->Custid }}</td>
-								<td><a  href="customerdetails/{{ $customer->Custid }}" class="custdet<?php echo $c['module']->Mid; ?>">{{ $customer->FirstName }}</a></td>
-								<td>{{ $customer->MiddleName }}</td>
-								<td>{{ $customer->LastName }}</td>
+								<td><a  href="customerdetails/{{ $customer->Custid }}" class="custdet<?php echo $c['module']->Mid; ?>">{{ $customer->FirstName }} {{ $customer->MiddleName }} {{ $customer->LastName }}</a></td>
 								<td>{{ $customer->BName }}</td>
 								<td>{{ $customer->MobileNo }}</td>
 								<td>{{ $customer->PhoneNo }}</td>
 								<td>{{ $customer->custtyp }}</td>
-								<td>{{ $customer->Customer_Fee }}</td>
+								<?php /* <td>{{ $customer->Customer_Fee }}</td> */?>
+								 <td class="td_cf" data="{{$customer->Custid}}">
+										<div class="show_cf" id="show_cf_{{$customer->Custid}}">
+											{{ $customer->Customer_Fee }}
+										</div>
+										<div class="edit_cf" id="edit_cf_{{$customer->Custid}}">
+											<input id="ip_edit_cf_{{$customer->Custid}}" style="width:50px;" value="{{$customer->Customer_Fee}}" />
+											<button class="save_cf btn-xs" data="{{$customer->Custid}}"><span class="glyphicon glyphicon-ok"></span></button>
+										</div>
+								</td>
 								<td>{{ $customer->Member_No }}</td>
 								
 								<td>
@@ -125,4 +130,54 @@
 		//alert($(this).attr('href'));
 		$('.box-content').load($(this).attr('href'));
 	});
+</script>
+
+<script>
+	var flag = "show_cf";
+	$(".show_cf").show();
+	$(".edit_cf").hide();
+	$(".td_cf").dblclick(function() {
+		var cust_id = $(this).attr("data"); // console.log("td_cust_id: "+cust_id);
+		
+		tgle(cust_id);
+	});
+
+	$(".save_cf").click(function() {
+		//save value
+		var cust_id = $(this).attr("data");
+		var cf_val = $("#ip_edit_cf_"+cust_id).val();
+		$("#show_cf_"+cust_id).html(cf_val);
+		save_cf(cust_id,cf_val);
+		tgle(cust_id);
+	});
+
+	function tgle(cust_id) {
+		if(flag == "show_cf") {
+			flag = "edit_cf";
+			$("#show_cf_"+cust_id).hide();
+			$("#edit_cf_"+cust_id).show();
+		} else {
+			flag = "show_cf";
+			$("#show_cf_"+cust_id).show();
+			$("#edit_cf_"+cust_id).hide();
+		}
+	}
+
+	function save_cf(pk_value,field_value)  {
+		var table = "customer";
+		var pk = "Custid";
+		var field_name = "Customer_Fee";
+		save(table,pk,pk_value,field_name,field_value)
+	}
+
+	function save(table,pk,pk_value,field_name,field_value) {
+		$.ajax({
+			url: "save_to_db",
+			type: "post",
+			data: "table="+table+"&pk="+pk+"&pk_value="+pk_value+"&field_name="+field_name+"&field_value="+field_value,
+			success: function() {
+				console.log("save_to_db : done");
+			}
+		});
+	}
 </script>
