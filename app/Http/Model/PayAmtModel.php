@@ -557,6 +557,7 @@
 		{
 			return DB::table('fdallocation')
 			->select(DB::raw('Fdid as id, Fd_CertificateNum as name'))
+			->where('fdallocation.FdTid','!=',1)
 			->where('Paid_State','=',"UNPAID")
 			->where('Fd_Withdraw','=',"YES")
 			->get();

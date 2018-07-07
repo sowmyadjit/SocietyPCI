@@ -48,7 +48,7 @@
 							</div>
 						</div>	
 						
-						<div class="col-md-4 ">
+						<div class="col-md-4 hidden">
 							<input type="text" class="form-control" id="fdaccount" name="fdaccount">
 						</div>
 						
