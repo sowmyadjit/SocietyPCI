@@ -1,12 +1,32 @@
 <style>
 table th {
-    font-weight: normal !important;
-	padding: 5px !important;
+    /* font-weight: normal !important; */
+	padding: 2px !important;
 }
 table td {
-    font-weight: normal !important;
-	padding: 5px !important;
+    /* font-weight: normal !important; */
+	font-size: small;
+	padding: 2px !important;
 	/* max-width:300px !important; */
+}
+
+.last_row{
+	padding-top: 40px !important;
+}
+
+.col_1 {
+   min-width: 70px !important;
+   width: 70px; !important;
+   max-width: 70px !important;
+}
+.col_2 {
+	min-width: 310px !important;
+	width: 310px !important;
+	max-width: 310px !important;
+}
+
+.rec_title {
+	text-align: center !important;
 }
 
 .table {
@@ -23,6 +43,7 @@ table td {
 		<link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
 		<link href="css/bootstrap-cerulean.min.css" rel='stylesheet' type="text/css" media="all">
 		<!--this css should be inside the toprint div , for printing the table borders-->	
+<?php /*
 		&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp
 						Kumbarara Gudi Kaigarika Sahakara Sangha
 						&nbsp &nbsp &nbsp &nbsp &nbsp  
@@ -35,7 +56,7 @@ table td {
 						Niyamita, Chakrasowdha, Kulai</br>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  
-						<b> <?php /*{{$data->tran_category_name}} */?>
+						<b> <?php /*{{$data->tran_category_name}} * /?>
 						@if(strcasecmp($data->transaction_type,"CREDIT") == 0)
 							RECEIPT
 						@elseif(strcasecmp($data->transaction_type,"DEBIT") == 0)
@@ -44,13 +65,14 @@ table td {
 						 - (office copy)<b>
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
 						&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp  &nbsp &nbsp &nbsp 
-			      		<b> <?php /*{{$data->tran_category_name}} */?>
+			      		<b> <?php /*{{$data->tran_category_name}} * /?>
 						@if(strcasecmp($data->transaction_type,"CREDIT") == 0)
 							RECEIPT
 						@elseif(strcasecmp($data->transaction_type,"DEBIT") == 0)
 							VOUCHER
 						@endif
 						 - (customer copy)<b>
+*/?>
 		
 		<div>
 		<span style="font-weight:bold;float:right;" class="receipt_date">
@@ -63,54 +85,78 @@ table td {
 		?></span>
 		<table class="table table-striped bootstrap-datatable datatable responsive"></div>
 			
-			
-			
-			
+			<tr>
+				<td colspan="2" class="rec_title">
+					
+					Kumbarara Gudi Kaigarika Sahakara Sangha</br>
+					Niyamita, Chakrasowdha, Kulai</br>
+					<b>
+						<?php /*{{$data->tran_category_name}} */?>
+						@if(strcasecmp($data->transaction_type,"CREDIT") == 0)
+							RECEIPT
+						@elseif(strcasecmp($data->transaction_type,"DEBIT") == 0)
+							VOUCHER
+						@endif
+							- (office copy)
+					<b>
+
+				</td>
+				<td colspan="2" class="rec_title">
+					Kumbarara Gudi Kaigarika Sahakara Sangha</br>
+					Niyamita, Chakrasowdha, Kulai</br>
+					<b> <?php /*{{$data->tran_category_name}} */?>
+					@if(strcasecmp($data->transaction_type,"CREDIT") == 0)
+						RECEIPT
+					@elseif(strcasecmp($data->transaction_type,"DEBIT") == 0)
+						VOUCHER
+					@endif
+					- (customer copy)<b>
+				</td>
+			</tr>
 			
 			<tr>
-				<th>Date:
-				{{$strdate}}
-				</th>
+				<td class="col_1">
+					@if($data->transaction_type=="CREDIT")
+						Receipt:
+					@elseif($data->transaction_type=="DEBIT")
+						Voucher:
+					@endif
+				</td>
+				<td class="col_2">
+					@if($data->transaction_type=="CREDIT")
+						{{$data->receipt_voucher_no}}
+					@elseif($data->transaction_type=="DEBIT")
+						{{$data->receipt_voucher_no}}
+					@endif
+					 / {{$strdate}}
+				</td>
 
-				<th>
-				@if($data->transaction_type=="CREDIT")
-					
-				Receipt No:	{{ $data->receipt_voucher_no}}
-					
-				@elseif($data->transaction_type=="DEBIT")
-					
-				Voucher No:	{{ $data->receipt_voucher_no}}
-					
-				@endif
-				</th>
-
-				<th>Date:
-				{{$strdate}}
-				</th>
-
-				<th>
-				@if($data->transaction_type=="CREDIT")
-					
-				Receipt No:	{{ $data->receipt_voucher_no}}
-					
-				@elseif($data->transaction_type=="DEBIT")
-					
-				Voucher No:	{{ $data->receipt_voucher_no}}
-					
-				@endif
-				</th>
-
+				<td class="col_1">
+					@if($data->transaction_type=="CREDIT")
+						Receipt:
+					@elseif($data->transaction_type=="DEBIT")
+						Voucher:
+					@endif
+				</td>
+				<td class="col_2">
+					@if($data->transaction_type=="CREDIT")
+						{{$data->receipt_voucher_no}}
+					@elseif($data->transaction_type=="DEBIT")
+						{{$data->receipt_voucher_no}}
+					@endif
+					 / {{$strdate}}
+				</td>
 			</tr>
 			
 			@if(strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 || strcasecmp($data->tran_category, "B2B_CR") == 0 || strcasecmp($data->tran_category, "B2B_DB") == 0 )
 			<?php /* DONOT DISPLAY NAME FOR INCOME, EXPENSE, BANK_DEP, BANK_WID */ ?>
 			@else
 				<tr>
-					<th>Cus Name:</th>
+					<td>Cus Name:</td>
 					<td>
 					Mr/Mrs. {{ $data->name }}({{$data->uid}})
 					</td>
-					<th>Cus Name:</th>
+					<td>Cus Name:</td>
 					<td>
 					Mr/Mrs. {{ $data->name }}({{$data->uid}})
 					</td>
@@ -119,11 +165,11 @@ table td {
 
 			@if(strcasecmp($data->transaction_type, "DEBIT") == 0 || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 )
 				<tr>
-					<th>Account Head:</th>
+					<td>Account Head:</td>
 					<td>
 						{{$data->account_head}}
 					</td>
-					<th>Account Head:</th>
+					<td>Account Head:</td>
 					<td>
 						{{$data->account_head}}
 					</td>
@@ -132,11 +178,11 @@ table td {
 
 			@if(strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0)
 				<tr>
-					<th>Account Subhead:</th>
+					<td>Account Subhead:</td>
 					<td>
 						{{$data->account_subhead}}
 					</td>
-					<th>Account Subhead:</th>
+					<td>Account Subhead:</td>
 					<td>
 						{{$data->account_subhead}}
 					</td>
@@ -146,11 +192,11 @@ table td {
 			@if($data->tran_category == "PG_PEND" || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 || strcasecmp($data->tran_category, "B2B_CR") == 0 || strcasecmp($data->tran_category, "B2B_DB") == 0 )
 			@else
 				<tr>
-					<th>A/C No.:</th>
+					<td>A/C No.:</td>
 					<td>
 						{{$data->acc_no}}  /  {{$data->old_acc_no}}
 					</td>
-					<th>A/C No.:</th>
+					<td>A/C No.:</td>
 					<td>
 						{{$data->acc_no}}  /  {{$data->old_acc_no}}
 					</td>
@@ -162,18 +208,18 @@ table td {
 			@if(strcasecmp($data->transaction_type, "CREDIT") == 0)
 				@if($data->tran_category_name != "RD")
 					<tr>
-						<th>Particulars:</th>
+						<td>Particulars:</td>
 						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
-						<th>Particulars:</th>
+						<td>Particulars:</td>
 						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
 					</tr>
 				@endif
 			@else
 				@if($data->tran_category_name != "RD" && $data->tran_category != "JL" && $data->tran_category != "SL" && $data->tran_category != "PL" && $data->tran_category != "RD_PAY_AMT" && $data->tran_category != "PG_PAY_AMT")
 					<tr>
-						<th>Remarks:</th>
+						<td>Remarks:</td>
 						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
-						<th>Remarks:</th>
+						<td>Remarks:</td>
 						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>
 					</tr>
 				@endif
@@ -184,9 +230,9 @@ table td {
 				foreach($data->sub_amt as $key=>$value) {
 		?>
 					<tr>
-						<th>{{$key}}:</th>
+						<td>{{$key}}:</td>
 						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{$value}}</span></td>
-						<th>{{$key}}:</th>
+						<td>{{$key}}:</td>
 						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{$value}}</span></td>
 					</tr>
 		<?php
@@ -196,35 +242,36 @@ table td {
 
 			
 			<tr>
-				<th>Total:</th>
+				<td>Total:</td>
 				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> >Rs. {{ $data->amount }}&nbsp/-</span></td>
-				<th>Total:</th>
+				<td>Total:</td>
 				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> >Rs. {{ $data->amount }}&nbsp/-</span></td>
 			</tr>
 			<tr>
-				<th>In words:</th>
+				<td>In words:</td>
 				<input type="hidden" name="rupees" value="{{$data->amount}}" id="rupees" />
 				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> > <span id="container"> </span></span></td>
-				<th>In words:</th>
+				<td>In words:</td>
 				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> > <span id="container2"> </span></span></td>
 			</tr>
+
 			<tr>
-			<th>
-			<br>
-			Customer
-			</th>
-			<th>
-			<br>
-			Clerk-Manager-Secretary
-			</th>
-			<th>
-			<br>
-			Customer
-			</th>
-			<th>
-			<br>
-			Clerk-Manager-Secretary
-			</th>
+				<td class="last_row">
+				<br>
+				Customer
+				</td>
+				<td class="last_row">
+				<br>
+				Clerk-Manager-Secretary
+				</td>
+				<td class="last_row">
+				<br>
+				Customer
+				</td>
+				<td class="last_row">
+				<br>
+				Clerk-Manager-Secretary
+				</td>
 			</tr>
 		</table>
 	</div>
