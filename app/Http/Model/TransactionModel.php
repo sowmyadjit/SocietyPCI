@@ -1034,6 +1034,8 @@
 					// "{$table}.PayAmount_PayableAmount as amount",
 					DB::raw(" pigmi_prewithdrawal.Deduct_Commission + pigmi_prewithdrawal.Deduct_Amount as amount "),
 					DB::raw(" 'Commission and other income' as particulars"),
+					"pigmi_prewithdrawal.Deduct_Commission as commission",
+					"pigmi_prewithdrawal.Deduct_Commission as other_income",
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
@@ -1056,6 +1058,8 @@
 					$ret_data->tran_category_name = "Commission and other charges";
 					$ret_data->account_head = "Pigmy";
 					$ret_data->tran_category = $data["tran_category"];
+					$ret_data->sub_amt["Commission"] = $ret_data->commission;
+					$ret_data->sub_amt["Other Income"] = $ret_data->other_income;
 				}
 				
 			return $ret_data;
