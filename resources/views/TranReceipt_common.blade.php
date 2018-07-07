@@ -20,9 +20,9 @@ table td {
    max-width: 70px !important;
 }
 .col_2 {
-	min-width: 310px !important;
-	width: 310px !important;
-	max-width: 310px !important;
+	min-width: 305px !important;
+	width: 305px !important;
+	max-width: 305px !important;
 }
 
 .rec_title {
