@@ -570,6 +570,21 @@
 				$paccno3=intval($paccno2)+1;
 				$fdcertnum="PCIS".$branchcd."FD".$paccno3;
 				//$FdReceipt=$branchcd.$RecYear."FDA".$paccno3;
+				
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
+				$got_unique = false;
+				while(!$got_unique) {
+					$existing_count = DB::table("fdallocation")
+						->where("Fd_CertificateNum",$fdcertnum)
+						->count();
+					if($existing_count > 0) {
+						$paccno3++;
+						$fdcertnum="PCIS".$branchcd."FD".$paccno3;//NEW FD CERTIFICATE NO
+					} else {
+						$got_unique = true;
+					}
+				}
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
 			
 			
 			$depamt=$id['depositamount'];
@@ -645,6 +660,21 @@
 				$paccno3=intval($paccno2)+1;
 			}
 			$fdcertnum="PCIS".$branchcd."KCC".$paccno3;
+			
+				/***** PREVENT CREATION KCC DUPLICATE FD CERTIFICATE NO. *****/
+				$got_unique = false;
+				while(!$got_unique) {
+					$existing_count = DB::table("fdallocation")
+						->where("Fd_CertificateNum",$fdcertnum)
+						->count();
+					if($existing_count > 0) {
+						$paccno3++;
+						$fdcertnum="PCIS".$branchcd."KCC".$paccno3;//NEW KCC CERTIFICATE NO
+					} else {
+						$got_unique = true;
+					}
+				}
+				/***** PREVENT CREATION OF DUPLICATE KCC CERTIFICATE NO. *****/
 
 			
 			$depamt=$id['fddep'];
