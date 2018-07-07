@@ -582,6 +582,7 @@
 				Route::get('/GetRDNum','SearchController@GetRDNumForLoanAlloc');//For Create Loan Allocation
 				Route::get('/GetFDNum','SearchController@GetFDNumForLoanAlloc');//For Fd Prewithdrawal
 				Route::get('/GetFDNumber','SearchController@GetFDNumberForLoanAlloc');//For Create Loan Allocation
+				Route::get('/GetKCCNumber','SearchController@GetKCCNumberForLoanAlloc');
 				Route::get('/Getrdprewithdrawaccnum','SearchController@getrdprewithdraw');//For Create Loan Allocation
 				Route::get('/GetSalary','SearchController@GetSalary');
 				Route::get('/pigmydlacc','SearchController@pigmydlacc'); 

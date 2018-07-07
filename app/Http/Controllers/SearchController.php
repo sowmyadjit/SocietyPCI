@@ -321,7 +321,11 @@
 			return ($this->GetFdAllocation->GetFDNumberForLoanAlloc($request->search));
 		}
 		
-		
+		public function GetKCCNumberForLoanAlloc(Request $request)//for DL allocation
+		{
+			
+			return ($this->GetFdAllocation->GetKCCNumberForLoanAlloc($request->search));
+		}
 		
 		public function getrdprewithdraw(Request $request)
 		{
