@@ -1053,7 +1053,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','receipt_voucher_no as FD_PayAmount_pamentvoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','receipt_voucher_no as FD_PayAmount_pamentvoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'fdallocation.FdTid')
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
 			->join("user","user.Uid","=","fdallocation.Uid")
@@ -1087,7 +1087,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','FD_PayAmount_pamentvoucher',"user.Uid",DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','FD_PayAmount_pamentvoucher',"user.Uid",DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no','fdallocation.FdTid')
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->join("user","user.Uid","=","fdallocation.Uid")
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")

@@ -724,40 +724,44 @@
 						$fd_adj_db_total = 0;
 					?>
 					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
-						<?php
-							$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
-							$fd_cash_db_total += $fd_cash_db;
-						?>
-						<tr>
-							<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
-							<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-							<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
-							<td>-</td>
-							<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
-							<td>-</td>
-						</tr>
+						@if($fdpayamt->FdTid != 1)
+							<?php
+								$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_cash_db_total += $fd_cash_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+							</tr>
+						@endif
 					@endforeach
 					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
-						<?php
-							$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
-							$fd_adj_db_total += $fd_adj_db;
-						?>
-						<tr>
-							<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
-							<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-							<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td><td>{{ $fdpayamt->adj_no }}</td>
-						</tr>
+						@if($fdpayamt->FdTid != 1)
+							<?php
+								$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_adj_db_total += $fd_adj_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td><td>{{ $fdpayamt->adj_no }}</td>
+							</tr>
+						@endif
 					@endforeach
 					
 					
@@ -808,7 +812,9 @@
 						<td>-</td>
 				<?php /*		<td><?php echo $fd_adj_db_total; ?></td> */?>
 						<td><?php echo $fd_tot; ?></td>
-						<td>-</td><td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $fd_cash_db_total;
@@ -818,6 +824,72 @@
 					
 					
 					
+					
+				<!------------------ KCC PAID AMOUNT  -------------------->
+					<tr><td colspan="10"><h5><b><center>KCC PAID AMOUNT<center></b></h5></td></tr>
+					<?php
+						$fd_cash_db = 0;
+						$fd_adj_db = 0;
+						
+						$fd_cash_db_total = 0;
+						$fd_adj_db_total = 0;
+					?>
+					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
+						@if($fdpayamt->FdTid == 1)
+							<?php
+								$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_cash_db_total += $fd_cash_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+							</tr>
+						@endif
+					@endforeach
+					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
+						@if($fdpayamt->FdTid == 1)
+							<?php
+								$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_adj_db_total += $fd_adj_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->adj_no }}</td>
+							</tr>
+						@endif
+					@endforeach
+
+					<tr>
+						<th colspan =3>FD Amount Paid</th>
+						<td>-</td>
+						<td><?php echo $fd_cash_db_total; ?></td>
+						<td>-</td>
+						<td><?php echo $fd_adj_db_total; ?></td> 
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_db += $fd_cash_db_total;
+						$gt_adj_db += $fd_adj_db_total;
+					?>
+				<!------------------ KCC PAID AMOUNT  -------------------->
 					
 					
 		
@@ -2879,6 +2951,7 @@
 						<td><b><?php echo $gt_cash_db;?></td>
 						<td><b><?php echo $gt_adj_cr;?></td>
 						<td><b><?php echo $gt_adj_db;?></td>
+						<td></td>
 						<td></td>
 						<td></td>
 					</tr>
