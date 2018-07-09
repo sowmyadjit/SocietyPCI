@@ -130,9 +130,20 @@
 				$sbrem=$id['sbavailable'];
 				$aciddd=$id['accid'];
 				
-				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $BID,'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for FD Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$dte,'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				$sb_transaction_id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $BID,'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for FD Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$dte,'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
 				DB::table('createaccount')->where('Accid',$aciddd)
 				->update(['Total_Amount'=>$sbrem]);
+
+				/***********/
+				$fn_data["rv_payment_mode"] = $id['fdpaymode'];
+				$fn_data["rv_transaction_id"] = $sb_transaction_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant FD_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			}
 			if($pmode=="CASH")
 			{
@@ -449,6 +460,17 @@
 			
 			$fd= DB::table('fdallocation')->insertGetId(['Accid'=> $id['accid'],'FdTid'=> $id['fdtid'],'Fd_DepositAmt'=> $id['fddep'],'Created_Date'=> $dte,'Fd_StartDate'=> $id['fdalloc'],'FdReport_StartDate'=> $id['fdallocreport'],'Fd_CertificateNum'=> $fdcertnum,'Fd_Remarks'=> $id['fdrem'],'Fd_MatureDate'=> $id['fdedte'],'FdReport_MatureDate'=> $reportenddate,'Fd_TotalAmt'=>$id['mamt'],'Bid'=>$id['bid'],'FDPayment_Mode'=>$id['fdpaymode'],'FDChq_No'=>$id['fdchequeno'],'FDChq_Date'=>$id['fdchdate'],'FDBnk_Name'=>$id['FdBankName'],'FDIFSC_Code'=>$id['fdifsccode'],'FDSB_Amt'=>$id['fdsbamount'],'FDBnk_Branch'=>$id['fdbankbranch'],'FDUnclear_Bal'=>$id['fduncleared'],'FDCleared_State'=>$id['fdunclearedval'],'Nid'=>$Nid,'Uid'=>$id['userid'],'interest_amount'=>$intamt,'FD_resp_No'=>$r,'lastinterestpaid'=>$dte,'Accid'=>$id['accid'],'FDkcc'=>"KCC",'LedgerHeadId'=>"38",'SubLedgerId'=>"40","Days"=>$days]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $pmode;
+				$fn_data["rv_transaction_id"] = $fd;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_ALLOCATION;//constant FD_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($pmode=="SB ACCOUNT")
 			{
 				$actid=DB::table('accounttype')
@@ -460,7 +482,19 @@
 				$sbamt=$id['fdsbamount'];
 				$sbrem=$id['sbavailable'];
 				
-				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $id['bid'],'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for KCC Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$id['fdallocreport'],'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				$sb_transaction_id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $id['bid'],'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for KCC Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$id['fdallocreport'],'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				// ADJ NO FOR SB DEBIT
+				/***********/
+				$fn_data["rv_payment_mode"] = $pmode;
+				$fn_data["rv_transaction_id"] = $sb_transaction_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['fdallocreport'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			}
 			if($pmode=="CASH")
 			{
@@ -475,6 +509,7 @@
 				->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Credited to FD Account",'InhandTrans_Cash'=>$fdamt,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Credit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$totcash]);
 			}
 		}
+
 		public function kccallocation()
 		{
 			$uname='';
