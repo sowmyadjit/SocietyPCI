@@ -386,6 +386,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_per'] as $pigmyamt)
@@ -403,6 +404,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_adjust'] as $pigmyamt)
@@ -450,13 +452,13 @@
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
 							<td>Pigmy Pay Deduct Commission - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
-							
 							<td>{{ $pigmyamt->Deduct_Commission }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt)
@@ -468,7 +470,6 @@
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
 							<td>Pigmy Pay Deduct Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
-							
 							<td>{{ $pigmyamt->Deduct_Amount }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -490,7 +491,6 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->Deduct_Commission }}</td>
-							
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -507,7 +507,6 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->Deduct_Amount }}</td>
-							
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
