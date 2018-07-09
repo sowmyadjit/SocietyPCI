@@ -193,14 +193,20 @@
 					<th style="width: 150px;">
 						Interest Paid Till
 					</th>
-					<th style="width: 150px;">
+					<th style="width: 100px;">
 						Interest
 					</th>
-					<th style="width: 150px;">
+					<th style="width: 100px;">
 						Charges
+					</th>
+					<th style="width: 100px;">
+						PG Comm.
 					</th>
 					<th style="width: 150px;">
 						Principle Balance
+					</th>
+					<th style="width: 150px;">
+						Action
 					</th>
 				</tr>
 			</thead>
@@ -220,13 +226,16 @@
 						<td style="width: 150px;">
 							<span id="interest_paid_till_{{$row_repay["repayment_id"]}}">{{$row_repay["interest_paid_upto"]}}</span>
 						</td>
-						<td style="width: 150px;">
+						<td style="width: 100px;">
 							<span id="interest_amount_{{$row_repay["repayment_id"]}}">{{$row_repay["repayment_paid_interest_amount"]}}</span>
 						</td>
-						<td style="width: 150px;">
+						<td style="width: 100px;">
 							<span id="charges_sum_{{$row_repay["repayment_id"]}}" data-toggle="modal" data-target="#modal_charges_transaction">
 								{{$row_repay["charges_sum"]}}
 							</span>
+						</td>
+						<td style="width: 100px;">
+							<span id="pigmy_commission_{{$row_repay["repayment_id"]}}">{{$row_repay["pigmy_commission"]}}</span>
 						</td>
 						<?php 
 							$principle_balance_amount -= $row_repay["repayment_paid_principle_amount"];
@@ -356,6 +365,12 @@
 				<input type="text" class="form-control" id="modal_interest_amount" name="modal_interest_amount" >
 			</div>
 		</div>
+		<div class="form-group ">
+			<label class="control-label col-sm-4" for="modal_pigmy_commission">Pigmy Commission:</label>
+			<div class="col-md-4">
+				<input type="text" class="form-control" id="modal_pigmy_commission" name="modal_pigmy_commission" >
+			</div>
+		</div>
 	  
       </div>
       <div class="modal-footer">
@@ -396,6 +411,7 @@
 		var int_date = $("#interest_paid_till_"+repay_id).html();
 		var principle_amount = $("#principle_amount_"+repay_id).html();
 		var interest_amount = $("#interest_amount_"+repay_id).html();
+		var pigmy_commission = $("#pigmy_commission_"+repay_id).html();
 		console.log(int_date);
 		if(int_date != "0000-00-00") {
 			$("#modal_interest_paid_till").val(int_date);
@@ -404,26 +420,28 @@
 		}
 		$("#modal_principle_amount").val(principle_amount);
 		$("#modal_interest_amount").val(interest_amount);
+		$("#modal_pigmy_commission").val(pigmy_commission);
 		
 		$("#store_repay_id").val(repay_id);
 	});
 </script>
 <script>
 	$("#button_save").click(function() {
-		console.log("save");
+		// console.log("save");
 		
 		var loan_type = "PL";
 		var repay_id = $("#store_repay_id").val();
 		var int_date = $("#modal_interest_paid_till").val();
 		var principle_amount = $("#modal_principle_amount").val();
 		var interest_amount = $("#modal_interest_amount").val();
+		var pigmy_commission = $("#modal_pigmy_commission").val();
 		
 		$.ajax({
 			url:"save_repay_data",
 			type:"post",
-			data:"&loan_type="+loan_type+"&repay_id="+repay_id+"&int_date="+int_date+"&principle_amount="+principle_amount+"&interest_amount="+interest_amount,
+			data:"&loan_type="+loan_type+"&repay_id="+repay_id+"&int_date="+int_date+"&principle_amount="+principle_amount+"&interest_amount="+interest_amount+"&pigmy_commission="+pigmy_commission,
 			success: function() {
-				console.log("save_repay_data: done");
+				// console.log("save_repay_data: done");
 				$("#interest_paid_till_"+repay_id).html(int_date);
 				$("#principle_amount_"+repay_id).html(principle_amount);
 				$("#interest_amount_"+repay_id).html(interest_amount);

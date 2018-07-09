@@ -2528,7 +2528,8 @@
 							"{$table}.PLRepay_PaidAmt",
 							"{$table}.PLRepay_Amtpaidtoprincpalamt",
 							"{$table}.PLRepay_PaidInterest",
-							"{$table}.interest_paid_upto"
+							"{$table}.interest_paid_upto",
+							"{$table}.pigmy_commission"
 						)
 				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_PLAllocID")
 				->where("personalloan_allocation.PersLoanAllocID","=",$allocation->PersLoanAllocID)
@@ -2548,6 +2549,7 @@
 				$ret_data["repayments"][$i]["repayment_paid_principle_amount"] = $row_repay->PLRepay_Amtpaidtoprincpalamt;
 				$ret_data["repayments"][$i]["repayment_paid_interest_amount"] = $row_repay->PLRepay_PaidInterest;
 				$ret_data["repayments"][$i]["interest_paid_upto"] = $row_repay->interest_paid_upto;
+				$ret_data["repayments"][$i]["pigmy_commission"] = $row_repay->pigmy_commission;
 				
 				$table = "charges_tran";
 				$charges = array();
@@ -2616,7 +2618,7 @@
 			$p_key = "PLRepay_Id";
 			DB::table($table)
 				->where($p_key,"=",$data["repay_id"])
-				->update(["PLRepay_Amtpaidtoprincpalamt"=>$data["principle_amount"],"PLRepay_PaidInterest"=>$data["interest_amount"],"interest_paid_upto"=>$data["int_date"]]);
+				->update(["PLRepay_Amtpaidtoprincpalamt"=>$data["principle_amount"],"PLRepay_PaidInterest"=>$data["interest_amount"],"interest_paid_upto"=>$data["int_date"], "pigmy_commission"=>$data["pigmy_commission"]]);
 		}
 		
 		public function calculate_jewel_interest($data)
