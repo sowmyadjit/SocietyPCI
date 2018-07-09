@@ -179,6 +179,8 @@
 				$insert_data["Income_Head_lid"] = 88;
 				$insert_data["Income_SubHead_lid"] = 85;	//	BANK CHARGES SUBHEAD UNDER OTHER INCOME HEAD IS NOT PRESENT. SO OHTER INCOME SUBHEAD UNDER OTHER INCOME HEAD(85)
 				$insert_data["Income_date"] = $dte;
+				$insert_data["Income_cheque_no"] = $Cheque_Number;
+				$insert_data["Income_cheque_date"] = $Cheque_Date;
 				$insert_data["Bid"] = $Bid;
 				$insert_data["Income_pay_mode"] = "ADJUSTMENT";
 				$insert_data["Income_amount"] = $val;

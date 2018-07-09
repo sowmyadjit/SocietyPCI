@@ -491,6 +491,70 @@
 			return "done";
 		}
 
+		public function chq_charge()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			$start_date = date("Y-m-d",strtotime("2018-04-01"));
+
+			$sb_cheques = DB::table("sb_transaction")
+				->select(
+					"Tranid",
+					"SBReport_TranDate",
+					"Cheque_Number",
+					"Cheque_Date",
+					"Bid",
+					"Amount",
+					"CreatedBy"
+				)
+				->where("sb_transaction.Bid", $BID)
+				->where("sb_transaction.particulars", "CHEQUE CHAREGE")
+				->where("sb_transaction.tran_reversed", "no")
+				->where("sb_transaction.SBReport_TranDate",">=",$start_date)
+				->get();
+
+			foreach($sb_cheques as $row_chq) {
+				//ECHO ID
+				echo "<br />\nSB TRAN ID: {$row_chq->Tranid} - ";
+
+				if(empty($row_chq->Cheque_Number)) {
+					echo " (cheque no is empty. can't check for existing entries.)";
+					continue;
+				}
+
+				//CHECK FOR EXISTING ENTRY
+				$existing_entries = DB::table("income")
+					->where("income.Bid", $row_chq->Bid)
+					->where("income.Income_date", $row_chq->SBReport_TranDate)
+					->where("income.Income_amount", $row_chq->Amount)
+					->where("income.Income_cheque_no", $row_chq->Cheque_Number)
+					->count();
+				
+				if($existing_entries > 0) {
+					echo "EXISTS({$existing_entries})";
+					continue;
+				}
+
+				$insert_data["Income_Head_lid"] = 88;
+				$insert_data["Income_SubHead_lid"] = 85;	//	BANK CHARGES SUBHEAD UNDER OTHER INCOME HEAD IS NOT PRESENT. SO OHTER INCOME SUBHEAD UNDER OTHER INCOME HEAD(85)
+				$insert_data["Income_date"] = $row_chq->SBReport_TranDate;
+				$insert_data["Income_cheque_no"] = $row_chq->Cheque_Number;
+				$insert_data["Income_cheque_date"] = $row_chq->Cheque_Date;
+				$insert_data["Bid"] = $row_chq->Bid;
+				$insert_data["Income_pay_mode"] = "ADJUSTMENT";
+				$insert_data["Income_amount"] = $row_chq->Amount;
+				$insert_data["Income_Particulars"] = "CHEQUE CHARGE";
+				$insert_data["Income_ExpenseBy"] = $row_chq->CreatedBy;
+				$income_id = DB::table("income")
+					->insertGetId($insert_data);
+				echo " rows INSERTED({$income_id})";
+
+				// NO ADJ NO FOR ADJ CREDIT
+			}
+				
+
+			
+		}
+
 
 		
 	}
