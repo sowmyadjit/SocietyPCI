@@ -175,6 +175,19 @@
 			DB::table('addbank')->where('Bankid',$CreditBankId)->update(['TotalAmt'=>$bankupdateamt]);
 			DB::table('deposit')->insert(['Bid'=>$Bid,'d_date'=>$dte,'date'=>$dte,'depo_bank_id'=>$CreditBankId,'pay_mode'=>"CHEQUE",'cheque_no'=>$Cheque_Number,'cheque_date'=>$Cheque_Date,'bank_name'=>$Bank_Name,'amount'=>$amt,'reason'=>$particulars,'cd'=>$dte,'Deposit_type'=>"Deposit"]);
 			
+			//INCOME ENTRY FOR CHEQUE CHARGE
+				$insert_data["Income_Head_lid"] = 88;
+				$insert_data["Income_SubHead_lid"] = 85;	//	BANK CHARGES SUBHEAD UNDER OTHER INCOME HEAD IS NOT PRESENT. SO OHTER INCOME SUBHEAD UNDER OTHER INCOME HEAD(85)
+				$insert_data["Income_date"] = $dte;
+				$insert_data["Bid"] = $Bid;
+				$insert_data["Income_pay_mode"] = "ADJUSTMENT";
+				$insert_data["Income_amount"] = $val;
+				$insert_data["Income_Particulars"] = "CHEQUE CHARGE";
+				$insert_data["Income_ExpenseBy"] = $UID;
+				$income_id = DB::table("income")
+					->insertGetId($insert_data);
+				
+				// NO ADJ NO FOR ADJ CREDIT
 			
 			return $id;							   
 		}
