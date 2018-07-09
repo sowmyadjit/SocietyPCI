@@ -287,6 +287,7 @@
 							<td>-</td>
 							<td>{{ $pigmy->	Pigmy_resp_No}}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					
@@ -315,6 +316,7 @@
 							@endif
 							<td>{{ $pigmy->	Pigmy_resp_No}}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					
@@ -335,15 +337,17 @@
 								
 							<td>{{ $pigmy->	Pigmy_resp_No}}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					
 					<tr>
-						<th colspan =3>SB Total</th>
+						<th colspan =3>Pigmy Total</th>
 						<td class="text-right"><?php echo $pigmy_cash_cr_total ?></td>
 						<td class="text-right"><?php echo $pigmy_cash_db_total ?></td>
 						<td class="text-right"><?php echo $pigmy_adj_cr_total ?></td>
 						<td class="text-right"><?php echo $pigmy_adj_db_total ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -518,6 +522,7 @@
 						<td><?php echo $pigmypay_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $pigmypay_cash_cr_total;
@@ -581,6 +586,7 @@
 						<td><?php echo $rd_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $rd_cash_db_total;
@@ -639,6 +645,7 @@
 						<td><?php echo $fd_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $fd_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -704,6 +711,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $fd_cash_cr_total;
@@ -759,7 +767,7 @@
 								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
 								<td>-</td>
 								<td>-</td>
-								<td>-</td><td>{{ $fdpayamt->adj_no }}</td>
+								<td>{{ $fdpayamt->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -876,7 +884,7 @@
 					@endforeach
 
 					<tr>
-						<th colspan =3>FD Amount Paid</th>
+						<th colspan =3>KCC Amount Paid</th>
 						<td>-</td>
 						<td><?php echo $fd_cash_db_total; ?></td>
 						<td>-</td>
@@ -941,11 +949,12 @@
 						@endif
 					@endforeach
 					<tr>
-						<th colspan=3>FD Amount Paid</th>
+						<th colspan=3>MD Amount Paid</th>
 						<td>-</td>
 						<td><?php echo $cash_db_total; ?></td>
 						<td>-</td>
 						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -986,6 +995,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $share_cash_cr_total;
@@ -1020,6 +1030,7 @@
 					<tr>
 						<th colspan =3>Total Member Fee </th>
 						<td><?php echo $member_cash_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1127,6 +1138,7 @@
 						<td><?php echo $exp_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $exp_cash_db_total;
@@ -1187,6 +1199,7 @@
 						<td><?php echo $inc_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $inc_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1291,6 +1304,7 @@
 						<td><?php echo $dl_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $dl_cash_cr_total;
@@ -1354,6 +1368,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $dlrepay_cash_cr_total;
@@ -1410,6 +1425,7 @@
 						<td><?php echo $dlrepay_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $dlrepay_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1657,6 +1673,7 @@
 						<td><?php echo $pl_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $pl_cash_cr_total;
@@ -1842,6 +1859,7 @@
 						<td><?php echo $jl_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $jl_cash_db_total;
@@ -1901,6 +1919,7 @@
 						<td><?php echo $jl_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $jl_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1967,6 +1986,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $jlrepay_cash_cr_total;
@@ -2023,6 +2043,7 @@
 						<td><?php echo $jlrepay_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $jlrepay_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -2083,6 +2104,7 @@
 						<td><?php echo $cash_db_total; ?></td>
 						<td>-</td>
 						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -2148,6 +2170,7 @@
 						<td><?php echo $sl_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $sl_cash_db_total;
@@ -2207,6 +2230,7 @@
 						<td><?php echo $slrepay_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $slrepay_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -2271,6 +2295,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $cash_cr_total;
@@ -2332,6 +2357,7 @@
 						<td><?php echo $cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -2496,6 +2522,7 @@
 						<td><?php echo $b2b_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $b2b_cash_cr_total;
@@ -2644,11 +2671,13 @@
 							<td>{{$agentcoll_tran->receipt_no}}</td>
 							<td>-</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					<tr>
 						<th colspan =3>Agent collection </th>
 						<td><?php echo $agent_cash_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -2694,6 +2723,7 @@
 					<td><?php echo $adj_db_total; ?></td>
 					<td>-</td>
 					<td>-</td>
+					<td>-</td>
 				</tr>
 				<?php
 					$gt_adj_db += $adj_db_total;
@@ -2729,6 +2759,7 @@
 					<td>-</td>
 					<td>-</td>
 					<td><?php echo $adj_db_total; ?></td>
+					<td>-</td>
 					<td>-</td>
 					<td>-</td>
 				</tr>
@@ -2778,6 +2809,7 @@
 							<td>{{$row->salpay_extra_amt}}</td>
 							<td>-</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endif
 				@endforeach
@@ -2788,6 +2820,7 @@
 					<td>-</td>
 					<td>-</td>
 					<td><?php echo $adj_db_total_1; ?></td>
+					<td>-</td>
 					<td>-</td>
 					<td>-</td>
 				</tr>
@@ -2814,6 +2847,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endif
 				@endforeach
@@ -2823,6 +2857,7 @@
 					<td>-</td>
 					<td>-</td>
 					<td><?php echo $adj_cr_total_2; ?></td>
+					<td>-</td>
 					<td>-</td>
 					<td>-</td>
 					<td>-</td>
@@ -2850,6 +2885,7 @@
 							<td>{{$row->salpay_extra_amt}}</td>
 							<td>-</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endif
 				@endforeach
@@ -2860,6 +2896,7 @@
 					<td>-</td>
 					<td>-</td>
 					<td><?php echo $adj_db_total_3; ?></td>
+					<td>-</td>
 					<td>-</td>
 					<td>-</td>
 				</tr>
@@ -2890,6 +2927,7 @@
 								<td>-</td>
 								<td>{{$row->receipt_no}}</td>
 								<td>-</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -2916,6 +2954,7 @@
 					<td><?php echo $cash_cr_total_4; ?></td>
 					<td>-</td>
 					<td><?php echo $adj_cr_total_4; ?></td>
+					<td>-</td>
 					<td>-</td>
 					<td>-</td>
 					<td>-</td>
