@@ -35,14 +35,14 @@
 						</div>
 						
 						<div class="form-group preacc">
-							<label class="control-label col-sm-4" for="comment">FD Account Number:</label>
+							<label class="control-label col-sm-4" for="comment">KCC Account Number:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control FDAccNumTypeAhead" id="FDAccnum" name="FDAccnum" placeholder="SELECT FD ACCOUNT "/>
 							</div>
 						</div>
 						
 						<div class="form-group intacc">
-							<label class="control-label col-sm-4" for="comment">FD Account Number:</label>
+							<label class="control-label col-sm-4" for="comment">KCC Account Number:</label>
 							<div class="col-md-4">
 								<input type="text" class="form-control FDMatuAccNumTypeAhead" id="FDMatuAccnum" name="FDMatuAccnum" placeholder="SELECT FD INTEREST ACCOUNT "/>
 							</div>

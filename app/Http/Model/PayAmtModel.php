@@ -565,8 +565,11 @@
 		
 		public function GetKCCMatuAccForPayAmt() //For AmtPay
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
 			return DB::table('fdallocation')
 				->select(DB::raw('Fdid as id, Fd_CertificateNum as name'))
+				->where('fdallocation.Bid','=',$BID)
 				->where('Paid_State','=',"UNPAID")
 				->where('Fd_Withdraw','=',"YES")
 				->where('fdallocation.FdTid','=',1)
