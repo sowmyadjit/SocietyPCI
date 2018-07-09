@@ -621,10 +621,19 @@
 			{
 				DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Paid_State'=>"PAID"]);
 			}
-			DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['depositamount'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
+			$fd_payamount_id = DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['depositamount'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
 			DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['mamt']]);
 			
-			
+				/***********/
+				$fn_data["rv_payment_mode"] = "RENEWAL";
+				$fn_data["rv_transaction_id"] = $fd_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_PAYAMOUNT;//constant FD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 		}
 		
 		public function kccrenewdetails($id)
@@ -715,9 +724,21 @@
 			{
 				DB::table('fdallocation')->where('Fdid','=',$old_kcc_id)->update(['Paid_State'=>"PAID"]);
 			}
-			DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['fddep'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
+			$fd_payamount_id = DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['fddep'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
 			DB::table('fdallocation')->where('Fdid','=',$old_kcc_id)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['fddep']]);
 			// var_dump($id['fddep']);
+
+				/***********/
+				$fn_data["rv_payment_mode"] = "RENEWAL";
+				$fn_data["rv_transaction_id"] = $fd_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_PAYAMOUNT;//constant FD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			return "done";
 		}
 
