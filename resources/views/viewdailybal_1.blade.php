@@ -2732,7 +2732,13 @@
 					
 				<tr><td colspan="10"><h5><b><center>Commission<center></b></h5></td></tr>
 				<?php
+					$cash_cr = 0;
+					$cash_db = 0;
+					$adj_cr = 0;
 					$adj_db = 0;
+					$cash_cr_total = 0;
+					$cash_db_total = 0;
+					$adj_cr_total = 0;
 					$adj_db_total = 0;
 				?>
 				@foreach ($trandaily['agent_sal'] as $row)
@@ -2753,17 +2759,60 @@
 					</tr>
 				@endforeach
 				
+				<?php /* COMMISSION CUT DURING PL REPAY */ ?>
+					<?php /* CASH */ ?>
+					@foreach ($trandaily['plrepay'] as $plrepay)
+						<?php
+							$cash_cr = $plrepay->pigmy_commission;
+							$cash_cr_total += $cash_cr;
+						?>
+						<tr>
+							<td>{{ $plrepay->PLRepay_Date }}</td>
+							<td>{{ $plrepay->PersLoan_Number }}</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
+							<td>{{ $plrepay->pigmy_commission }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $plrepay->PL_ReceiptNum }}</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endforeach
+					
+					<?php /* ADJ */ ?>
+					@foreach ($trandaily['plrepay_adjust'] as $plrepay)
+						<?php
+							$adj_cr = $plrepay->pigmy_commission;
+							$adj_cr_total += $adj_cr;
+						?>
+						<tr>
+							<td>{{ $plrepay->PLRepay_Date }}</td>
+							<td>{{ $plrepay->PersLoan_Number }}</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $plrepay->pigmy_commission }}</td>
+							<td>-</td>
+							<td>{{ $plrepay->PL_ReceiptNum }}</td>	
+							<td>-</td>				
+							<td>-</td>				
+						</tr>
+					@endforeach
+				
 				<tr>
 					<th colspan =3>Agent Salary </th>
+					<td><?php echo $cash_cr_total; ?></td>
 					<td>-</td>
-					<td>-</td>
-					<td>-</td>
+					<td><?php echo $adj_cr_total; ?></td>
 					<td><?php echo $adj_db_total; ?></td>
 					<td>-</td>
 					<td>-</td>
 					<td>-</td>
 				</tr>
 				<?php
+					$gt_cash_cr += $cash_cr_total;
+					$gt_adj_cr += $adj_cr_total;
 					$gt_adj_db += $adj_db_total;
 				?>
 	
