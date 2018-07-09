@@ -226,7 +226,12 @@
 		
 		public function GetSeachedpigmyAcc($q)
 		{
-			return DB::select("SELECT `PigmiAllocID` as id, CONCAT(`PigmiAllocID`,'-',`PigmiAcc_No`) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%".$q."%' ");
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+
+			return DB::select("SELECT `PigmiAllocID` as id, CONCAT(`PigmiAllocID`,'-',`PigmiAcc_No`) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%".$q."%' AND `pigmiallocation`.`Bid`={$BID}");
 			
 			
 		/*	$uname='';
