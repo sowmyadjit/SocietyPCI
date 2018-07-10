@@ -283,7 +283,7 @@
 
 				$temp_particulars = "Credited from RD Account ({$RDAccNum})";
 
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['RDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u]);
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['RDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u, 'Bid'=>$BID, 'Payment_Mode'=>'ADJUSTMENT' ]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
