@@ -890,6 +890,8 @@
 		
 		function FDwithdraw($id)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
 			$dte=date('Y-m-d');
 			$accno=DB::table('fdallocation')->select('Fd_CertificateNum')
 			//->where('FdReport_MatureDate','<=',$dte)
@@ -901,7 +903,90 @@
 			DB::table('fdallocation')->where('Fd_CertificateNum',$fdaccnnum)
 			->update(['Fd_Withdraw'=>"YES",'Closed'=>"YES"]);
 			//	}
+
+			/************** fd remaining interest ***************/
+			$fdallocation_row = DB::table('fdallocation')
+				->select(
+					'intrest_needed',
+					'Fd_TotalAmt',
+					'Fd_CertificateNum',
+					'FdReport_StartDate',
+					'interstmonth',
+					'Accid',
+					'Fd_DepositAmt',
+					'FdTid'
+					)
+				->where('Fdid','=',$id["fdalocid"])
+				->first();
+			
+			echo "-0-";
+			if(strcasecmp($fdallocation_row->intrest_needed, "YES") == 0) {echo "-1-";
+				//calc int // $fd_rem_interest
+
+						$fddetails = $fdallocation_row;
+						$accno1 = $fdallocation_row->Fd_CertificateNum;
+						/***************************/
+							$fdcou=DB::table('fd_monthly_interest')->where('fdnum',$accno1)->where('id','=',"1")->count('FD_ID');
+							if($fdcou==0) {echo "-2-";
+										/*******************/
+										$temp = DB::table("fd_monthly_interest")
+										->select("FD_Date")
+										->where("deleted",0)
+										->where("fdnum",$fddetails->Fd_CertificateNum)
+										->orderBy("FD_Date","desc")
+										->first();//print_r($temp);exit();
+										
+										if(!empty($temp) && $temp->FD_Date != "0000-00-00") {echo "-3-";
+											$last_interest_paid_date = $temp->FD_Date;
+											$first_interest = false;
+										} else {echo "-4-";
+											$last_interest_paid_date = $fddetails->FdReport_StartDate;
+											$first_interest = true;
+										}
+										/*******************/
+								$lastpaiddate=$last_interest_paid_date; //$fddetails->lastinterestpaid;
+								$intertsamt=$fddetails->interstmonth;
+								$accid=$fddetails->Accid;
+								$fddeposit=$fddetails->Fd_DepositAmt;
+								$FdTid=$fddetails->FdTid;
+								
+								$fdtype1=DB::table('fdtype')->select('FdInterest')->where('FdTid',$FdTid)->first();
+								$FdInterest=$fdtype1->FdInterest;
+								$amt1=$fddeposit*$FdInterest;
+								//$amt1=$this->roundamt->Roundall($amt1);
+								$at=$FdInterest+1200;
+								$amt2=$amt1/$at;
+								//$amt2=$this->roundamt->Roundall($amt2);
+								//$amt3=$amt2/30;
+								$amt3=$amt2*12;
+								$amt4=$amt3/365;
+								
+								//$amt4=$this->roundamt->Roundall($amt4);
+								$date1=date_create($dte);
+								$date2=date_create($lastpaiddate);
+								$difdate=date_diff($date1,$date2);
+								$difdays=$difdate->format('%a');
+								if($first_interest) {echo "-5-";
+									$difdays++;
+								}
+								$totamt=$difdays*$amt4;
+								$totamt=$this->roundamt->Roundall($totamt);
+								DB::table('fd_monthly_interest')->insert(['Accid'=>$accid,'amount'=>$totamt,'fdnum'=>$accno1,'id'=>"1",'Bid'=>$BID,'FD_Date'=>$dte,'days'=>$difdays]);
+								echo "-6-";
+							}
+						/***************************/
+						// $fd_rem_interest = $totamt;
+
+
+
+				// $fd_total_amt = $fdallocation_row->Fd_TotalAmt + $fd_rem_interest;
+				// DB::table("fdallocation")
+				// 	->where('Fdid','=',$id["fdalocid"])
+				// 	->update(['Fd_TotalAmt'=>$fd_total_amt, 'interest_amount'=>$fd_rem_interest]);
+			}
+			/************** fd remaining interest ***************/
 		}
+
 		public function editpigmiInterestCalc($id)
 		{
 			$pigmiid=$id['acc11'];
