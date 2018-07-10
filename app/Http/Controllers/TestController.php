@@ -542,7 +542,7 @@
 				$insert_data["Bid"] = $row_chq->Bid;
 				$insert_data["Income_pay_mode"] = "ADJUSTMENT";
 				$insert_data["Income_amount"] = $row_chq->Amount;
-				$insert_data["Income_Particulars"] = "CHEQUE CHARGE";
+				$insert_data["Income_Particulars"] = "CHEQUE CHARGE - {$row_chq->Cheque_Number}";
 				$insert_data["Income_ExpenseBy"] = $row_chq->CreatedBy;
 				$income_id = DB::table("income")
 					->insertGetId($insert_data);

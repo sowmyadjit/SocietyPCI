@@ -184,7 +184,7 @@
 				$insert_data["Bid"] = $Bid;
 				$insert_data["Income_pay_mode"] = "ADJUSTMENT";
 				$insert_data["Income_amount"] = $val;
-				$insert_data["Income_Particulars"] = "CHEQUE CHARGE";
+				$insert_data["Income_Particulars"] = "CHEQUE CHARGE - {$Cheque_Number}";
 				$insert_data["Income_ExpenseBy"] = $UID;
 				$income_id = DB::table("income")
 					->insertGetId($insert_data);
