@@ -1493,7 +1493,7 @@
 
 			/******* ADJUSTMENT CREDIT *****/
 			$id2 = DB::table('branch_to_branch')
-				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'adj_no' "))
+				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' "))
 				->join('branch','branch.Bid','=','Branch_Branch1_Id')
 				->where('Branch_Tran_Date',$dte)
 				->where('Branch_Branch2_Id',$BranchId)

@@ -2440,6 +2440,7 @@
 								<td>-</td>
 								<td>{{$branch_branch_tran->receipt_no}}</td>
 								<td>-</td>
+								<td>-</td>
 							</tr>
 						@else	<?php /*CREDIT ADJUSTMENT*/?>
 						<?php
