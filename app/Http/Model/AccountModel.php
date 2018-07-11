@@ -902,13 +902,23 @@
 		
 		public function get_running_rd_num($q)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%".$q."%' ");
-			return DB::table('createaccount')
-			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
-			->where('AccNum','like','%RD%')
-			->where('Status','=',"AUTHORISED")
-			->where('createaccount.Closed','=',"NO")
-			->get();
+			$ret_data =  DB::table('createaccount')
+				->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
+				->where('AccNum','like','%RD%')
+				->where('Status','=',"AUTHORISED")
+				->where('createaccount.Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("createaccount.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		
 		public function GetSeachedAcc($q)
