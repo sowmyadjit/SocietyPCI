@@ -6,6 +6,7 @@
 									<th>Customer ID</th>
 									<th>Name</th>
 									<th style="width:50px;">Loan Number</th>
+									<th>Dep. Type</th>
 									<th>Loan Amount</th>
 									<th>Start Date</th>
 									<th>End Date</th>
@@ -37,6 +38,7 @@
 											<td>{{ $row['user_id'] }}</td>
 											<td>{{ $row['name'] }}</td>	
 											<td style="width:50px;">{{ $row['loan_no'] }}/{{ $row['loan_old_no'] }}</td>
+											<td>{{ $row['dep_type']}}</td>
 											<td>{{ $row['loan_amount']}}</td>
 											<td>{{ $row['start_date']}}</td>
 											<td>{{ $row['end_date']}}</td>
