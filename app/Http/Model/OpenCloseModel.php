@@ -3103,6 +3103,17 @@
 		public function update_cash_details($data)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			$close_count = DB::table("dailyopenclose")
+				->where("Daily_Date",date("Y-m-d"))
+				->where("Daily_Bid",$BID)
+				// ->where("Daily_Bankid",0)
+				->where("Daily_Status","CLOSE")
+				->count();
+
+			if($close_count > 0) {//if day is closed
+				return;
+			}
 			
 			return DB::table("cash")
 				->where("BID","=",$BID)
