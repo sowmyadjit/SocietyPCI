@@ -2592,15 +2592,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
 		
 		public function repay_report_data_dl($data)//pending
 		{
@@ -2761,6 +2752,171 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+		
+		public function repay_report_data_sl($data)//pending
+		{
+			$uname='';
+			if(Auth::user())
+				$uname= Auth::user();
+			$BID=$uname->Bid;
+			$UID=$uname->Uid;
+			
+			$table = "";
+			$loan_category = $data["loan_category"];// echo $loan_category; exit();
+			
+			$loan_allocation_id = $data["loan_allocation_id"]; //echo $loan_allocation_id; exit();
+			
+			$ret_data = array();
+			$ret_data["repayments"] = array();
+
+			$ret_data["today_date_dmy"] = date("d-m-Y");
+			$ret_data["today_date_ymd"] = date("Y-m-d");
+
+
+//		ALLOCATION DETAILS
+			$table = "staffloan_allocation";
+			$allocation = DB::table($table)
+				->select(
+							"{$table}.StfLoanAllocID",
+							"{$table}.StartDate",
+							"{$table}.EndDate",
+							"{$table}.LoanAmt",
+							// "{$table}.caldate",
+							// "{$table}.EMI_Amount",
+//							"request_loan.Request_Date",
+							"{$table}.Uid",
+							"loan_type.LoanType_Interest",
+							"loan_type.loan_due_interest"
+						)
+//				->join("request_loan","","=","")
+				->join("user","user.Uid","=","{$table}.Uid")
+				->join("loan_type","loan_type.LoanType_ID","=","{$table}.Loan_Type")
+				->where("{$table}.StfLoanAllocID","=",$loan_allocation_id)
+				->first();
+				
+			//print_r($allocation);exit();
+			
+			$ret_data["allocation_details"]["loan_category"] = $loan_category;//-
+			$ret_data["allocation_details"]["loan_allocation_id"] = $allocation->StfLoanAllocID;//-
+			$ret_data["allocation_details"]["user_id"] = $allocation->Uid;//-
+//			$ret_data["allocation_details"]["request_date"] = $allocation->Request_Date;
+			$ret_data["allocation_details"]["start_date"] = $allocation->StartDate;
+			$ret_data["allocation_details"]["end_date"] = $allocation->EndDate	;
+			$ret_data["allocation_details"]["sanctioned_amount"] = $allocation->LoanAmt;
+			$ret_data["allocation_details"]["interest_rate"] = $allocation->LoanType_Interest . "%";
+			$ret_data["allocation_details"]["post_due_date_interest_rate"] = $allocation->loan_due_interest . "%";
+			$ret_data["allocation_details"]["emi"] = "";//$allocation->EMI_Amount;
+			//print_r($ret_data);exit();
+//		ALLOCATION DETAILS END
+
+
+//		CUSTOMER DETAILS
+			$table = "user";
+			$user = DB::table($table)
+				->select(
+							"{$table}.Uid",
+							"{$table}.FirstName",
+							"{$table}.MiddleName",
+							"{$table}.LastName",
+							"address.Address",
+							"address.MobileNo"
+						)
+				->join("address","address.Aid","=","user.Aid")
+				->where("user.Uid","=",$allocation->Uid)
+				->first();
+
+			$ret_data["customer_details"]["user_id"] = $user->Uid;
+			$ret_data["customer_details"]["name"] = "{$user->FirstName} {$user->MiddleName} {$user->LastName}";
+			$ret_data["customer_details"]["address"] = $user->Address;
+			$ret_data["customer_details"]["mobile"] = $user->MobileNo;
+			$ret_data["customer_details"]["guarantor"] = "N/A";//JL
+			$ret_data["customer_details"]["guarantor_mobile"] = "N/A";//JL
+			//query
+			//print_r($ret_data); exit();
+//		CUSTOMER DETAILS END
+
+
+
+
+//		REPAYMENT DETAILS///////////////////////////////
+			$table = "staffloan_repay";
+			$repayment = array();
+			$repayment = DB::table($table)
+				->select(
+							"{$table}.SLRepay_Id",
+							"{$table}.SLRepay_Date",
+							"{$table}.SLRepay_PaidAmt",
+							"{$table}.paid_principle",
+							"{$table}.paid_interest"
+							// "{$table}.interest_paid_upto"
+						)
+				->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","staffloan_repay.SLRepay_SLAllocID")
+				->where("staffloan_allocation.StfLoanAllocID","=",$allocation->StfLoanAllocID)
+				->orderBy("SLRepay_Id","asc")
+				->get();
+				
+			$i = -1;
+			
+			
+			$repay_principle_sum = 0;
+			$repay_interest_sum = 0;
+			foreach($repayment as $key => $row_repay) {
+				$ret_data["repayments"][++$i]["repayment_id"] = $row_repay->SLRepay_Id;//-
+				$ret_data["repayments"][$i]["repayment_date"] = $row_repay->SLRepay_Date;
+				$ret_data["repayments"][$i]["repayment_total_paid_amount"] = $row_repay->SLRepay_PaidAmt;
+				$ret_data["repayments"][$i]["repayment_paid_principle_amount"] = $row_repay->paid_principle;
+				$ret_data["repayments"][$i]["repayment_paid_interest_amount"] = $row_repay->paid_interest;
+				
+				$table = "charges_tran";
+				$charges = array();
+				$charges = DB::table($table)
+					->select(
+								"{$table}.charg_id",
+								"{$table}.amount",
+								"chareges.charges_name"
+							)
+					->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
+					->where("{$table}.loanid","=",$allocation->StfLoanAllocID)
+					->where("{$table}.loantype","=",$loan_category)
+					->where("{$table}.charg_tran_date","=",$row_repay->SLRepay_Date)
+					->get();
+				
+				$j = -1;
+				$charges_sum = 0;
+				foreach($charges as $key_charges => $row_charges) {
+					$ret_data["repayments"][$i]["charges"][++$j]["charge_id"] = $row_charges->charg_id;
+					$ret_data["repayments"][$i]["charges"][$j]["charge_amount"] = $row_charges->amount;
+					$ret_data["repayments"][$i]["charges"][$j]["charge_name"] = $row_charges->charges_name;
+					$charges_sum += $row_charges->amount;
+				}
+				$ret_data["repayments"][$i]["charges_sum"] = $charges_sum;
+				$ret_data["repayments"][$i]["paid_up_to"] = $row_repay->SLRepay_Date;//$row_repay->interest_paid_upto;//"-";//$paid_up_to();
+				$fn_data = array();
+				$fn_data["repay_principle_sum"] = $repay_principle_sum;
+				$fn_data["repay_interest_sum"] = $repay_interest_sum;
+//				$this->get_paid_upto($fn_data);
+				
+				$repay_principle_sum += $row_repay->paid_principle;
+				$repay_interest_sum += $row_repay->paid_interest;
+			}
+//		REPAYMENT DETAILS END
+			$ret_data["allocation_details"]["balance"] = $allocation->LoanAmt - $repay_principle_sum;
+
+			// print_r($ret_data);exit;
+			return $ret_data;
+			
+		}
 
 
 

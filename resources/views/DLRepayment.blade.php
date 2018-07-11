@@ -2889,14 +2889,17 @@ console.log("amt="+bal);
 						
 					}
 				});
+				
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=SL',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+slaccid+'&loan_category=SL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		

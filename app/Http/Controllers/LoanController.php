@@ -1278,6 +1278,13 @@
 							return view("jewel_loan_repay_report_data",compact("data"));
 							// return view("repay_report_data_dl",compact("data"));
 							break;
+				case "SL":	
+							$data = $this->loan->repay_report_data_dl($in_data);
+							$data["loan_category"] = $in_data["loan_category"];
+							// print_r($data);exit();
+							return view("jewel_loan_repay_report_data",compact("data"));
+							// return view("repay_report_data_dl",compact("data"));
+							break;
 			}
 		}
 		
