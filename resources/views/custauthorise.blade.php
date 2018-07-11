@@ -19,6 +19,7 @@
 					<th>BRANCH NAME</th>
 					<th>MOBILE NUMBER</th>
 					<th>PHONE NUMBER</th>
+					<th>MEMEBR NUMBER</th>
 					<th colspan=3><center>ACTION</center></th>
 					
 				</tr>
@@ -34,6 +35,7 @@
 					<td>{{ $customer->BName }}</td>
 					<td>{{ $customer->MobileNo }}</td>
 					<td>{{ $customer->PhoneNo }}</td>
+					<td>{{ $customer->Member_No }}</td>
 					
 					<td>
 						<div class="form-group">
