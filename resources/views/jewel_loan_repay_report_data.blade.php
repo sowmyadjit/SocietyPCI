@@ -122,6 +122,7 @@
   <?php /*              <th>
                     Paid Upto
                 </th>*/?>
+                <th></th>
             </tr>
 			<?php $i = 0; ?>
 			@foreach($data["repayments"] as $key_repay => $row_repay)
@@ -144,12 +145,15 @@
 						{{$row_repay["charges_sum"]}}
 					</td>
 					<td>
-						<button type="button" class="btn btn-primary btn-sm btn_edit" data-toggle="modal" data-target="#modal_repay_edit" data="{{$row_repay["repayment_id"]}}">
-						  <span class="glyphicon glyphicon-pencil" ></span>
-						</button>
-						<button type="button" class="btn btn-primary btn-sm btn_edit ReceiptPrint" href="Receipt">
-						  Print
-						</button>
+                        @if($data["loan_category"] == "JL")
+                            <button type="button" class="btn btn-primary btn-sm btn_edit" data-toggle="modal" data-target="#modal_repay_edit" data="{{$row_repay["repayment_id"]}}">
+                            <span class="glyphicon glyphicon-pencil" ></span>
+                            </button>
+
+                            <button type="button" class="btn btn-primary btn-sm btn_edit ReceiptPrint" href="Receipt">
+                            Print
+                            </button>
+                        @endif
 					</td>
 <?php /*					<td>
 						{{$row_repay["paid_up_to"]}}

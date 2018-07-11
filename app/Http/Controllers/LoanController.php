@@ -1252,6 +1252,7 @@
 			$in_data["loan_allocation_id"] = $request->input("loan_allocation_id");//7007;//
 			$data = array();
 			$data = $this->loan->jewel_loan_repay_report_data($in_data);
+			$data["loan_category"] = "JL";
 			
 //			print_r($data);exit;
 			return view("jewel_loan_repay_report_data",compact("data"));
@@ -1269,6 +1270,13 @@
 							$data = $this->loan->repay_report_data_pl($in_data);
 							//print_r($data);exit();
 							return view("repay_report_data_pl",compact("data"));
+							break;
+				case "DL":	
+							$data = $this->loan->repay_report_data_dl($in_data);
+							$data["loan_category"] = $in_data["loan_category"];
+							// print_r($data);exit();
+							return view("jewel_loan_repay_report_data",compact("data"));
+							// return view("repay_report_data_dl",compact("data"));
 							break;
 			}
 		}

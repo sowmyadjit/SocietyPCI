@@ -2269,14 +2269,16 @@
 				});
 
 				
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=PG',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		
@@ -2356,14 +2358,16 @@
 					}
 				});
 
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=RD',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 				
 				
 			}
@@ -2450,14 +2454,16 @@ console.log("amt="+bal);
 					}
 				});
 
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=FD',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		
