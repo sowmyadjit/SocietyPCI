@@ -12,6 +12,9 @@
 									<th>Customer ID</th>
 									<th>Name</th>
 									<th>Account Type</th>
+									@if($ret_data["account_type"] == 2)
+										<th>Agent</th>
+									@endif
 									<th>Account Number</th>
 									<th>Start Date</th>
 									@if($ret_data["account_type"] == "RD")
@@ -42,6 +45,9 @@
 											<td>{{ $row['user_id'] }}</td>
 											<td>{{$row['name']}}</td>
 											<td>{{$row['account_type']}}</td>
+											@if($ret_data["account_type"] == 2)
+												<td>{{ $row['agent_name']}}</td>
+											@endif
 											<td>
 												<a  href="accountdetails/{{$row['account_id']}}" class="viwbtn">
 													{{$row['account_no']}}/{{$row['old_account_no']}}

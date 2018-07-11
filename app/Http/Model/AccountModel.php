@@ -1413,6 +1413,7 @@
 									"{$table}.JointUid as joint_user_ids",
 									"{$table}.Closed as closed",
 									"{$table}.Total_Amount as balance",
+									"{$table}.Agent_ID as agent_id",
 									"user.Uid as user_id",
 									"user.FirstName as first_name",
 									"user.MiddleName as middle_name",
@@ -1474,6 +1475,23 @@
 					$ret_data["account_list"][$i]["balance"] = $row_acc_list->balance;
 				}
 				$ret_data["account_list"][$i]["closed"] = $row_acc_list->closed;
+
+				//RD AGENT NAME
+				if($row_acc_list->agent_id != 0) {
+					$agent = DB::table("user")
+						->select(
+							DB::raw(" concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'agent_name' ")
+						)
+						->where("user.Uid",$row_acc_list->agent_id)
+						->first();
+					$temp_agent_id = "({$row_acc_list->agent_id})";
+					$temp_agent_name = $agent->agent_name;
+				} else {
+					$temp_agent_id = "";
+					$temp_agent_name = "";
+				}
+				// $ret_data["account_list"][$i]["agent_id"] = $temp_agent_id;
+				$ret_data["account_list"][$i]["agent_name"] = $temp_agent_name . $temp_agent_id;
 			}
 			
 			//print_r($ret_data);exit();
