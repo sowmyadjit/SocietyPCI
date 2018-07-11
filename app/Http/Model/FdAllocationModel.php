@@ -272,13 +272,23 @@
 		
 		public function GetFDNumForLoanAlloc($q)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
 			//return DB::select("SELECT `Fdid` as id, CONCAT(`Fdid`,'-',`Fd_CertificateNum`) as name FROM `fdallocation` where `Fd_CertificateNum` LIKE '%".$q."%' ");
 			
-			return DB::table('fdallocation')
+			$ret_data = DB::table('fdallocation')
 			->select(DB::raw('Fdid as id, CONCAT(`Fdid`,"-",`Fd_CertificateNum`) as name'))
-			->where('Closed','=',"NO")
-			->get();
-			
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		
 		public function GetFDNumberForLoanAlloc($q) //for DL allocation typeahead

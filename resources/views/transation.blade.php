@@ -2158,19 +2158,19 @@
 	
 	//Typeahead for SB Branch Name (Newly Added)
 	$('input.typeahead3').typeahead({
-		//ajax:'/Getbranchname'
-		source:Getbranchname
+		ajax:'/Getbranchname'
+		// source:Getbranchname
 	});
 	
 	//Typeahead for RD Branch Name (Newly Added)
 	$('input.typeahead4').typeahead({
-		//ajax:'/Getrdbranchname'
-		source:Getrdbranchname
+		ajax:'/Getrdbranchname'
+		// source:Getrdbranchname
 	});
 	//Typeahead for Pigmi Branch Name (Newly Added)
 	$('input.typeahead5').typeahead({
-		//ajax:'/Getpgmbranchname'
-		source:Getpgmbranchname
+		ajax:'/Getpgmbranchname'
+		// source:Getpgmbranchname
 	});
 	
 	//Typeahead for Loan Branch Name (Newly Added)

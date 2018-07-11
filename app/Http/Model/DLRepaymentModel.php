@@ -590,12 +590,20 @@
 		}
 		public function SBdlacc()
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
 			
-			return DB::table('createaccount')
-			
-			->select(DB::raw('Accid as id, AccNum as name'))
-			->where('AccNum','like','%SB%')
-			->get();		
+			$ret_data = DB::table('createaccount')
+				->select(DB::raw('Accid as id, AccNum as name'))
+				->where('AccNum','like','%SB%');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("createaccount.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();		
+			return $ret_data;
 		}
 		public function getplacc()
 		{
@@ -622,15 +630,25 @@
 				$bids = array($BID);
 			}
 			
-			$ret_data = DB::table('jewelloan_allocation')
+			$ret_data1 = DB::table('jewelloan_allocation')
 				->select(DB::raw('JewelLoanId as id, JewelLoan_LoanNumber as name'))
 				->where('JewelLoan_Closed','!=','YES');
 			if($this->settings->get_value("allow_inter_branch") == 0) {
-				$ret_data = $ret_data->whereIn('JewelLoan_Bid',$bids);
+				$ret_data1 = $ret_data1->whereIn('JewelLoan_Bid',$bids);
 			}
-			$ret_data = $ret_data->orWhere("auction_status","=","1")
-				->orWhere("auction_status","=","2")
-				->get();
+			$ret_data1 = $ret_data1->get();
+
+			$ret_data2 = DB::table('jewelloan_allocation')
+				->select(DB::raw('JewelLoanId as id, JewelLoan_LoanNumber as name'))
+				->where("auction_status","=","1")
+				->where("auction_status","=","2");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$ret_data2 = $ret_data2->whereIn('JewelLoan_Bid',$bids);
+				}
+			$ret_data2 = $ret_data2->get();
+
+			$ret_data = array_merge($ret_data1,$ret_data2);
+
 			return $ret_data;
 		}
 		public function getplacc_partpayment()
@@ -742,9 +760,9 @@
 			
 			$ret_data = DB::table('staffloan_allocation')
 			->select(DB::raw('StfLoanAllocID as id,StfLoan_Number as name'));
-			/* if($this->settings->get_value("allow_inter_branch") == 0) {
+			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("staffloan_allocation.Bid",$BID);
-			} */
+			}
 			$ret_data = $ret_data->get();// print_r($ret_data);exit();
 			return $ret_data;
 		}

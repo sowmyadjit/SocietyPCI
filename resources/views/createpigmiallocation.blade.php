@@ -290,8 +290,8 @@ p=0;
 	});
 	
 	$('input.typeahead3').typeahead({
-		//ajax:'/GetBranches'
-		source:GetBranches
+		ajax:'/GetBranches'
+		// source:GetBranches
 	});
 	/*$('.chk').click(function(e)
 		{

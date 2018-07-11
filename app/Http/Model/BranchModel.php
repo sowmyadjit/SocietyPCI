@@ -4,12 +4,18 @@
 namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Auth;
 use DB;
+use App\Http\Model\SettingsModel;
 
 class BranchModel extends Model
 {
-   	protected $table = 'branch';
+	protected $table = 'branch';
+	
+	public function __construct()
+	{
+		$this->settings = new SettingsModel;
+	}
 	
 	public function insert($id)
     {
@@ -28,7 +34,19 @@ class BranchModel extends Model
 	
 	public function GetBranch($q)
     {
-		return DB::select("SELECT `Bid` as id, CONCAT(`BCode`,'-',`BName`) as name FROM `branch` where `BName` LIKE '%".$q."%' ");
+		$uname='';
+		if(Auth::user())
+		$uname= Auth::user();
+		$UID=$uname->Uid;
+		$BID=$uname->Bid;
+
+		$branch_where = "";
+		
+		if($this->settings->get_value("allow_inter_branch") == 0) {
+			$branch_where = " AND `branch`.`Bid` = {$BID} ";
+		}
+
+		return DB::select("SELECT `Bid` as id, CONCAT(`BCode`,'-',`BName`) as name FROM `branch` where `BName` LIKE '%".$q."%' {$branch_where} ");
 		
 	
 	}
@@ -59,7 +77,18 @@ class BranchModel extends Model
 	
 	public function GetBranchForFD($q)
     {
-		return DB::select("SELECT `Bid` as id,`BName` as name FROM `branch` where `BName` LIKE '%".$q."%' ");
+		$uname='';
+		if(Auth::user())
+		$uname= Auth::user();
+		$UID=$uname->Uid;
+		$BID=$uname->Bid;
+
+		$branch_where = "";
+		
+		if($this->settings->get_value("allow_inter_branch") == 0) {
+			$branch_where = " AND `branch`.`Bid` = {$BID} ";
+		}
+		return DB::select("SELECT `Bid` as id,`BName` as name FROM `branch` where `BName` LIKE '%".$q."%' {$branch_where} ");
 		
 	
 	}

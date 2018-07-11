@@ -207,20 +207,20 @@
 	});
 	
 	$('input.typeahead1').typeahead({
-		//ajax: '/Getacctyp'
-		source:Getacctyp
+		ajax: '/Getacctyp'
+		// source:Getacctyp
 	});
     $('input.typeahead2').typeahead({
-		//ajax: '/Getpigmyacct'
-		source:Getpigmyacct
+		ajax: '/Getpigmyacct'
+		// source:Getpigmyacct
 	});
 	$('input.typeahead3').typeahead({
-		//ajax: '/Getrdprewithdrawaccnum'
-		source:Getrdprewithdrawaccnum
+		ajax: '/Getrdprewithdrawaccnum'
+		// source:Getrdprewithdrawaccnum
 	});
 	$('input.typeahead4').typeahead({
-		//ajax: '/GetFDNum'
-		source:GetFDNum
+		ajax: '/GetFDNum'
+		// source:GetFDNum
 	});
 	
 	//Pigmi Interest Calculation
