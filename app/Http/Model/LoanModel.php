@@ -2795,17 +2795,17 @@
 							// "{$table}.caldate",
 							// "{$table}.EMI_Amount",
 //							"request_loan.Request_Date",
-							"{$table}.Uid",
-							"loan_type.LoanType_Interest",
-							"loan_type.loan_due_interest"
+							"{$table}.Uid"
+							// "loan_type.LoanType_Interest",
+							// "loan_type.loan_due_interest"
 						)
 //				->join("request_loan","","=","")
 				->join("user","user.Uid","=","{$table}.Uid")
-				->join("loan_type","loan_type.LoanType_ID","=","{$table}.Loan_Type")
+				// ->join("loan_type","loan_type.LoanType_ID","=","{$table}.Loan_Type")
 				->where("{$table}.StfLoanAllocID","=",$loan_allocation_id)
 				->first();
 				
-			//print_r($allocation);exit();
+			// var_dump($allocation);exit();
 			
 			$ret_data["allocation_details"]["loan_category"] = $loan_category;//-
 			$ret_data["allocation_details"]["loan_allocation_id"] = $allocation->StfLoanAllocID;//-
@@ -2814,8 +2814,8 @@
 			$ret_data["allocation_details"]["start_date"] = $allocation->StartDate;
 			$ret_data["allocation_details"]["end_date"] = $allocation->EndDate	;
 			$ret_data["allocation_details"]["sanctioned_amount"] = $allocation->LoanAmt;
-			$ret_data["allocation_details"]["interest_rate"] = $allocation->LoanType_Interest . "%";
-			$ret_data["allocation_details"]["post_due_date_interest_rate"] = $allocation->loan_due_interest . "%";
+			$ret_data["allocation_details"]["interest_rate"] = ""; // $allocation->LoanType_Interest . "%";
+			$ret_data["allocation_details"]["post_due_date_interest_rate"] = ""; // $allocation->loan_due_interest . "%";
 			$ret_data["allocation_details"]["emi"] = "";//$allocation->EMI_Amount;
 			//print_r($ret_data);exit();
 //		ALLOCATION DETAILS END
