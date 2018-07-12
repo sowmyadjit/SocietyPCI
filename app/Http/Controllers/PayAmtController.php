@@ -411,7 +411,7 @@
 			$get=$this->PayAmtMod->GetSBForFDPayAmt($UserID);
 			
 			/*********/
-			$fn_data["acc_id"] =  $request->input('acc_id');
+			$fn_data["acc_id"] =  $request->input('usrid');
 			$sb_balance = $this->acc->get_account_balance($fn_data);
 			/*********/
 			

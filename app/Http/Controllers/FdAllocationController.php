@@ -167,9 +167,18 @@ public function create_fdalloc(Request $request)
 	
 	public function GetSBAmt(Request $request)
     {
+
+
 	 $sbamt=$request->input('actid');
+
+			/*********/
+			$fn_data["acc_id"] =  $request->input('actid');
+			$sb_balance = $this->acc->get_account_balance($fn_data);
+			/*********/
+
+
 		$get=$this->fdallocation_model->GetSBAmt($sbamt);
-		$id['total']=$get->Total_Bal;
+		$id['total'] = $sb_balance; // $get->Total_Bal;
 		return $id;
 
     }
