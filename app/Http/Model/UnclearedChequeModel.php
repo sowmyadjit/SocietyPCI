@@ -5,9 +5,16 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
+	use App\Http\Controllers\ReceiptVoucherController;
+
 	class UnclearedChequeModel extends Model
 	{
 		protected $table = 'sb_transaction';
+
+		public function __construct()
+		{
+			$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		//Uncleared SB Cheque Detail
 		public function get_transdetail()
@@ -173,8 +180,18 @@
 			$bankupdateamt=$bankamt+$amt;
 			
 			DB::table('addbank')->where('Bankid',$CreditBankId)->update(['TotalAmt'=>$bankupdateamt]);
-			DB::table('deposit')->insert(['Bid'=>$Bid,'d_date'=>$dte,'date'=>$dte,'depo_bank_id'=>$CreditBankId,'pay_mode'=>"CHEQUE",'cheque_no'=>$Cheque_Number,'cheque_date'=>$Cheque_Date,'bank_name'=>$Bank_Name,'amount'=>$amt,'reason'=>$particulars,'cd'=>$dte,'Deposit_type'=>"Deposit"]);
-			
+			$deposit_id = DB::table('deposit')->insertGetId(['Bid'=>$Bid,'d_date'=>$dte,'date'=>$dte,'depo_bank_id'=>$CreditBankId,'pay_mode'=>"CHEQUE",'cheque_no'=>$Cheque_Number,'cheque_date'=>$Cheque_Date,'bank_name'=>$Bank_Name,'amount'=>$amt,'reason'=>$particulars,'cd'=>$dte,'Deposit_type'=>"Deposit", 'paid'=>'yes' ]);
+				// ADJ NO FOR BANK DEPOSIT
+				/***********/
+				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+				$fn_data["rv_transaction_id"] = $deposit_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			//INCOME ENTRY FOR CHEQUE CHARGE
 				$insert_data["Income_Head_lid"] = 88;
 				$insert_data["Income_SubHead_lid"] = 85;	//	BANK CHARGES SUBHEAD UNDER OTHER INCOME HEAD IS NOT PRESENT. SO OHTER INCOME SUBHEAD UNDER OTHER INCOME HEAD(85)
