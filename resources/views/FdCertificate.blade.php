@@ -85,8 +85,11 @@
 									</tr>
 									
 									<tr class="borderprint">
-										<th class="borderprint">
+										<th class="borderprint ori">
 											FD NUMBER:
+										</th>
+										<th class="borderprint kcc">
+											KCC NUMBER:
 										</th>
 										<td class="borderprint">
 											{{ $FdCertiDetails->Fd_CertificateNum }}
