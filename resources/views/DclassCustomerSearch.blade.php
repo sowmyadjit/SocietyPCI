@@ -5,28 +5,133 @@
 			<div class="bdy_<?php echo $c['module']->Mid; ?> box-inner">
 				
 				<div class="box-header well" data-original-title="">
-					<h2><i class="glyphicon glyphicon-globe"></i>SB Account List</h2>
+					<h2><i class="glyphicon glyphicon-globe"></i> D Class Customer List</h2>
 					
 				</div>
 				<div class="box-content">
+					<script src="js/FileSaver.js"/>			
+					<script src="js/tableExport.js"/>
+					<div class="alert alert-info">
+						<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
+						<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
+						<div class="col-md-5 pull-right">
+							<input class="SearchTypeahead form-control" id="SearchFd" type="text" name="SearchFd" placeholder="SEARCH D Class Customer">	
+						</div>
+					</div>
 					
 					<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 						
-						<thead>
-							<tr>
-								<th>NAME</th>
-								<th>BRANCH NAME</th>
-								<th>MOBILE NUMBER</th>
-								<th>PHONE NUMBER</th>
-								<th>CUSTOMER TYPE</th>
-								<th>CUSTOMER FEE</th>
-								<th>MEMBER NUMBER</th>
-								<th colspan=2><center>ACTION</center></th>
-								
-							</tr>
-						</thead>
-						
-						<tbody>
+							<thead>
+								<tr>
+									<th>NAME</th>
+									<th>BRANCH NAME</th>
+									<th>MOBILE NUMBER</th>
+									<th>PHONE NUMBER</th>
+									<th>CUSTOMER TYPE</th>
+									<th>CUSTOMER FEE</th>
+									<th>MEMBER NUMBER</th>
+									<th colspan=2><center>ACTION</center></th>
+									
+								</tr>
+							</thead>
+							
+							<tbody>
+								<?php
+									$total_cust_fee = 0;
+								?>
+								@foreach ($c['data'] as $customer)
+								<?php
+									$total_cust_fee += $customer->Customer_Fee;
+								?>
+								<tr  id="td_{{$customer->Custid}}">
+									<td class="hidden">{{ $customer->Custid }}</td>
+									<td><a  href="customerdetails/{{ $customer->Custid }}" class="custdet<?php echo $c['module']->Mid; ?>">{{ $customer->FirstName }} {{ $customer->MiddleName }} {{ $customer->LastName }}</a></td>
+									<td>{{ $customer->BName }}</td>
+									<td>{{ $customer->MobileNo }}</td>
+									<td>{{ $customer->PhoneNo }}</td>
+									<td>{{ $customer->custtyp }}</td>
+								<?php /* 
+									<td>{{ $customer->Customer_Fee }}</td>
+									<td>{{ $customer->Member_No }}</td>
+								 */?>
+									 <td class="td_cf" data="{{$customer->Custid}}" style="user-select:none">
+											<div class="show_cf" id="show_cf_{{$customer->Custid}}">
+												{{ $customer->Customer_Fee }}
+											</div>
+											<div class="edit_cf" id="edit_cf_{{$customer->Custid}}">
+												<input class="ip_edit_cf" id="ip_edit_cf_{{$customer->Custid}}" style="width:50px;" value="{{$customer->Customer_Fee}}" />
+												<button class="save_cf btn-xs" data="{{$customer->Custid}}"><span class="glyphicon glyphicon-ok"></span></button>
+											</div>
+									</td>
+									<td class="td_mn" data="{{$customer->Uid}}"  style="user-select:none">
+										   <div class="show_mn" id="show_mn_{{$customer->Uid}}">
+											   {{ $customer->Member_No }}
+										   </div>
+										   <div class="edit_mn" id="edit_mn_{{$customer->Uid}}">
+											   <input id="ip_edit_mn_{{$customer->Uid}}" style="width:50px;" value="{{$customer->Member_No}}" />
+											   <button class="save_mn btn-xs" data="{{$customer->Uid}}"><span class="glyphicon glyphicon-ok"></span></button>
+										   </div>
+								   </td>
+									
+									<td>
+										<div class="form-group">
+											<div class="col-sm-12">
+												<input type="button" value="EDIT" class="btn btn-info btn-sm edtbtn" href="customerdetails/{{ $customer->Custid }}/edit"/>
+											</div>
+										</div>
+									</td>
+									@if($customer->custtyp=="CLASS D")
+									<td>
+										<div class="form-group">
+											<div class="col-sm-12">
+												<input type="button" value="RECEIPT" class="btn btn-info btn-sm ReceiptPrint" href="CustomerReceipt/{{ $customer->Custid }}"/>
+											</div>
+										</div>
+									</td>
+									@else
+									<td>
+										
+									</td>
+									@endif
+									
+								</tr>
+								@endforeach
+										<tr>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td><b> <span id="total_cf">{{$total_cust_fee}}</span> </b></td> <?php /**/ ?>
+											<td></td>
+											<td></td>
+											<td></td>
+										</tr>
+							</tbody>
+					</table>
+				</div>	
+				
+
+
+
+
+
+<?php /* FOR PRINT AND EXCEL */?>
+				<div id="toprint" style="position:fixed;opacity:0;">
+					<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="expense_details">
+					<thead>
+						<tr>
+							<th>NAME</th>
+							<th>BRANCH NAME</th>
+							<th>MOBILE NUMBER</th>
+							<th>PHONE NUMBER</th>
+							<th>CUSTOMER TYPE</th>
+							<th>CUSTOMER FEE</th>
+							<th>MEMBER NUMBER</th>
+							
+						</tr>
+					</thead>
+					<tbody>
 							<?php
 								$total_cust_fee = 0;
 							?>
@@ -35,72 +140,29 @@
 								$total_cust_fee += $customer->Customer_Fee;
 							?>
 							<tr  id="td_{{$customer->Custid}}">
-								<td class="hidden">{{ $customer->Custid }}</td>
-								<td><a  href="customerdetails/{{ $customer->Custid }}" class="custdet<?php echo $c['module']->Mid; ?>">{{ $customer->FirstName }} {{ $customer->MiddleName }} {{ $customer->LastName }}</a></td>
+								<td>{{ $customer->FirstName }} {{ $customer->MiddleName }} {{ $customer->LastName }}</td>
 								<td>{{ $customer->BName }}</td>
 								<td>{{ $customer->MobileNo }}</td>
 								<td>{{ $customer->PhoneNo }}</td>
 								<td>{{ $customer->custtyp }}</td>
-							<?php /* 
 								<td>{{ $customer->Customer_Fee }}</td>
 								<td>{{ $customer->Member_No }}</td>
-							 */?>
-								 <td class="td_cf" data="{{$customer->Custid}}" style="user-select:none">
-										<div class="show_cf" id="show_cf_{{$customer->Custid}}">
-											{{ $customer->Customer_Fee }}
-										</div>
-										<div class="edit_cf" id="edit_cf_{{$customer->Custid}}">
-											<input class="ip_edit_cf" id="ip_edit_cf_{{$customer->Custid}}" style="width:50px;" value="{{$customer->Customer_Fee}}" />
-											<button class="save_cf btn-xs" data="{{$customer->Custid}}"><span class="glyphicon glyphicon-ok"></span></button>
-										</div>
-								</td>
-								<td class="td_mn" data="{{$customer->Uid}}"  style="user-select:none">
-									   <div class="show_mn" id="show_mn_{{$customer->Uid}}">
-										   {{ $customer->Member_No }}
-									   </div>
-									   <div class="edit_mn" id="edit_mn_{{$customer->Uid}}">
-										   <input id="ip_edit_mn_{{$customer->Uid}}" style="width:50px;" value="{{$customer->Member_No}}" />
-										   <button class="save_mn btn-xs" data="{{$customer->Uid}}"><span class="glyphicon glyphicon-ok"></span></button>
-									   </div>
-							   </td>
-								
-								<td>
-									<div class="form-group">
-										<div class="col-sm-12">
-											<input type="button" value="EDIT" class="btn btn-info btn-sm edtbtn" href="customerdetails/{{ $customer->Custid }}/edit"/>
-										</div>
-									</div>
-								</td>
-								@if($customer->custtyp=="CLASS D")
-								<td>
-									<div class="form-group">
-										<div class="col-sm-12">
-											<input type="button" value="RECEIPT" class="btn btn-info btn-sm ReceiptPrint" href="CustomerReceipt/{{ $customer->Custid }}"/>
-										</div>
-									</div>
-								</td>
-								@else
-								<td>
-									
-								</td>
-								@endif
-								
 							</tr>
 							@endforeach
-									<tr>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td><b> <span id="total_cf">{{$total_cust_fee}}</span> </b></td> <?php /**/ ?>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td><b> <span id="total_cf">{{$total_cust_fee}}</span> </b></td> <?php /**/ ?>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
 						</tbody>
 					</table>
-				</div>	
+				</div>
 				
 			</div>	
 			
@@ -230,4 +292,32 @@
 		});
 		$("#total_cf").html(total_cf);
 	}
+</script>
+
+
+
+<script>
+	$('#excel').click(function(e){
+		$('#expense_details').tableExport({type:'excel',escape:'false'});
+	});	
+</script>
+
+<script src="js/jQuery.print.js"></script>
+<script>
+	
+	$(function() {
+		$(".print").click(function() {
+			var divContents = $("#toprint").html();
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>D Class Customer List</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+			//$("#toprint").print();
+            printWindow.print(); 
+		});
+	});
+	
+	
 </script>
