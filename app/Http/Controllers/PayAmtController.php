@@ -385,16 +385,20 @@
 			return $id;
 		}
 		
-		
 		public function GetSBForRDPayAmt(Request $request)
 		{
 			$UserID['usrid']=$request->input('usrid');
 			$get=$this->PayAmtMod->GetSBForRDPayAmt($UserID);
+
+			/*********/
+			$fn_data["acc_id"] =  $request->input('usrid');
+			$sb_balance = $this->acc->get_account_balance($fn_data);
+			/*********/
 			
 			if(!empty($get->AccNum))  //if have SB Account
 			{
 				$id['acn']=0;
-				$id['tot']=$get->Total_Amount;
+				$id['tot'] = $sb_balance; // $get->Total_Amount;
 				$id['acccn']=$get->AccNum;
 				$id['acid']=$get->Accid;
 				$id['actid']=$get->AccTid;
@@ -405,6 +409,7 @@
 			}
 			return $id;
 		}
+		
 		public function GetSBForFDPayAmt(Request $request)
 		{
 			$UserID['usrid']=$request->input('usrid');
