@@ -914,11 +914,18 @@
 					'interstmonth',
 					'Accid',
 					'Fd_DepositAmt',
-					'FdTid'
+					'FdTid',
+					"FdReport_MatureDate"
 					)
 				->where('Fdid','=',$id["fdalocid"])
 				->first();
 			
+			if($dte > $fdallocation_row->FdReport_MatureDate) {
+				$end_date = $fdallocation_row->FdReport_MatureDate;
+			} else {
+				$end_date = $dte;
+			} echo "end_date = {$end_date} ";
+
 			echo "-0-";
 			if(strcasecmp($fdallocation_row->intrest_needed, "YES") == 0) {echo "-1-";
 				//calc int // $fd_rem_interest
@@ -962,7 +969,7 @@
 								$amt4=$amt3/365;
 								
 								//$amt4=$this->roundamt->Roundall($amt4);
-								$date1=date_create($dte);
+								$date1=date_create($end_date);
 								$date2=date_create($lastpaiddate);
 								$difdate=date_diff($date1,$date2);
 								$difdays=$difdate->format('%a');
