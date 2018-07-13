@@ -90,6 +90,8 @@
 			$bankID2=$id['bank2'];
 			$amount1=$id['ta'];
 			//$bran=$id['branch'];
+			$particulars = $id["particulars"];
+
 			$uname='';
 			if(Auth::user())
 			$uname= Auth::user();
@@ -99,15 +101,100 @@
 			$respit3=$respit2->payment_voucher_No;
 			$r1=$respit3+1;
 			DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r1]);
-			$head_lid = 57;
-			switch($BID) {
-				case 1: $subhead_lid = 61;break;
-				case 2: $subhead_lid = 64;break;
-				case 3: $subhead_lid = 62;break;
-				case 4: $subhead_lid = 63;break;
-				case 5: $subhead_lid = 65;break;
-			}
-			$id = DB::table('expense')->insertGetId(['Head_lid'=>$head_lid,'SubHead_lid'=>$subhead_lid,'bank'=> $id['bankName'],'Bid'=>$BID,'amount'=>$id['ta'],'e_date'=>$dte,'bank_id'=>$id['bank'],'bank2id'=>$id['bank2'],'bank2'=> $id['bankName2'],'Expence_PamentVoucher'=>$r1,'pay_mode'=>"BankToBank",'ExpenseBy'=>$UID]);
+			// $head_lid = 57;
+			// switch($BID) {
+			// 	case 1: $subhead_lid = 61;break;
+			// 	case 2: $subhead_lid = 64;break;
+			// 	case 3: $subhead_lid = 62;break;
+			// 	case 4: $subhead_lid = 63;break;
+			// 	case 5: $subhead_lid = 65;break;
+			// }
+			// $id = DB::table('expense')->insertGetId(['Head_lid'=>$head_lid,'SubHead_lid'=>$subhead_lid,'bank'=> $id['bankName'],'Bid'=>$BID,'amount'=>$id['ta'],'e_date'=>$dte,'bank_id'=>$id['bank'],'bank2id'=>$id['bank2'],'bank2'=> $id['bankName2'],'Expence_PamentVoucher'=>$r1,'pay_mode'=>"BankToBank",'ExpenseBy'=>$UID]);
+		
+			/************************ BANK TO BANK *********************/
+				// GET BIDs
+					$BID1 = DB::TABLE("addbank")
+						->where("Bankid", $bankID)
+						->value("Bid");
+					$BID2 = DB::TABLE("addbank")
+						->where("Bankid", $bankID2)
+						->value("Bid");
+
+
+				// Debit from Bank1 TO BRANCH1
+					$addbank = DB::table('addbank')
+					->where('Bankid','=',$bankID)
+					->first();
+					$Deposit_type = "WITHDRAWL";
+
+					$insert_array["Bid"] = $BID1;
+					$insert_array["d_date"] = date("d-m-Y",strtotime($dte));
+					$insert_array["date"] = date("Y-m-d",strtotime($dte));
+					$insert_array["Branch"] = $addbank->Branch;
+					$insert_array["depo_bank"] = $addbank->BankName;
+					$insert_array["depo_bank_id"] = $addbank->Bankid;
+					$insert_array["pay_mode"] = "ADJUSTMENT";
+					$insert_array["cheque_no"] = "";
+					$insert_array["cheque_date"] = "";
+					$insert_array["bank_name"] = "";
+					$insert_array["amount"] = $amount1;
+					$insert_array["paid"] = "yes";
+					$insert_array["reason"] = $particulars;
+					// $insert_array["cd"] = "";
+					$insert_array["Deposit_type"] = $Deposit_type;
+					$insert_id = DB::table("deposit")
+						->insertGetId($insert_array);
+					unset($insert_array);
+
+				// BRANCH TO BRANCH (B1 to B2)
+					$head = 57;
+					$subhead = 0;
+					switch($BID1) {
+						case 1: $subhead = 61;break;
+						case 2: $subhead = 64;break;
+						case 3: $subhead = 62;break;
+						case 4: $subhead = 63;break;
+						case 5: $subhead = 65;break;
+					}
+
+					$insert_array["Branch_Branch1_Id"] = $BID1;
+					$insert_array["Branch_Branch2_Id"] = $BID2;
+					$insert_array["Branch_Tran_Date"] = $dte;
+					$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+					$insert_array["LedgerHeadId"] = $head;
+					$insert_array["SubLedgerId"] = $subhead;
+					$insert_array["Branch_Amount"] = $amount1;
+					$insert_array["Branch_per"] = $particulars;
+					$branch_to_branch_id = DB::table("branch_to_branch")
+						->insertGetId($insert_array);
+					unset($insert_array);
+
+				// CREDIT TO BANK2 FROM BRANCH2
+					$addbank = DB::table('addbank')
+					->where('Bankid','=',$bankID2)
+					->first();
+					$Deposit_type = "Deposit";
+
+					$insert_array["Bid"] = $BID2;
+					$insert_array["d_date"] = date("d-m-Y",strtotime($dte));
+					$insert_array["date"] = date("Y-m-d",strtotime($dte));
+					$insert_array["Branch"] = $addbank->Branch;
+					$insert_array["depo_bank"] = $addbank->BankName;
+					$insert_array["depo_bank_id"] = $addbank->Bankid;
+					$insert_array["pay_mode"] = "ADJUSTMENT";
+					$insert_array["cheque_no"] = "";
+					$insert_array["cheque_date"] = "";
+					$insert_array["bank_name"] = "";
+					$insert_array["amount"] = $amount1;
+					$insert_array["paid"] = "yes";
+					$insert_array["reason"] = $particulars;
+					// $insert_array["cd"] = "";
+					$insert_array["Deposit_type"] = $Deposit_type;
+					$insert_id = DB::table("deposit")
+						->insertGetId($insert_array);
+					unset($insert_array);
+			/************************ BANK TO BANK *********************/
+
 			$totamt=DB::table('addbank')->select('TotalAmt')
 			->where('Bankid','=',$bankID)
 			->first();

@@ -36,9 +36,9 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label col-sm-4" for="comment"> Branch:</label>
+						<label class="control-label col-sm-4" for="comment"> Particulars:</label>
 						<div class="col-md-4">
-							<input type="text" class="form-control" id="branch" name="branch" placeholder="Branch"/>
+							<input type="text" class="form-control" id="particulars" name="particulars" placeholder="Particulars"/>
 						</div>
 					</div>
 					
@@ -90,12 +90,12 @@
 			
 			x=$('.typeahead').data('value');
 			x1=$('#bn2').data('value');
-			alert(x);
-			alert(x1);
+			// alert(x);
+			// alert(x1);
 			bankname=$('.typeahead').val();
 			bankname2=$('#bn2').val();
-			alert(bankname);
-			alert(bankname2);
+			// alert(bankname);
+			// alert(bankname2);
 			$.ajax({
 				url: 'crateatranexpence',
 				type: 'post',

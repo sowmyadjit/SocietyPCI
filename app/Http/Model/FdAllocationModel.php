@@ -130,7 +130,7 @@
 				$sbrem=$id['sbavailable'];
 				$aciddd=$id['accid'];
 				
-				$sb_transaction_id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $BID,'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for FD Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$dte,'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				$sb_transaction_id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $BID,'Accid' => $id['accid'],'TransactionType' => "DEBIT",'particulars' => "Amount debited for FD Account ({$fdcertnum})",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$dte,'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
 				DB::table('createaccount')->where('Accid',$aciddd)
 				->update(['Total_Amount'=>$sbrem]);
 
@@ -387,6 +387,7 @@
 				->update(['Fd_CertiPrint'=>"YES"]);
 			}
 		}
+
 		public function crtkccalloc($id)
 		{
 			
@@ -492,7 +493,7 @@
 				$sbamt=$id['fdsbamount'];
 				$sbrem=$id['sbavailable'];
 				
-				$sb_transaction_id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $id['bid'],'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for KCC Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$id['fdallocreport'],'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				$sb_transaction_id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $id['bid'],'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for KCC Account ({$fdcertnum})",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$id['fdallocreport'],'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
 				// ADJ NO FOR SB DEBIT
 				/***********/
 				$fn_data["rv_payment_mode"] = $pmode;

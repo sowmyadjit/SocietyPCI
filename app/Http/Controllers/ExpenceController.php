@@ -107,6 +107,7 @@
 			$ex['bank2']=$request->input('bank2');
 			$ex['ta']=$request->input('ta');
 			$ex['branch']=$request->input('branch');
+			$ex['particulars']=$request->input('particulars');
 			
 			$id=$this->creadexpencemodel->insert_tran($ex);
 			return redirect('/');

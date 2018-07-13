@@ -69,7 +69,8 @@ public function Show_FdAlloc()
 			$fda=$this->fdallocation_model->crtfdalloc();
 			return view('createfdallocation',compact('fda'));
 		}
-public function create_fdalloc(Request $request)
+		
+		public function create_fdalloc(Request $request)
 		{
 			$fdalloc['accid']=$request->input('accid');
 			$fdalloc['accid_int']=$request->input('accid_int');
