@@ -250,7 +250,7 @@
 			return $cal_days;
 		}
 
-		public function chq()
+		public function chq() // CHEQUE GIVEN FOR CUSTOMER - FD RD PG PAY AMT
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			$start_date = "2018-04-01";
