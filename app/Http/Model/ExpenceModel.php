@@ -142,9 +142,10 @@
 					$insert_array["reason"] = $particulars;
 					// $insert_array["cd"] = "";
 					$insert_array["Deposit_type"] = $Deposit_type;
-					$insert_id = DB::table("deposit")
+					$insert_id1 = DB::table("deposit")
 						->insertGetId($insert_array);
 					unset($insert_array);
+					//ADJ CREDIT - NO ADJ NO.
 
 				// BRANCH TO BRANCH (B1 to B2)
 					$head = 57;
@@ -168,6 +169,17 @@
 					$branch_to_branch_id = DB::table("branch_to_branch")
 						->insertGetId($insert_array);
 					unset($insert_array);
+					//GENERATE ADJ NO. FOR $BID1
+						/***********/
+						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+						$fn_data["rv_transaction_type"] = "DEBIT";
+						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+						$fn_data["rv_date"] = $dte;
+						$fn_data["rv_bid"] = $BID1;
+						$adj_no = $this->rv_no->save_rv_no($fn_data);
+						unset($fn_data);
+						/***********/
 
 				// CREDIT TO BANK2 FROM BRANCH2
 					$addbank = DB::table('addbank')
@@ -190,9 +202,20 @@
 					$insert_array["reason"] = $particulars;
 					// $insert_array["cd"] = "";
 					$insert_array["Deposit_type"] = $Deposit_type;
-					$insert_id = DB::table("deposit")
+					$insert_id2 = DB::table("deposit")
 						->insertGetId($insert_array);
 					unset($insert_array);
+					//GENERATE ADJ NO. FOR $BID2
+						/***********/
+						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+						$fn_data["rv_transaction_id"] = $insert_id2;
+						$fn_data["rv_transaction_type"] = "DEBIT";
+						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+						$fn_data["rv_date"] = $dte;
+						$fn_data["rv_bid"] = $BID2;
+						$adj_no = $this->rv_no->save_rv_no($fn_data);
+						unset($fn_data);
+						/***********/
 			/************************ BANK TO BANK *********************/
 
 			$totamt=DB::table('addbank')->select('TotalAmt')
