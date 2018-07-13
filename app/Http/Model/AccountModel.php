@@ -1016,12 +1016,18 @@
 		
 		public function GetSearchSbAccWithOldAcc($q) 
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			
+			$check_branch = "";
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$check_branch = "AND `createaccount`.`Bid`={$BID}";
+			}
+
 			return DB::select("SELECT `Accid` as id, CONCAT(`Old_AccNo`,'/',`AccNum`,':',CASE Closed
                WHEN 'YES' THEN 'Closed'
                WHEN 'NO' THEN 'Active'
               ELSE Closed
-            END) as name FROM `createaccount` where `AccNum` LIKE '%SB%' ");
+		END) as name FROM `createaccount` where `AccNum` LIKE '%SB%' {$check_branch}");
 			
 		}
 		
