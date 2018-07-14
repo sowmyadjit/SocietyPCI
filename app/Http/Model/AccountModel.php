@@ -1282,7 +1282,7 @@
 			->where('Loan_Allocated','=',"NO")
 			->where('AccNum','like','%RD%');
 			if($this->settings->get_value("allow_inter_branch") == 0) {
-				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+				$ret_data = $ret_data->where("createaccount.Bid", $BID);
 			}
 			//->where('Status','=',"AUTHORISED")
 			$ret_data = $ret_data->get();
