@@ -325,7 +325,7 @@ table td {
             printWindow.document.close();
 			setTimeout(function () {
         		printWindow.print();
-    		}, 500);
+    		}, 3500);
         	//printWindow.print();
         	
 
