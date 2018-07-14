@@ -14,7 +14,12 @@
 							<!--<div class="col-md-4">
 								<input class="SearchTypeahead form-control" id="searchacc" type="text" name="searchacc" placeholder="SELECT PIGMY ACCOUNT"> 
 							</div>-->
-							<label class="control-label inline col-md-4 col-md-offset-4">Receipt Type:
+							<div class="col-md-4">
+								<label class="control-label inline col-md-offset-4">
+									Receipt Type:
+								</label>
+							</div>
+							<div class="col-md-4">
 								<select class="form-control ReceiptTypeDD"  id="ReceiptTypeDD" name="ReceiptTypeDD">  
 									<option value=""> SELECT RECEIPT TYPE</option>
 									<option value="SB"> SB RECEIPT </option>
@@ -37,7 +42,12 @@
 									<option value="B2B_CR"> HEAD OFFICE </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
 								</select>
-							</label>
+							</div>
+							<div class="col-md-4">
+								<button class="glyphicon glyphicon-list btn-sm" id="list_refresh">
+									<span class="" />
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -68,6 +78,10 @@
 	
 	$('.clickme').click(function(e){
 		$('.companyclassid').click();
+	});
+
+	$("#list_refresh").click(function() {
+		$(".ReceiptTypeDD").trigger("change");
 	});
 	
 	$('.ReceiptTypeDD').change(function(e){
