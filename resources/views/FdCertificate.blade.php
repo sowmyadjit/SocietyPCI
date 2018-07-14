@@ -245,7 +245,7 @@
 						cerStat="<?php echo $FdCertiDetails->Fd_CertiPrint;?>"
 						KCC="<?php echo $FdCertiDetails->FDkcc;?>"
 						
-						if(KCC=="KCC")
+						if(KCC.toUpperCase()=="KCC")
 						{
 							$('.ori').hide();
 							$('.dup').hide();
@@ -253,19 +253,19 @@
 						}
 						else
 						{
-							if(cerStat=="NO" )
+							if(cerStat.toUpperCase()=="NO" )
 							{
 								$('.ori').show();
 								$('.dup').hide();	
 								$('.kcc').hide();
 							}
-							else if(cerStat=="YES")
+							else if(cerStat.toUpperCase()=="YES")
 							{
 								$('.ori').hide();
 								$('.dup').show();
 								$('.kcc').hide();
 							}
-							if(KCC=="KCC")
+							if(KCC.toUpperCase()=="KCC")
 							{
 								$('.ori').hide();
 								$('.dup').hide();
