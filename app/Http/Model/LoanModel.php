@@ -8,12 +8,14 @@
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
 	use App\Http\Model\SettingsModel;
+	use App\Http\Model\AccountModel;
 	
 	class LoanModel extends Model
 	{
 		protected $table='loan_allocation';
 
 		public function __construct() {
+				$this->acc = new AccountModel;
 				$this->rv_no = new ReceiptVoucherController;
 				$this->settings = new SettingsModel;
 		}
@@ -173,6 +175,11 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+			/******** INCLUDE DL NO IN SB PARTICULARS */
+			$temp_part = "Deposite Loan Amount ({$paccno})";
+			DB::table("sb_transaction")
+				->where("Tranid",$sbtran)
+				->update(["particulars"=>$temp_part]);
 
 			if($deptyp=="PIGMY")
 			{
@@ -776,7 +783,7 @@
 			{
 				$payable=$id['JewelPayAmountAfter'];
 				$payableamt=Floatval($payable);
-				$idii = DB::table('sb_transaction')->insertGetId(['Accid'=> $id['accid'],'AccTid' =>"1",'TransactionType' => "CREDIT",'particulars' =>"JL AMOUNT CREDITED",'Amount' =>$payableamt,'CurrentBalance' => $id['JewelSBAvail'],'Total_Bal' => $id['JewelSBtotal'],'tran_Date' =>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$UID,'Bid'=>$BID,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'Payment_Mode'=>"SB ACCOUNT"]);
+				$idii = DB::table('sb_transaction')->insertGetId(['Accid'=> $id['accid'],'AccTid' =>"1",'TransactionType' => "CREDIT",'particulars' =>"JL AMOUNT CREDITED ({$count_inc})",'Amount' =>$payableamt,'CurrentBalance' => $id['JewelSBAvail'],'Total_Bal' => $id['JewelSBtotal'],'tran_Date' =>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$UID,'Bid'=>$BID,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'Payment_Mode'=>"SB ACCOUNT"]);
 				
 				DB::table('createaccount')->where('Accid','=',$id['accid'])->update(['Total_Amount'=>$id['JewelSBtotal']]);
 				
@@ -949,8 +956,17 @@
 			->select('AccNum','Total_Amount','Accid','AccTid','FirstName','MiddleName','LastName')
 			->join('user','user.Uid','=','createaccount.Uid')
 			->where('AccNum','like','%SB%')
-			->where('createaccount.Uid','=',$id)
+			->where('createaccount.Uid','=',$id["userid"])
 			->first();
+
+			if(!empty($id)) {
+				$id->Total_Amount = 90;
+				/*********/
+				$fn_data["acc_id"] =  $id->Accid;
+				$sb_balance = $this->acc->get_account_balance($fn_data);
+				/*********/
+			}
+
 			return $id;
 		}
 		
@@ -1055,7 +1071,7 @@
 			if($paymode=="SB ACCOUNT")
 			{
 				
-				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid'=>$id['StfLoanSBAccTid'],'TransactionType'=>"CREDIT",'particulars'=>"Staff Loan Amount",'Amount'=>$payamt,'CurrentBalance'=>$id['StfSBAvail'],'tran_Date'=>$dte,'SBReport_TranDate'=>$reportdatee,'Time'=>$tm,'Month'=>$dm,'Year'=>$dy,'Total_Bal'=>$id['StfLoanSBtotal'],'Bid'=>$AccBID,'Payment_Mode'=>$paymode,'CreatedBy'=>$UID,'Uncleared_Bal'=>$payamt,'Cleared_State'=>"PENDING"]);
+				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid'=>$id['StfLoanSBAccTid'],'TransactionType'=>"CREDIT",'particulars'=>"Staff Loan Amount ({$count_inc})",'Amount'=>$payamt,'CurrentBalance'=>$id['StfSBAvail'],'tran_Date'=>$dte,'SBReport_TranDate'=>$reportdatee,'Time'=>$tm,'Month'=>$dm,'Year'=>$dy,'Total_Bal'=>$id['StfLoanSBtotal'],'Bid'=>$AccBID,'Payment_Mode'=>$paymode,'CreatedBy'=>$UID,'Uncleared_Bal'=>$payamt,'Cleared_State'=>"PENDING"]);
 				
 				DB::table('createaccount')
 				->where('Accid',$acid)
