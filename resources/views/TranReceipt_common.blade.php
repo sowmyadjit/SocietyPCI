@@ -205,7 +205,7 @@ table td {
 			
 			<hr>
 
-			@if(strcasecmp($data->transaction_type, "CREDIT") == 0)
+			@if(strcasecmp($data->transaction_type, "CREDIT") == 0 && $data->tran_category != "JL_PAY")
 				@if($data->tran_category_name != "RD")
 					<tr>
 						<td>Particulars:</td>
@@ -215,7 +215,7 @@ table td {
 					</tr>
 				@endif
 			@else
-				@if($data->tran_category_name != "RD" && $data->tran_category != "JL" && $data->tran_category != "SL" && $data->tran_category != "PL" && $data->tran_category != "RD_PAY_AMT" && $data->tran_category != "PG_PAY_AMT")
+				@if($data->tran_category_name != "RD" && $data->tran_category != "JL" && $data->tran_category != "SL" && $data->tran_category != "PL" && $data->tran_category != "RD_PAY_AMT" && $data->tran_category != "PG_PAY_AMT"  && $data->tran_category != "JL_PAY")
 					<tr>
 						<td>Remarks:</td>
 						<td><span class="receipt_amt" style="white-space:pre" <?php /*style="font-weight:bold;font-size:18px" */?> >{{ $data->particulars }}</span></td>

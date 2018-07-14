@@ -509,7 +509,7 @@ use App\Http\Model\TransactionModel;
 										break;
 				case "PL" 			:	$data = $this->TranModel->rv_print_pl($in_data);
 										break;
-				case "JL_PAY"		:	$data = $this->TranModel->rv_print_jl_pay($in_data);
+				case "JL_PAY"		:	$data = $this->TranModel->rv_print_jl_pay($in_data);	//	REPAY
 										break;
 				case "DL_PAY"		:	$data = $this->TranModel->rv_print_dl_pay($in_data);
 										break;

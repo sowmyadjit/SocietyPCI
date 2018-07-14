@@ -638,7 +638,9 @@
 				$ret_data->account_head = "Jewel Loan";
 				$ret_data->tran_category = $data["tran_category"];
 
-				$ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
+				// $ret_data->particulars .= "Principle:{$ret_data->principle}\nInterest:{$ret_data->interest}";
+				$ret_data->sub_amt["Principle"] = $ret_data->principle;
+				$ret_data->sub_amt["Interest"] = $ret_data->interest;
 				$charges_transacton = DB::table("charges_tran")
 					->select(
 							"chareges.charges_name",
@@ -650,7 +652,8 @@
 					->where("charg_tran_date",$ret_data->date)
 					->get();
 				foreach($charges_transacton as $part) {
-					$ret_data->particulars .= "\n{$part->charges_name}:{$part->amount}";
+					// $ret_data->particulars .= "\n{$part->charges_name}:{$part->amount}";
+					$ret_data->sub_amt[$part->charges_name] = $part->amount;
 				}
 			}
 			return $ret_data;
