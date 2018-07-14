@@ -641,7 +641,7 @@
 			$ret_data2 = DB::table('jewelloan_allocation')
 				->select(DB::raw('JewelLoanId as id, JewelLoan_LoanNumber as name'))
 				->where("auction_status","=","1")
-				->where("auction_status","=","2");
+				->orWhere("auction_status","=","2");
 				if($this->settings->get_value("allow_inter_branch") == 0) {
 					$ret_data2 = $ret_data2->whereIn('JewelLoan_Bid',$bids);
 				}

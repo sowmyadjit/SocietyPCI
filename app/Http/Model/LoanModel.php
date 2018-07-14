@@ -1731,7 +1731,7 @@
 			
 			} else {
 				DB::table('branch_to_branch')
-					->insert(['Branch_Branch1_Id'=>$bid2,'Branch_Branch2_Id'=>$BID,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$auctionAmt,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
+					->insert(['Branch_Branch1_Id'=>$BID,'Branch_Branch2_Id'=>$bid2,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$auctionAmt,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
 			}
 				
 			DB::table('jewelloan_allocation')
