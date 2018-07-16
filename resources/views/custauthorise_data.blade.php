@@ -27,21 +27,21 @@
 					<td>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="EDIT" class="btn btn-primary btn-sm edtbtn<?php echo $c['module']->Mid; ?>" href="customerdetails/{{ $customer->Custid }}/edit"/>
-							</div>
-						</div>
-					</td>
-					<td>
-						<div class="form-group">
-							<div class="col-sm-12" href="aaaaa">
-								<input type="button" value="ACCEPT" class="btn btn-success btn-sm accustpbtn<?php echo $c['module']->Mid; ?>" href="authorisecust/{{ $customer->Custid }}"/>
+								<input type="button" value="EDIT" id="edit_{{ $customer->Custid }}" class="btn btn-primary btn-sm edtbtn<?php echo $c['module']->Mid; ?>" href="customerdetails/{{ $customer->Custid }}/edit"  data="{{ $customer->Custid }}"/>
 							</div>
 						</div>
 					</td>
 					<td>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="REJECT" class="btn btn-danger btn-sm rejbtn<?php echo $c['module']->Mid; ?>" href="rejectcust/{{ $customer->Custid }}"/>
+								<input type="button" value="ACCEPT" id="accept_{{ $customer->Custid }}" class="btn btn-success btn-sm accustpbtn<?php echo $c['module']->Mid; ?>" href="authorisecust/{{ $customer->Custid }}"   data="{{ $customer->Custid }}"/>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="form-group">
+							<div class="col-sm-12">
+								<input type="button" value="REJECT" id="reject_{{ $customer->Custid }}" class="btn btn-danger btn-sm rejbtn<?php echo $c['module']->Mid; ?>" href="rejectcust/{{ $customer->Custid }}"   data="{{ $customer->Custid }}"/>
 							</div>
 						</div>
 					</td>
@@ -69,11 +69,21 @@
 		$('#b2').load($(this).attr('href'));
 	});
 </script>
+
+<script>
+	function disable_row(cust_id) {
+		$("#edit_"+cust_id).prop("disabled",true);
+		$("#accept_"+cust_id).prop("disabled",true);
+		$("#reject_"+cust_id).prop("disabled",true);
+	}
+</script>
+
 <script>
 	$('.accustpbtn<?php echo $c['module']->Mid; ?>').click(function(e)
 	{
 		var url = $(this).attr('href');
-		console.log("url: "+url);
+		var cust_id = $(this).attr('data');
+		// console.log("url: "+url);
 		var parent = $(this).parent();
 
 		$.ajax({
@@ -81,7 +91,9 @@
 			type: 'get',
 			data: "",
 			success: function(data) {
+				disable_row(cust_id);
 				parent.html("<b>ACCEPTED</b>");
+				// console.log($("#edit_"+cust_id).prop("disabled",true));
 				// load_data();
 			}
 		});
@@ -92,9 +104,21 @@
 <script>
 	$('.rejbtn<?php echo $c['module']->Mid; ?>').click(function(e)
 	{
-		e.preventDefault();
-		$(".b1").hide();
-		$('#b2').load($(this).attr('href'));
+		var url = $(this).attr('href');
+		console.log("url: "+url);
+		var parent = $(this).parent();
+
+		$.ajax({
+			url: url,
+			type: 'get',
+			data: "",
+			success: function(data) {
+				disable_row(cust_id);
+				parent.html("<b>REJECTED</b>");
+				// load_data();
+			}
+		});
+		
 	});
 </script>
 	

@@ -7,6 +7,7 @@
 	<div class="box-content">
 		<div class="alert alert-info">
 			<a href="custrejectview" class="btn btn-default crtmem<?php echo $c['module']->Mid; ?>">view Reject Customer</a>
+			<button class="btn-sm glyphicon glyphicon-refresh" id="refresh_data"></button>
 		</div>
 
 		<div id="table_data"></div>
@@ -87,7 +88,13 @@
 
 <script>
 	function load_data() {
-
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$("#table_data").html(loading_img);
 		$.ajax({
 			url: 'custauthorise_data',
 			type: 'post',
@@ -192,5 +199,11 @@
 	$("#back").click(function() {
 		$("#b2").html("");
 		$(".b1").show();
+	})
+</script>
+
+<script>
+	$("#refresh_data").click(function() {
+		load_data();
 	})
 </script>
