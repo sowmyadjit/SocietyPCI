@@ -394,7 +394,7 @@
 							<div class="col-sm-12">
 								<input type="<?php if($edit=='edit'){echo 'submit';} else {echo 'hidden';} ?>" value="UPDATE" class="btn btn-success btn-sm sbmbtn<?php echo $ed['module']->Mid; ?>"/>
 								<input type="<?php if($edit=='edit'){echo 'button';} else {echo 'hidden';} ?>" value="CANCEL" class="btn btn-danger btn-sm cnclbtn<?php echo $ed['module']->Mid; ?>"/>
-								<input type="<?php if($edit=='edit'){echo 'hidden';} else {echo 'button';} ?>" value="CLOSE" class="btn btn-danger btn-sm clsbtn<?php echo $ed['module']->Mid; ?>"/>
+				<?php /*		<input type="<?php if($edit=='edit'){echo 'hidden';} else {echo 'button';} ?>" value="CLOSE" class="btn btn-danger btn-sm clsbtn<?php echo $ed['module']->Mid; ?>"/> */?>
 							</div>
 						</div>
 						

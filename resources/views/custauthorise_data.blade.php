@@ -105,7 +105,8 @@
 	$('.rejbtn<?php echo $c['module']->Mid; ?>').click(function(e)
 	{
 		var url = $(this).attr('href');
-		console.log("url: "+url);
+		var cust_id = $(this).attr('data');
+		// console.log("url: "+url);
 		var parent = $(this).parent();
 
 		$.ajax({

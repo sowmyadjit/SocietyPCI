@@ -48,6 +48,15 @@
 			$emp1['UnAuthEmp']=$this->viewcust->GetAuthEmployee();
 			return view('unauthemployee',compact('emp1'));
 		}
+
+		public function unauthemployee_data()
+		{
+			$Url="custauth";
+			$emp1['module']=$this->Modules->GetAnyMid($Url);
+			$emp1['UnAuthEmp']=$this->viewcust->GetAuthEmployee();
+			return view('unauthemployee_data',compact('emp1'));
+		}
+
 		public function show_custrejAuthories()
 		{
 			

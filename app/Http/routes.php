@@ -92,6 +92,7 @@
 				Route::get('/acceptaccountpigmy/{id}','AuthorisedController@accept_accountpigmy');
 				Route::get('/rejectedaccountpigmy/{id}','AuthorisedController@reject_accountpigmy');
 				Route::get('/authemp','AuthorisedController@show_unauthemp');
+				Route::post('/unauthemployee_data','AuthorisedController@unauthemployee_data');
 				Route::get('/acceptemp/{id}','AuthorisedController@accept_empAuthories');
 				Route::get('/rejectemp/{id}','AuthorisedController@reject_empAuthories');
 				Route::get('/authloan','AuthorisedController@show_unauthLoan');
