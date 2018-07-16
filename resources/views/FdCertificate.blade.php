@@ -91,6 +91,9 @@
 										<th class="borderprint kcc">
 											KCC NUMBER:
 										</th>
+										<th class="borderprint dup">
+											FD NUMBER:
+										</th>
 										<td class="borderprint">
 											{{ $FdCertiDetails->Fd_CertificateNum }}
 										</td>
