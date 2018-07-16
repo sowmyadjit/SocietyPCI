@@ -501,6 +501,13 @@
 			else
 				$old_tran = false;
 /*********************/
+
+			/*************** DEBIT CHEQUE *****************/
+				if(strcasecmp($id['paymode'],"CHEQUE")==0 && strcasecmp($id['trantyp'],"DEBIT")==0) {
+					$id['uncleared'] = 0;
+					$id['unclearedval'] = "CLEARED";
+				}
+			/*************** DEBIT CHEQUE *****************/
 			
 			$udetail= DB::table('user')->select('Uid','user.FirstName','user.MiddleName','user.LastName','BName','branch.Bid')
 			
