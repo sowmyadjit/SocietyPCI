@@ -81,6 +81,7 @@
 				Route::get('/custauth','AuthorisedController@show_custauth');
 				Route::get('/authaccount','AuthorisedController@show_anauthaccount');
 				Route::get('/authcust','AuthorisedController@show_custAuthories');
+				Route::post('/custauthorise_data','AuthorisedController@custauthorise_data');
 				Route::get('/custrejectview','AuthorisedController@show_custrejAuthories');
 				Route::get('/authpigmy','AuthorisedController@show_unauthpigmy');
 				Route::get('/authorisecust/{id}','AuthorisedController@accept_custAuthories');

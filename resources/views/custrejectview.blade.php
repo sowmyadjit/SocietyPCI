@@ -51,13 +51,7 @@
 				@endforeach
 			</tbody>
 		</table>
-		<center>
-			<div class="form-group">
-				<div class="col-sm-12">
-					<input type="button" value="Back" class="btn btn-info btn-sm backbtn<?php echo $c1['module']->Mid; ?>" />
-				</div>
-			</div>
-		</center><br/><br/>
+		<br/><br/>
 	</div>
 	
 </div>

@@ -28,12 +28,16 @@
 		}
 		public function GetcustrejAuthories()
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
 			
 			$id = DB::table('customer')->select('Custid','customer.FirstName','customer.MiddleName','customer.LastName','BName','AccNum','Gender','OpeningBalance','Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','MobileNo','Pincode','PhoneNo')
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
 			->where('AuthStatus','=',"rejected")
-			
+			->where('customer.Bid',$BID)
 			->get();
 			return $id;
 		}

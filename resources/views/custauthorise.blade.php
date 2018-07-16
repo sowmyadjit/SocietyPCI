@@ -1,4 +1,4 @@
-<div class="bdy_<?php echo $c['module']->Mid; ?> box-inner">
+<div class="bdy_<?php echo $c['module']->Mid; ?> box-inner b1">
 	<div class="box_bdy_<?php echo $c['module']->Mid; ?> box-header well" data-original-title="">
 		<h2><i class="glyphicon glyphicon-user"></i> UnAutorised customer Detail</h2>
 		
@@ -8,6 +8,11 @@
 		<div class="alert alert-info">
 			<a href="custrejectview" class="btn btn-default crtmem<?php echo $c['module']->Mid; ?>">view Reject Customer</a>
 		</div>
+
+		<div id="table_data"></div>
+
+<?php /*
+
 		<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 			
 			
@@ -63,19 +68,45 @@
 				@endforeach
 			</tbody>
 		</table>
-	</div>
+		*/?>
+	</div>				
+</div>
+
+<div id="b2">.</div>
+<div id="b3">
 	<center>
 		<div class="form-group">
 			<div class="col-sm-12">
-				<input type="button" value="Back" class="btn btn-info btn-sm backbtn<?php echo $c['module']->Mid; ?>" />
+				<input type="button" id="back" value="Back" class="btn btn-danger btn-sm" />
 			</div>
 		</div>
-	</center>					
+	</center>	
 </div>
 
 
 
+<script>
+	function load_data() {
 
+		$.ajax({
+			url: 'custauthorise_data',
+			type: 'post',
+			data: "",
+			success: function(data) {
+				$("#table_data").html(data);
+			}
+		});
+
+	}
+</script>
+
+<script>
+	$( document ).ready(function() {
+
+		load_data();
+
+	});
+</script>
 
 
 <script>
@@ -84,7 +115,7 @@
 	{
 		$('.memclassid').click();
 	});
-	
+/* 	
 	$('.crtmem<?php echo $c['module']->Mid; ?>').click(function(e)
 	{
 		e.preventDefault();
@@ -93,7 +124,7 @@
 		$('.box_bdy_<?php echo $c['module']->Mid; ?>').load($(this).attr('href'));
 		
 	});
-	
+	 */
 	$('.clickme').click(function(e){
 		$('.custclassid').click();
 	});
@@ -103,7 +134,7 @@
 		//alert($(this).attr('href'));
 		$('.box').load($(this).attr('href'));
 	});
-	
+	/* 
 	$('.accustpbtn<?php echo $c['module']->Mid; ?>').click(function(e){
 		//alert("hai");
 		e.preventDefault();
@@ -111,7 +142,8 @@
 		//$('.box').load($(this).attr('href'));
 		$('.box_bdy_<?php echo $c['module']->Mid; ?>').load($(this).attr('href'));
 	});
-	
+	 */
+	/* 
 	$('.custdet<?php echo $c['module']->Mid; ?>').click(function(e){
 		e.preventDefault();
 		//alert($(this).attr('href'));
@@ -120,6 +152,8 @@
 		$('.bdy_<?php echo $c['module']->Mid; ?>').load($(this).attr('href'));
 		
 	});
+ */
+/* 
 	$('.rejbtn<?php echo $c['module']->Mid; ?>').click(function(e){
 		e.preventDefault();
 		//alert($(this).attr('href'));
@@ -128,17 +162,35 @@
 		$('.bdy_<?php echo $c['module']->Mid; ?>').load($(this).attr('href'));
 		
 	});
-	
+	 */
+	/* 
 	$('.edtbtn<?php echo $c['module']->Mid; ?>').click(function(e){
 		e.preventDefault();
 		//alert($(this).attr('href'));
 		//$('.box-inner').load($(this).attr('href'));
 		$('.bdy_<?php echo $c['module']->Mid; ?>').load($(this).attr('href'));
 	});
-	
+	 */
 	$('.backbtn<?php echo $c['module']->Mid; ?>').click(function(e){
 		$('.custauhclassid').click();
 		
 	});
 	
+</script>
+
+
+<script>
+	$('.crtmem<?php echo $c['module']->Mid; ?>').click(function(e)
+	{
+		e.preventDefault();
+		$(".b1").hide();
+		$('#b2').load($(this).attr('href'));
+	});
+</script>
+
+<script>
+	$("#back").click(function() {
+		$("#b2").html("");
+		$(".b1").show();
+	})
 </script>

@@ -32,6 +32,15 @@
 			$c['CustAuth']=$this->viewcust->GetcustAuthories();
 			return view('custauthorise',compact('c'));
 		}
+
+		public function custauthorise_data()
+		{
+			$Url="custauth";
+			$c['module']=$this->Modules->GetAnyMid($Url);
+			$c['CustAuth']=$this->viewcust->GetcustAuthories();
+			return view('custauthorise_data',compact('c'));
+		}
+
 		public function show_unauthemp()
 		{
 			$Url="custauth";
