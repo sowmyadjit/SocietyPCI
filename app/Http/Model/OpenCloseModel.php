@@ -1486,7 +1486,6 @@
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
 				->where("receipt_voucher.transaction_category",4)
 				->where("receipt_voucher.bid",$BranchId)
-				->where("receipt_voucher.bid",$BranchId)
 				->where('Branch_Tran_Date',$dte)
 				->where('Branch_Branch2_Id',$BranchId)
 				->get();
@@ -1497,6 +1496,7 @@
 				->join('branch','branch.Bid','=','Branch_Branch1_Id')
 				->where('Branch_Tran_Date',$dte)
 				->where('Branch_Branch2_Id',$BranchId)
+				->where("branch_to_branch.Branch_payment_Mode", "!=", "INHAND")
 				->get();
 			/******* ADJUSTMENT CREDIT *****/
 			$id = array_merge($id1,$id2);
@@ -1504,6 +1504,7 @@
 			
 			return $id;
 		}
+
 		public function Bank_Branch($dte)
 		{
 			$uname='';
@@ -1515,6 +1516,7 @@
 			->leftJoin('addbank','addbank.Bankid','=','deposit.depo_bank_id')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","deposit.d_id")
 			->where("receipt_voucher.transaction_category",6)
+			->where("receipt_voucher.bid", $BranchId)
 			->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 			->where('deposit.Bid',$BranchId)
 			->where('deposit.date',$dte)
