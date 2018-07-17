@@ -29,9 +29,7 @@
 				<tr>
 					<th>Date</th>
 					<th>Branch Name</th>
-					<th>First Name</th>
-					<th>Middle Name</th>
-					<th>Last Name</th>
+					<th>Name</th>
 					<th>Jewel Description</th>
 					<th>Gold Rate</th>
 					<th>Loan Duration</th>
@@ -47,9 +45,7 @@
 					
 					<td>{{ $Jewel_Loan->Request_Date }}</td>
 					<td>{{ $Jewel_Loan->BName }}</td>
-					<td>{{ $Jewel_Loan->FirstName }}</td>
-					<td>{{ $Jewel_Loan->MiddleName }}</td>
-					<td>{{ $Jewel_Loan->LastName }}</td>
+					<td>{{ $Jewel_Loan->FirstName }} {{ $Jewel_Loan->MiddleName }} {{ $Jewel_Loan->LastName }}</td>
 					<td>{{ $Jewel_Loan->Jewel_Description }}</td>
 					<td>{{ $Jewel_Loan->Gold_Rate }}</td>
 					<td>{{ $Jewel_Loan->JewelLoan_Duration }}</td>
