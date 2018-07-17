@@ -831,6 +831,7 @@
 			->leftJoin('user', 'user.Uid', '=', 'request_loan.Uid')
 			->where('Auth_Status','=',"UNAUTHORISED")
 			->where('Loan_Category','=',$lid)
+			->where("request_loan.Bid", $BID)
 			->get();
 			return $id;
 		}
