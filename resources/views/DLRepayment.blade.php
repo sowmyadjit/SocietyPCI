@@ -2758,6 +2758,10 @@ console.log("amt="+bal);
 															type:"post",
 															data:'&first='+last_paid_date+'&second='+today,
 															success:function(last_to_today) {
+																if(last_paid_date > today) {
+																	console.log("last_paid_date > today");
+																	var last_to_today = 0;
+																}
 																console.log("last_to_today="+last_to_today);
 																days = parseInt(last_to_today);
 																//print_days();
