@@ -140,36 +140,6 @@
 
 
 	<script>
-		function load_data() {
-			var loading_img = `
-				<div>
-					<center>
-						<img src="img\\loading2.gif" width="50px" height="50px"/>
-					</center>
-				</div>`;
-			$("#table_data").html(loading_img);
-			$.ajax({
-				url: 'custauthorise_data',
-				type: 'post',
-				data: "",
-				success: function(data) {
-					$("#table_data").html(data);
-				}
-			});
-	
-		}
-	</script>
-	
-	<script>
-		$( document ).ready(function() {
-	
-			load_data();
-	
-		});
-	</script>
-
-
-	<script>
 		function disable_row(req_id) {
 			$("#amt_by_board_"+req_id).prop("disabled","true");
 			$("#resolution_no_"+req_id).prop("disabled","true");

@@ -702,6 +702,12 @@
 		//Show Details of UnAuthorised Personal Loans
 		public function show_unauthPLoan($id)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID = $uname->Bid;
+
 			$lid1=DB::table('loancategory')->select('LoanCategoryId')->where('LoanCategoryName','=',$id)->first();
 				$lid=$lid1->LoanCategoryId;
 			
@@ -710,6 +716,7 @@
 			->Join('members', 'members.Memid', '=' , 'request_loan.RL_MemId')
 			->where('Auth_Status','=',"UNAUTHORISED")
 			->where('Loan_Category','=',$lid)
+			->where("request_loan.Bid", $BID)
 			->get();
 			return $id;
 		}
@@ -753,6 +760,13 @@
 		//Show Details of UnAuthorised Deposit Loans
 		public function show_unauthDLoan($id)
 		{
+			
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID = $uname->Bid;
+
 				$lid1=DB::table('loancategory')->select('LoanCategoryId')->where('LoanCategoryName','=',$id)->first();
 				$lid=$lid1->LoanCategoryId;
 		
@@ -761,6 +775,7 @@
 			->leftJoin('user', 'user.Uid', '=', 'request_loan.Uid')
 			->where('Auth_Status','=',"UNAUTHORISED")
 			->where('Loan_Category','=',$lid)
+			->where("request_loan.Bid", $BID)
 			->get();
 			return $id;
 		}
@@ -803,6 +818,11 @@
 		//Show Details of UnAuthorised Staff Loans
 		public function show_unauthSLoan($id)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID = $uname->Bid;
 		
 			$lid1=DB::table('loancategory')->select('LoanCategoryId')->where('LoanCategoryName','=',$id)->first();
 				$lid=$lid1->LoanCategoryId;
@@ -850,6 +870,11 @@
 		//Show Details of UnAuthorised Jewel Loans
 		public function show_unauthJLoan($id)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID = $uname->Bid;
 		
 			$lid1=DB::table('loancategory')->select('LoanCategoryId')->where('LoanCategoryName','=',$id)->first();
 		$lid=$lid1->LoanCategoryId;
@@ -858,6 +883,7 @@
 			->leftJoin('user', 'user.Uid', '=', 'request_loan.Uid')
 			->where('Auth_Status','=',"UNAUTHORISED")
 			->where('Loan_Category','=',$lid)
+			->where("request_loan.Bid", $BID)
 			->get();
 			return $id;
 		}
