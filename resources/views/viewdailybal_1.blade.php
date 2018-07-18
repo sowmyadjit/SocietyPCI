@@ -2190,14 +2190,14 @@
 					@foreach ($trandaily['slrepay'] as $slrepay)
 						@if(strcasecmp($slrepay->SLRepay_PayMode, 'CASH') == 0)
 							<?php
-								$slrepay_cash_cr = $slrepay->SLRepay_PaidAmt;
+								$slrepay_cash_cr = $slrepay->paid_principle;
 								$slrepay_cash_cr_total += $slrepay_cash_cr;
 							?>
 							<tr>
 								<td>{{ $slrepay->SLRepay_Date }}</td>
 								<td>{{ $slrepay->StfLoan_Number }}</td>
 								<td>-{{ $slrepay->name }}({{$slrepay->Uid}})</td>
-								<td>{{ $slrepay->SLRepay_PaidAmt }}</td>
+								<td>{{ $slrepay->paid_principle }}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
@@ -2207,7 +2207,7 @@
 							</tr>
 						@else
 							<?php
-								$slrepay_adj_cr = $slrepay->SLRepay_PaidAmt;
+								$slrepay_adj_cr = $slrepay->paid_principle;
 								$slrepay_adj_cr_total += $slrepay_adj_cr;
 							?>
 							<tr>
@@ -2216,7 +2216,7 @@
 								<td>-{{ $slrepay->name }}({{$slrepay->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
-								<td>{{ $slrepay->SLRepay_PaidAmt }}</td>
+								<td>{{ $slrepay->paid_principle }}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
