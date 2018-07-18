@@ -252,19 +252,28 @@
 		
 		public function Getunauthpigmy()
 		{
-		
 			$uname='';
 			if(Auth::user())
 			$uname= Auth::user();
 			$BID=$uname->Bid;
-			return DB::table('pigmiallocation')
+			$ret_data = DB::table('pigmiallocation')
 			->join('user','pigmiallocation.Uid','=','user.Uid')
 			->join('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
-			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','Interest','max_Interest','Max_Commission','LastName','MiddleName')
+			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','Interest','max_Interest','Max_Commission','LastName','MiddleName','Agentid')
 			->where('status','=','UNAUTHORISED')
 			->where('pigmiallocation.Bid',$BID)
 			->get();
+
+			foreach($ret_data as $key_pg => $row_pg) {
+				$agent_row = DB::table("user")
+					->where("user.Uid",$row_pg->Agentid)
+					->first();
+				$agent_name = "{$agent_row->FirstName} {$agent_row->MiddleName} {$agent_row->LastName}";
+				$ret_data[$key_pg]->agent_name = $agent_name;
+			}
+			return $ret_data;
 		}
+
 		public function AcceptAccountpigmy($id)
 		{
 			$uname='';

@@ -115,6 +115,16 @@
 			$p['data']=$this->viewcust->Getunauthpigmy();
 			return view('anauthpigmyacc',compact('p'));
 		}
+		
+		public function authpigmy_data()
+		{
+			
+			$Url="custauth";
+			$p['module']=$this->Modules->GetAnyMid($Url);
+			$p['data']=$this->viewcust->Getunauthpigmy();
+			return view('anauthpigmyacc_data',compact('p'));
+		}
+
 		public function accept_accountpigmy($id)
 		{
 			$acceptaccounpigmyt=$this->viewcust->AcceptAccountpigmy($id);
