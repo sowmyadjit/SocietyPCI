@@ -2810,13 +2810,14 @@
 							"pigmiallocation.PigmiAllocID",
 							"PigReport_TranDate",
 							"Amount",
-							"Transaction_Type"
+							"Transaction_Type",
+							"pigmi_transaction.Agentid"
 						)
 				->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","{$table}.PigmiAllocID")
 				->where("{$table}.tran_reversed","=","NO")
 				->where("{$table}.Bid","=",$Bid)
 				->where("{$table}.service_charge","=",0)
-				->where("{$table}.Agentid","=",$data["agent_uid"]);
+				->whereIn("{$table}.Agentid",[$data["agent_uid"], 0]);
 			if(!empty($data["allocation_id"])) {
 				$all_pigmi_transaction = $all_pigmi_transaction->where("pigmiallocation.PigmiAllocID","=",$data["allocation_id"]);
 			}
@@ -2824,14 +2825,33 @@
 //			print_r($all_pigmi_transaction);exit();
 				
 				$tran_date_arr = [];
+			$other_total = 0;
 			$k = -1;
 			foreach($all_pigmi_transaction as $row_all_tran) {
 				$tran_date_arr[$row_all_tran->PigmiAllocID][] = $row_all_tran->PigReport_TranDate;
 				$all_pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"][] = $row_all_tran;
-				if(isset($pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"])) {
-					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] += $row_all_tran->Amount;
-				} else {
-					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] = $row_all_tran->Amount;
+
+				if($row_all_tran->Agentid != 0) { // THROUGH AGENT
+					$temp_amount = 0;
+					if($row_all_tran->Transaction_Type == "CREDIT") {
+						$temp_amount = $row_all_tran->Amount;
+					} else {
+						$temp_amount = (-1) * $row_all_tran->Amount;
+					}
+
+					if(isset($pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"])) {
+						$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] += $temp_amount;
+					} else {
+						$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] = $temp_amount;
+					}
+				} else { // NOT THROUGH AGENT
+					$temp_amount = 0;
+					if($row_all_tran->Transaction_Type == "CREDIT") {
+						$temp_amount = $row_all_tran->Amount;
+					} else {
+						$temp_amount = (-1) * $row_all_tran->Amount;
+					}
+					$other_total += $temp_amount;
 				}
 			}//return 'show';
 //			print_r($tran_date_arr);exit();
@@ -2899,6 +2919,7 @@
 					->sum("Amount");
 				
 				$ret_data["pg_tr"][$i]["day_sum_row"] = 0;
+				$ret_data["pg_tr"][$i]["other_total"] = 0;
 				$ret_data["pg_tr"][$i]["col_sum"] = 0;
 				$ret_data["pg_tr"][$i]["prev_amt"] = $credit_amount - $debit_amount - $other_debit_amt;
 				$ret_data["pg_tr"][$i]["col_sum"] = $credit_amount - $debit_amount - $other_debit_amt;
@@ -2911,7 +2932,8 @@
 					$ret_data["pg_tr"][$i]["{$tran_date}"] = $day_amt;
 					$ret_data["pg_tr"][$i]["day_sum_row"] += $day_amt;
 				}
-				$ret_data["pg_tr"][$i]["col_sum"] += $ret_data["pg_tr"][$i]["day_sum_row"];
+				$ret_data["pg_tr"][$i]["other_total"] = $other_total;
+				$ret_data["pg_tr"][$i]["col_sum"] = $ret_data["pg_tr"][$i]["col_sum"] + $ret_data["pg_tr"][$i]["day_sum_row"] + $ret_data["pg_tr"][$i]["other_total"];
 				$ret_data["dates_col_total_sum"] += $ret_data["pg_tr"][$i]["day_sum_row"];
 			}
 			
