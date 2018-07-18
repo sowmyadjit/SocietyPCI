@@ -2830,8 +2830,8 @@
 			$ret_data["allocation_details"]["start_date"] = $allocation->StartDate;
 			$ret_data["allocation_details"]["end_date"] = $allocation->EndDate	;
 			$ret_data["allocation_details"]["sanctioned_amount"] = $allocation->LoanAmt;
-			$ret_data["allocation_details"]["interest_rate"] = ""; // $allocation->LoanType_Interest . "%";
-			$ret_data["allocation_details"]["post_due_date_interest_rate"] = ""; // $allocation->loan_due_interest . "%";
+			$ret_data["allocation_details"]["interest_rate"] = "13"; // $allocation->LoanType_Interest . "%";
+			$ret_data["allocation_details"]["post_due_date_interest_rate"] = "3"; // $allocation->loan_due_interest . "%";
 			$ret_data["allocation_details"]["emi"] = "";//$allocation->EMI_Amount;
 			//print_r($ret_data);exit();
 //		ALLOCATION DETAILS END
@@ -2874,7 +2874,7 @@
 							"{$table}.SLRepay_Date",
 							"{$table}.SLRepay_PaidAmt",
 							"{$table}.paid_principle",
-							"{$table}.paid_interest"
+							"{$table}.SLRepay_Interest"
 							// "{$table}.interest_paid_upto"
 						)
 				->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","staffloan_repay.SLRepay_SLAllocID")
@@ -2892,7 +2892,7 @@
 				$ret_data["repayments"][$i]["repayment_date"] = $row_repay->SLRepay_Date;
 				$ret_data["repayments"][$i]["repayment_total_paid_amount"] = $row_repay->SLRepay_PaidAmt;
 				$ret_data["repayments"][$i]["repayment_paid_principle_amount"] = $row_repay->paid_principle;
-				$ret_data["repayments"][$i]["repayment_paid_interest_amount"] = $row_repay->paid_interest;
+				$ret_data["repayments"][$i]["repayment_paid_interest_amount"] = $row_repay->SLRepay_Interest;
 				
 				$table = "charges_tran";
 				$charges = array();
@@ -2924,7 +2924,7 @@
 //				$this->get_paid_upto($fn_data);
 				
 				$repay_principle_sum += $row_repay->paid_principle;
-				$repay_interest_sum += $row_repay->paid_interest;
+				$repay_interest_sum += $row_repay->SLRepay_Interest;
 			}
 //		REPAYMENT DETAILS END
 			$ret_data["allocation_details"]["balance"] = $allocation->LoanAmt - $repay_principle_sum;
