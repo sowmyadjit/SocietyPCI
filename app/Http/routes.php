@@ -728,6 +728,7 @@
 				
 				//ViewsharesController
 				Route::get('/authmemb','ViewsharesController@show_shares');
+				Route::post('/viewshares_data','ViewsharesController@viewshares_data');
 				Route::get('/memberejectview','ViewsharesController@show_rejshares');
 				Route::get('/acceptshares/{mid}/{purid}','ViewsharesController@accept_shares');
 				Route::get('/acceptsuspendshares/{purid}','ViewsharesController@accept_suspendshares');

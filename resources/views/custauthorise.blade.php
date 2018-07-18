@@ -177,11 +177,11 @@
 		//$('.box-inner').load($(this).attr('href'));
 		$('.bdy_<?php echo $c['module']->Mid; ?>').load($(this).attr('href'));
 	});
-	 */
 	$('.backbtn<?php echo $c['module']->Mid; ?>').click(function(e){
 		$('.custauhclassid').click();
 		
 	});
+	 */
 	
 </script>
 

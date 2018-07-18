@@ -27,21 +27,21 @@
 					<td>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="EDIT" id="edit_{{ $customer->Custid }}" class="btn btn-primary btn-sm edtbtn<?php echo $c['module']->Mid; ?>" href="customerdetails/{{ $customer->Custid }}/edit"  data="{{ $customer->Custid }}"/>
+								<input type="button" value="EDIT" id="edit_{{ $customer->Custid }}" class="btn btn-primary btn-sm edtbtn<?php echo $c['module']->Mid; ?>" href="customerdetails/{{ $customer->Custid }}/edit"  data="{{ $customer->Custid }}" />
 							</div>
 						</div>
 					</td>
 					<td>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="ACCEPT" id="accept_{{ $customer->Custid }}" class="btn btn-success btn-sm accustpbtn<?php echo $c['module']->Mid; ?>" href="authorisecust/{{ $customer->Custid }}"   data="{{ $customer->Custid }}"/>
+								<input type="button" value="ACCEPT" id="accept_{{ $customer->Custid }}" class="btn btn-success btn-sm accustpbtn<?php echo $c['module']->Mid; ?>" href="authorisecust/{{ $customer->Custid }}"   data="{{ $customer->Custid }}" />
 							</div>
 						</div>
 					</td>
 					<td>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="REJECT" id="reject_{{ $customer->Custid }}" class="btn btn-danger btn-sm rejbtn<?php echo $c['module']->Mid; ?>" href="rejectcust/{{ $customer->Custid }}"   data="{{ $customer->Custid }}"/>
+								<input type="button" value="REJECT" id="reject_{{ $customer->Custid }}" class="btn btn-danger btn-sm rejbtn<?php echo $c['module']->Mid; ?>" href="rejectcust/{{ $customer->Custid }}"   data="{{ $customer->Custid }}" />
 							</div>
 						</div>
 					</td>

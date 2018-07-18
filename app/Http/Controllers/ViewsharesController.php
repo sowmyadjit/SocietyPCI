@@ -16,7 +16,8 @@ class ViewsharesController extends Controller
        
 		$this->viewshares= new ViewsharesModel;
 		$this->Modules= new ModulesModel;
-    }
+	}
+	
 	public function show_shares()
 	{
 		$Url="custauth";
@@ -24,6 +25,15 @@ class ViewsharesController extends Controller
 		$m['data']=$this->viewshares->Getshares();
 		return view('viewshares',compact('m'));
 	}
+	
+	public function viewshares_data()
+	{
+		$Url="custauth";
+		$m['module']=$this->Modules->GetAnyMid($Url);
+		$m['data']=$this->viewshares->Getshares();
+		return view('viewshares_data',compact('m'));
+	}
+
 	public function show_rejshares()
 	{
 		$Url="custauth";
