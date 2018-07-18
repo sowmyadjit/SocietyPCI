@@ -732,7 +732,9 @@
 				Route::get('/memberejectview','ViewsharesController@show_rejshares');
 				Route::get('/acceptshares/{mid}/{purid}','ViewsharesController@accept_shares');
 				Route::get('/acceptsuspendshares/{purid}','ViewsharesController@accept_suspendshares');
+				Route::get('/acceptsuspendshares/{purid}/{amt}','ViewsharesController@accept_suspendshares');
 				Route::get('/membesuspendview','ViewsharesController@show_suspendedshares');
+				Route::post('/membesuspendview_data','ViewsharesController@membesuspendview_data');
 				Route::get('/rejectshare/{mid}/{purid}','ViewsharesController@reject_Shares');
 				Route::get('/AcceptRejectedShare/{mid}/{purid}','ViewsharesController@AcceptRejectedShare');
 				Route::get('/RejectSuspendShare/{purid}','ViewsharesController@RejectSuspendShare');

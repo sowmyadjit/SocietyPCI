@@ -156,6 +156,7 @@
 </script>
 
 <script>
+/*
 	function accept_suspended_share(purchase_share_id) {
 		var url = "acceptsuspendshares/" + purchase_share_id;
 //		alert(url);
@@ -170,6 +171,7 @@
 			}
 		});
 	}
+	*/
 </script>
 
 
@@ -224,6 +226,7 @@
 		e.preventDefault();
 		$(".b1").hide();
 		$('#b2').load($(this).attr('href'));
+		$("#back").hide();
 	});
 </script>
 

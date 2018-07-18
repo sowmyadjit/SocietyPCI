@@ -73,6 +73,15 @@ class ViewsharesController extends Controller
 		$m['data']=$this->viewshares->Getsuapendedshares();
 		return view('acceptsuspendedshares',compact('m'));
 	}
+	
+	public function membesuspendview_data()
+	{
+		$Url="custauth";
+		$m['module']=$this->Modules->GetAnyMid($Url);
+		$m['data']=$this->viewshares->Getsuapendedshares();
+		return view('acceptsuspendedshares_data',compact('m'));
+	}
+
 /*	public function accept_suspendshares($purid)
 	{
 
