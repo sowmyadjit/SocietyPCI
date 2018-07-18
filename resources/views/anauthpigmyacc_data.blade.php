@@ -18,8 +18,8 @@
 							<tr>
 								<td class="hidden">{{ $pigmitype->PigmiTypeid }}</td>
 								<td class="hidden">{{ $pigmitype->PigmiAllocID }}</td>
-								<td>{{ $pigmitype->agent_name}}</td>
 								<td>{{ $pigmitype->FirstName }} {{ $pigmitype->MiddleName }} {{ $pigmitype->LastName }}</td>
+								<td>{{ $pigmitype->agent_name}}</td>
 								<td>{{ $pigmitype->Pigmi_Type }}</td>	
 								<td>{{ $pigmitype->Interest}}</td>
 								<td>{{$pigmitype->Max_Commission}}</td>

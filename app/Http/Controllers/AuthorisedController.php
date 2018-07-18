@@ -80,6 +80,7 @@
 			return redirect('custrejectview');
 			
 		}
+		
 		public function show_anauthaccount()
 		{
 			$Url="custauth";
@@ -88,6 +89,16 @@
 			$a['data_joint']=$this->viewcust->Getunauthaccount_joint();
 			return view('anauthaccount',compact('a'));
 		}
+		
+		public function authaccount_data()
+		{
+			$Url="custauth";
+			$a['module']=$this->Modules->GetAnyMid($Url);
+			$a['data']=$this->viewcust->Getunauthaccount();
+			$a['data_joint']=$this->viewcust->Getunauthaccount_joint();
+			return view('anauthaccount_data',compact('a'));
+		}
+
 		public function accept_account($id)
 		{
 			$acceptaccount=$this->viewcust->AcceptAccount($id);

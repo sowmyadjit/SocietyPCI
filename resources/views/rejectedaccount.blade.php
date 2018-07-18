@@ -77,7 +77,7 @@
 	<center>
 		<div class="form-group">
 			<div class="col-sm-12">
-				<input type="button" value="Back" class="btn btn-info btn-sm backbtn<?php echo $rejectacc['module']->Mid; ?>" />
+				<input type="button" value="Back" id="back_i" class="btn btn-info btn-sm backbtn<?php echo $rejectacc['module']->Mid; ?>" />
 			</div>
 		</div>
 	</center>
@@ -141,3 +141,10 @@
 		
 	});
 	</script>	
+
+	<script>
+		$("#back_i").click(function() {
+			$("#back").show();
+			$("#back").trigger("click");
+		});
+	</script>

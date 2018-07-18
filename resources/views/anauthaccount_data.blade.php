@@ -1,22 +1,4 @@
 
-
-<div class="bdy_<?php echo $a['module']->Mid; ?> box-inner b1">
-	
-	<div class="box-header well" data-original-title="">
-		<h2><i class="glyphicon glyphicon-globe"></i> Account Detail</h2>
-		
-		
-	</div>
-	
-	<div class="box-content">
-		<div class="alert alert-info">
-			<a href="rejectedaccount" class="btn btn-default rejacc<?php echo $a['module']->Mid; ?>">Rejected Account</a>
-			<button class="btn-sm glyphicon glyphicon-refresh" id="refresh_data"></button>
-		</div>
-
-		<div id="table_data"></div>
-		
-	<?php /*
 		<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 			
 			<thead>
@@ -58,21 +40,21 @@
 					<td>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="EDIT" class="btn btn-primary btn-sm edtbtn<?php echo $a['module']->Mid; ?>" href="accountdetails/{{ $createaccount->Accid }}/edit"/>
+								<input type="button" value="EDIT" id="edit_{{ $createaccount->Accid }}" class="btn btn-primary btn-sm edtbtn<?php echo $a['module']->Mid; ?>" href="accountdetails/{{ $createaccount->Accid }}/edit" />
 							</div>
 						</div>
 					</td>
 					<td>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="ACCEPT" class="btn btn-success btn-sm accbtn<?php echo $a['module']->Mid; ?>" href="acceptaccount/{{ $createaccount->Accid }}"/>
+								<input type="button" value="ACCEPT" id="accept_{{ $createaccount->Accid }}" class="btn btn-success btn-sm accbtn<?php echo $a['module']->Mid; ?>" href="acceptaccount/{{ $createaccount->Accid }}" data="{{ $createaccount->Accid }}" />
 							</div>
 						</div>
 					</td>
 					<td>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="REJECT" class="btn btn-danger btn-sm rejbtn<?php echo $a['module']->Mid; ?>" href="rejectaccount/{{ $createaccount->Accid }}"/>
+								<input type="button" value="REJECT" id="reject_{{ $createaccount->Accid }}" class="btn btn-danger btn-sm rejbtn<?php echo $a['module']->Mid; ?>" href="rejectaccount/{{ $createaccount->Accid }}" data="{{ $createaccount->Accid }}" />
 							</div>
 						</div>
 					</td>
@@ -129,130 +111,79 @@
 				
 			</tbody>
 		</table>
-	*/?>
+
 		
-	</div>	
-	
-</div>	
-
-<div id="b2">.</div>
-<div id="b3">
-	<center>
-		<div class="form-group">
-			<div class="col-sm-12">
-				<input type="button" id="back" value="Back" class="btn btn-danger btn-sm" />
-			</div>
-		</div>
-	</center>	
-</div>
-
-
-
-
-
 
 
 <script>
-	/* 
-	$('.clickme<?php echo $a['module']->Mid; ?>').click(function(e)
-	{
-		$('.accclassid').click();
-	}); 
-	$('.crtacc<?php echo $a['module']->Mid; ?>').click(function(e)
-	{
-		e.preventDefault();
-		//alert($(this).attr('href'));
-		//$('.box').load($(this).attr('href'));
-		$('.bdy_<?php echo $a['module']->Mid; ?>').load($(this).attr('href'));
-	});
-	
-	
-	$('.viwbtn<?php echo $a['module']->Mid; ?>').click(function(e){
-		e.preventDefault();
-		//alert($(this).attr('href'));
-		//$('.box-inner').load($(this).attr('href'));
-		$('.bdy_<?php echo $a['module']->Mid; ?>').load($(this).attr('href'));
-	});
-	$('.accbtn<?php echo $a['module']->Mid; ?>').click(function(e){
-		e.preventDefault();
-		//alert($(this).attr('href'));
-		//$('.box-inner').load($(this).attr('href'));
-		$('.bdy_<?php echo $a['module']->Mid; ?>').load($(this).attr('href'));
-	});
-	
-	$('.edtbtn<?php echo $a['module']->Mid; ?>').click(function(e){
-		e.preventDefault();
-		//alert($(this).attr('href'));
-		//$('.box-inner').load($(this).attr('href'));
-		$('.bdy_<?php echo $a['module']->Mid; ?>').load($(this).attr('href'));
-	});
-	
-	$('.backbtn<?php echo $a['module']->Mid; ?>').click(function(e){
-		$('.custauhclassid').click();
-		
-	});
-	$('.rejbtn<?php echo $a['module']->Mid; ?>').click(function(e){
-		e.preventDefault();
-		//alert($(this).attr('href'));
-		
-		//$('.box-inner').load($(this).attr('href'));
-		$('.bdy_<?php echo $a['module']->Mid; ?>').load($(this).attr('href'));
-		
-	});
-	 */
-</script>
-
-
-
-<script>
-	function load_data() {
-		var loading_img = `
-			<div>
-				<center>
-					<img src="img\\loading2.gif" width="50px" height="50px"/>
-				</center>
-			</div>`;
-		$("#table_data").html(loading_img);
-		$.ajax({
-			url: 'authaccount_data',
-			type: 'post',
-			data: "",
-			success: function(data) {
-				$("#table_data").html(data);
-			}
-		});
-
-	}
-</script>
-
-<script>
-	$( document ).ready(function() {
-
-		load_data();
-
-	});
-</script>
-
-<script>
-	$("#back").click(function() {
-		$("#b2").html("");
-		$(".b1").show();
-	})
-</script>
-
-<script>
-	$("#refresh_data").click(function() {
-		load_data();
-	})
-</script>
-
-
-<script>
-	$('.rejacc<?php echo $a['module']->Mid; ?>').click(function(e)
+	$('.viwbtn<?php echo $a['module']->Mid; ?>').click(function(e)
 	{
 		e.preventDefault();
 		$(".b1").hide();
 		$('#b2').load($(this).attr('href'));
 		$("#back").hide();
+	});
+</script>
+
+<script>
+	$('.edtbtn<?php echo $a['module']->Mid; ?>').click(function(e)
+	{
+		e.preventDefault();
+		$(".b1").hide();
+		$('#b2').load($(this).attr('href'));
+		$("#back").hide();
+	});
+</script>
+
+<script>
+	function disable_row(acc_id) {
+		$("#edit_"+acc_id).prop("disabled",true);
+		$("#accept_"+acc_id).prop("disabled",true);
+		$("#reject_"+acc_id).prop("disabled",true);
+	}
+</script>
+
+<script>
+	$('.accbtn<?php echo $a['module']->Mid; ?>').click(function(e)
+	{
+		var url = $(this).attr('href');
+		var acc_id = $(this).attr('data');
+		// console.log("url: "+url);
+		var parent = $(this).parent();
+
+		$.ajax({
+			url: url,
+			type: 'get',
+			data: "",
+			success: function(data) {
+				disable_row(acc_id);
+				parent.html("<b>ACCEPTED</b>");
+				// console.log($("#edit_"+acc_id).prop("disabled",true));
+				// load_data();
+			}
+		});
+		
+	});
+</script>
+
+<script>
+	$('.rejbtn<?php echo $a['module']->Mid; ?>').click(function(e)
+	{
+		var url = $(this).attr('href');
+		var acc_id = $(this).attr('data');
+		// console.log("url: "+url);
+		var parent = $(this).parent();
+
+		$.ajax({
+			url: url,
+			type: 'get',
+			data: "",
+			success: function(data) {
+				disable_row(acc_id);
+				parent.html("<b>REJECTED</b>");
+				// load_data();
+			}
+		});
+		
 	});
 </script>

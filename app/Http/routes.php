@@ -80,6 +80,7 @@
 				//AuthoriseController
 				Route::get('/custauth','AuthorisedController@show_custauth');
 				Route::get('/authaccount','AuthorisedController@show_anauthaccount');
+				Route::post('/authaccount_data','AuthorisedController@authaccount_data');
 				Route::get('/authcust','AuthorisedController@show_custAuthories');
 				Route::post('/custauthorise_data','AuthorisedController@custauthorise_data');
 				Route::get('/custrejectview','AuthorisedController@show_custrejAuthories');
