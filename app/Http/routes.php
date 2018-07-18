@@ -90,6 +90,7 @@
 				Route::get('/rejectcust/{id}','AuthorisedController@reject_custAuthories');
 				Route::get('/acceptaccount/{id}','AuthorisedController@accept_account');
 				Route::get('/rejectedaccount','AuthorisedController@reject_accountview');
+				Route::post('/rejectedaccount_data','AuthorisedController@rejectedaccount_data');
 				Route::get('/rejectaccount/{id}','AuthorisedController@reject_account');
 				Route::get('/acceptaccountpigmy/{id}','AuthorisedController@accept_accountpigmy');
 				Route::get('/rejectedaccountpigmy/{id}','AuthorisedController@reject_accountpigmy');

@@ -118,6 +118,14 @@
 			return view('rejectedaccount',compact('rejectacc'));
 		}
 		
+		public function rejectedaccount_data()
+		{
+			$Url="custauth";
+			$rejectacc['module']=$this->Modules->GetAnyMid($Url);
+			$rejectacc['data']=$this->viewcust->rejectAccountview();
+			return view('rejectedaccount_data',compact('rejectacc'));
+		}
+		
 		public function show_unauthpigmy()
 		{
 			
