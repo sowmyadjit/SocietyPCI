@@ -57,11 +57,13 @@
 		</tbody>
 	</table>
 	
+<?php /*
 	<div id='pagei<?php echo $loandeposit['module']->Mid; ?>'>
 		
 		{!!$loandeposit['datadeposit']->appends(Input::except('page'))->render() !!}
 		
 	</div>
+*/?>
 </div>
 
 

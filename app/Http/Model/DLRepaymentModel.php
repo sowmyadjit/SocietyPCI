@@ -1427,7 +1427,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else if($PLoanTId=="CSL")
@@ -1438,7 +1439,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else if($PLoanTId=="AMTL")
@@ -1449,7 +1451,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else if($PLoanTId=="CMTL")
@@ -1460,7 +1463,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else if($PLoanTId=="ALL")
@@ -1469,7 +1473,8 @@
 					$id=DB::table('personalloan_repay')->select('PLRepay_Id','PLRepay_Date','PLRepay_PaidAmt','PLRepay_CalculatedInterest','personalloan_repay.RemainingInterest_Amt','PLRepay_PaidInterest','PLRepay_Amtpaidtoprincpalamt','PLRepay_EMIremaining','personalloan_allocation.RemainingLoan_Amt','PersLoan_Number')
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				
@@ -1480,7 +1485,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
 					->where('PLRepay_PLAllocID','=',$loanrepayid)
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				
@@ -1495,7 +1501,8 @@
 					->leftJoin('depositeloan_allocation', 'depositeloan_allocation.DepLoanAllocId', '=' , 'depositeloan_repay.DLRepay_DepAllocID')
 					->leftJoin('user', 'user.Uid', '=' , 'depositeloan_allocation.DepLoan_Uid')
 					->whereRaw("DATE(depositeloan_repay.DLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else
@@ -1506,7 +1513,8 @@
 					->leftJoin('user', 'user.Uid', '=' , 'depositeloan_allocation.DepLoan_Uid')
 					->whereRaw("DATE(depositeloan_repay.DLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
 					->where('DLRepay_DepAllocID','=',$loanrepayid)
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				
@@ -1517,7 +1525,8 @@
 				->select('staffloan_allocation.Uid','StfLoan_Number','staffloan_allocation.Bid','LoanAmt','otherCharges','Book_FormCharges','AjustmentCharges','ShareCharges','PayableAmt','LoandurationYears','LoanduratiobDays','Staff_Surety','Loan_Type','StartDate','EndDate','StaffLoan_LoanRemainingAmount','EMI_Amount','StfLoanAllocID')
 				->leftJoin('user', 'user.Uid', '=' , 'staffloan_allocation.Uid')
 				->whereRaw("DATE(staffloan_allocation.StartDate) BETWEEN '".$start."' AND '".$end."'")
-				->paginate(20);
+				// ->paginate(20);
+				->get();
 				return $id;
 			}
 			
@@ -1528,7 +1537,8 @@
 				->leftJoin('jewelloan_allocation', 'jewelloan_allocation.JewelLoanId', '=' , 'jewelloan_repay.JLRepay_JLAllocID')
 				->leftJoin('user', 'user.Uid', '=' , 'jewelloan_allocation.JewelLoan_Uid')
 				->whereRaw("DATE(jewelloan_repay.JLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-				->paginate(20);
+				// ->paginate(20);
+				->get();
 				return $id;
 			}
 			
