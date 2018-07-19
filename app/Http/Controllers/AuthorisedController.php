@@ -65,6 +65,15 @@
 			$c1['CustRejList']=$this->viewcust->GetcustrejAuthories();
 			return view('custrejectview',compact('c1'));
 		}
+
+		public function custrejectview_data()
+		{
+			
+			$Url="custauth";
+			$c1['module']=$this->Modules->GetAnyMid($Url);
+			$c1['CustRejList']=$this->viewcust->GetcustrejAuthories();
+			return view('custrejectview_data',compact('c1'));
+		}
 		
 		public function accept_custAuthories($id)
 		{

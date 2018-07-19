@@ -1,10 +1,17 @@
-<div class="bdy_<?php echo $c1['module']->Mid; ?> box-inner">
+<div class="bdy_<?php echo $c1['module']->Mid; ?> box-inner b1_i">
 	<div class="box-header well" data-original-title="">
 		<h2><i class="glyphicon glyphicon-user"></i> Rejected customer Detail</h2>
 		
 	</div>
 	
 	<div class="box-content">
+		<div class="alert alert-info">
+			<button class="btn-sm glyphicon glyphicon-refresh" id="refresh_data_i"></button>
+		</div>
+
+		<div id="table_data_i"></div>
+
+<?php /*
 		
 		<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 			
@@ -51,9 +58,24 @@
 				@endforeach
 			</tbody>
 		</table>
+*/?>
+
 		<br/><br/>
 	</div>
 	
+</div>
+
+
+
+<div id="b2_i">.</div>
+<div id="b3_i">
+	<center>
+		<div class="form-group">
+			<div class="col-sm-12">
+				<input type="button" id="back_i" value="Back" class="btn btn-info btn-sm" />
+			</div>
+		</div>
+	</center>	
 </div>
 
 
@@ -62,7 +84,7 @@
 
 
 <script>
-	
+	/*
 	$('.clickme').click(function(e)
 	{
 		$('.memclassid').click();
@@ -118,5 +140,57 @@
 		$('.custauhclassid').click();
 		
 	});
-	
+	*/
+</script>
+
+
+
+
+<script>
+	function load_data_i() {
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$("#table_data_i").html(loading_img);
+		$.ajax({
+			url: 'custrejectview_data',
+			type: 'post',
+			data: "",
+			success: function(data) {
+				$("#table_data_i").html(data);
+			}
+		});
+
+	}
+</script>
+
+<script>
+	$( document ).ready(function() {
+
+		load_data_i();
+
+	});
+</script>
+
+<script>
+	var step = 0;
+	$("#back_i").click(function() {
+		if(step == 0) {
+			$("#back").trigger("click");
+			$("#back").show();
+		} else {
+			step--;
+			$("#b2_i").html("");
+			$(".b1_i").show();
+		}
+	})
+</script>
+
+<script>
+	$("#refresh_data_i").click(function() {
+		load_data_i();
+	})
 </script>
