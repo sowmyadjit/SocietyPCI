@@ -1288,7 +1288,7 @@
 				$subhead=$head_sub->subhead;
 				
 				
-				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"SL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+				$chargtabid[]=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"SL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -1311,9 +1311,17 @@
 			$totrem=$LoanRem-$payAmt;
 			$acid=$id['slacid'];
 			$actid=$id['slactid'];
-			
-			$slTran=DB::table('staffloan_repay')->InsertGetId(['SLRepay_SLAllocID'=>$DepAlID,'SLRepay_PaidAmt'=>$id['slpayamt'],'SLRepay_PayMode'=>$id['slPayMode'],'SLRepay_Bid'=>$branch,'SLRepay_Created_By'=>$UID,'SLRepay_Date'=>$RepayDte]);
-			
+
+			/****** ******/
+			$prev_remaining_amount = DB::table("staffloan_allocation")->where('StfLoanAllocID',$DepAlID)->value("StaffLoan_LoanRemainingAmount");
+			$total_paid = $id['slpayamt'];
+			$interest_paid = $id["slintamt"];
+			$principle_paid = $total_paid - $interest_paid - $chargsum;
+			$remaining_amount = $prev_remaining_amount - $principle_paid;
+			/****** ******/
+
+			$slTran=DB::table('staffloan_repay')->InsertGetId(['SLRepay_SLAllocID'=>$DepAlID,'SLRepay_PaidAmt'=>$id['slpayamt'],'SLRepay_PayMode'=>$id['slPayMode'],'SLRepay_Bid'=>$branch,'SLRepay_Created_By'=>$UID,'SLRepay_Date'=>$RepayDte,'SLRepay_Interest'=>$interest_paid,'paid_principle'=>$principle_paid]);
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
 				$fn_data["rv_transaction_id"] = $slTran;
@@ -1324,10 +1332,17 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+			// print_r($chargtabid);
+			foreach($chargtabid as $key => $value) {
+				DB::table("charges_tran")
+					->where("charg_id", $value)
+					->update(["repay_id"=>$slTran]);
+			}
 
 			DB::table('staffloan_allocation')
 			->where('StfLoanAllocID',$DepAlID)
-			->update(['StaffLoan_LoanRemainingAmount'=>$totrem]);
+			// ->update(['StaffLoan_LoanRemainingAmount'=>$totrem]);
+			->update(['StaffLoan_LoanRemainingAmount'=>$remaining_amount, "LastPaidDate"=>$RepayDte]);
 			
 			if($paymode=="CASH")
 			{

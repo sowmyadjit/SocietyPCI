@@ -463,6 +463,7 @@
 			$slall['charges']=$request->input('charges');
 			$slall['amount']=$request->input('amount');
 			$slall['xsl']=$request->input('xsl');
+			$slall['slintamt']=$request->input('slintamt');
 			
 			$id=$this->pigmtDLrepay->StaffLoanRepay($slall);
 			return redirect('/');
