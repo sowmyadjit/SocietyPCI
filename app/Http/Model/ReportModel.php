@@ -2825,15 +2825,20 @@
 //			print_r($all_pigmi_transaction);exit();
 				
 				$tran_date_arr = [];
-			$other_total = 0;
 			$k = -1;
 			foreach($all_pigmi_transaction as $row_all_tran) {
 				$tran_date_arr[$row_all_tran->PigmiAllocID][] = $row_all_tran->PigReport_TranDate;
 				$all_pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"][] = $row_all_tran;
 
+
+				
+				if(! isset($pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"])) {
+					$other_total["{$row_all_tran->PigmiAllocID}"] = 0;
+				}
+
 				if($row_all_tran->Agentid != 0) { // THROUGH AGENT
 					$temp_amount = 0;
-					if($row_all_tran->Transaction_Type == "CREDIT") {
+					if(strcasecmp($row_all_tran->Transaction_Type, "CREDIT") == 0) {
 						$temp_amount = $row_all_tran->Amount;
 					} else {
 						$temp_amount = (-1) * $row_all_tran->Amount;
@@ -2846,14 +2851,15 @@
 					}
 				} else { // NOT THROUGH AGENT
 					$temp_amount = 0;
-					if($row_all_tran->Transaction_Type == "CREDIT") {
+					if(strcasecmp($row_all_tran->Transaction_Type, "CREDIT") == 0) {
 						$temp_amount = $row_all_tran->Amount;
 					} else {
 						$temp_amount = (-1) * $row_all_tran->Amount;
 					}
-					$other_total += $temp_amount;
+					$other_total["{$row_all_tran->PigmiAllocID}"] += $temp_amount;
 				}
-			}//return 'show';
+			}
+			// print_r($other_total);exit();
 //			print_r($tran_date_arr);exit();
 			foreach($tran_date_arr as $key_tran_date => $row_tran_date) {
 //				print_r($row_tran_date);exit();
@@ -2932,7 +2938,7 @@
 					$ret_data["pg_tr"][$i]["{$tran_date}"] = $day_amt;
 					$ret_data["pg_tr"][$i]["day_sum_row"] += $day_amt;
 				}
-				$ret_data["pg_tr"][$i]["other_total"] = $other_total;
+				$ret_data["pg_tr"][$i]["other_total"] = $other_total[$row_alloc->PigmiAllocID];
 				$ret_data["pg_tr"][$i]["col_sum"] = $ret_data["pg_tr"][$i]["col_sum"] + $ret_data["pg_tr"][$i]["day_sum_row"] + $ret_data["pg_tr"][$i]["other_total"];
 				$ret_data["dates_col_total_sum"] += $ret_data["pg_tr"][$i]["day_sum_row"];
 			}
