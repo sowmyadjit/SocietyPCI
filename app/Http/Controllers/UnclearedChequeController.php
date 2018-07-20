@@ -36,8 +36,10 @@
 			$Url="unclearedcheque";
 			$uc=$this->Modules->GetAnyMid($Url);
 			//$uc['data']=$this->unclrcheque->GetModuleData();
-			return view('UnclearedCheque',compact('uc'));
+			// return view('UnclearedCheque',compact('uc'));
+			return view('UnclearedCheque2',compact('uc'));
 		}
+
 		public function cheque_clear(Request $request)
 		{
 			$chqaccept['cheqchrge']=$request->input('cheqchrge');

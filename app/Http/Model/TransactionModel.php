@@ -260,6 +260,11 @@
 
 			$table = "jewelloan_allocation";
 			$transaction_category = 20;
+			if($data["tran_type"] == "CREDIT") {
+				$receipt_voucher_type = [1];
+			} else {
+				$receipt_voucher_type = [2,3];
+			}
 
 			$ret_data = '';
 			$ret_data = DB::table($table)
@@ -283,7 +288,7 @@
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.JewelLoanId")
 				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("receipt_voucher.receipt_voucher_type",1)
+				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				
@@ -307,6 +312,11 @@
 
 			$table = "jewelloan_allocation";
 			$transaction_category = 20;
+			if($data["tran_type"] == "CREDIT") {
+				$receipt_voucher_type = [1];
+			} else {
+				$receipt_voucher_type = [2,3];
+			}
 
 			$ret_data = '';
 			$ret_data = DB::table($table)
@@ -327,7 +337,7 @@
 				->join("user","user.Uid","=","{$table}.JewelLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.JewelLoanId")
 				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("receipt_voucher.receipt_voucher_type",2)
+				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				
@@ -404,6 +414,11 @@
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
 			$table = "depositeloan_allocation";
 			$transaction_category = 17;
+			if($data["tran_type"] == "CREDIT") {
+				$receipt_voucher_type = [1];
+			} else {
+				$receipt_voucher_type = [2,3];
+			}
 
 			$ret_data = '';
 			$ret_data = DB::table($table)
@@ -423,7 +438,7 @@
 				->join("user","user.Uid","=","{$table}.DepLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.DepLoanAllocId")
 				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("receipt_voucher.receipt_voucher_type",1)
+				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				
@@ -442,6 +457,11 @@
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
 			$table = "depositeloan_allocation";
 			$transaction_category = 17;
+			if($data["tran_type"] == "CREDIT") {
+				$receipt_voucher_type = [1];
+			} else {
+				$receipt_voucher_type = [2,3];
+			}
 
 			$ret_data = '';
 			$ret_data = DB::table($table)
@@ -464,7 +484,7 @@
 				->join("user","user.Uid","=","{$table}.DepLoan_Uid")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.DepLoanAllocId")
 				->where("receipt_voucher.transaction_category",$transaction_category)
-				->where("receipt_voucher.receipt_voucher_type",2)
+				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				

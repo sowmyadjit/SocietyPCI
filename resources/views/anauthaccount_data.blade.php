@@ -6,9 +6,7 @@
 					<th>Account Number</th>
 					<th>Account Type</th>
 					<th>Branch</th>
-					<th>First Name</th>
-					<th>Middle Name</th>
-					<th>Last Name</th>
+					<th>Name</th>
 					<th>Mobile Number</th>
 					<th>Phone Number</th>
 					<!--<th>VIEW</th>-->
