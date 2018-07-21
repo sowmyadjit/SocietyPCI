@@ -2721,6 +2721,7 @@ console.log("amt="+bal);
 																days = parseInt(start_to_today) + 1;//THIS IS FIRST REPAYMENT
 															
 															//	console.log("days="+days);
+/* 
 																if(days <= 15) {
 																	console.log("days bw 0 - 15");
 																	days = 15;
@@ -2730,6 +2731,7 @@ console.log("amt="+bal);
 																} else {
 																	days = days;
 																}
+																 */
 																//print_days();
 																calculate_jewel_interest(days,LoanType_Interest,JewelLoan_remaininginterest,bal);
 															}
@@ -2742,11 +2744,17 @@ console.log("amt="+bal);
 															type:"post",
 															data:'&first='+last_paid_date+'&second='+today,
 															success:function(last_to_today) {console.log("last_to_today="+last_to_today);
+																if(last_paid_date > today) {
+																	console.log("last_paid_date > today");
+																	var last_to_today = 0;
+																}
 																console.log("last_to_today="+last_to_today);
 																days = parseInt(last_to_today);//THIS IS SECOND REPAYMENT
+/* 
 																if(days <= 15) {
 																	days = 15;
 																}
+																 */
 																//print_days();
 																calculate_jewel_interest(days,LoanType_Interest,JewelLoan_remaininginterest,bal);
 															}
