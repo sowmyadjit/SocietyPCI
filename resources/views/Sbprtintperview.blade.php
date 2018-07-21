@@ -70,12 +70,12 @@
 					</td>
 				</tr>-->
 				<tr>
-						@if($SbprintPerData['CustomerDetails']['spouse_name'] !='')
-							<td style="border-top: none;"><b>Spouse Name &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp   </b>
-							{{ $SbprintPerData['CustomerDetails']['spouse_name']}}
-						@elseif($SbprintPerData['CustomerDetails']['fa_name'] != '')
+						@if($SbprintPerData['CustomerDetails']['fa_name'] != '')
 							<td style="border-top: none;"><b>Father Name &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp   </b>
 							{{ $SbprintPerData['CustomerDetails']['fa_name']}}
+						@elseif($SbprintPerData['CustomerDetails']['spouse_name'] !='')
+							<td style="border-top: none;"><b>Spouse Name &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp   </b>
+							{{ $SbprintPerData['CustomerDetails']['spouse_name']}}
 						@endif
 					</td>
 				</tr>
