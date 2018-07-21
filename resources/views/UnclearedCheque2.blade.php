@@ -34,6 +34,7 @@
 													<option>Expense Cheque</option>
 												</select>
 											</div>
+											<button id="refresh_uc" class="btn-sm	 glyphicon glyphicon-refresh" ></button>
 										</div>
 									</div>
 
@@ -99,31 +100,32 @@
 
 <script>
 	$("#chq_type").change(function(e) {
-		console.log($(this).val());
+		// console.log($(this).val());
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$(".b_main").html(loading_img);
 		var chq_type = $(this).val();
 		switch(chq_type) {
 			case "SB Cheque" : 
-						console.log("sbbbb");
 						$(".b_main").load("unclearsb");
 						break;
 			case "RD Cheque" : 
-						console.log("sbbbb");
 						$(".b_main").load("unclearrd");
 						break;
 			case "Pigmi Cheque" : 
-						console.log("sbbbb");
 						$(".b_main").load("unclearpgm");
 						break;
 			case "Loan Cheque" : 
-						console.log("sbbbb");
 						$(".b_main").load("unclearloan");
 						break;
 			case "FD Cheque" : 
-						console.log("sbbbb");
 						$(".b_main").load("unclearfd");
 						break;
 			case "Expense Cheque" : 
-						console.log("sbbbb");
 						$(".b_main").load("unclearexp");
 						break;
 		}
@@ -143,6 +145,12 @@
 	});
 </script>
 
+<script>
+	$("#refresh_uc").click(function() {
+		$("#chq_type").trigger("change");
+	});
+</script>
+
 
 
 <script>
@@ -158,17 +166,18 @@
 										alert("Please enter amount");
 										return;
 									}
-									// $.ajax({
-									// 	url:'clearcheque',
-									// 	type:'post',
-									// 	data:'&cheqchrge='+amt+'&tid='+id,
-									// 	success:function()
-									// 	{
-									// 		$('.tranclassid').click();
-									// 	}
-									// });
+									$.ajax({
+										url:'clearcheque',
+										type:'post',
+										data:'&cheqchrge='+amt+'&tid='+id,
+										success:function()
+										{
+											alert("Success");
+										}
+									});
 									break;
-				case "sb_reject": console.log("sb_reject");
+				case "sb_reject":
+									// console.log("sb_reject");
 									var id = $("#id").val();console.log("id="+id);
 									var chqrjct = $("#chqrjct").val();
 									var chqrjctbank = $("#chqrjctbank").val();
@@ -182,9 +191,124 @@
 										data:'&cheqchrge='+chqrjct+'&tid='+id+'&bankamt='+chqrjctbank,
 										success:function()
 										{
-											$('.clearclassid').click();
+											alert("Success");
 										}
 									});
+									break;
+				case "rd_reject":
+									// console.log("rd_reject");
+									var id = $("#id").val();console.log("id="+id);
+									var rdchqrjct = $("#rdchqrjct").val();
+									if(rdchqrjct == "") {
+										alert("Please enter amount");
+										return;
+									}
+									
+									$.ajax({
+										url:'rdrejectcheque',
+										type:'post',
+										data:'&cheqchrge='+rdchqrjct+'&tid='+id,
+										success:function()
+										{
+											disable_row(id);
+											alert("Success");
+										}
+									});
+									break;
+				case "pg_reject":
+									// console.log("rd_reject");
+									var id = $("#id").val();console.log("id="+id);
+									var pgmchqrjct = $("#pgmchqrjct").val();
+									if(pgmchqrjct == "") {
+										alert("Please enter amount");
+									} else {
+										$.ajax({
+											url:'pgmrejectcheque',
+											type:'post',
+											data:'&cheqchrge='+pgmchqrjct+'&tid='+id,
+											success:function()
+											{
+												disable_row(id);
+												alert("Success");
+											}
+										});
+									}
+									break;
+				case "ln_dl_reject":
+									// console.log("rd_reject");
+									var id = $("#id").val();console.log("id="+id);
+									var loanchqrjct = $("#loanchqrjct").val();
+									if(loanchqrjct == "") {
+										alert("Please enter amount");
+									} else {
+										$.ajax({
+											url:'loanrejectcheque',
+											type:'post',
+											data:'&cheqchrge='+loanchqrjct+'&tid='+id,
+											success:function()
+											{
+												disable_row_dl(id);
+												alert("Success");
+											}
+										});
+									}
+									break;
+				case "ln_pl_reject":
+									// console.log("rd_reject");
+									var id = $("#id").val();console.log("id="+id);
+									var loanchqrjct = $("#loanchqrjct").val();
+									if(loanchqrjct == "") {
+										alert("Please enter amount");
+									} else {
+										$.ajax({
+											url:'loanrejectcheque',
+											type:'post',
+											data:'&cheqchrge='+loanchqrjct+'&tid='+id,
+											success:function()
+											{
+												disable_row_pl(id);
+												alert("Success");
+											}
+										});
+									}
+									break;
+				case "ln_jl_reject":
+									// console.log("rd_reject");
+									var id = $("#id").val();console.log("id="+id);
+									var loanchqrjct = $("#loanchqrjct").val();
+									if(loanchqrjct == "") {
+										alert("Please enter amount");
+									} else {
+										$.ajax({
+											url:'loanrejectcheque',
+											type:'post',
+											data:'&cheqchrge='+loanchqrjct+'&tid='+id,
+											success:function()
+											{
+												disable_row_jl(id);
+												alert("Success");
+											}
+										});
+									}
+									break;
+				case "fd_reject":
+									// console.log("rd_reject");
+									var id = $("#id").val();console.log("id="+id);
+									var rdchqrjct = $("#rdchqrjct").val();
+									if(rdchqrjct == "") {
+										alert("Please enter amount");
+									} else {
+										$.ajax({
+											url:'fdrejectcheque',
+											type:'post',
+											data:'&cheqchrge='+rdchqrjct+'&tid='+id,
+											success:function()
+											{
+												disable_row(id);
+												alert("Success");
+											}
+										});
+									}
 									break;
 			}
 		});

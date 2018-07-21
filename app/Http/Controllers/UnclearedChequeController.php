@@ -127,7 +127,7 @@
 			$rdcheque['module']=$this->Modules->GetAnyMid($Url);
 			$rdcheque['data']=$this->unclrcheque->get_rdtransdetail();
 			//print_r($cheque);
-			return view('UnclearedRDCheque',compact('rdcheque'));
+			return view('UnclearedRDCheque2',compact('rdcheque'));
 		}
 		
 		public function Show_PgmDetail()
@@ -136,7 +136,7 @@
 			$pgmcheque['module']=$this->Modules->GetAnyMid($Url);
 			$pgmcheque['data']=$this->unclrcheque->get_pgmtransdetail();
 			//print_r($cheque);
-			return view('UnclearedPgmCheque',compact('pgmcheque'));
+			return view('UnclearedPgmCheque2',compact('pgmcheque'));
 		}
 		public function show_loandetail()
 		{
@@ -147,7 +147,7 @@
 			$loancheque['jl']=$this->unclrcheque->get_jlcheque();
 			
 			//print_r($cheque);
-			return view('UnclearedLoanCheque',compact('loancheque'));
+			return view('UnclearedLoanCheque2',compact('loancheque'));
 		}
 		public function Show_FDDetail()
 		{
@@ -155,7 +155,7 @@
 			$fdcheque['module']=$this->Modules->GetAnyMid($Url);
 			$fdcheque['data']=$this->unclrcheque->get_fdtransdetail();
 			//print_r($cheque);
-			return view('UnclearedFDCheque',compact('fdcheque'));
+			return view('UnclearedFDCheque2',compact('fdcheque'));
 		} 
 		
 		public function Show_ExpenseDetail()
