@@ -321,6 +321,12 @@
 			return ($this->GetFdAllocation->GetFDNumberForLoanAlloc($request->search));
 		}
 		
+		public function GetFDandKCCNumberForLoanAlloc(Request $request)//for DL allocation
+		{
+			
+			return ($this->GetFdAllocation->GetFDandKCCNumberForLoanAlloc($request->search));
+		}
+		
 		public function GetKCCNumberForLoanAlloc(Request $request)//for DL allocation
 		{
 			

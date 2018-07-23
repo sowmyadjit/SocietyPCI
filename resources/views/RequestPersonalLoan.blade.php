@@ -611,7 +611,8 @@
 	
 	$('input.ReqDepFDTypeAhead').typeahead({
 		
-		ajax:'/GetFDNumber'
+		// ajax:'/GetFDNumber'
+		ajax:'/GetFDandKCCNumber'
 		
 	});
 	$('input.ReqStfEmpnameTypeahead').typeahead({

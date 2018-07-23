@@ -310,6 +310,25 @@
 			return $ret_data;
 			
 		}
+
+		public function GetFDandKCCNumberForLoanAlloc($q) //for DL allocation typeahead
+		{
+			//return DB::select("SELECT `Fdid` as id, CONCAT(`Fdid`,'-',`Fd_CertificateNum`) as name FROM `fdallocation` where `Fd_CertificateNum` LIKE '%".$q."%' ");
+			
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('fdallocation')
+			->select(DB::raw('Fdid as id,Fd_CertificateNum as name'))
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
+			}
+			//->where('Loan_Allocated','=',"NO")
+			//->where('Status','=',"AUTHORISED")
+			$ret_data = $ret_data->get();
+			return $ret_data;
+			
+		}
 		
 		public function GetKCCNumberForLoanAlloc($q)
 		{
