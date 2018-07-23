@@ -850,7 +850,7 @@
 							<tr>
 								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
 								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>KCC Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
 								<td>-</td>
 								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
 								<td>-</td>
