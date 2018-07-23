@@ -103,14 +103,12 @@
 
 					<?php /* BOX SUB 1 START */?>
 					<div class="b_sub_1">
-							b_sub_1
 					</div>
 					<?php /* BOX SUB 1 END */?>
 
 
 					<?php /* BOX SUB 2 START */?>
 					<div class="b_sub_2">
-							b_sub_2
 					</div>
 					<?php /* BOX SUB 2 END */?>
 
@@ -173,11 +171,6 @@
 		load_url(url);
 	});
 	$(".CrtExpense<?php echo $ex['module']->Mid; ?>").click(function(e) {
-		e.preventDefault();
-		var url = $(this).attr('href');
-		load_url(url);
-	});
-	$(".ReceiptPrint<?php echo $ex['module']->Mid; ?>").click(function(e) {
 		e.preventDefault();
 		var url = $(this).attr('href');
 		load_url(url);

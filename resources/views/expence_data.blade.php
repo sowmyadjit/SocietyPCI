@@ -45,7 +45,6 @@
 	<tbody>	
 		@foreach ($ex['expense'] as $expence)
 		<tr>
-			<td class="hidden">{{ $expence->id }}</td>
 			<td>{{ $expence->e_date }}</td>	
 			<td>{{ $expence->lname }}</td>
 			<td>{{ $expence->amount }}</td>
@@ -67,4 +66,22 @@
 		$(".b_main").hide();
 		$(".b_sub_1").load(url);
 	}
+</script>
+
+<script>
+	$(".print").click(function() {
+		var divContents = $("#toprint").html();
+		var printWindow = window.open('', '', 'height=600,width=800');
+		printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
+		printWindow.document.write('</head><body>');
+		printWindow.document.write(divContents);
+		printWindow.document.write('</body></html>');
+		printWindow.document.close();
+		//$("#toprint").print();
+		printWindow.print(); 
+	});
+
+	$('#excel').click(function(e){
+		$('#expense_details').tableExport({type:'excel',escape:'false'});
+	});	
 </script>
