@@ -6,7 +6,7 @@
 
 
 
-<div id="content" class="col-lg-10 col-sm-10">
+<div id="content" class="col-lg-12 col-sm-12">
 	<!-- content starts -->
 	
 	

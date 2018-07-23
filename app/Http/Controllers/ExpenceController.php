@@ -34,7 +34,18 @@
 			$ex['module']=$this->Modules->GetAnyMid($Url);
 			$ex['expense']=$this->creadexpencemodel->GetAllExpence();
 			
-			return view('expence',compact('ex'));
+			// return view('expence',compact('ex'));
+			return view('expence2',compact('ex'));
+		}
+
+		public function expence_data()
+		{
+			$Url="expence";
+			$ex['module']=$this->Modules->GetAnyMid($Url);
+			$ex['expense']=$this->creadexpencemodel->GetAllExpence();
+			
+			// return view('expence',compact('ex'));
+			return view('expence_data',compact('ex'));
 		}
 		
 		public function create_expence(Request $request)

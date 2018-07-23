@@ -203,6 +203,7 @@
 				
 				//ExpenceController
 				Route::get('/expence','ExpenceController@show_expence');
+				Route::post('/expence_data','ExpenceController@expence_data');
 				Route::get('/expencedetail','ExpenceController@display_expence');
 				Route::post('/crateaexpence','ExpenceController@create_expence');
 				
