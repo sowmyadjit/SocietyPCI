@@ -164,7 +164,7 @@
 			$exp['module']=$this->Modules->GetAnyMid($Url);
 			$exp['data']=$this->unclrcheque->get_Expensedetail();
 			//print_r($cheque);
-			return view('UnclearedExpenseCheque',compact('exp'));
+			return view('UnclearedExpenseCheque2',compact('exp'));
 		}
 		
 		public function AcceptCheque($repayid,$loanid,$type)

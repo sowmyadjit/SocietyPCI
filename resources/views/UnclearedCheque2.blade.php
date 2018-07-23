@@ -13,14 +13,6 @@
 							<div class="box-content">
 
 
-									<div class="alert alert-info">
-										<a href="unclearsb" class="btn btn-default crtsb<?php echo $uc->Mid; ?>">UnCleared SB Cheque</a>
-										<a href="unclearrd" class="btn btn-default crtrd<?php echo $uc->Mid; ?>">UnCleared RD Cheque</a>
-										<a href="unclearpgm" class="btn btn-default crtpgm<?php echo $uc->Mid; ?>">UnCleared Pigmi Cheque</a>
-										<a href="unclearloan" class="btn btn-default crtloan<?php echo $uc->Mid; ?>">UnCleared Loan Cheque</a>
-										<a href="unclearfd" class="btn btn-default crtfd<?php echo $uc->Mid; ?>">UnCleared FD Cheque</a>
-									</div>
-
 									<div class="alert alert-info" style="height:100px">
 										<div class="form-group">
 											<label class="control-label col-sm-4">Select Cheque Type:</label>
@@ -41,13 +33,13 @@
 									<div class="b_main">
 											b_main
 									</div>
-									<div class="b_sub_1">
+									<div class="b_sub_1 hide">
 											b_sub_1
 									</div>
-									<div class="b_sub_2">
+									<div class="b_sub_2 hide">
 											b_sub_2
 									</div>
-									<div class="b_back">
+									<div class="b_back hide">
 											<button>back</button>
 									</div>
 
@@ -300,6 +292,25 @@
 									} else {
 										$.ajax({
 											url:'fdrejectcheque',
+											type:'post',
+											data:'&cheqchrge='+rdchqrjct+'&tid='+id,
+											success:function()
+											{
+												disable_row(id);
+												alert("Success");
+											}
+										});
+									}
+									break;
+				case "ex_reject":
+									// console.log("rd_reject");
+									var id = $("#id").val();console.log("id="+id);
+									var rdchqrjct = $("#rdchqrjct").val();
+									if(rdchqrjct == "") {
+										alert("Please enter amount");
+									} else {
+										$.ajax({
+											url:'exprejectcheque',
 											type:'post',
 											data:'&cheqchrge='+rdchqrjct+'&tid='+id,
 											success:function()
