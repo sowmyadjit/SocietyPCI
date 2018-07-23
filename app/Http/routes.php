@@ -170,6 +170,7 @@
 				
 				//DepositController
 				Route::get('/deposit','DepositController@show_deposit');
+				Route::post('/deposit_data','DepositController@deposit_data');
 				Route::get('/depodetail','DepositController@display_deposit');
 				Route::post('/crateaddeposit','DepositController@create_deposit');
 				Route::post('/depgetbankdetail','DepositController@GetBankDetailForDeposite');

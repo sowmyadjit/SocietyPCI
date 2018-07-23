@@ -24,7 +24,15 @@
 			$Url="deposit";
 			$depo['module']=$this->Modules->GetAnyMid($Url);
 			$depo['deposits']=$this->creadepositmodel->GetDepositData();
-			return view('deposit',compact('depo'));
+			return view('deposit2',compact('depo'));
+		}
+		
+		public function deposit_data()
+		{
+			$Url="deposit";
+			$depo['module']=$this->Modules->GetAnyMid($Url);
+			$depo['deposits']=$this->creadepositmodel->GetDepositData();
+			return view('deposit_data',compact('depo'));
 		}
 		
 		public function create_deposit(Request $request)
