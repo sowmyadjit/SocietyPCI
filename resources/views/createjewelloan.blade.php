@@ -832,7 +832,7 @@
 		{
 			
 			bankid=$('.JewelBankNameTypeAhead').data('value');
-			//indexid++;
+			indexid++;
 			loantyp=$('#JewelLoanType').data('value');
 			branch=$('#JewelLoanBranch').data('value');
 			accid=$('.SBAccNumTypeAhead').data('value');
