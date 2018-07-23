@@ -1314,6 +1314,7 @@
 			->where('PLRepay_PayMode','=',"CASH")
 			->where('PLRepay_Date',$dte)
 			->where('PLRepay_Bid',$BranchId)
+			->where('pigmy_commission', "<", 0)
 			->get();
 			
 			return $id;
@@ -1335,6 +1336,7 @@
 			->where('PLRepay_PayMode','<>',"CASH")
 			->where('PLRepay_Date',$dte)
 			->where('PLRepay_Bid',$BranchId)
+			->where('pigmy_commission', "<", 0)
 			->get();
 			
 			return $id;
