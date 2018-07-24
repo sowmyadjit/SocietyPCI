@@ -715,6 +715,7 @@
 				Route::get('/loanclearcheque/{id}','UnclearedChequeController@loan_clear');
 				Route::post('/loanrejectcheque','UnclearedChequeController@loan_reject');
 				Route::get('/unclearfd','UnclearedChequeController@Show_FDDetail');
+				Route::get('/unclearkcc','UnclearedChequeController@Show_KCCDetail');
 				Route::get('/fdclearcheque/{id}','UnclearedChequeController@fd_clear');
 				Route::post('/fdrejectcheque','UnclearedChequeController@fd_reject');
 				//Route::get('/uncleardl','UnclearedChequeController@Show_DLDetail');

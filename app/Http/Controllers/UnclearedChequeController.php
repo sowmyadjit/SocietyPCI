@@ -156,6 +156,15 @@
 			$fdcheque['data']=$this->unclrcheque->get_fdtransdetail();
 			//print_r($cheque);
 			return view('UnclearedFDCheque2',compact('fdcheque'));
+		}
+
+		public function Show_KCCDetail()
+		{
+			$Url="unclearedcheque";
+			$kcccheque['module']=$this->Modules->GetAnyMid($Url);
+			$kcccheque['data']=$this->unclrcheque->get_kcctransdetail();
+			//print_r($cheque);
+			return view('UnclearedKCCCheque2',compact('kcccheque'));
 		} 
 		
 		public function Show_ExpenseDetail()

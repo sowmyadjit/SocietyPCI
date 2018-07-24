@@ -7,6 +7,7 @@
 	use App\Http\Controllers\Controller;
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\DepositModel;
+	use App\Http\Model\OpenCloseModel;
 	
 	class depositController extends Controller
 	{
@@ -17,6 +18,7 @@
 		{
 			$this->creadepositmodel = new DepositModel;
 			$this->Modules= new ModulesModel;
+			$this->op= new OpenCloseModel;
 		}
 		
 		public function show_deposit()
@@ -24,6 +26,7 @@
 			$Url="deposit";
 			$depo['module']=$this->Modules->GetAnyMid($Url);
 			$depo['deposits']=$this->creadepositmodel->GetDepositData();
+			$depo['is_day_open']=$this->op->is_day_open(date("Y-m-d"));
 			return view('deposit2',compact('depo'));
 		}
 		

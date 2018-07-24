@@ -101,9 +101,14 @@
 				load_url(url);
 			});
 		
-			function load_url(url) {
-				$(".b_main").hide();
-				$(".b_sub_1").load(url);
+			var is_day_open = "{{$depo['is_day_open']}}";
+			function load_url(url,check_day_open=true) {
+				if(is_day_open == "yes" || !check_day_open) {
+					$(".b_main").hide();
+					$(".b_sub_1").load(url);
+				} else {
+					alert("Day is not open");
+				}
 			}
 		</script>
 		

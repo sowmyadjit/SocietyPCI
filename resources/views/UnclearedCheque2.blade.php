@@ -23,6 +23,7 @@
 													<option>Pigmi Cheque</option>
 													<option>Loan Cheque</option>
 													<option>FD Cheque</option>
+													<option>KCC Cheque</option>
 													<option>Expense Cheque</option>
 												</select>
 											</div>
@@ -116,6 +117,9 @@
 						break;
 			case "FD Cheque" : 
 						$(".b_main").load("unclearfd");
+						break;
+			case "KCC Cheque" : 
+						$(".b_main").load("unclearkcc");
 						break;
 			case "Expense Cheque" : 
 						$(".b_main").load("unclearexp");
