@@ -721,6 +721,12 @@
 			$data = $this->op->saraf_commission_report_data($in_data);
 			return view("saraf_commission_report_data",compact("data"));
 		}
+
+		public function is_day_open()
+		{
+			$ret_data = $this->op->is_day_open(date("Y-m-d"));// "yes" or "no"
+			return $ret_data;
+		}
 		
 		
 	}

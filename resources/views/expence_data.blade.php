@@ -59,13 +59,14 @@
 	$(".ReceiptPrint<?php echo $ex['module']->Mid; ?>").click(function(e) {
 		e.preventDefault();
 		var url = $(this).attr('href');
-		load_url(url);
+		load_url(url,false);
 	});
-	
+	/* 
 	function load_url(url) {
 		$(".b_main").hide();
 		$(".b_sub_1").load(url);
 	}
+	 */
 </script>
 
 <script>

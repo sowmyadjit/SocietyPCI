@@ -8,6 +8,7 @@
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\ExpenceModel;
 	use App\Http\Model\ReportModel;
+	use App\Http\Model\OpenCloseModel;
 	
 	class ExpenceController extends Controller
 	{
@@ -19,6 +20,7 @@
 			$this->creadexpencemodel = new ExpenceModel;
 			$this->Modules= new ModulesModel;
 			$this->Report_model = new ReportModel;
+			$this->op = new OpenCloseModel;
 			
 		}
 		public function display_exp()
@@ -33,6 +35,7 @@
 			$Url="expence";
 			$ex['module']=$this->Modules->GetAnyMid($Url);
 			$ex['expense']=$this->creadexpencemodel->GetAllExpence();
+			$ex['is_day_open']=$this->op->is_day_open(date("Y-m-d"));
 			
 			// return view('expence',compact('ex'));
 			return view('expence2',compact('ex'));
