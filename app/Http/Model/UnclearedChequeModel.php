@@ -106,10 +106,10 @@
 		public function get_fdtransdetail()
 		{
 			return DB::table('fdallocation')
-			->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
-			->join('user','user.Uid','=','createaccount.Uid')
+			// ->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
+			->join('user','user.Uid','=','fdallocation.Uid')
 			->join('addbank','addbank.Bankid','=','fdallocation.FDBnk_ID')
-			->select('FD_StartDate','AccNum','FirstName','MiddleName','LastName','FDChq_No','FDChq_Date','BankName','FDBnk_Branch','FDIFSC_Code','FDUnclear_Bal','Fdid','fdallocation.Accid','user.Uid','FDCleared_State', 'FDBnk_Name')
+			->select('FD_StartDate',/*'AccNum',*/'FirstName','MiddleName','LastName','FDChq_No','FDChq_Date','BankName','FDBnk_Branch','FDIFSC_Code','FDUnclear_Bal','Fdid','fdallocation.Accid','user.Uid','FDCleared_State', 'FDBnk_Name')
 			->where('FDCleared_State','=','UNCLEARED')
 			->get();
 		}

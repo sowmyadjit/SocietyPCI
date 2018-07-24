@@ -4,7 +4,7 @@
 	<thead>
 		<tr>
 			<th>Allocation Date</th>
-			<th>Account Number</th>
+<?php /*	<th>Account Number</th> */?>
 			<th>Full Name</th>
 			<th>Cheque Number</th>
 			<th>Cheque Date</th>
@@ -24,7 +24,7 @@
 				<td class="hidden">{{ $fdallocation->Uid }}</td>
 				
 				<td><?php $transcdte=date("d-m-Y",strtotime($fdallocation->FD_StartDate));echo $transcdte;?></td>
-				<td>{{$fdallocation->AccNum}}</td>
+	<?php /*	<td>{{$fdallocation->AccNum}}</td> */?>
 				<td>{{ $fdallocation->FirstName }}.{{ $fdallocation->MiddleName }}.{{ $fdallocation->LastName }}</td>
 				<td>{{ $fdallocation->FDChq_No}}</td>	
 				<td>{{ $fdallocation->FDChq_Date}}</td>

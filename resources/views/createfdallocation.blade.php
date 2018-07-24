@@ -183,7 +183,7 @@
 								<div class="form-group fdbnkname">
 									<label class="control-label col-sm-4">Bank Name:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="FdBankName" name="FdBankName" placeholder="BANK NAME">
+										<input type="text" class="typeaheadbank form-control" id="FdBankName" name="FdBankName" placeholder="BANK NAME">
 									</div>
 								</div>
 								
@@ -546,7 +546,7 @@
 	$('.sbmbtn').click( function(e) {
 		if(f==0)
 		{
-		//f=f+1;
+		f=f+1;
 		
 		//alert("hi");monthinterest
 		month=$('#fdintmonthly').val();
@@ -555,13 +555,14 @@
 		user=$('.typeahead3').data('value');
 		fd=$('.fdtypeahead').data('value');
 		branch=$('#branchname').data('value');
+		fd_bank_id = $("#FdBankName").attr("data-value");
 		//alert(branch);
 		e.preventDefault();
 		$.ajax({
 			
 			url: 'crtfdalloc',
 			type: 'post',
-			data: $('#form_fdalloc').serialize() + '&accid=' + acc +'&fdtid='+fd+'&bid='+branch+'&userid='+user+'&month='+month+'&intneeded='+intneeded+'&accid_int='+acc1,
+			data: $('#form_fdalloc').serialize() + '&accid=' + acc +'&fdtid='+fd+'&bid='+branch+'&userid='+user+'&month='+month+'&intneeded='+intneeded+'&accid_int='+acc1+'&fd_bank_id='+fd_bank_id,
 			success: function(data) {
 				alert('success');
 				$('.fdallocclassid').click();
@@ -759,4 +760,25 @@ $('#fdpaymode').change(function(e){
 		
 		$('#days').val(diffDays);
 	}
+</script>
+
+<script>
+	
+	$('input.typeaheadbank').typeahead({
+		ajax: '/GetBank'
+		// source:GetBank
+	});
+
+	$("#FdBankName").change(function() {
+		var bank_id = $("#FdBankName").attr("data-value");
+		$.ajax({
+			url: "depgetbankdetail",
+			type: "post",
+			data: "&bankid="+bank_id,
+			success: function(data) {
+				$("#fdbankbranch").val(data["bnkbranch"]);
+				$("#fdifsccode").val(data["ifsc"]);
+			}
+		});
+	});
 </script>

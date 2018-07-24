@@ -124,6 +124,7 @@ public function Show_FdAlloc()
 			$fdalloc['month']=$request->input('month');
 			$fdalloc['monthinterest']=$request->input('monthinterest');
 			$fdalloc['accid']=$request->input('accid');
+			$fdalloc['fd_bank_id']=$request->input('fd_bank_id');
 			
 			$id=$this->fdallocation_model->InsertFdAlloc($fdalloc);
 			return redirect('/');
