@@ -160,6 +160,14 @@
 					 */
 				</script>
 
+				
+<script>
+		function disable_row(id) {
+			$("#accept_"+id).prop("disabled",true);
+			$("#reject_"+id).prop("disabled",true);
+		}
+</script>
+
 <script>
 	$(".accept").click(function() {
 		// console.log($(this).attr("data"));

@@ -164,6 +164,7 @@
 										data:'&cheqchrge='+amt+'&tid='+id,
 										success:function()
 										{
+											disable_row(id);
 											alert("Success");
 										}
 									});
@@ -183,6 +184,7 @@
 										data:'&cheqchrge='+chqrjct+'&tid='+id+'&bankamt='+chqrjctbank,
 										success:function()
 										{
+											disable_row(id);
 											alert("Success");
 										}
 									});
