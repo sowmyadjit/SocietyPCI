@@ -255,9 +255,9 @@ table td {
 			<tr>
 				<td>In words:</td>
 				<input type="hidden" name="rupees" value="{{$data->amount}}" id="rupees" />
-				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> > <span id="container"> </span></span></td>
+				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> > <div id="container" style="width:275px;"> </div></span></td>
 				<td>In words:</td>
-				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> > <span id="container2"> </span></span></td>
+				<td><span class="receipt_amt" <?php /*style="font-weight:bold;font-size:18px" */?> > <div id="container2" style="width:275px;"> </div></span></td>
 			</tr>
 
 			<tr>
