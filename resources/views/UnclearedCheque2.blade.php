@@ -19,12 +19,12 @@
 											<div class="col-md-4">
 												<select class="form-control" id="chq_type" name="">
 													<option>SB Cheque</option>
-													<option>RD Cheque</option>
-													<option>Pigmi Cheque</option>
+										<?php /*	<option>RD Cheque</option> */?>
+										<?php /*	<option>Pigmi Cheque</option> */?>
 													<option>Loan Cheque</option>
 													<option>FD Cheque</option>
 													<option>KCC Cheque</option>
-													<option>Expense Cheque</option>
+										<?php /*	<option>Expense Cheque</option> */?>
 												</select>
 											</div>
 											<button id="refresh_uc" class="btn-sm	 glyphicon glyphicon-refresh" ></button>
