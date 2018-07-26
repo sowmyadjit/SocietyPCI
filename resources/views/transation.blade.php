@@ -429,7 +429,7 @@
 							<select class="form-control" id="pgmpaymode" name="pgmpaymode">
 								<option>--Select Payment Mode--</option>
 								<option>CASH</option>
-								<option>CHEQUE</option>
+					<?php /*	<option>CHEQUE</option> */?>
 							</select>
 						</div>
 					</div>
@@ -631,7 +631,7 @@
 							<select class="form-control" id="rdpaymode" name="rdpaymode">
 								<option>--Select Payment Mode--</option>
 								<option>CASH</option>
-								<option>CHEQUE</option>
+					<?phpv /*	<option>CHEQUE</option>*/ ?>
 								<option>SB ACCOUNT</option>
 							</select>
 						</div>
