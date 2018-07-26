@@ -1909,16 +1909,21 @@
 						console.log(data);
 						var tran_id = data;
 						var tran_type = $("#trantyp").val();
-						
-							$.ajax({
-								url:'rv_print',
-								type:'post',
-								data:'&tran_category=SB'+'&tran_type='+tran_type+"&tran_id="+tran_id,
-								success:function(data)
-								{
-									$('.box').html(data);
-								}
-							});
+						var payment_mode = $("#paymode").val();
+						// console.log("payment_mode:"+payment_mode);
+							if(payment_mode == "CASH") {
+								$.ajax({
+									url:'rv_print',
+									type:'post',
+									data:'&tran_category=SB'+'&tran_type='+tran_type+"&tran_id="+tran_id,
+									success:function(data)
+									{
+										$('.box').html(data);
+									}
+								});
+							} else {
+								alert("Success");
+							}
 
 
 						// $('.box').load("TranReceipt/SB/"+tran_id);
@@ -2314,16 +2319,21 @@
 						alert('success');
 						var tran_id = data;
 						var tran_type = $("#rdtrantypreadonly").val();
-						
-							$.ajax({
-								url:'rv_print',
-								type:'post',
-								data:'&tran_category=RD'+'&tran_type='+tran_type+"&tran_id="+tran_id,
-								success:function(data)
-								{
-									$('.box').html(data);
-								}
-							});
+						var payment_mode = $("#rdpaymode").val();
+						console.log("payment_mode:"+payment_mode);
+							if(payment_mode == "CASH") {
+								$.ajax({
+									url:'rv_print',
+									type:'post',
+									data:'&tran_category=RD'+'&tran_type='+tran_type+"&tran_id="+tran_id,
+									success:function(data)
+									{
+										$('.box').html(data);
+									}
+								});
+							} else {
+								// alert("Success");
+							}
 
 
 
