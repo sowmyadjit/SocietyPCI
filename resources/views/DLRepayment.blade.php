@@ -115,7 +115,7 @@
 								<select class="form-control" id="PgPayMode" name="PgPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="PIGMI ACCOUNT">PIGMI ACCOUNT</option>
 									<option value="FD_ACCOUNT">FD ACCOUNT</option>
@@ -318,7 +318,7 @@
 								<select class="form-control" id="RdPayMode" name="RdPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 								</select>
@@ -525,7 +525,7 @@
 								<select class="form-control" id="FdPayMode" name="FdPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 <!--edit-->							<option value="FD_ACCOUNT">FD ACCOUNT</option>
@@ -774,7 +774,7 @@
 								<select class="form-control" id="plPayMode" name="plPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+					<?php /*		<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="ADJUSTMENT">ADJUSTMENT</option>
@@ -1001,7 +1001,7 @@
 								<select class="form-control" id="jlPayMode" name="jlPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="ADJUSTMENT">ADJUSTMENT</option>
@@ -1172,7 +1172,7 @@
 								<select class="form-control" id="slPayMode" name="slPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="CD">CD</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
