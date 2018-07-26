@@ -142,7 +142,7 @@
 						<td><input type="radio" name="sele" value="<?php $temp=$SLPD->Tranid; echo $temp;?>" onclick="setid($id=<?php $temp=$SLPD->Tranid; echo $temp;?>);"></td>
 						<td>{{$SLPD->Tranid}}</td>
 						<td  width="10%"><?php $trandate=date("d-m-Y",strtotime($SLPD->SBReport_TranDate));  echo $trandate; ?></td>
-						<td  width="33%"><?php  echo $s=$SLPD->particulars; $f=strlen($s);if($f>=43){$d=($f/43);$b=$b+intval($d);}?></td>
+						<td  width="37%"><?php  echo $s=$SLPD->particulars; $f=strlen($s);if($f>=43){$d=($f/43);$b=$b+intval($d);}?></td>
 						<td width="10%">1234</td>
 						@if($SLPD->TransactionType=="Credit"||$SLPD->TransactionType=="CREDIT"||$SLPD->TransactionType=="credit")
 						
@@ -164,7 +164,7 @@
 									$running_amt -= $temp;
 								}?>
 						@endif
-						<td width="10%" align="right"><p class="text"><?php echo $running_amt; ?></p></td>
+						<td width="15%" align="right"><p class="text"><?php echo $running_amt; ?></p></td>
 							<?php /*		<td width="10%" align="right"><p class="text">{{ $SLPD->Total_Bal }}</p></td> */?>
 						<td width="10%"></td>
 						<td><input type="checkbox" class="swap" id="{{$SLPD->Tranid}}" /></td>
@@ -285,11 +285,11 @@
 					
 					$zxc = '<tr><td width="3%">-</td>';
 					$zxc .= '<td width="10%">-</td>';
-					$zxc .= '<td width="33%">previous Balance</td>';
+					$zxc .= '<td width="37%">previous Balance</td>';
 					$zxc .= '<td width="10%">-</td>';
 					$zxc .= '<td width="10%">-</td>';
 					$zxc .= '<td width="10%">-</td>';
-					$zxc .= '<td width="10%">'.$pb.'</td></tr>';
+					$zxc .= '<td width="15%">'.$pb.'</td></tr>';
 					if($page_no <= $total_no_of_page)
 					{
 						if($page_no % 2)
@@ -416,7 +416,7 @@
 								$particulars_length = strlen($particulars);
 								// var_dump("particulars_length: {$particulars_length}");
 
-								$trdata .= '<td width="33%">'.$particulars.'</td>';
+								$trdata .= '<td width="37%">'.$particulars.'</td>';
 								$trdata .= '<td width="10%">-</td>';
 								if($val->TransactionType=="Credit"||$val->TransactionType=="CREDIT"||$val->TransactionType=="credit")
 								{
@@ -438,7 +438,7 @@
 									$trdata .= '<td width="10%" align="right">-</td>';
 									
 								}
-								$trdata .= '<td width="10%" align="right">'.number_format($running_amt, 2).'</td>';
+								$trdata .= '<td width="15%" align="right">'.number_format($running_amt, 2).'</td>';
 //								$trdata .= '<td width="10%" align="right">'.number_format($val->Total_Bal, 2).'</td>';
 								$trdata .= '<td width="10%" align="right"></td></tr>';
 								$printabletable=print_p($page_no,$line_no,$trdata,$printabletable,$x,$pb);
@@ -457,7 +457,7 @@
 								$particulars_length = strlen($particulars);
 								// var_dump("particulars_length: {$particulars_length}");
 
-								$trdata .= '<td width="33%">'.$particulars.'</td>';
+								$trdata .= '<td width="37%">'.$particulars.'</td>';
 								$trdata .= '<td width="10%">-</td>';
 								if($val->TransactionType=="Credit"||$val->TransactionType=="CREDIT"||$val->TransactionType=="credit")
 								{
@@ -477,7 +477,7 @@
 									$trdata .= '<td width="10%" align="right">'.number_format($val->Amount, 2).'</td>';
 									$trdata .= '<td width="10%" align="right">-</td>';
 								}
-								$trdata .= '<td width="10%" align="right">'.number_format($running_amt, 2).'</td>';
+								$trdata .= '<td width="15%" align="right">'.number_format($running_amt, 2).'</td>';
 //								$trdata .= '<td width="10%" align="right">'.number_format($val->Total_Bal, 2).'</td>';
 								$trdata .= '<td width="10%"></td></tr>';
 								
