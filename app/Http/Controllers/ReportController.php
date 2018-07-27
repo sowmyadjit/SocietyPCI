@@ -324,7 +324,11 @@
 			$SbprintPerData['CustomerDetails']=$this->Report_model->GetSbprintPerData($SbprintPar);
 			$SbprintPerData['TransactionDetails']=$this->Report_model->GetSbprinttranPerData($SbprintPar);
 /********************/
-			$SbprintPerData['prev_balance']=$this->Report_model->get_prev_balance($SbprintPar);
+			if($SbprintPar['tranid'] == 0) {
+				$SbprintPerData['prev_balance']=$this->Report_model->get_prev_balance($SbprintPar);
+			} else {
+				$SbprintPerData['prev_balance'] = $request->input('previous_balance');
+			}
 /********************/
 			
 			$SbprintPerData['module']=$this->Report_model->GetSBPassModule();

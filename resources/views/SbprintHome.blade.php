@@ -102,6 +102,7 @@
 <script>
 	
 	var a=0;
+	var previous_balance = 0;
 	$('.clickme').click(function(e){
 		$('.companyclassid').click();
 	}); 
@@ -134,12 +135,13 @@
 		lineval=$('#lineval').val();
 		
 		alert(a);
+		console.log("previous_balance:"+previous_balance);
 		//alert(searchvalue);
 		e.preventDefault();
 		$.ajax({
 			url:'GetSbprintPerData',
 			type:'get',
-			data:$('#form_tran').serialize()+'&SearchAccId='+searchvalue+'&startdate='+sdate+'&enddate='+edate+'&Kannada='+kanche+'&lineval='+lineval+'&tranid='+a+'&pbval='+pbval,
+			data:$('#form_tran').serialize()+'&SearchAccId='+searchvalue+'&startdate='+sdate+'&enddate='+edate+'&Kannada='+kanche+'&lineval='+lineval+'&tranid='+a+'&pbval='+pbval+'&previous_balance='+previous_balance,
 			success:function(data)
 			{
 				//alert("success");

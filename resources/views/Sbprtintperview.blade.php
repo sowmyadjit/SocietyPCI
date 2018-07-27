@@ -164,7 +164,7 @@
 									$running_amt -= $temp;
 								}?>
 						@endif
-						<td width="15%" align="right"><p class="text"><?php echo $running_amt; ?></p></td>
+						<td width="15%" align="right"><p class="text"  id="running_amt_{{$SLPD->Tranid}}"><?php echo $running_amt; ?></p></td>
 							<?php /*		<td width="10%" align="right"><p class="text">{{ $SLPD->Total_Bal }}</p></td> */?>
 						<td width="10%"></td>
 						<td><input type="checkbox" class="swap" id="{{$SLPD->Tranid}}" /></td>
@@ -682,6 +682,7 @@
 		{
 			a=$temp;
 			$('#t').val(a);
+			previous_balance = $("#running_amt_"+a).html();
 			
 			
 		}
