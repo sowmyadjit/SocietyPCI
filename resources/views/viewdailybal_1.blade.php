@@ -2932,6 +2932,8 @@
 				<?php
 					$adj_db_3 = 0;
 					$adj_db_total_3 = 0;
+					$adj_cr_3 = 0;
+					$adj_cr_total_3 = 0;
 				?>
 				@foreach ($trandaily['emp_sal_extra'] as $row)
 					@if($row->sal_extra_type == 3)
@@ -2947,6 +2949,26 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{$row->salpay_extra_amt}}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endif
+				@endforeach
+				@foreach ($trandaily['emp_sal_extra'] as $row)
+					@if($row->sal_extra_type == 3)
+						<?php
+							$adj_cr_3 = $row->salpay_extra_amt;
+							$adj_cr_total_3 += $adj_cr_3;
+						?>
+						<tr>
+							<td>{{$row->date}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
+							<td>{{$row->sal_extra_name}}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{$row->salpay_extra_amt}}</td>
+							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
