@@ -68,3 +68,39 @@
 		load_url(url,false);
 	});
 </script>
+
+
+<script src="js/jQuery.print.js"></script>
+<script>
+	$(function() {
+		$(".print").click(function() {
+			var divContents = $("#toprint").html();
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+			//$("#toprint").print();
+            printWindow.print(); 
+		});
+	});
+</script>
+<script>
+	  $('.clickme').click(function(e){
+			$('.expenceclassid').click();
+		});
+		
+	  $('.crtds').click(function(e){
+			e.preventDefault();
+			$('.box-inner').load($(this).attr('href'));
+		});
+		$('.ReceiptPrint').click(function(e){
+		e.preventDefault();
+		//alert($(this).attr('href'));
+		$('.box-inner').load($(this).attr('href'));
+	});
+		$('#excel').click(function(e){
+	$('#excel_export').tableExport({type:'excel',escape:'false'});
+	});
+</script>
