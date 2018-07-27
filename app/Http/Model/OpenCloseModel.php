@@ -1314,7 +1314,6 @@
 			->where('PLRepay_PayMode','=',"CASH")
 			->where('PLRepay_Date',$dte)
 			->where('PLRepay_Bid',$BranchId)
-			->where('pigmy_commission', "<", 0)
 			->get();
 			
 			return $id;
@@ -1336,7 +1335,6 @@
 			->where('PLRepay_PayMode','<>',"CASH")
 			->where('PLRepay_Date',$dte)
 			->where('PLRepay_Bid',$BranchId)
-			->where('pigmy_commission', "<", 0)
 			->get();
 			
 			return $id;
@@ -1416,7 +1414,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_Interest','SLRepay_PayMode','receipt_voucher_no as receipt_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+			$id=DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_Interest','SLRepay_PayMode','receipt_voucher_no as receipt_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' ") )
 			->join('staffloan_allocation','staffloan_allocation.StfLoanAllocID','=','SLRepay_SLAllocID')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","staffloan_repay.SLRepay_Id")
 			->join("user","user.Uid","=","staffloan_allocation.Uid")

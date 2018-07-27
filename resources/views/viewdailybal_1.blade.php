@@ -1755,6 +1755,9 @@
 					@foreach ($trandaily['plrepay'] as $plrepay)
 						<?php
 							$plrepay_cash_cr = $plrepay->PLRepay_PaidInterest;
+							if($plrepay_cash_cr <= 0) {
+								continue;
+							}
 							$plrepay_cash_cr_total += $plrepay_cash_cr;
 						?>
 						<tr>
@@ -1773,6 +1776,9 @@
 					@foreach ($trandaily['plrepay_adjust'] as $plrepay)
 						<?php
 							$plrepay_adj_cr = $plrepay->PLRepay_PaidInterest;
+							if($plrepay_adj_cr <= 0) {
+								continue;
+							}
 							$plrepay_adj_cr_total += $plrepay_adj_cr;
 						?>
 						<tr>
@@ -2744,6 +2750,9 @@
 				@foreach ($trandaily['agent_sal'] as $row)
 					<?php
 						$adj_db = $row->Agent_Commission_PaidAmount + $row->Tds + $row->securityDeposit ;
+						if($adj_db <= 0) {
+							continue;
+						}
 						$adj_db_total += $adj_db;
 					?>
 					<tr>
@@ -2764,6 +2773,9 @@
 					@foreach ($trandaily['plrepay'] as $plrepay)
 						<?php
 							$cash_cr = $plrepay->pigmy_commission;
+							if($cash_cr <= 0) {
+								continue;
+							}
 							$cash_cr_total += $cash_cr;
 						?>
 						<tr>
@@ -2784,6 +2796,9 @@
 					@foreach ($trandaily['plrepay_adjust'] as $plrepay)
 						<?php
 							$adj_cr = $plrepay->pigmy_commission;
+							if($adj_cr <= 0) {
+								continue;
+							}
 							$adj_cr_total += $adj_cr;
 						?>
 						<tr>
