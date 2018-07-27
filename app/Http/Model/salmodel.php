@@ -52,6 +52,16 @@
 			
 			if($noloan=="NO")
 			{
+					
+
+				$staffloan_allocation= DB::table('staffloan_allocation')
+				->where('StfLoanAllocID','=',$id['loannum'])
+				->first();
+
+				$bid_of_loan_account = $staffloan_allocation->Bid;
+				$staff_loan_no = $staffloan_allocation->StfLoan_Number;
+				$login_bid = $BID;
+
 				$remaingamt=$id['slremamt']; 
 				$EMI_Amount=$id['EMI_Amount']; 
 				$slintamt=$id['slintamt']; 
@@ -75,7 +85,9 @@
 					$head=$head_sub->head;
 					$subhead=$head_sub->subhead;
 					
-					$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$loannum,'bid'=>$id['bid'],'charg_tran_date'=>$RepayDte,'loantype'=>"sL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+					if($login_bid == $bid_of_loan_account) {	//SAME BRANCH - ADD REPAYMENT
+						$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$loannum,'bid'=>$id['bid'],'charg_tran_date'=>$RepayDte,'loantype'=>"sL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+					}
 					$z++;
 					$chargsum=Floatval($y)+Floatval($chargsum);
 					
@@ -87,10 +99,47 @@
 
 				$a=$EMI_Amount;//+$slintamt+$chargsum;
 				$totamt=$remaingamt-$a;
+
+
+				/************************* ************************/
+				$principle = $id['EMI_Amount'];
+				$interest = $id['slintamt'];
+				$total_charges = $chargsum;
+				$total_paid = $principle + $interest + $total_charges;
+
+				if($login_bid == $bid_of_loan_account) {	//SAME BRANCH - ADD REPAYMENT
+					DB::table('staffloan_allocation')->where('StfLoanAllocID','=',$id['loannum'])->update(['StaffLoan_LoanRemainingAmount'=>$totamt,'LastPaidDate'=>$dte]);
+					
+					DB::table('staffloan_repay')->insertGetId(['SLRepay_Date'=>$dte,'SLRepay_SLAllocID'=>$id['loannum'],'SLRepay_PaidAmt'=>$total_paid,'SLRepay_PayMode'=>"SALARY",'SLRepay_Created_By'=>$id['uid'],'SLRepay_Bid'=>$id['bid'],'SLRepay_Interest'=>$id['slintamt'],'paid_principle'=>$EMI_Amount]);
+				} else {	//DIFFERENT BRANCH - TRANSFER AAMOUNT TO H.O.
 				
-				DB::table('staffloan_allocation')->where('StfLoanAllocID','=',$id['loannum'])->update(['StaffLoan_LoanRemainingAmount'=>$totamt,'LastPaidDate'=>$dte]);
-				
-				DB::table('staffloan_repay')->insertGetId(['SLRepay_Date'=>$dte,'SLRepay_SLAllocID'=>$id['loannum'],'SLRepay_PaidAmt'=>$a,'SLRepay_PayMode'=>"SALARY",'SLRepay_Created_By'=>$id['uid'],'SLRepay_Bid'=>$id['bid'],'SLRepay_Interest'=>$id['slintamt'],'paid_principle'=>$EMI_Amount]);
+					$insert_array["Branch_Branch1_Id"] = $login_bid;
+					$insert_array["Branch_Branch2_Id"] = $bid_of_loan_account;
+					$insert_array["Branch_Tran_Date"] = $dte;
+					$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+					$insert_array["LedgerHeadId"] = 57;
+					$insert_array["SubLedgerId"] = 61;
+					$insert_array["Branch_Amount"] = $total_paid;
+					$insert_array["Branch_per"] = "STAFF LOAN REPAYMENT AMOUNT ({$staff_loan_no})";
+
+					$branch_to_branch_id = DB::table("branch_to_branch")
+						->insertGetId($insert_array);
+
+					//GENERATE ADJ NO. FOR LOGIN BRANCH
+						/***********/
+						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+						$fn_data["rv_transaction_type"] = "DEBIT";
+						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+						$fn_data["rv_date"] = $dte;
+						// $fn_data["rv_bid"] = ;
+						$adj_no = $this->rv_no->save_rv_no($fn_data);
+						unset($fn_data);
+						echo " adj no: {$adj_no}";
+						/***********/
+					//NO ADJ NO. FOR H.O. (ADJ CREDIT)
+				}
+				/************************* ************************/
 			}
 			$iid = DB::table('salary')->insertGetId(['chequeno' => $id['cqno'],'date'=>$dte1,'rep_date'=>$dte,'Did'=>$id['desigid']/*,'sallowance'=>$id['sa']*/,'Eid'=>$id['eid'],'bid'=>$BID,'Uid'=>$id['uid'],'year'=>$id['year'],'gearning'=>$id['ge'],'pftax'=>$id['pt'],'gdeduction'=>$id['gd'],'netpay'=>$id['npay'],'LedgerHeadId'=>'131','SubLedgerId'=>'132' /*,'staffPF'=>$id['staffpf'],'societyPF'=>$id['socpf'],'staffESI'=>$id['esi'],'societyESI'=>$id['socesi']*/]);
 			

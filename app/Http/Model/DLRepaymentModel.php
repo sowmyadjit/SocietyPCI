@@ -760,7 +760,7 @@
 			
 			$ret_data = DB::table('staffloan_allocation')
 			->select(DB::raw('StfLoanAllocID as id,StfLoan_Number as name'));
-			if($this->settings->get_value("allow_inter_branch") == 0) {
+			if($this->settings->get_value("allow_inter_branch") == 0 && false) {
 				$ret_data = $ret_data->where("staffloan_allocation.Bid",$BID);
 			}
 			$ret_data = $ret_data->get();// print_r($ret_data);exit();
