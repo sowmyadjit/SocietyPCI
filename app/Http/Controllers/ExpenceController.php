@@ -185,8 +185,19 @@
 		{
 			// $ex=ExpenceModel::all();
 			$ex=$this->creadexpencemodel->GetAllIncome();
-			return view('income',compact('ex'));
+			$ex["is_day_open"] = $this->op->is_day_open(date("Y-m-d"));
+			// return view('income',compact('ex'));
+			return view('income2',compact('ex'));
 		}
+		
+		public function income_data()
+		{
+			// $ex=ExpenceModel::all();
+			$ex=$this->creadexpencemodel->GetAllIncome();
+			// return view('income',compact('ex'));
+			return view('income_data',compact('ex'));
+		}
+
 		public function createIncome()
 		{
 			$led=$this->creadexpencemodel->getExpensedata();
