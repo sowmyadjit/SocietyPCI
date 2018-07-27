@@ -194,6 +194,7 @@
 				
 				//EmployeeController
 				Route::get('/emp','EmployeeController@show_emp');
+				Route::post('/employee_data','EmployeeController@employee_data');
 				Route::get('/empcreate','EmployeeController@show_empcreate');
 				Route::post('/insertemp','EmployeeController@create_employee');
 				Route::post('/updateemp','EmployeeController@UpdateEmployee');
@@ -221,6 +222,7 @@
 				Route::post('/transferbranchamt','ExpenceController@transferbranchamt');
 				Route::get('/ExReceipt/{id}','ExpenceController@ExReceipt');
 				Route::get('/income','ExpenceController@income');
+				Route::post('/income_data','ExpenceController@income_data');
 				Route::get('/createIncome','ExpenceController@createIncome');
 				Route::post('/createincomes','ExpenceController@createincomes');
 				

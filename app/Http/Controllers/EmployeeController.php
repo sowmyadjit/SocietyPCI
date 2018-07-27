@@ -11,6 +11,7 @@
 	use Input;
 	use App\Http\Model\CustomerModel;
 	use App\Http\Model\ModulesModel;
+	use App\Http\Model\OpenCloseModel;
 	
 	class EmployeeController extends Controller
 	{
@@ -21,6 +22,7 @@
 			$this->employee = new EmployeeModel;
 			$this->customer = new CustomerModel;
 			$this->Modules= new ModulesModel;
+			$this->op= new OpenCloseModel;
 			
 		}
 		public function show_emp()
@@ -28,8 +30,19 @@
 			$Url="emp";
 			$e['module']=$this->Modules->GetAnyMid($Url);
 			$e['Employee']=$this->employee->getData();
+			$e['is_day_open'] = $this->op->is_day_open(date("Y-m-d"));
 			
-			return view('employee',compact('e'));
+			// return view('employee',compact('e'));
+			return view('employee2',compact('e'));
+		}
+
+		public function employee_data()
+		{
+			$Url="emp";
+			$e['module']=$this->Modules->GetAnyMid($Url);
+			$e['Employee']=$this->employee->getData();
+			
+			return view('employee_data',compact('e'));
 		}
 		
 		public function Show_EmpDetails($id,$type=null){
