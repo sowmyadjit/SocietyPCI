@@ -1176,9 +1176,19 @@
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="CD">CD</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
+									<option value="ADJUSTMENT">ADJUSTMENT</option>
 								</select>
 							</div>
 						</div>
+
+						
+						<div class="form-group adjust_sl">
+							<label class="control-label col-sm-4" for="">Adjustment Number :</label>
+							<div id="the-basics" class="col-sm-4">
+								<input class="adjustmentTypeAheadSL form-control"  type="text"  id="adjustnum_sl">  
+							</div>
+						</div>
+
 						<div class="cheque_sl">
 							
 							<div class="form-group ">
@@ -1384,6 +1394,7 @@
 	$('.cheque_pl').hide();
 	$('.cheque_jl').hide();
 	$('.cheque_sl').hide();
+	$('.adjust_sl').hide();
 	$('.pgsbaccnumb').hide();
 	$('.pgsbavailable').hide();
 	$('.pgsbtotamt').hide();
@@ -2010,6 +2021,7 @@
 			$('.sltotamt').hide();
 			$('.sbaccsl').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
 		}
 		else if(pmode=="SB ACCOUNT")
 		{$('.adjustmentcarg').hide();
@@ -2021,6 +2033,7 @@
 			$('.slavailable').hide();
 			$('.sltotamt').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
 			$('.SBAccNumTypeAheadSL').change(function(e)
 			{
 				AccNum=$('.SBAccNumTypeAheadSL').data('value');
@@ -2045,6 +2058,7 @@
 		{$('.adjustmentcarg').hide();
 			$('.cheque_sl').hide();
 			$('.CD').show();
+			$('.adjust_sl').hide();
 			AccNum=$('.SLAccNumTypeAhead').data('value');
 			$.ajax({
 				url:'/getcd_of_employee',
@@ -2076,6 +2090,19 @@
 			$('.sltotamt').hide();
 			$('.sbaccsl').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
+		}
+		else if(pmode=="ADJUSTMENT")
+		{$('.adjustmentcarg').hide();
+			$('.cheque_sl').hide();
+			$('.slsbaccnumb').hide();
+			$('.slsbavailable').hide();
+			$('.slsbtotamt').hide();
+			$('.slavailable').hide();
+			$('.sltotamt').hide();
+			$('.sbaccsl').hide();
+			$('.CD').hide();
+			$('.adjust_sl').show();
 		}
 		
 	});
@@ -2180,6 +2207,9 @@
 		ajax:'/GetSearchpigmyAcc'
 	});
 	$('.adjustmentTypeAheadPL').typeahead({
+		ajax:'/adjustment_num'
+	});
+	$('.adjustmentTypeAheadSL').typeahead({
 		ajax:'/adjustment_num'
 	});
 	$('.adjustmentTypeAheadJL').typeahead({
@@ -3630,6 +3660,24 @@ console.log("amt="+bal);
 		});
 		
 	});
+	
+	$('.adjustmentTypeAheadSL').change(function(e)
+	{
+		adid=$('.adjustmentTypeAheadSL').attr('data-value');
+		
+		
+		$.ajax({
+			url:'/Getadjustmentdetails',
+			type:'post',
+			data:'&adid='+adid,
+			success:function(data)
+			{
+				$('#slpayamt').val(data['amount']);
+			}
+		});
+		
+	});
+	
 	
 	
 	var htmltextast="";

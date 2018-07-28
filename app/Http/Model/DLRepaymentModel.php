@@ -1717,6 +1717,7 @@
 			//->select(DB::raw('Branch_Id as id, Branch_Id as name'))
 			->select(DB::raw('Branch_Id as id, CONCAT(`Branch_Id`,"-",`Branch_per`) as name'))
 			->where('Branch_Branch2_Id','=',$BID)
+			->orWhere('Branch_Branch1_Id','=',$BID)
 			->get();
 			return $data;
 		}
