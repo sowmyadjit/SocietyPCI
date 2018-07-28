@@ -1394,14 +1394,25 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','receipt_voucher_no as receipt_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id1 = DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','receipt_voucher_no as receipt_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no')
 			->join('staffloan_allocation','staffloan_allocation.StfLoanAllocID','=','SLRepay_SLAllocID')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","staffloan_repay.SLRepay_Id")
 			->join("user","user.Uid","=","staffloan_allocation.Uid")
 			->where("receipt_voucher.transaction_category",24)
 			->where('SLRepay_Date',$dte)
 			->where('SLRepay_Bid',$BranchId)
+			->where('staffloan_repay.SLRepay_PayMode', "=", "CASH")
 			->get();
+			
+			$id2 = DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' ") )
+			->join('staffloan_allocation','staffloan_allocation.StfLoanAllocID','=','SLRepay_SLAllocID')
+			->join("user","user.Uid","=","staffloan_allocation.Uid")
+			->where('SLRepay_Date',$dte)
+			->where('SLRepay_Bid',$BranchId)
+			->where('staffloan_repay.SLRepay_PayMode', "!=", "CASH")
+			->get();
+
+			$id = array_merge($id1, $id2);
 			
 			return $id;
 		}
@@ -1414,7 +1425,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_Interest','SLRepay_PayMode','receipt_voucher_no as receipt_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' ") )
+			$id1 = DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_Interest','SLRepay_PayMode','receipt_voucher_no as receipt_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' ") )
 			->join('staffloan_allocation','staffloan_allocation.StfLoanAllocID','=','SLRepay_SLAllocID')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","staffloan_repay.SLRepay_Id")
 			->join("user","user.Uid","=","staffloan_allocation.Uid")
@@ -1422,6 +1433,16 @@
 			->where('SLRepay_Date',$dte)
 			->where('SLRepay_Bid',$BranchId)
 			->get();
+			
+			$id2 = DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date', 'SLRepay_Interest', 'SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' ") )
+			->join('staffloan_allocation','staffloan_allocation.StfLoanAllocID','=','SLRepay_SLAllocID')
+			->join("user","user.Uid","=","staffloan_allocation.Uid")
+			->where('SLRepay_Date',$dte)
+			->where('SLRepay_Bid',$BranchId)
+			->where('staffloan_repay.SLRepay_PayMode', "!=", "CASH")
+			->get();
+
+			$id = array_merge($id1, $id2);
 			
 			return $id;
 		}
@@ -2714,15 +2735,26 @@
 										$loan_charge[$key]->pay_mode = DB::table('staffloan_repay')
 											->where('SLRepay_Id','=',$row->repay_id)
 											->value('SLRepay_PayMode');
-										$alloc_row = DB::table('staffloan_repay')
-										 	->select("receipt_voucher_no","SLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
-											->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","staffloan_repay.SLRepay_Id")
-											->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","staffloan_repay.SLRepay_SLAllocID")
-											->join("user","user.Uid","=","staffloan_allocation.Uid")
-											->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
-											->where("receipt_voucher.transaction_category",24)
-											->where('SLRepay_Id','=',$row->repay_id)
-											->first();
+										if($loan_charge[$key]->pay_mode == "CASH") {
+											$alloc_row = DB::table('staffloan_repay')
+												 ->select("receipt_voucher_no","SLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+												->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","staffloan_repay.SLRepay_Id")
+												->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","staffloan_repay.SLRepay_SLAllocID")
+												->join("user","user.Uid","=","staffloan_allocation.Uid")
+												->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
+												->where("receipt_voucher.transaction_category",24)
+												->where('SLRepay_Id','=',$row->repay_id)
+												->where('staffloan_repay.SLRepay_PayMode','=',"CASH")
+												->first();
+										} else {
+											$alloc_row = DB::table('staffloan_repay')
+												 ->select("SLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'receipt_voucher_no' ") )
+												->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","staffloan_repay.SLRepay_SLAllocID")
+												->join("user","user.Uid","=","staffloan_allocation.Uid")
+												->where('SLRepay_Id','=',$row->repay_id)
+												->where('staffloan_repay.SLRepay_PayMode','!=',"CASH")
+												->first();
+										}
 											$loan_charge[$key]->pay_mode = $alloc_row->SLRepay_PayMode;
 											$loan_charge[$key]->receipt_no = $alloc_row->receipt_voucher_no;
 											$loan_charge[$key]->name = $alloc_row->name;

@@ -2202,7 +2202,7 @@
 							<tr>
 								<td>{{ $slrepay->SLRepay_Date }}</td>
 								<td>{{ $slrepay->StfLoan_Number }}</td>
-								<td>-{{ $slrepay->name }}({{$slrepay->Uid}})</td>
+								<td>{{ $slrepay->name }}({{$slrepay->Uid}})</td>
 								<td>{{ $slrepay->paid_principle }}</td>
 								<td>-</td>
 								<td>-</td>
@@ -2219,7 +2219,7 @@
 							<tr>
 								<td>{{ $slrepay->SLRepay_Date }}</td>
 								<td>{{ $slrepay->StfLoan_Number }}</td>
-								<td>-{{ $slrepay->name }}({{$slrepay->Uid}})</td>
+								<td>{{ $slrepay->name }}({{$slrepay->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $slrepay->paid_principle }}</td>
@@ -2281,7 +2281,7 @@
 							<tr>
 								<td>{{ $row->SLRepay_Date }}</td>
 								<td>{{ $row->StfLoan_Number }}</td>
-								<td>-{{ $row->name }}({{$row->Uid}})</td>
+								<td>{{ $row->name }}({{$row->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $adj_cr }}</td>
@@ -2980,7 +2980,7 @@
 					<th colspan =3>Society Contribution</th>
 					<td>-</td>
 					<td>-</td>
-					<td>-</td>
+					<td><?php echo $adj_cr_total_3; ?></td>
 					<td><?php echo $adj_db_total_3; ?></td>
 					<td>-</td>
 					<td>-</td>
@@ -3052,7 +3052,7 @@
 				<?php
 					$cash_cr_total = $cash_cr_total_4;
 					$cash_db_total = 0;
-					$adj_cr_total = $adj_cr_total_2 + $adj_cr_total_4;
+					$adj_cr_total = $adj_cr_total_2 + $adj_cr_total_4 + $adj_cr_total_3;
 					$adj_db_total = $adj_db_total_1 + $adj_db_total_3;
 				
 				
