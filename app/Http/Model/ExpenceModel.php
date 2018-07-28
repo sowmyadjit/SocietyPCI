@@ -498,7 +498,7 @@
 				DB::table('cash')->where('BID',$b2)
 				->update(['InHandCash'=>$totB2]);
 			}
-			$b2b_tran_id = DB::table('branch_to_branch')->insertGetId(['Branch_Branch1_Id'=>$id['Br1'],'Branch_Branch2_Id'=>$id['Br2'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
+			$b2b_tran_id = DB::table('branch_to_branch')->insertGetId(['Branch_Branch1_Id'=>$id['Br2'],'Branch_Branch2_Id'=>$id['Br1'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
 
 				/***********/
 				$fn_data["rv_payment_mode"] = $tt;
@@ -506,7 +506,7 @@
 				$fn_data["rv_transaction_type"] = "DEBIT";
 				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $dte;
-				$fn_data["rv_bid"] = $id['Br1'];
+				$fn_data["rv_bid"] = $id['Br2'];
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
@@ -516,14 +516,14 @@
 				$fn_data["rv_transaction_type"] = "CREDIT";
 				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $dte;
-				$fn_data["rv_bid"] = $id['Br2'];
+				$fn_data["rv_bid"] = $id['Br1'];
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
 
-			if($id['Br1'] == 6 && strcasecmp($tt,"ADJUSTMENT") == 0) {
+/* 			if($id['Br1'] == 6 && strcasecmp($tt,"ADJUSTMENT") == 0) {
 				DB::table('branch_to_branch')->insert(['Branch_Branch1_Id'=>$id['Br2'],'Branch_Branch2_Id'=>$id['Br1'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
-			}
+			} */
 			
 		}
 		public function GetExpenceReceipt($id)
