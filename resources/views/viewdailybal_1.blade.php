@@ -456,8 +456,8 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
 							<td>-</td>
 						</tr>
 					@endforeach
@@ -474,8 +474,8 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
 							<td>-</td>
 						</tr>
 					@endforeach
