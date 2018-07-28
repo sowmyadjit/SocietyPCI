@@ -86,21 +86,3 @@
 		});
 	});
 </script>
-<script>
-	  $('.clickme').click(function(e){
-			$('.expenceclassid').click();
-		});
-		
-	  $('.crtds').click(function(e){
-			e.preventDefault();
-			$('.box-inner').load($(this).attr('href'));
-		});
-		$('.ReceiptPrint').click(function(e){
-		e.preventDefault();
-		//alert($(this).attr('href'));
-		$('.box-inner').load($(this).attr('href'));
-	});
-		$('#excel').click(function(e){
-	$('#excel_export').tableExport({type:'excel',escape:'false'});
-	});
-</script>

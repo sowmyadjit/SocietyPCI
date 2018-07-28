@@ -29,7 +29,7 @@
 						<div class="box-content">
 	
 							<div class="alert alert-info">
-								<a href="createIncome" class="btn btn-default crtds">Income</a>
+								<a href="createIncome" class="btn btn-default crtds_income">Income</a>
 								<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
 								<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">	
 								<button class="refresh_data btn-sm glyphicon glyphicon-refresh"></button>
@@ -98,7 +98,7 @@
 </script>
 
 <script>
-	$(".crtds").click(function(e) {
+	$(".crtds_income").click(function(e) {
 		e.preventDefault();
 		var url = $(this).attr('href');
 		load_url(url);
@@ -121,5 +121,10 @@
 	$(".b_back").click(function() {
 		$(".b_main").show();
 		$(".b_sub_1").html("b_sub_1");
+	});
+</script>
+<script>
+	$('#excel').click(function(e){
+		$('#excel_export').tableExport({type:'excel',escape:'false'});
 	});
 </script>
