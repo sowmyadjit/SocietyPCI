@@ -113,7 +113,7 @@
 									<div class="form-group">
 										<label class="control-label col-sm-4">Insurance Charge:</label>
 										<div class="col-md-6">
-											<input type="text" class="form-control" id="Insurance" name="Insurance" placeholder="Insurance CHARGE"onblur="deduct()">
+											<input type="text" class="form-control" id="Insurance" name="Insurance" placeholder="Insurance CHARGE" <?php /*onblur="deduct() */ ?>">
 										</div>
 									</div>
 									
@@ -157,20 +157,21 @@
 									</div>-->
 									
 									
-									
-									<div class="form-group">
-										<label class="control-label col-sm-4">First Surety</label>
-										<div id="the-basics" class="col-sm-6">
-											<input class="PersWitness1TypeAhead form-control"  type="text" placeholder="SELECT WITNESS NAME" id="persWitness1" onblur="CalcEMI();" Required>  
+									<div id="surety_box">
+										<div class="form-group">
+											<label class="control-label col-sm-4">First Surety</label>
+											<div id="the-basics" class="col-sm-6">
+												<input class="PersWitness1TypeAhead form-control"  type="text" placeholder="SELECT WITNESS NAME" id="persWitness1" onblur="CalcEMI();" Required>  
+											</div>
 										</div>
-									</div>
-									
-									<input class="form-control hidden"  type="text" id="PLSurety1ID" name="PLSurety1ID"> 
-									
-									<div class="form-group">
-										<label class="control-label col-sm-4">Second Surety</label>
-										<div id="the-basics" class="col-sm-6">
-											<input class="persWitness2TypeAhead form-control"  type="text" placeholder="SELECT WITNESS NAME" id="PersWitness2"  onblur="LoanEndDate();" Required>  
+										
+										<input class="form-control hidden"  type="text" id="PLSurety1ID" name="PLSurety1ID"> 
+										
+										<div class="form-group">
+											<label class="control-label col-sm-4">Second Surety</label>
+											<div id="the-basics" class="col-sm-6">
+												<input class="persWitness2TypeAhead form-control"  type="text" placeholder="SELECT WITNESS NAME" id="PersWitness2"  onblur="LoanEndDate();" Required>  
+											</div>
 										</div>
 									</div>
 									
@@ -620,6 +621,11 @@
 				$('#Persloantypeid').val(data['LType_ID']);
 				$('#LoanDurationYears').val(data['Dur_Year']);
 				$('#uid').val(data['uid']);
+				console.log("first_payment:"+ data['first_payment']);
+				if(data['first_payment'] == "NO") {// NO
+					$("#PersShrChrg").val(0);
+					$("#surety_box").hide();
+				}
 			}
 		});
 	});
@@ -978,6 +984,26 @@
 			$("#pay_amt").val($("#PersLoanAmt").val());
 		}
 		
+	}
+
+	$("#pay_amt, #PersOthrChrges, #PersBkfrmChrg, #PersAdjChrg, #PersShrChrg, #Insurance").change(function() {
+		console.log("calc\n");	
+		calc_payable();
+	});
+
+
+	function calc_payable()
+	{
+		var PersPayAmt = 0;
+		var pay_amt = parseFloat($("#pay_amt").val());
+		var PersOthrChrges = parseFloat($("#PersOthrChrges").val());
+		var PersBkfrmChrg = parseFloat($("#PersBkfrmChrg").val());
+		var PersAdjChrg = parseFloat($("#PersAdjChrg").val());
+		var PersShrChrg = parseFloat($("#PersShrChrg").val());
+		var Insurance = parseFloat($("#Insurance").val());
+
+		PersPayAmt = pay_amt - PersOthrChrges - PersBkfrmChrg - PersAdjChrg - PersShrChrg - Insurance;
+		$("#PersPayAmt").val(PersPayAmt);
 	}
 	
 	

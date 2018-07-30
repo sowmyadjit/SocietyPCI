@@ -5,11 +5,18 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class PayAmtModel extends Model
 	{
 		protected $table = 'pigmi_prewithdrawal';
 		
+		public function __construct() {
+			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
+		}
 		
 		public function InsertPayAmount($id)
 		{
@@ -49,10 +56,31 @@
 				$r1=$respit3+1;
 				DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r1]);
 			
-			DB::table('pigmi_payamount')->insertGetId(['PayAmount_PigmiAccNum'=>$id['account'],'PayAmount_PaymentMode'=>$id['PigPayMode'],'PayAmount_ChequeNum'=>$id['PigPayChequeNum'],'PayAmount_ChequeDate'=>$id['PigPayChequeDate'],'PayAmount_PayableAmount'=>$id['PigPayableAmt'],'PayAmount_PayDate'=>$paydate,'PayAmountReport_PayDate'=>$paydatereport,'PayAmount_BankId'=>$id['BankId'],'PayAmount_IntType'=>$id['PigIntMode'],'PayAmount_ReceiptNum'=>$ReceiptNum,'PayAmount_PaymentVoucher'=>$r1]);
+			$pigmi_payamount_id = DB::table('pigmi_payamount')->insertGetId(['PayAmount_PigmiAccNum'=>$id['account'],'PayAmount_PaymentMode'=>$id['PigPayMode'],'PayAmount_ChequeNum'=>$id['PigPayChequeNum'],'PayAmount_ChequeDate'=>$id['PigPayChequeDate'],'PayAmount_PayableAmount'=>$id['PigPayableAmt'],'PayAmount_PayDate'=>$paydate,'PayAmountReport_PayDate'=>$paydatereport,'PayAmount_BankId'=>$id['BankId'],'PayAmount_IntType'=>$id['PigIntMode'],'PayAmount_ReceiptNum'=>$ReceiptNum,'PayAmount_PaymentVoucher'=>$r1,'Bid'=>$BID]);
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $PayMode;
+				$fn_data["rv_transaction_id"] = $pigmi_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PG_PAYAMOUNT;//constant PG_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			
 			if($inttype=="PREWITHDRAWAL")
 			{
+				/***********/
+				$fn_data["rv_payment_mode"] ="CASH";
+				$fn_data["rv_transaction_id"] = $pigmi_payamount_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PG_PAYAMOUNT;//PIGMI PREWITHDRAWAL DEDUCT AMOUNT
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 				DB::table('pigmi_prewithdrawal')->where('PigmiAcc_No','=',$PigAccNum)
 				->update(['CashPaid_State'=>"PAID"]);
 			}
@@ -74,6 +102,31 @@
 				
 				DB::table('addbank')->where('Bankid','=',$BankId)
 				->update(['TotalAmt'=>$ResultAmt]);
+				
+				//
+				$addbank = DB::table('addbank')
+				->where('Bankid','=',$BankId)
+				->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = $paydate;
+				$insert_array["date"] = $paydatereport;
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "CHEQUE";
+				$insert_array["cheque_no"] = $id['PigPayChequeNum'];
+				$insert_array["cheque_date"] = $id['PigPayChequeDate'];
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $id['PigPayableAmt'];
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = "PIGMY PAY AMOUNT THROUGH CHEQUE";
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = "WITHDRAWL";
+
+				DB::table("deposit")
+					->insertGetId($insert_array);
+				//NO NEED TO GENERATE RECEIPT/VOUCHER NO FOR ADJ CREDIT TRANSACTION
 			}
 			
 			else if($PayMode=="CASH")
@@ -95,7 +148,10 @@
 				$reportdte=date('Y-m-d');
 				$mnt=date('m');
 				$year=date('Y');
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>"Credited from Pygmy Account",'Amount' =>$id['PigPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'bid'=>$BID,'Payment_Mode'=>"PIGMY"]);
+
+				$sb_particulars = "Credited from Pygmy Account ({$PigAccNum})";
+
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$sb_particulars,'Amount' =>$id['PigPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'bid'=>$BID,'Payment_Mode'=>"PIGMY"]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
@@ -144,8 +200,19 @@
 				$r1=$respit3+1;
 				DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r1]);
 				
-			DB::table('rd_payamount')->insertGetId(['RDPayAmt_AccNum'=>$id['rdaccount'],'RDPayAmt_PaymentMode'=>$id['RDPayMode'],'RDPayAmt_ChequeNum'=>$id['RDPayChequeNum'],'RDPayAmt_ChequeDate'=>$id['RDPayChequeDate'],'RDPayAmt_PayableAmount'=>$id['RDPayableAmt'],'RDPayAmt_PayDate'=>$paydate,'RDPayAmtReport_PayDate'=>$paydatereport,'RDPayAmt_BankId'=>$id['BankId'],'RDPayAmt_IntType'=>$id['RDIntMode'],'RD_PayAmount_ReceiptNum'=>$ReceiptNum,'RD_PayAmount_pamentvoucher'=>$r1]);
+			$rd_payamount_id = DB::table('rd_payamount')->insertGetId(['RDPayAmt_AccNum'=>$id['rdaccount'],'RDPayAmt_PaymentMode'=>$id['RDPayMode'],'RDPayAmt_ChequeNum'=>$id['RDPayChequeNum'],'RDPayAmt_ChequeDate'=>$id['RDPayChequeDate'],'RDPayAmt_PayableAmount'=>$id['RDPayableAmt'],'RDPayAmt_PayDate'=>$paydate,'RDPayAmtReport_PayDate'=>$paydatereport,'RDPayAmt_BankId'=>$id['BankId'],'RDPayAmt_IntType'=>$id['RDIntMode'],'RD_PayAmount_ReceiptNum'=>$ReceiptNum,'RD_PayAmount_pamentvoucher'=>$r1,'Bid'=>$BID]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $RDPayMode;
+				$fn_data["rv_transaction_id"] = $rd_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::RD_PAYAMOUNT;//constant RD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($inttype=="PREWITHDRAWAL")
 			{
 				DB::table('rd_prewithdrawal')->where('RdAcc_No','=',$RDAccNum)
@@ -169,6 +236,30 @@
 				
 				DB::table('addbank')->where('Bankid','=',$BankId)
 				->update(['TotalAmt'=>$ResultAmt]);
+
+				//
+				$addbank = DB::table('addbank')
+				->where('Bankid','=',$BankId)
+				->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = $paydate;
+				$insert_array["date"] = $paydatereport;
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "CHEQUE";
+				$insert_array["cheque_no"] = $id['RDPayChequeNum'];
+				$insert_array["cheque_date"] = $id['RDPayChequeDate'];
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $id['RDPayableAmt'];
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = "RD PAY AMOUNT THROUGH CHEQUE";
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = "WITHDRAWL";
+
+				DB::table("deposit")
+					->insertGetId($insert_array);
 			}
 			
 			else if($RDPayMode=="CASH")
@@ -191,7 +282,10 @@
 				$reportdte=date('Y-m-d');
 				$mnt=date('m');
 				$year=date('Y');
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>"Credited from RD Account",'Amount' =>$id['RDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u]);
+
+				$temp_particulars = "Credited from RD Account ({$RDAccNum})";
+
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['RDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u, 'Bid'=>$BID, 'Payment_Mode'=>'ADJUSTMENT' ]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
@@ -245,11 +339,25 @@
 			
 			if($fd_type == 1) {
 				$sub_head_id = '40';
+				$fd_type_name = "KCC";
 			} else {
 				$sub_head_id = '41';
+				$fd_type_name = "FD";
 			}
 /***********************/
-			DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$id['fdaccount'],'FDPayAmt_PaymentMode'=>$id['FDPayMode'],'Bid'=>$BID,'FDPayAmt_ChequeNum'=>$id['FDPayChequeNum'],'FDPayAmt_ChequeDate'=>$id['FDPayChequeDate'],'FDPayAmt_PayableAmount'=>$id['FDPayableAmt'],'FDPayAmt_PayDate'=>$paydate,'FDPayAmtReport_PayDate'=>$paydatereport,'FDPayAmt_BankId'=>$id['BankId'],'FDPayAmt_IntType'=>$id['FDPaymntMode'],'FD_PayAmount_ReceiptNum'=>$ReceiptNum,'FD_PayAmount_pamentvoucher'=>$r1,'LedgerHeadId'=>'38','SubLedgerId'=>$sub_head_id]);
+			$fd_payamount_id = DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$id['fdaccount'],'FDPayAmt_PaymentMode'=>$id['FDPayMode'],'Bid'=>$BID,'FDPayAmt_ChequeNum'=>$id['FDPayChequeNum'],'FDPayAmt_ChequeDate'=>$id['FDPayChequeDate'],'FDPayAmt_PayableAmount'=>$id['FDPayableAmt'],'FDPayAmt_PayDate'=>$paydate,'FDPayAmtReport_PayDate'=>$paydatereport,'FDPayAmt_BankId'=>$id['BankId'],'FDPayAmt_IntType'=>$id['FDPaymntMode'],'FD_PayAmount_ReceiptNum'=>$ReceiptNum,'FD_PayAmount_pamentvoucher'=>$r1,'LedgerHeadId'=>'38','SubLedgerId'=>$sub_head_id]);
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $FDPayMode;
+				$fn_data["rv_transaction_id"] = $fd_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_PAYAMOUNT;//constant FD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+			
 			$fd_alloc = DB::table("fdallocation")
 				->select('fd_renewed','renewed_amount')
 				->where("Fd_CertificateNum","=",$id['fdaccount'])
@@ -286,6 +394,31 @@
 				
 				DB::table('addbank')->where('Bankid','=',$BankId)
 				->update(['TotalAmt'=>$ResultAmt]);
+
+				//
+				$addbank = DB::table('addbank')
+				->where('Bankid','=',$BankId)
+				->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = $paydate;
+				$insert_array["date"] = $paydatereport;
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "CHEQUE";
+				$insert_array["cheque_no"] = $id['FDPayChequeNum'];
+				$insert_array["cheque_date"] = $id['FDPayChequeDate'];
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $id['FDPayableAmt'];
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = "{$fd_type_name} PAY AMOUNT THROUGH CHEQUE";
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = "WITHDRAWL";
+
+				DB::table("deposit")
+					->insertGetId($insert_array);
+
 			}
 			
 			else if($FDPayMode=="CASH")
@@ -301,14 +434,17 @@
 				$bid=$udetail->Bid;
 				//$totcash=$inhandcash1+$amount1;
 				DB::table('inhandcash_trans')
-				->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Paid to FD Customer",'InhandTrans_Cash'=>$PayableAmt,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Debit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$tot]);
+				->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Paid to {$fd_type_name} Customer",'InhandTrans_Cash'=>$PayableAmt,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Debit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$tot]);
 			}
 			else
 			{
 				$reportdte=date('Y-m-d');
 				$mnt=date('m');
 				$year=date('Y');
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'Payment_Mode'=>$FDPayMode,'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>"Credited from FD Account",'Amount' =>$id['FDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,"Bid"=>$udetail->Bid]);
+
+				$temp_particulars =  "Credited from {$fd_type_name} Account ({$id["fdaccount"]})";
+
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'Payment_Mode'=>$FDPayMode,'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['FDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,"Bid"=>$udetail->Bid]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
@@ -401,6 +537,16 @@
 			->get();
 		}
 		
+		public function GetKCCAccForPayAmt() //For AmtPay
+		{
+			return DB::table('fd_prewithdrawal')
+			->select(DB::raw('FdPrewithdraw_ID as id, FdAcc_No as name'))
+			->join("fdallocation","fdallocation.Fd_CertificateNum","=","fd_prewithdrawal.FdAcc_No")
+			->where('CashPaid_State','=',"UNPAID")
+			->where('fdallocation.FdTid',1)
+			->get();
+		}
+		
 		public function GetRDIntAccForPayAmt() //For AmtPay
 		{
 			return DB::table('rd_interest')
@@ -411,16 +557,42 @@
 		
 		public function GetFDMatuAccForPayAmt() //For AmtPay
 		{
-			return DB::table('fdallocation')
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
+			$ret_data = DB::table('fdallocation')
 			->select(DB::raw('Fdid as id, Fd_CertificateNum as name'))
+			->where('fdallocation.FdTid','!=',1)
 			->where('Paid_State','=',"UNPAID")
-			->where('Fd_Withdraw','=',"YES")
-			->get();
+			->where('Fd_Withdraw','=',"YES");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
+		
+		public function GetKCCMatuAccForPayAmt() //For AmtPay
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			return DB::table('fdallocation')
+				->select(DB::raw('Fdid as id, Fd_CertificateNum as name'))
+				->where('fdallocation.Bid','=',$BID)
+				->where('Paid_State','=',"UNPAID")
+				->where('Fd_Withdraw','=',"YES")
+				->where('fdallocation.FdTid','=',1)
+				->get();
+		}
+
 		public function GetRDIntDetailsForPayAmt($id) //for PayAmt
 		{
 			$id= DB::table('rd_interest')
-			->select('rd_interest.Amount_Payable','rd_interest.Total_Amount','rd_interest.Interest_Amt','user.FirstName','user.MiddleName','user.LastName','user.Uid')
+			->select('rd_interest.Amount_Payable','rd_interest.Total_Amount','rd_interest.Interest_Amt','user.FirstName','user.MiddleName','user.LastName','user.Uid','rd_interest.Principle_Amount')
 			->leftJoin('createaccount','createaccount.AccNum','=','rd_interest.RdAcc_No')
 			->leftJoin('user','user.Uid','=','createaccount.UID')
 			->where('rd_interest.RdAcc_No','=',$id)
@@ -634,6 +806,26 @@
 			->paginate(15);
 			//->get();
 			//print_r($id);
+			return $id;
+			
+		}
+		
+		public function GetKCCPayData() //M 15-4-16
+		{
+			$id = DB::table('fd_payamount')
+				->select(
+					'FDPayId',
+					'FDPayAmtReport_PayDate',
+					'FDPayAmt_AccNum','FirstName',
+					'MiddleName','LastName','FdType'
+				)
+				->leftJoin('fdallocation', 'fdallocation.Fd_CertificateNum', '=' , 'fd_payamount.FDPayAmt_AccNum')
+				->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
+				->leftJoin('user', 'user.Uid', '=' , 'fdallocation.Uid')
+				->orderBy('FDPayId','desc')
+				->where('FDPayId','>',"102")
+				->where('fdallocation.FdTid',1)
+				->get();
 			return $id;
 			
 		}

@@ -5,6 +5,8 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use App\Http\Model\SmsModel;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class PigmiTransactionModel extends Model
 	{
@@ -13,6 +15,7 @@
 		public function __construct()
 		{
 			$this->smsmodel=new SmsModel;
+			$this->rv_no = new ReceiptVoucherController;
 		}
 		
 		
@@ -160,6 +163,16 @@
 			
 			$pid = DB::table('pigmi_transaction')->insertGetId(['Trans_Date'=>$id['ptdte'],'PigReport_TranDate'=>$id['ptdte'],'Trans_Time'=>$pttme,'Agentid'=>$id['agtid'],'PigmiAllocID'=>$id['acctno'],'Current_Balance'=>$id['curbal'],'Transaction_Type'=>$id['trtype'],'Amount'=>$id['pgamount'],'Particulars'=>$id['ptpar'],'PigmiTypeid'=>$id['pgtid'],'Total_Amount'=>$id['pgbalamt'],'Month'=>$mnt,'Year'=>$year,'PgmPayment_Mode'=>$id['pgmpaymode'],'PgmCheque_Number'=>$id['pgmchequeno'],'PgmCheque_Date'=>$id['pgmchdate'],'PgmCleared_State'=>$id['pgmunclearedval'],'PgmUncleared_Bal'=>$id['pgmuncleared'],'PgmBank_Name'=>$id['pgmbankname'],'PgmBank_Branch'=>$id['pgmbankbranch'],'PgmIFSC_Code'=>$id['pgmifsccode'],'Bid'=>$id['pgmbranch'],'CreatedBy'=>$UID,'Pigmy_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"102"]);
 			
+				/***********/
+				/* $fn_data["rv_payment_mode"] = $pgpay;
+				$fn_data["rv_transaction_id"] = $pid;
+				$fn_data["rv_transaction_type"] = $id['trtype'];
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PG_TRAN;//constant RD_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['ptdte'];
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data); */
+				/***********/
+
 			$updt=DB::table('pigmiallocation')->where('PigmiAllocID',$palid)
 			->update(['Total_Amount'=>$amt]);
 			

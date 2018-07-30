@@ -142,7 +142,7 @@
 						<td><input type="radio" name="sele" value="<?php $temp=$SLPD->Tranid; echo $temp;?>" onclick="setid($id=<?php $temp=$SLPD->Tranid; echo $temp;?>);"></td>
 						<td>{{$SLPD->Tranid}}</td>
 						<td  width="10%"><?php $trandate=date("d-m-Y",strtotime($SLPD->SBReport_TranDate));  echo $trandate; ?></td>
-						<td  width="33%"><?php  echo $s=$SLPD->particulars; $f=strlen($s);if($f>=43){$d=($f/43);$b=$b+intval($d);}?></td>
+						<td  width="37%"><?php  echo $s=$SLPD->particulars; $f=strlen($s);if($f>=43){$d=($f/43);$b=$b+intval($d);}?></td>
 						<td width="10%">1234</td>
 						@if($SLPD->TransactionType=="Credit"||$SLPD->TransactionType=="CREDIT"||$SLPD->TransactionType=="credit")
 						
@@ -164,7 +164,7 @@
 									$running_amt -= $temp;
 								}?>
 						@endif
-						<td width="10%" align="right"><p class="text"><?php echo $running_amt; ?></p></td>
+						<td width="15%" align="right"><p class="text"  id="running_amt_{{$SLPD->Tranid}}"><?php echo $running_amt; ?></p></td>
 							<?php /*		<td width="10%" align="right"><p class="text">{{ $SLPD->Total_Bal }}</p></td> */?>
 						<td width="10%"></td>
 						<td><input type="checkbox" class="swap" id="{{$SLPD->Tranid}}" /></td>
@@ -285,11 +285,11 @@
 					
 					$zxc = '<tr><td width="3%">-</td>';
 					$zxc .= '<td width="10%">-</td>';
-					$zxc .= '<td width="33%">previous Balance</td>';
+					$zxc .= '<td width="37%">previous Balance</td>';
 					$zxc .= '<td width="10%">-</td>';
 					$zxc .= '<td width="10%">-</td>';
 					$zxc .= '<td width="10%">-</td>';
-					$zxc .= '<td width="10%">'.$pb.'</td></tr>';
+					$zxc .= '<td width="15%">'.$pb.'</td></tr>';
 					if($page_no <= $total_no_of_page)
 					{
 						if($page_no % 2)
@@ -327,6 +327,7 @@
 								{
 									//print padding * 2
 									$printtabledata.='<tr><td><br/></td></tr>';
+									$printtabledata.='<tr><td><br/></td></tr>';
 								}
 								//print trdata
 								if($x==0)
@@ -351,15 +352,18 @@
 					$total_no_of_page = 15;
 					$lines_on_one_page = 18;
 					$line_to_exclude_on_odd_pages = 2;
-					$line_to_exclude_on_even_pages = 0;
-					$line_to_exclude_on_odd_pages_end = 1;
-					$line_to_exclude_on_even_pages_end = 2;
+					$line_to_exclude_on_even_pages = 4;
+					$line_to_exclude_on_odd_pages_end = 2;
+					$line_to_exclude_on_even_pages_end = 0;
 					$line_height ="2px";
 					$page_num = $user_input_page_number;
 					$line_num = $user_input_line_number;
 					
 					$sl = $slno;
-					$printabletable ='<table class="table bootstrap-datatable" style="font-size:12;width:100%;">';
+					$printabletable="<style>@media print {
+						.page_break {page-break-after: always;}
+					}</style>";
+					$printabletable.='<table class="table bootstrap-datatable" style="font-size:12;width:100%;">';
 					
 					if($page_num%2)
 					{
@@ -368,7 +372,7 @@
 					else
 					{
 						//echo 'hi';
-						$v = $lines_on_one_page;
+						$v = $lines_on_one_page - 2;
 						for($i = 1; $i <= $v; $i++)
 						{
 							//echo 'hi2';
@@ -398,6 +402,7 @@
 						$trdata='';
 						if($page_num <= $total_no_of_page )
 						{
+							$particulars_length = 0;
 							if($page_num%2)
 							{
 								//odd
@@ -406,7 +411,12 @@
 								$trdata = '<tr><td width="3%">'.$sl.'</td>';
 								//$trdata .= '<td width="10%">'.$val->SBReport_TranDate.'</td>';
 								$trdata .= '<td width="10%">'.$trandate.'</td>';
-								$trdata .= '<td width="33%">'.$val->particulars.'</td>';
+
+								$particulars = substr($val->particulars,0,50); // MAXIMUM 50 CHARACTERS
+								$particulars_length = strlen($particulars);
+								// var_dump("particulars_length: {$particulars_length}");
+
+								$trdata .= '<td width="37%">'.$particulars.'</td>';
 								$trdata .= '<td width="10%">-</td>';
 								if($val->TransactionType=="Credit"||$val->TransactionType=="CREDIT"||$val->TransactionType=="credit")
 								{
@@ -428,7 +438,7 @@
 									$trdata .= '<td width="10%" align="right">-</td>';
 									
 								}
-								$trdata .= '<td width="10%" align="right">'.number_format($running_amt, 2).'</td>';
+								$trdata .= '<td width="15%" align="right">'.number_format($running_amt, 2).'</td>';
 //								$trdata .= '<td width="10%" align="right">'.number_format($val->Total_Bal, 2).'</td>';
 								$trdata .= '<td width="10%" align="right"></td></tr>';
 								$printabletable=print_p($page_no,$line_no,$trdata,$printabletable,$x,$pb);
@@ -442,7 +452,12 @@
 								$line_no = $line_num;
 								$trdata = '<tr><td width="3%">'.$sl.'</td>';
 								$trdata .= '<td width="10%">'.$trandate.'</td>';
-								$trdata .= '<td width="33%">'.$val->particulars.'</td>';
+								
+								$particulars = substr($val->particulars,0,50); // MAXIMUM 50 CHARACTERS
+								$particulars_length = strlen($particulars);
+								// var_dump("particulars_length: {$particulars_length}");
+
+								$trdata .= '<td width="37%">'.$particulars.'</td>';
 								$trdata .= '<td width="10%">-</td>';
 								if($val->TransactionType=="Credit"||$val->TransactionType=="CREDIT"||$val->TransactionType=="credit")
 								{
@@ -462,7 +477,7 @@
 									$trdata .= '<td width="10%" align="right">'.number_format($val->Amount, 2).'</td>';
 									$trdata .= '<td width="10%" align="right">-</td>';
 								}
-								$trdata .= '<td width="10%" align="right">'.number_format($running_amt, 2).'</td>';
+								$trdata .= '<td width="15%" align="right">'.number_format($running_amt, 2).'</td>';
 //								$trdata .= '<td width="10%" align="right">'.number_format($val->Total_Bal, 2).'</td>';
 								$trdata .= '<td width="10%"></td></tr>';
 								
@@ -471,6 +486,13 @@
 								$extra_lines = $line_to_exclude_on_even_pages + $line_to_exclude_on_even_pages_end;
 							}
 							$line_num++;
+							
+							while($particulars_length > 30) {
+								$particulars_length = $particulars_length - 30;
+								$line_num++;
+							}
+							// var_dump("line_num: {$line_num}");
+
 							if(($line_num + $extra_lines) <= $lines_on_one_page)
 							{
 								//same page
@@ -482,7 +504,9 @@
 								$page_num++;
 								if($page_num%2)
 								{
-									$printabletable.='<tr><td><br/><br/><br/></td></tr>';
+									// $printabletable.='<tr><td>*<br/>*<br/>*<br/>*</td></tr>';
+									$printabletable.='';
+									$printabletable.='<tr><td><p class="page_break"></p>&nbsp;</td></tr>';
 								}
 							}
 						}
@@ -597,7 +621,11 @@
 				printWindow.document.write(divContents);
 				printWindow.document.write('</body></html>');
 				printWindow.document.close();
-				printWindow.print();
+				// printWindow.print();
+				setTimeout(function() {
+					printWindow.print();
+				}, 5000);
+
 				
 				
 				
@@ -617,7 +645,10 @@
 				printWindow.document.write(divContents);
 				printWindow.document.write('</body></html>');
 				printWindow.document.close();
-				printWindow.print();
+				// printWindow.print();
+				setTimeout(function() {
+					printWindow.print();
+				}, 5000);
 				
 				
 				
@@ -651,6 +682,7 @@
 		{
 			a=$temp;
 			$('#t').val(a);
+			previous_balance = $("#running_amt_"+a).html();
 			
 			
 		}

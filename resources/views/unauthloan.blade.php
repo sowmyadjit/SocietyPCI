@@ -27,6 +27,9 @@
 						</select>
 					</div>
 				</div>
+				
+				<button class="btn-sm glyphicon glyphicon-refresh" id="refresh_data"></button>
+
 				</br>
 				
 				<div class="box-content">
@@ -99,4 +102,10 @@
 		}
 	});
 	
-</script>					
+</script>	
+
+<script>
+	$("#refresh_data").click(function() {
+		$("#LoanCategory").trigger("change");
+	});
+</script>

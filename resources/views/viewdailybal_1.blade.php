@@ -48,8 +48,9 @@
 						<th>DEBIT</th>
 						<th>ADJUSTMENT CREDIT</th>
 						<th>ADJUSTMENT DEBIT</th>
-						<th>RECEIPT NUM</th>
-						<th>PAYMENT VOUCHER NUM</th>
+						<th>REC. NUM</th>
+						<th>VOUCH. NUM</th>
+						<th>ADJ NUM</th>
 						
 						
 					</tr>
@@ -65,7 +66,7 @@
 				
 				
 				<tbody>
-					<tr><td colspan="9"><h5><b><center>SB TRANSACTION<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>SB TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$sb_cash_cr = 0;
 						$sb_cash_db = 0;
@@ -80,7 +81,7 @@
 						<tr>
 							<td>{{ $sb->SBReport_TranDate }}</td>
 							<td>{{ $sb->AccNum }}</td>
-							<td>{{ $sb->particulars }}</td>
+							<td>{{ $sb->particulars }} - {{$sb->name}}({{$sb->Uid}})</td>
 							
 							@if($sb->TransactionType=="Credit"||$sb->TransactionType=="CREDIT"||$sb->TransactionType=="credit")
 									<?php
@@ -89,6 +90,9 @@
 									?>
 								<td><p class="text-right"></p><?php echo $sb_cash_cr; ?></td>
 								<td><p class="text-center">-</p></td>
+								<td><p class="text-center">-</p></td>
+								<td><p class="text-center">-</p></td>
+								<td>{{ $sb->SB_resp_No }}</td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
 							@else
@@ -100,9 +104,10 @@
 								<td><p class="text-right"><?php echo $sb_cash_db; ?></p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
+								<td><p class="text-center">-</p></td>
+								<td>{{ $sb->SB_paymentvoucher_No }}</td>
+								<td><p class="text-center">-</p></td>
 							@endif
-							<td>{{ $sb->SB_resp_No }}</td>
-							<td>{{ $sb->SB_paymentvoucher_No }}</td>
 						</tr>
 					@endforeach
 					
@@ -110,7 +115,7 @@
 						<tr>
 							<td>{{ $sb->SBReport_TranDate }}</td>
 							<td>{{ $sb->AccNum }}</td>
-							<td>{{ $sb->particulars }}</td>
+							<td>{{ $sb->particulars }} - {{ $sb->name }}({{ $sb->Uid }})</td>
 							
 							@if($sb->TransactionType=="Credit"||$sb->TransactionType=="CREDIT"||$sb->TransactionType=="credit")
 								<?php
@@ -131,8 +136,9 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-right"><?php echo $sb_adj_db; ?></p></td>
 							@endif
-							<td>{{ $sb->SB_resp_No }}</td>
-							<td>{{ $sb->SB_paymentvoucher_No }}</td>
+							<td><p class="text-center">-</p></td>
+							<td><p class="text-center">-</p></td>
+							<td>{{ $sb->adj_no }}</td>
 						</tr>
 					@endforeach
 					
@@ -142,6 +148,7 @@
 						<td class="text-right"><?php echo $sb_cash_db_total ?></td>
 						<td class="text-right"><?php echo $sb_adj_cr_total ?></td>
 						<td class="text-right"><?php echo $sb_adj_db_total ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -154,7 +161,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>RD TRANSACTION<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>RD TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$rd_cash_cr = 0;
 						$rd_cash_db = 0;
@@ -169,7 +176,7 @@
 						<tr>	
 							<td>{{ $rd->RDReport_TranDate }}</td>
 							<td>{{ $rd->AccNum }}</td>
-							<td>{{ $rd->RD_Particulars }}</td>
+							<td>{{ $rd->RD_Particulars }} - {{ $rd->name }}({{ $rd->Uid }})</td>
 									
 							@if($rd->RD_Trans_Type=="Credit"||$rd->RD_Trans_Type=="CREDIT"||$rd->RD_Trans_Type=="credit"&&$rd->RDPayment_Mode=="CASH")
 								<?php
@@ -199,7 +206,7 @@
 						<tr>	
 							<td>{{ $rd->RDReport_TranDate }}</td>
 							<td>{{ $rd->AccNum }}</td>
-							<td>{{ $rd->RD_Particulars }}</td>
+							<td>{{ $rd->RD_Particulars }} - {{ $rd->name }}({{$rd->Uid}})</td>
 									
 							@if($rd->RD_Trans_Type=="Credit"||$rd->RD_Trans_Type=="CREDIT"||$rd->RD_Trans_Type=="credit"&&$rd->RDPayment_Mode=="CASH")
 								<?php
@@ -220,16 +227,18 @@
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-right"><?php echo $rd_adj_db; ?></p></td>
 							@endif
-							<td>{{ $rd->RD_resp_No}}</td>
 							<td>-</td>
+							<td>-</td>
+							<td>{{ $rd->adj_no }}</td>
 						</tr>
 					@endforeach
 					<tr>
-						<th colspan =3>SB Total</th>
+						<th colspan =3>RD Total</th>
 						<td class="text-right"><?php echo $rd_cash_cr_total ?></td>
 						<td class="text-right"><?php echo $rd_cash_db_total ?></td>
 						<td class="text-right"><?php echo $rd_adj_cr_total ?></td>
 						<td class="text-right"><?php echo $rd_adj_db_total ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -241,7 +250,7 @@
 					?>
 						
 						
-					<tr><td colspan="9"><h5><b><center>PIGMY TRANSACTION<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PIGMY TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$pigmy_cash_cr = 0;
 						$pigmy_cash_db = 0;
@@ -257,7 +266,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $pigmy->name }}({{ $pigmy->Uid }})</td>
 									
 							@if($pigmy->Transaction_Type=="Credit"||$pigmy->Transaction_Type=="CREDIT"||$pigmy->Transaction_Type=="credit")
 								<?php
@@ -278,6 +287,7 @@
 							<td>-</td>
 							<td>{{ $pigmy->	Pigmy_resp_No}}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					
@@ -285,7 +295,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $pigmy->name }}({{ $pigmy->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							
@@ -306,6 +316,7 @@
 							@endif
 							<td>{{ $pigmy->	Pigmy_resp_No}}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					
@@ -313,7 +324,7 @@
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
 							<td>{{ $pigmy->PigmiAcc_No }}</td>
-							<td>{{ $pigmy->Particulars }}</td>
+							<td>{{ $pigmy->Particulars }} - {{ $pigmy->name }}({{ $pigmy->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							
@@ -326,15 +337,17 @@
 								
 							<td>{{ $pigmy->	Pigmy_resp_No}}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					
 					<tr>
-						<th colspan =3>SB Total</th>
+						<th colspan =3>Pigmy Total</th>
 						<td class="text-right"><?php echo $pigmy_cash_cr_total ?></td>
 						<td class="text-right"><?php echo $pigmy_cash_db_total ?></td>
 						<td class="text-right"><?php echo $pigmy_adj_cr_total ?></td>
 						<td class="text-right"><?php echo $pigmy_adj_db_total ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -348,7 +361,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>PIGMY PAID AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PIGMY PAID AMOUNT<center></b></h5></td></tr>
 					<?php
 						$pigmypay_cash_db = 0;
 						$pigmypay_adj_db = 0;
@@ -366,13 +379,14 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount</td>
+							<td>Pigmy Paid Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PayableAmount }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_per'] as $pigmyamt)
@@ -383,13 +397,14 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount</td>
+							<td>Pigmy Paid Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PgmTotal_Amt }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_adjust'] as $pigmyamt)
@@ -400,13 +415,14 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount</td>
+							<td>Pigmy Paid Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PayableAmount }}</td>
 							<td>-</td>
-							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_per_adjust'] as $pigmyamt)
@@ -417,13 +433,14 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Paid Amount</td>
+							<td>Pigmy Paid Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PayableAmount }}</td>
 							<td>-</td>
-							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt)
@@ -434,14 +451,14 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Commission</td>
-							
+							<td>Pigmy Pay Deduct Commission - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>{{ $pigmyamt->Deduct_Commission }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt)
@@ -452,14 +469,14 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Amount</td>
-							
+							<td>Pigmy Pay Deduct Amount - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>{{ $pigmyamt->Deduct_Amount }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
 							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt)
@@ -470,14 +487,14 @@
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
 							<td>{{ $pigmyamt->PayAmount_PigmiAccNum }}</td>
-							<td>Pigmy Pay Deduct Commission</td>
+							<td>Pigmy Pay Deduct Commission - {{ $pigmyamt->name }}({{ $pigmyamt->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->Deduct_Commission }}</td>
-							
 							<td>-</td>
 							<td>-</td>
-							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 						<?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Amount;
@@ -490,10 +507,10 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $pigmyamt->Deduct_Amount }}</td>
-							
 							<td>-</td>
 							<td>-</td>
-							<td>{{ $pigmyamt->PayAmount_PaymentVoucher }}</td>
+							<td>-</td>
+							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -502,6 +519,7 @@
 						<td><?php echo $pigmypay_cash_db_total; ?></td>
 						<td><?php echo $pigmypay_adj_cr_total; ?></td>
 						<td><?php echo $pigmypay_adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -515,7 +533,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>RD PAID AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>RD PAID AMOUNT<center></b></h5></td></tr>
 					<?php
 						$rd_cash_db = 0;
 						$rd_adj_db = 0;
@@ -532,7 +550,7 @@
 							<tr>
 								<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
 								<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
-								<td>RD Paid Amount</td>
+								<td>RD Paid Amount - {{ $rdamt->name }}({{ $rdamt->Uid }})</td>
 								<td>-</td>
 								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
 								<td>-</td>
@@ -554,7 +572,8 @@
 								<td>-</td>
 								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
 								<td>-</td>
-								<td>{{ $rdamt->RD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+								<td>{{ $rdamt->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -566,6 +585,7 @@
 						<td><?php echo $rd_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $rd_cash_db_total;
@@ -575,7 +595,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>FD DEPOSIT AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>FD DEPOSIT AMOUNT<center></b></h5></td></tr>
 					<?php
 						$fd_cash_cr = 0;
 						$fd_adj_cr = 0;
@@ -591,12 +611,13 @@
 						<tr>
 							<td>{{ $fdamt->Created_Date }}</td>
 							<td>{{ $fdamt->Fd_CertificateNum }}</td>
-							<td>FD Deposit Amount</td>
+							<td>FD Deposit Amount - {{ $fdamt->name }}({{ $fdamt->Uid }})</td>
 							<td>{{ $fdamt->Fd_DepositAmt }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $fdamt->FD_resp_No }}</td>
+							<td>-</td>
 							<td>-</td>
 						</tr>
 					@endforeach	
@@ -613,8 +634,9 @@
 							<td>-</td>
 							<td>{{ $fdamt->Fd_DepositAmt }}</td>
 							<td>-</td>
-							<td>{{ $fdamt->FD_resp_No }}</td>
 							<td>-</td>
+							<td>-</td>
+							<td>{{ $fdamt->adj_no }}</td>
 						</tr>
 					@endforeach	
 					<tr>
@@ -622,6 +644,70 @@
 						<td><?php echo $fd_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $fd_adj_cr_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $fd_cash_cr_total;
+						$gt_adj_cr += $fd_adj_cr_total;
+					?>
+					
+
+
+
+					
+					<tr><td colspan="10"><h5><b><center>KCC DEPOSIT AMOUNT<center></b></h5></td></tr>
+					<?php
+						$fd_cash_cr = 0;
+						$fd_adj_cr = 0;
+						
+						$fd_cash_cr_total = 0;
+						$fd_adj_cr_total = 0;
+					?>
+					@foreach ($trandaily['kccallocamt'] as $fdamt)
+						<?php
+							$fd_cash_cr = $fdamt->Fd_DepositAmt;
+							$fd_cash_cr_total += $fd_cash_cr;
+						?>
+						<tr>
+							<td>{{ $fdamt->Created_Date }}</td>
+							<td>{{ $fdamt->Fd_CertificateNum }}</td>
+							<td>KCC Deposit Amount - {{ $fdamt->name }}({{ $fdamt->Uid }})</td>
+							<td>{{ $fdamt->Fd_DepositAmt }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $fdamt->FD_resp_No }}</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endforeach	
+					@foreach ($trandaily['kccallocamt_adjust'] as $fdamt)
+						<?php
+							$fd_adj_cr = $fdamt->Fd_DepositAmt;
+							$fd_adj_cr_total += $fd_adj_cr;
+						?>
+						<tr>
+							<td>{{ $fdamt->Created_Date }}</td>
+							<td>{{ $fdamt->Fd_CertificateNum }}</td>
+							<td>KCC Deposit Amount</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $fdamt->Fd_DepositAmt }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $fdamt->adj_no }}</td>
+						</tr>
+					@endforeach	
+					<tr>
+						<th colspan =3>Total KCC Deposit Amount </th>
+						<td><?php echo $fd_cash_cr_total; ?></td>
+						<td>-</td>
+						<td><?php echo $fd_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -636,7 +722,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>FD PAID AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>FD PAID AMOUNT<center></b></h5></td></tr>
 					<?php
 						$fd_cash_db = 0;
 						$fd_adj_db = 0;
@@ -645,37 +731,44 @@
 						$fd_adj_db_total = 0;
 					?>
 					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
-						<?php
-							$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
-							$fd_cash_db_total += $fd_cash_db;
-						?>
-						<tr>
-							<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
-							<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-							<td>FD Paid Amount</td>
-							<td>-</td>
-							<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
-						</tr>
+						@if($fdpayamt->FdTid != 1)
+							<?php
+								$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_cash_db_total += $fd_cash_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+							</tr>
+						@endif
 					@endforeach
 					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
-						<?php
-							$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
-							$fd_adj_db_total += $fd_adj_db;
-						?>
-						<tr>
-							<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
-							<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-							<td>FD Paid Amount</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-							<td>-</td><td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
-						</tr>
+						@if($fdpayamt->FdTid != 1)
+							<?php
+								$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_adj_db_total += $fd_adj_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->adj_no }}</td>
+							</tr>
+						@endif
 					@endforeach
 					
 					
@@ -698,11 +791,12 @@
 						<tr>
 							<td>{{$row->FD_Date}}</td>
 							<td>{{$row->fdnum}}</td>
-							<td>FD Interest</td>
+							<td>FD Interest  - {{ $row->name }}({{$row->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{$row->amount}}</td>
+							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 						</tr>
@@ -725,7 +819,9 @@
 						<td>-</td>
 				<?php /*		<td><?php echo $fd_adj_db_total; ?></td> */?>
 						<td><?php echo $fd_tot; ?></td>
-						<td>-</td><td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $fd_cash_db_total;
@@ -736,11 +832,77 @@
 					
 					
 					
+				<!------------------ KCC PAID AMOUNT  -------------------->
+					<tr><td colspan="10"><h5><b><center>KCC PAID AMOUNT<center></b></h5></td></tr>
+					<?php
+						$fd_cash_db = 0;
+						$fd_adj_db = 0;
+						
+						$fd_cash_db_total = 0;
+						$fd_adj_db_total = 0;
+					?>
+					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
+						@if($fdpayamt->FdTid == 1)
+							<?php
+								$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_cash_db_total += $fd_cash_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>KCC Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+							</tr>
+						@endif
+					@endforeach
+					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
+						@if($fdpayamt->FdTid == 1)
+							<?php
+								$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_adj_db_total += $fd_adj_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>KCC Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->adj_no }}</td>
+							</tr>
+						@endif
+					@endforeach
+
+					<tr>
+						<th colspan =3>KCC Amount Paid</th>
+						<td>-</td>
+						<td><?php echo $fd_cash_db_total; ?></td>
+						<td>-</td>
+						<td><?php echo $fd_adj_db_total; ?></td> 
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_db += $fd_cash_db_total;
+						$gt_adj_db += $fd_adj_db_total;
+					?>
+				<!------------------ KCC PAID AMOUNT  -------------------->
+					
 					
 		
 					
 				<!------------------ MD PAID AMOUNT  -------------------->
-					<tr><td colspan="9"><h5><b><center>MATURITY DEPOSIT PAID AMOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>MATURITY DEPOSIT PAID AMOUNT<center></b></h5></td></tr>
 					<?php
 						$cash_db = 0;
 						$adj_db = 0;
@@ -757,13 +919,14 @@
 							<tr>
 								<td>{{$row->md_tran_date}}</td>
 								<td>{{$row->md_acc_no}}</td>
-								<td>Maturiy dposit Paid Amount</td>
+								<td>Maturiy dposit Paid Amount - {{ $row->name }}({{ $row->Uid }})</td>
 								<td>-</td>
 								<td>{{$cash_db}}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{$row->voucher_no}}</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -773,22 +936,24 @@
 							<tr>
 								<td>{{$row->md_tran_date}}</td>
 								<td>{{$row->md_acc_no}}</td>
-								<td>Maturiy dposit Paid Amount</td>
+								<td>Maturiy dposit Paid Amount - {{ $row->name }}({{ $row->Uid }})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{$adj_db}}</td>
 								<td>-</td>
-								<td>{{$row->voucher_no}}</td>
+								<td>-</td>
+								<td>{{$row->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
 					<tr>
-						<th colspan=3>FD Amount Paid</th>
+						<th colspan=3>MD Amount Paid</th>
 						<td>-</td>
 						<td><?php echo $cash_db_total; ?></td>
 						<td>-</td>
 						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -799,7 +964,7 @@
 				<!------------------ MD PAID AMOUNT END -------------------->
 					
 					
-					<tr><td colspan="9"><h5><b><center>Share Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Share Allocated<center></b></h5></td></tr>
 					<?php
 						$share_cash_cr = 0;
 						$share_cash_cr_total = 0;
@@ -812,7 +977,7 @@
 						<tr>
 							<td>{{ $share->PURSH_Date }}</td>
 							<td>{{ $share->PURSH_Memshareid }}</td>
-							<td>Purchased Shares</td>
+							<td>Purchased Shares - {{ $share->name }}({{ $share->Uid }})</td>
 							<td>{{ $share->PURSH_Totalamt }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -829,6 +994,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $share_cash_cr_total;
@@ -838,7 +1004,7 @@
 							
 							
 							
-					<tr><td colspan="9"><h5><b><center>Member Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Member Allocated<center></b></h5></td></tr>
 					<?php
 						$member_cash_cr = 0;
 						$member_cash_cr_total = 0;
@@ -851,7 +1017,7 @@
 						<tr>
 							<td>{{ $membshare->CreatedDate }}</td>
 							<td>{{ $membshare->Memid }}</td>
-							<td>Member Fees</td>
+							<td>Member Fees - {{ $membshare->name }}({{$membshare->Uid}})</td>
 							<td>{{ $membshare->Member_Fee }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -868,6 +1034,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $member_cash_cr_total;
@@ -876,7 +1043,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>D Class<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>D Class<center></b></h5></td></tr>
 					<?php
 						$classd_cash_cr = 0;
 						$classd_cash_cr_total = 0;
@@ -889,18 +1056,20 @@
 						<tr>
 							<td>{{ $classd->Created_on }}</td>
 							<td>{{ $classd->FirstName }}</td>
-							<td>Class D Fees</td>
+							<td>Class D Fees- {{ $classd->name }}({{$classd->Uid}})</td>
 							<td>{{ $classd->Customer_Fee }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $classd->Customer_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					<tr>
 						<th colspan =3>Total D class Fee </th>
 						<td><?php echo $classd_cash_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -916,7 +1085,7 @@
 
 
 
-					<tr><td colspan="9"><h5><b><center>Expence<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Expence<center></b></h5></td></tr>
 					<?php
 						$exp_cash_db = 0;
 						$exp_adj_db = 0;
@@ -939,6 +1108,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $expencetran->Expence_PamentVoucher }}</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -954,7 +1124,8 @@
 								<td>-</td>
 								<td>{{ $expencetran->amount }}</td>
 								<td>-</td>
-								<td>{{ $expencetran->Expence_PamentVoucher }}</td>
+								<td>-</td>
+								<td>{{ $expencetran->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -964,6 +1135,7 @@
 						<td><?php echo $exp_cash_db_total; ?></td>
 						<td>-</td>
 						<td><?php echo $exp_adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -976,7 +1148,7 @@
 						
 						
 						
-					<tr><td colspan="9"><h5><b><center>Income<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Income<center></b></h5></td></tr>
 					<?php
 						$inc_cash_cr = 0;
 						$inc_adj_cr = 0;
@@ -999,6 +1171,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $income->Income_Expence_PamentVoucher }}</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -1014,7 +1187,8 @@
 								<td>{{ $income->Income_amount }}</td>
 								<td>-</td>
 								<td>-</td>
-								<td>{{ $income->Income_Expence_PamentVoucher }}</td>
+								<td>-</td>
+								<td>{{ $income->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1024,6 +1198,7 @@
 						<td><?php echo $inc_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $inc_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1037,7 +1212,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>DL Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>DL Allocated<center></b></h5></td></tr>
 					<?php
 						$dl_cash_cr = 0;
 						$dl_cash_db = 0;
@@ -1056,12 +1231,13 @@
 						<tr>
 							<td>{{ $dlallocation->DepLoan_LoanStartDate }}</td>
 							<td>{{ $dlallocation->DepLoan_LoanNum }}</td>
-							<td>-</td>
+							<td> - {{ $dlallocation->name }}({{$dlallocation->Uid}})</td>
 							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanAmount }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$dlallocation->voucher_no}}</td>
 							<td>-</td>
 						</tr>
 					@endforeach
@@ -1074,11 +1250,13 @@
 							<td>{{ $dlallocation->DepLoan_LoanStartDate }}</td>
 							<td>{{ $dlallocation->DepLoan_LoanNum }}</td>
 							<td>-</td>
-							<td>-</td><td>-</td>
+							<td>-</td>
+							<td>-</td>
 							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanAmount }}</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$dlallocation->adj_no}}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['dlallocation_charg'] as $dlallocation)
@@ -1094,6 +1272,9 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$dlallocation->receipt_no}}</td>
+							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach		
 					@foreach ($trandaily['dlallocation_charg_adjust'] as $dlallocation)
@@ -1104,11 +1285,14 @@
 						<tr>
 							<td>{{ $dlallocation->DepLoan_LoanStartDate }}</td>
 							<td>{{ $dlallocation->DepLoan_LoanNum }}</td>
-							<td>-</td><td>-</td><td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanCharge }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$dlallocation->adj_no}}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -1117,6 +1301,7 @@
 						<td><?php echo $dl_cash_db_total; ?></td>
 						<td><?php echo $dl_adj_cr_total; ?></td>
 						<td><?php echo $dl_adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -1131,7 +1316,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>DL REPAY<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>DL REPAY<center></b></h5></td></tr>
 					<?php
 						$dlrepay_cash_cr = 0;
 						$dlrepay_adj_cr = 0;
@@ -1140,24 +1325,25 @@
 					?>
 					@foreach ($trandaily['dlrepay'] as $dlrepay)
 						<?php
-							$dlrepay_cash_cr = $dlrepay->DLRepay_PaidAmt;
+							$dlrepay_cash_cr = $dlrepay->DLRepay_PrincipalPaid;
 							$dlrepay_cash_cr_total += $dlrepay_cash_cr;
 						?>
 						<tr>
 							<td>{{ $dlrepay->DLRepay_Date }}</td>
 							<td>{{ $dlrepay->DepLoan_LoanNum }}</td>
-							<td>-</td>
-							<td>{{ $dlrepay->DLRepay_PaidAmt }}</td>
+							<td>- {{ $dlrepay->name }}({{$dlrepay->Uid}})</td>
+							<td>{{ $dlrepay->DLRepay_PrincipalPaid }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $dlrepay->dL_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['dlrepay_adjust'] as $dlrepay)
 						<?php
-							$dlrepay_adj_cr = $dlrepay->DLRepay_PaidAmt;
+							$dlrepay_adj_cr = $dlrepay->DLRepay_PrincipalPaid;
 							$dlrepay_adj_cr_total += $dlrepay_adj_cr;
 						?>
 						<tr>
@@ -1166,10 +1352,11 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>{{ $dlrepay->DLRepay_PaidAmt }}</td>
+							<td>{{ $dlrepay->DLRepay_PrincipalPaid }}</td>
 							<td>-</td>
-							<td>{{ $dlrepay->dL_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
+							<td>{{ $dlrepay->adj_no }}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -1177,6 +1364,67 @@
 						<td><?php echo $dlrepay_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $dlrepay_adj_cr_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $dlrepay_cash_cr_total;
+						$gt_adj_cr += $dlrepay_adj_cr_total;
+					?>
+						
+					
+					
+					<tr><td colspan="10"><h5><b><center>DL REPAY INTEREST<center></b></h5></td></tr>
+					<?php
+						$dlrepay_cash_cr = 0;
+						$dlrepay_adj_cr = 0;
+						$dlrepay_cash_cr_total = 0;
+						$dlrepay_adj_cr_total = 0;
+					?>
+					@foreach ($trandaily['dlrepay'] as $dlrepay)
+						<?php
+							$dlrepay_cash_cr = $dlrepay->DLRepay_InterestPaid;
+							$dlrepay_cash_cr_total += $dlrepay_cash_cr;
+						?>
+						<tr>
+							<td>{{ $dlrepay->DLRepay_Date }}</td>
+							<td>{{ $dlrepay->DepLoan_LoanNum }}</td>
+							<td>- {{ $dlrepay->name }}({{$dlrepay->Uid}})</td>
+							<td>{{ $dlrepay->DLRepay_InterestPaid }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $dlrepay->dL_ReceiptNum }}</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endforeach
+					@foreach ($trandaily['dlrepay_adjust'] as $dlrepay)
+						<?php
+							$dlrepay_adj_cr = $dlrepay->DLRepay_InterestPaid;
+							$dlrepay_adj_cr_total += $dlrepay_adj_cr;
+						?>
+						<tr>
+							<td>{{ $dlrepay->DLRepay_Date }}</td>
+							<td>{{ $dlrepay->DepLoan_LoanNum }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $dlrepay->DLRepay_InterestPaid }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $dlrepay->adj_no }}</td>
+						</tr>
+					@endforeach
+					<tr>
+						<th colspan =3>Total Deposit Loan repay interest</th>
+						<td><?php echo $dlrepay_cash_cr_total; ?></td>
+						<td>-</td>
+						<td><?php echo $dlrepay_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1190,8 +1438,7 @@
 						
 						
 						
-						
-					<tr><td colspan="9"><h5><b><center>PL Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PL Allocated<center></b></h5></td></tr>
 					<?php
 						$pl_cash_cr = 0;
 						$pl_cash_db = 0;
@@ -1205,34 +1452,36 @@
 					?>
 					@foreach ($trandaily['plallocation'] as $plallocation)
 						<?php
-							$pl_cash_db = $plallocation->LoanAmt;
+							$pl_cash_db = $plallocation->paid_amount;
 							$pl_cash_db_total += $pl_cash_db;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
+							<td> - {{ $plallocation->name }}({{$plallocation->Uid}})</td>
 							<td>-</td>
+							<td>{{ $plallocation->paid_amount }}</td>
 							<td>-</td>
-							<td>{{ $plallocation->LoanAmt }}</td>
-							<td>-</td>
+							<td>{{$plallocation->voucher_no}}</td>
 							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_adjust'] as $plallocation)
 						<?php
-							$pl_adj_db = $plallocation->LoanAmt;
+							$pl_adj_db = $plallocation->paid_amount;
 							$pl_adj_db_total += $pl_adj_db;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>{{ $plallocation->LoanAmt }}</td>
+							<td>{{ $plallocation->paid_amount }}</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$plallocation->adj_no}}</td>
 						</tr>
 					@endforeach
 					
@@ -1242,7 +1491,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->otherCharges }}</td>
@@ -1250,7 +1499,7 @@
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$plallocation->receipt_no}}</td>
 							<td>-</td>
 						</tr>
 					@endforeach
@@ -1260,7 +1509,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->Book_FormCharges }}</td>
@@ -1278,7 +1527,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->AjustmentCharges }}</td>
@@ -1296,7 +1545,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->ShareCharges }}</td>
@@ -1314,7 +1563,7 @@
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>{{ $plallocation->Insurance }}</td>
@@ -1333,7 +1582,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1351,7 +1600,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1369,7 +1618,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1387,7 +1636,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1403,7 +1652,7 @@
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
 						<tr>
-							<td>{{ $plallocation->StartDate }}</td>
+							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
 							<td>-</td>
 							<td>-</td>
@@ -1423,6 +1672,7 @@
 						<td><?php echo $pl_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $pl_cash_cr_total;
@@ -1437,7 +1687,7 @@
 						
 						
 						
-					<tr><td colspan="9"><h5><b><center>PL REPAY<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PL REPAY<center></b></h5></td></tr>
 					<?php
 						$plrepay_cash_cr = 0;
 						$plrepay_adj_cr = 0;
@@ -1452,12 +1702,13 @@
 						<tr>
 							<td>{{ $plrepay->PLRepay_Date }}</td>
 							<td>{{ $plrepay->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
 							<td>{{ $plrepay->PLRepay_Amtpaidtoprincpalamt }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $plrepay->PL_ReceiptNum }}</td>
+							<td>-</td>
 							<td>-</td>
 						</tr>
 					@endforeach
@@ -1469,12 +1720,13 @@
 						<tr>
 							<td>{{ $plrepay->PLRepay_Date }}</td>
 							<td>{{ $plrepay->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $plrepay->PLRepay_Amtpaidtoprincpalamt }}</td>
 							<td>-</td>
 							<td>{{ $plrepay->PL_ReceiptNum }}</td>	
+							<td>-</td>				
 							<td>-</td>				
 						</tr>
 					@endforeach
@@ -1486,13 +1738,14 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $plrepay_cash_cr_total;
 						$gt_adj_cr += $plrepay_adj_cr_total;
 					?>
 						
-					<tr><td colspan="9"><h5><b><center>PL REPAY INTEREST<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>PL REPAY INTEREST<center></b></h5></td></tr>
 					<?php
 						$plrepay_cash_cr = 0;
 						$plrepay_adj_cr = 0;
@@ -1502,35 +1755,43 @@
 					@foreach ($trandaily['plrepay'] as $plrepay)
 						<?php
 							$plrepay_cash_cr = $plrepay->PLRepay_PaidInterest;
+							if($plrepay_cash_cr <= 0) {
+								continue;
+							}
 							$plrepay_cash_cr_total += $plrepay_cash_cr;
 						?>
 						<tr>
 							<td>{{ $plrepay->PLRepay_Date }}</td>
 							<td>{{ $plrepay->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
 							<td>{{$plrepay_cash_cr}}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $plrepay->PL_ReceiptNum }}</td>
 							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plrepay_adjust'] as $plrepay)
 						<?php
 							$plrepay_adj_cr = $plrepay->PLRepay_PaidInterest;
+							if($plrepay_adj_cr <= 0) {
+								continue;
+							}
 							$plrepay_adj_cr_total += $plrepay_adj_cr;
 						?>
 						<tr>
 							<td>{{ $plrepay->PLRepay_Date }}</td>
 							<td>{{ $plrepay->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{$plrepay_adj_cr}}</td>
 							<td>-</td>
 							<td>{{ $plrepay->PL_ReceiptNum }}</td>	
-							<td>-</td>				
+							<td>-</td>
+							<td>-</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -1538,6 +1799,7 @@
 						<td><?php echo $plrepay_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $plrepay_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1552,7 +1814,7 @@
 					
 					
 			
-					<tr><td colspan="9"><h5><b><center>JL Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL Allocated<center></b></h5></td></tr>
 					<?php
 						$jl_cash_db = 0;
 						$jl_adj_db = 0;
@@ -1568,13 +1830,13 @@
 						<tr>
 							<td>{{ $jlallocation->JewelLoan_StartDate }}</td>
 							<td>{{ $jlallocation->JewelLoan_LoanNumber }}</td>
-							<td>-</td>
+							<td>- {{$jlallocation->name}}({{$jlallocation->Uid}})</td>
 							<td>-</td>
 							<td>{{ $jlallocation->JewelLoan_LoanAmount }}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
+							<td>{{$jlallocation->voucher_no}}</td>
 						</tr>
 					@endforeach
 					@foreach ($trandaily['jlallocation_adjust'] as $jlallocation)
@@ -1585,7 +1847,7 @@
 						<tr>
 							<td>{{ $jlallocation->JewelLoan_StartDate }}</td>
 							<td>{{ $jlallocation->JewelLoan_LoanNumber }}</td>
-							<td>-</td>
+							<td>-{{$jlallocation->name}}({{$jlallocation->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -1602,6 +1864,7 @@
 						<td><?php echo $jl_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $jl_cash_db_total;
@@ -1612,7 +1875,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>JL charges<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL charges<center></b></h5></td></tr>
 					<?php
 						$jl_cash_cr = 0;
 						$jl_adj_cr = 0;
@@ -1628,11 +1891,12 @@
 						<tr>
 							<td><?php echo $jlcharges; ?></td>
 							<td>-</td>
-							<td>-</td>
+							<td>-{{$trandaily['jlcharges']['name'][$jlcharges]}}({{$trandaily['jlcharges']['Uid'][$jlcharges]}})</td>
 							<td><?php echo $trandaily['jlcharges']['val'][$jlcharges]; ?></td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$trandaily['jlcharges']['receipt_no'][$jlcharges]}}</td>
 							<td>-</td>
 							<td>-</td>
 						</tr>
@@ -1645,13 +1909,14 @@
 						<tr>
 							<td><?php echo $jlcharges; ?></td>
 							<td>-</td>
-							<td>-</td>
+							<td>-{{$trandaily['jlcharges_adjust']['name'][$jlcharges]}}({{$trandaily['jlcharges_adjust']['Uid'][$jlcharges]}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td><?php echo $trandaily['jlcharges_adjust']['val'][$jlcharges]; ?></td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
+							<td>{{$trandaily['jlcharges_adjust']['adj_no'][$jlcharges]}}</td>
 						</tr>
 					@endforeach
 					<tr>
@@ -1659,6 +1924,7 @@
 						<td><?php echo $jl_cash_cr_total; ?></td>
 						<td>-</td>
 						<td><?php echo $jl_adj_cr_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1672,7 +1938,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>JL REPAY<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL REPAY<center></b></h5></td></tr>
 					<?php
 						$jlrepay_cash_cr = 0;
 						$jlrepay_adj_cr = 0;
@@ -1689,12 +1955,13 @@
 							<tr>
 								<td>{{ $jlrepay->JLRepay_Date }}</td>
 								<td>{{ $jlrepay->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>- {{ $jlrepay->name }}({{$jlrepay->Uid}})</td>
 								<td>{{$jlrepay_cash_cr}}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $jlrepay->jL_ReceiptNum }}</td>
+								<td>-</td>
 								<td>-</td>
 							</tr>
 						@else
@@ -1705,13 +1972,14 @@
 							<tr>
 								<td>{{ $jlrepay->JLRepay_Date }}</td>
 								<td>{{ $jlrepay->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>- {{ $jlrepay->name }}({{ $jlrepay->Uid }})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{$jlrepay_adj_cr}}</td>
 								<td>-</td>
-								<td>{{ $jlrepay->jL_ReceiptNum }}</td>
 								<td>-</td>
+								<td>-</td>
+								<td>{{ $jlrepay->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1723,13 +1991,14 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $jlrepay_cash_cr_total;
 						$gt_adj_cr += $jlrepay_adj_cr_total;
 					?>
 					
-					<tr><td colspan="9"><h5><b><center>JL REPAY INTEREST<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL REPAY INTEREST<center></b></h5></td></tr>
 					<?php
 						$jlrepay_cash_cr = 0;
 						$jlrepay_adj_cr = 0;
@@ -1746,12 +2015,13 @@
 							<tr>
 								<td>{{ $jlrepay->JLRepay_Date }}</td>
 								<td>{{ $jlrepay->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>-{{ $jlrepay->name }}({{ $jlrepay->Uid }})</td>
 								<td>{{$jlrepay_cash_cr}}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $jlrepay->jL_ReceiptNum }}</td>
+								<td>-</td>
 								<td>-</td>
 							</tr>
 						@else
@@ -1762,13 +2032,14 @@
 							<tr>
 								<td>{{ $jlrepay->JLRepay_Date }}</td>
 								<td>{{ $jlrepay->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>-{{ $jlrepay->name }}({{ $jlrepay->Uid }})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{$jlrepay_adj_cr}}</td>
 								<td>-</td>
-								<td>{{ $jlrepay->jL_ReceiptNum }}</td>
 								<td>-</td>
+								<td>-</td>
+								<td>{{ $jlrepay->adj_no }}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1780,13 +2051,14 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $jlrepay_cash_cr_total;
 						$gt_adj_cr += $jlrepay_adj_cr_total;
 					?>
 					
-					<tr><td colspan="9"><h5><b><center>JL AUCTION ACCOUNT<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>JL AUCTION ACCOUNT<center></b></h5></td></tr>
 					<?php
 						$cash_db = 0;
 						$adj_db = 0;
@@ -1803,12 +2075,13 @@
 							<tr>
 								<td>{{ $row_jew->tran_date }}</td>
 								<td>{{ $row_jew->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>-{{ $row_jew->name }}({{$row_jew->Uid}})</td>
 								<td>-</td>
 								<td>{{$cash_db}}</td>
 								<td>-</td>
 								<td>-</td>
-								<td></td>
+								<td>-</td>
+								<td>{{$row_jew->voucher_no}}</td>
 								<td>-</td>
 							</tr>
 						@else
@@ -1819,13 +2092,14 @@
 							<tr>
 								<td>{{ $row_jew->tran_date }}</td>
 								<td>{{ $row_jew->JewelLoan_LoanNumber }}</td>
-								<td>-</td>
+								<td>-{{ $row_jew->name }}({{$row_jew->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{$adj_db}}</td>
-								<td></td>
 								<td>-</td>
+								<td>-</td>
+								<td>{{$row_jew->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1835,6 +2109,7 @@
 						<td><?php echo $cash_db_total; ?></td>
 						<td>-</td>
 						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -1847,7 +2122,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>SL Allocated<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>SL Allocated<center></b></h5></td></tr>
 					<?php
 						$sl_cash_db = 0;
 						$sl_adj_db = 0;
@@ -1864,12 +2139,13 @@
 							<tr>
 								<td>{{ $slallocation->StartDate }}</td>
 								<td>{{ $slallocation->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $slallocation->name }}({{$slallocation->Uid}})</td>
 								<td>-</td>
 								<td>{{ $slallocation->LoanAmt }}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$slallocation->voucher_no}}</td>
 								<td>-</td>
 							</tr>
 						@else
@@ -1880,13 +2156,14 @@
 							<tr>
 								<td>{{ $slallocation->StartDate }}</td>
 								<td>{{ $slallocation->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $slallocation->name }}({{$slallocation->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $slallocation->LoanAmt }}</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$slallocation->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1898,6 +2175,7 @@
 						<td><?php echo $sl_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_db += $sl_cash_db_total;
@@ -1907,7 +2185,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>SL REPAY<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>SL REPAY<center></b></h5></td></tr>
 					<?php
 						$slrepay_cash_cr = 0;
 						$slrepay_adj_cr = 0;
@@ -1918,35 +2196,37 @@
 					@foreach ($trandaily['slrepay'] as $slrepay)
 						@if(strcasecmp($slrepay->SLRepay_PayMode, 'CASH') == 0)
 							<?php
-								$slrepay_cash_cr = $slrepay->SLRepay_PaidAmt;
+								$slrepay_cash_cr = $slrepay->paid_principle;
 								$slrepay_cash_cr_total += $slrepay_cash_cr;
 							?>
 							<tr>
 								<td>{{ $slrepay->SLRepay_Date }}</td>
 								<td>{{ $slrepay->StfLoan_Number }}</td>
+								<td>{{ $slrepay->name }}({{$slrepay->Uid}})</td>
+								<td>{{ $slrepay->paid_principle }}</td>
 								<td>-</td>
-								<td>{{ $slrepay->SLRepay_PaidAmt }}</td>
 								<td>-</td>
 								<td>-</td>
-								<td>-</td>
+								<td>{{$slrepay->receipt_no}}</td>
 								<td>-</td>
 								<td>-</td>
 							</tr>
 						@else
 							<?php
-								$slrepay_adj_cr = $slrepay->SLRepay_PaidAmt;
+								$slrepay_adj_cr = $slrepay->paid_principle;
 								$slrepay_adj_cr_total += $slrepay_adj_cr;
 							?>
 							<tr>
 								<td>{{ $slrepay->SLRepay_Date }}</td>
 								<td>{{ $slrepay->StfLoan_Number }}</td>
+								<td>{{ $slrepay->name }}({{$slrepay->Uid}})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $slrepay->paid_principle }}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
-								<td>{{ $slrepay->SLRepay_PaidAmt }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
+								<td>{{$slrepay->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -1958,6 +2238,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $slrepay_cash_cr_total;
@@ -1966,7 +2247,7 @@
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>SL REPAY INTEREST<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>SL REPAY INTEREST<center></b></h5></td></tr>
 					<?php
 						$cash_cr = 0;
 						$adj_cr = 0;
@@ -1983,11 +2264,12 @@
 							<tr>
 								<td>{{ $row->SLRepay_Date }}</td>
 								<td>{{ $row->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>-{{ $row->name }}({{$row->Uid}})</td>
 								<td>{{ $cash_cr }}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$row->receipt_no}}</td>
 								<td>-</td>
 								<td>-</td>
 							</tr>
@@ -1999,13 +2281,14 @@
 							<tr>
 								<td>{{ $row->SLRepay_Date }}</td>
 								<td>{{ $row->StfLoan_Number }}</td>
-								<td>-</td>
+								<td>{{ $row->name }}({{$row->Uid}})</td>
 								<td>-</td>
 								<td>-</td>
 								<td>{{ $adj_cr }}</td>
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$row->adj_no}}</td>
 							</tr>
 						@endif
 					@endforeach
@@ -2017,6 +2300,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $cash_cr_total;
@@ -2025,10 +2309,10 @@
 					
 					
 					
-<!--------------------------------- loan charges --------------------------------->
+<!-- ------------------------------- loan charges ------------------------------- -->
 
 
-					<tr><td colspan="9"><h5><b><center>LOAN CHARGES TRANSACTION<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>LOAN CHARGES TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$cash_cr = 0;
 						$adj_cr = 0;
@@ -2045,13 +2329,14 @@
 							<tr>
 								<td>{{ $row->charg_tran_date }}</td>
 								<td>{{ $row->ln_no }}</td>
-								<td>{{ $row->lname }}</td>
+								<td>{{ $row->lname }}<?php /* - {{ $row->name }}({{ $row->Uid }}) */ ?></td>
 								<td><p class="text-right"><?php echo $cash_cr; ?></p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
-								<td></td>
-								<td></td>
+								<td>{{$row->receipt_no}}</td>
+								<td>-</td>
+								<td>-</td>
 							</tr>
 						@else
 							<?php
@@ -2061,13 +2346,14 @@
 							<tr>
 								<td>{{ $row->charg_tran_date }}</td>
 								<td>{{ $row->ln_no }}</td>
-								<td>{{ $row->lname }}</td>
+								<td>{{ $row->lname }} <?php /* - {{ $row->name }}({{ $row->Uid }}) */ ?></td>
 								<td><p class="text-right">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center"><?php echo $adj_cr; ?></p></td>
 								<td><p class="text-center">-</p></td>
-								<td></td>
-								<td></td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
 							</tr>
 						@endif
 					@endforeach
@@ -2079,6 +2365,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $cash_cr_total;
@@ -2087,11 +2374,11 @@
 
 
 
-<!--------------------------------- loan charges end --------------------------------->
+<!-- ------------------------------- loan charges end ------------------------------- -->
 					
 					
 					
-					<tr><td colspan="9"><h5><b><center>Branch-To-Branch<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Head Office<center></b></h5></td></tr>
 					<?php
 						$b2b_cash_cr = 0;
 						$b2b_cash_db = 0;
@@ -2119,6 +2406,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$branch_branch_tran->voucher_no}}</td>
 								<td>-</td>
 							</tr>
 						@else	<?php /*DEBIT ADJUSTMENT*/?>
@@ -2136,6 +2424,7 @@
 								<td>{{ $branch_branch_tran->Branch_Amount }}</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$branch_branch_tran->adj_no}}</td>
 							</tr>
 							
 						@endif
@@ -2155,9 +2444,28 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$branch_branch_tran->receipt_no}}</td>
 								<td>-</td>
 								<td>-</td>
 							</tr>
+						@else	<?php /*CREDIT ADJUSTMENT*/?>
+						<?php
+							$b2b_adj_cr = $branch_branch_tran->Branch_Amount;
+							$b2b_adj_cr_total += $b2b_adj_cr;
+						?>
+							<tr>
+								<td>{{ $branch_branch_tran->Branch_Tran_Date }}</td>
+								<td>{{ $branch_branch_tran->BName }}</td>
+								<td>{{ $branch_branch_tran->Branch_per }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $branch_branch_tran->Branch_Amount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$branch_branch_tran->adj_no}}</td>
+							</tr>
+							
 						@endif
 					@endforeach
 						
@@ -2206,6 +2514,45 @@
 					
 					
 					
+						
+						
+						
+						
+						
+						
+					<tr>
+						<th colspan =3>Branch To Branch </th>
+						<td><?php echo $b2b_cash_cr_total; ?></td>
+						<td><?php echo $b2b_cash_db_total; ?></td>
+						<td><?php echo $b2b_adj_cr_total; ?></td>
+						<td><?php echo $b2b_adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $b2b_cash_cr_total;
+						$gt_cash_db += $b2b_cash_db_total;
+						$gt_adj_cr += $b2b_adj_cr_total;
+						$gt_adj_db += $b2b_adj_db_total;
+					?>
+					
+					
+					
+		<!-- BANK TRANSACTIONS -->
+					<tr><td colspan="10"><h5><b><center>Bank Transactions<center></b></h5></td></tr>
+					<?php
+						$b2b_cash_cr = 0;
+						$b2b_cash_db = 0;
+						$b2b_adj_cr = 0;
+						$b2b_adj_db = 0;
+						
+						$b2b_cash_cr_total = 0;
+						$b2b_cash_db_total = 0;
+						$b2b_adj_cr_total = 0;
+						$b2b_adj_db_total = 0;
+					?>
+					
 					@foreach ($trandaily['Bank_Branch'] as $Bank_Branch)
 						<?php
 							if(strcasecmp($Bank_Branch->Deposit_type, 'WITHDRAWL') == 0) {
@@ -2221,6 +2568,7 @@
 										<td>-</td>
 										<td>-</td>
 										<td>-</td>
+										<td>{{$Bank_Branch->receipt_no}}</td>
 										<td>-</td>
 										<td>-</td>
 									</tr>
@@ -2239,6 +2587,7 @@
 										<td>-</td>
 										<td>-</td>
 										<td>-</td>
+										<td>{{$Bank_Branch->adj_no}}</td>
 									</tr>
 						<?php
 								}
@@ -2256,6 +2605,7 @@
 										<td>-</td>
 										<td>-</td>
 										<td>-</td>
+										<td>{{$Bank_Branch->voucher_no}}</td>
 										<td>-</td>
 									</tr>
 						<?php
@@ -2273,67 +2623,20 @@
 										<td>{{ $Bank_Branch->amount }}</td>
 										<td>-</td>
 										<td>-</td>
+										<td>{{$Bank_Branch->adj_no}}</td>
 									</tr>
 						<?php
 								}
 						?>
 					@endforeach
-						
-						
-			<?php /******* opposite entry for expense cheque *******/?>
-						
-					@foreach ($trandaily['expense_cheque'] as $row)
-						<?php
-							$adj_cr = $row->amount;
-							$b2b_adj_cr_total += $adj_cr;
-						?>
-							<tr>
-								<td>{{ $row->e_date }}</td>
-								<td>{{ $row->lname }}</td>
-								<td>{{ $row->Particulars }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $adj_cr }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-							</tr>
-					@endforeach
-			
-			<?php /******* opposite entry for expense cheque *******/?>
-			<?php /******* opposite entry for income cheque *******/?>
-						
-					@foreach ($trandaily['income_cheque'] as $row)
-						<?php
-							$adj_db = $row->Income_amount;
-							$b2b_adj_db_total += $adj_db;
-						?>
-							<tr>
-								<td>{{ $row->Income_date }}</td>
-								<td>{{ $row->lname }}</td>
-								<td>{{ $row->Income_Particulars }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $adj_db }}</td>
-								<td>-</td>
-								<td>-</td>
-							</tr>
-					@endforeach
-			
-			<?php /******* opposite entry for income cheque *******/?>
-						
-						
-						
-						
-						
-						
+
 					<tr>
-						<th colspan =3>Branch To Branch </th>
+						<th colspan =3>Bank Transactions</th>
 						<td><?php echo $b2b_cash_cr_total; ?></td>
 						<td><?php echo $b2b_cash_db_total; ?></td>
 						<td><?php echo $b2b_adj_cr_total; ?></td>
 						<td><?php echo $b2b_adj_db_total; ?></td>
+						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
@@ -2343,13 +2646,16 @@
 						$gt_adj_cr += $b2b_adj_cr_total;
 						$gt_adj_db += $b2b_adj_db_total;
 					?>
+		<!-- BANK TRANSACTIONS -->
+					
+					
+
+
+
 					
 					
 					
-					
-					
-					
-					<tr><td colspan="9"><h5><b><center>Agent collection<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Agent collection<center></b></h5></td></tr>
 					<?php
 						$agent_cash_cr = 0;
 						
@@ -2362,11 +2668,13 @@
 						?>
 						<tr>
 							<td>{{ $agentcoll_tran->PendPigmy_ReceivedDate }}</td>
-							<td>{{ $agentcoll_tran->FirstName }}{{ $agentcoll_tran->MiddleName }}{{ $agentcoll_tran->LastName }}</td>
+							<td>{{ $agentcoll_tran->FirstName }}{{ $agentcoll_tran->MiddleName }}{{ $agentcoll_tran->LastName }}({{ $agentcoll_tran->Uid }})</td>
 							<td>-</td>
 							<td>{{ $agentcoll_tran->PenPigmy_AmountReceived }}</td>
 							<td>-</td>
 							<td>-</td>
+							<td>-</td>
+							<td>{{$agentcoll_tran->receipt_no}}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -2380,6 +2688,7 @@
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $agent_cash_cr_total;
@@ -2387,9 +2696,9 @@
 					
 					
 					
-	<!---------------salary------------------->
+	<!-- -------------salary----------------- -->
 	
-				<tr><td colspan="9"><h5><b><center>Employee Salary<center></b></h5></td></tr>
+				<tr><td colspan="10"><h5><b><center>Employee Salary<center></b></h5></td></tr>
 				<?php
 					$adj_db = 0;
 					$adj_db_total = 0;
@@ -2401,7 +2710,7 @@
 					?>
 					<tr>
 						<td>{{$row->date}}</td>
-						<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+						<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{ $row->Uid }})</td>
 						<td>Salary</td>
 						<td>-</td>
 						<td>-</td>
@@ -2420,25 +2729,35 @@
 					<td><?php echo $adj_db_total; ?></td>
 					<td>-</td>
 					<td>-</td>
+					<td>-</td>
 				</tr>
 				<?php
 					$gt_adj_db += $adj_db_total;
 				?>
 					
 					
-				<tr><td colspan="9"><h5><b><center>Agent Salary<center></b></h5></td></tr>
+				<tr><td colspan="10"><h5><b><center>Commission<center></b></h5></td></tr>
 				<?php
+					$cash_cr = 0;
+					$cash_db = 0;
+					$adj_cr = 0;
 					$adj_db = 0;
+					$cash_cr_total = 0;
+					$cash_db_total = 0;
+					$adj_cr_total = 0;
 					$adj_db_total = 0;
 				?>
 				@foreach ($trandaily['agent_sal'] as $row)
 					<?php
 						$adj_db = $row->Agent_Commission_PaidAmount + $row->Tds + $row->securityDeposit ;
+						if($adj_db <= 0) {
+							continue;
+						}
 						$adj_db_total += $adj_db;
 					?>
 					<tr>
 						<td>{{$row->Agent_Commission_PaidDate}}</td>
-						<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+						<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
 						<td>Commission</td>
 						<td>-</td>
 						<td>-</td>
@@ -2449,27 +2768,77 @@
 					</tr>
 				@endforeach
 				
+				<?php /* COMMISSION CUT DURING PL REPAY */ ?>
+					<?php /* CASH */ ?>
+					@foreach ($trandaily['plrepay'] as $plrepay)
+						<?php
+							$cash_cr = $plrepay->pigmy_commission;
+							if($cash_cr <= 0) {
+								continue;
+							}
+							$cash_cr_total += $cash_cr;
+						?>
+						<tr>
+							<td>{{ $plrepay->PLRepay_Date }}</td>
+							<td>{{ $plrepay->PersLoan_Number }}</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
+							<td>{{ $plrepay->pigmy_commission }}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $plrepay->PL_ReceiptNum }}</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endforeach
+					
+					<?php /* ADJ */ ?>
+					@foreach ($trandaily['plrepay_adjust'] as $plrepay)
+						<?php
+							$adj_cr = $plrepay->pigmy_commission;
+							if($adj_cr <= 0) {
+								continue;
+							}
+							$adj_cr_total += $adj_cr;
+						?>
+						<tr>
+							<td>{{ $plrepay->PLRepay_Date }}</td>
+							<td>{{ $plrepay->PersLoan_Number }}</td>
+							<td>- {{ $plrepay->name }}({{$plrepay->Uid}})</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{ $plrepay->pigmy_commission }}</td>
+							<td>-</td>
+							<td>{{ $plrepay->PL_ReceiptNum }}</td>	
+							<td>-</td>				
+							<td>-</td>				
+						</tr>
+					@endforeach
+				
 				<tr>
 					<th colspan =3>Agent Salary </th>
+					<td><?php echo $cash_cr_total; ?></td>
 					<td>-</td>
-					<td>-</td>
-					<td>-</td>
+					<td><?php echo $adj_cr_total; ?></td>
 					<td><?php echo $adj_db_total; ?></td>
+					<td>-</td>
 					<td>-</td>
 					<td>-</td>
 				</tr>
 				<?php
+					$gt_cash_cr += $cash_cr_total;
+					$gt_adj_cr += $adj_cr_total;
 					$gt_adj_db += $adj_db_total;
 				?>
 	
 	
 	
-	<!---------------salary------------------->
+	<!-- -------------salary----------------- -->
 	
 	
-	<!---------------salary Extra Pay------------------->
-	<!---------------Staff Addition------------------->
-				<tr><td colspan="9"><h5><b><center>Employee Salary Extra<center></b></h5></td></tr>
+	<!-- -------------salary Extra Pay----------------- -->
+	<!-- -------------Staff Addition----------------- -->
+				<tr><td colspan="10"><h5><b><center>Employee Salary Extra<center></b></h5></td></tr>
 								
 				<?php
 					$cash_cr = 0;
@@ -2483,7 +2852,7 @@
 					$adj_db_total = 0;
 				?>
 				
-				<tr><td colspan="9"><b><center>Staff Additions<center></b></td></tr>
+				<tr><td colspan="10"><b><center>Staff Additions<center></b></td></tr>
 				<?php
 					$adj_db_1 = 0;//1 - Staff Additions
 					$adj_db_total_1 = 0;
@@ -2496,12 +2865,13 @@
 						?>
 						<tr>
 							<td>{{$row->date}}</td>
-							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
 							<td>{{$row->sal_extra_name}}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{$row->salpay_extra_amt}}</td>
+							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 						</tr>
@@ -2516,10 +2886,11 @@
 					<td><?php echo $adj_db_total_1; ?></td>
 					<td>-</td>
 					<td>-</td>
+					<td>-</td>
 				</tr>
-	<!---------------Staff Addition------------------->
-	<!---------------Staff Addition------------------->
-				<tr><td colspan="9"><b><center>Staff Deductions<center></b></td></tr>
+	<!-- -------------Staff Addition----------------- -->
+	<!-- -------------Staff Addition----------------- -->
+				<tr><td colspan="10"><b><center>Staff Deductions<center></b></td></tr>
 				<?php
 					$adj_cr_2 = 0;//2 - Staff Deductions
 					$adj_cr_total_2 = 0;
@@ -2532,11 +2903,12 @@
 						?>
 						<tr>
 							<td>{{$row->date}}</td>
-							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
 							<td>{{$row->sal_extra_name}}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{$row->salpay_extra_amt}}</td>
+							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -2552,13 +2924,16 @@
 					<td>-</td>
 					<td>-</td>
 					<td>-</td>
+					<td>-</td>
 				</tr>
-	<!---------------Staff Addition------------------->
-	<!---------------Staff Addition------------------->
-				<tr><td colspan="9"><b><center>Society Contribution<center></b></td></tr>
+	<!-- -------------Staff Addition----------------- -->
+	<!-- -------------Staff Addition----------------- -->
+				<tr><td colspan="10"><b><center>Society Contribution<center></b></td></tr>
 				<?php
 					$adj_db_3 = 0;
 					$adj_db_total_3 = 0;
+					$adj_cr_3 = 0;
+					$adj_cr_total_3 = 0;
 				?>
 				@foreach ($trandaily['emp_sal_extra'] as $row)
 					@if($row->sal_extra_type == 3)
@@ -2568,12 +2943,33 @@
 						?>
 						<tr>
 							<td>{{$row->date}}</td>
-							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
 							<td>{{$row->sal_extra_name}}</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{$row->salpay_extra_amt}}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endif
+				@endforeach
+				@foreach ($trandaily['emp_sal_extra'] as $row)
+					@if($row->sal_extra_type == 3)
+						<?php
+							$adj_cr_3 = $row->salpay_extra_amt;
+							$adj_cr_total_3 += $adj_cr_3;
+						?>
+						<tr>
+							<td>{{$row->date}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
+							<td>{{$row->sal_extra_name}}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{$row->salpay_extra_amt}}</td>
+							<td>-</td>
+							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 						</tr>
@@ -2584,14 +2980,15 @@
 					<th colspan =3>Society Contribution</th>
 					<td>-</td>
 					<td>-</td>
-					<td>-</td>
+					<td><?php echo $adj_cr_total_3; ?></td>
 					<td><?php echo $adj_db_total_3; ?></td>
 					<td>-</td>
 					<td>-</td>
+					<td>-</td>
 				</tr>
-	<!---------------Staff Addition------------------->
-	<!---------------Staff Addition------------------->
-				<tr><td colspan="9"><b><center>Agent Deductions<center></b></td></tr>
+	<!-- -------------Staff Addition----------------- -->
+	<!-- -------------Staff Addition----------------- -->
+				<tr><td colspan="10"><b><center>Agent Deductions<center></b></td></tr>
 				<?php
 					$cash_cr_4 = 0;
 					$adj_cr_4 = 0;
@@ -2614,6 +3011,7 @@
 								<td>-</td>
 								<td>-</td>
 								<td>-</td>
+								<td>{{$row->receipt_no}}</td>
 								<td>-</td>
 								<td>-</td>
 							</tr>
@@ -2645,15 +3043,16 @@
 					<td>-</td>
 					<td>-</td>
 					<td>-</td>
+					<td>-</td>
 				</tr>
-	<!---------------Staff Addition------------------->
+	<!-- -------------Staff Addition----------------- -->
 	
 	
 	
 				<?php
 					$cash_cr_total = $cash_cr_total_4;
 					$cash_db_total = 0;
-					$adj_cr_total = $adj_cr_total_2 + $adj_cr_total_4;
+					$adj_cr_total = $adj_cr_total_2 + $adj_cr_total_4 + $adj_cr_total_3;
 					$adj_db_total = $adj_db_total_1 + $adj_db_total_3;
 				
 				
@@ -2665,11 +3064,11 @@
 				?>
 	
 	
-	<!---------------salary Extra Pay------------------->
+	<!-- -------------salary Extra Pay----------------- -->
 	
 	
 					<tr>
-						<td colspan="9">&nbsp;</td>
+						<td colspan="10">&nbsp;</td>
 					</tr>
 					<tr>
 						<th colspan =3>Grand Total</th>
@@ -2677,6 +3076,7 @@
 						<td><b><?php echo $gt_cash_db;?></td>
 						<td><b><?php echo $gt_adj_cr;?></td>
 						<td><b><?php echo $gt_adj_db;?></td>
+						<td></td>
 						<td></td>
 						<td></td>
 					</tr>

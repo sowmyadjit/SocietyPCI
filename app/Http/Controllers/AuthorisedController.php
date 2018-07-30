@@ -32,6 +32,15 @@
 			$c['CustAuth']=$this->viewcust->GetcustAuthories();
 			return view('custauthorise',compact('c'));
 		}
+
+		public function custauthorise_data()
+		{
+			$Url="custauth";
+			$c['module']=$this->Modules->GetAnyMid($Url);
+			$c['CustAuth']=$this->viewcust->GetcustAuthories();
+			return view('custauthorise_data',compact('c'));
+		}
+
 		public function show_unauthemp()
 		{
 			$Url="custauth";
@@ -39,6 +48,15 @@
 			$emp1['UnAuthEmp']=$this->viewcust->GetAuthEmployee();
 			return view('unauthemployee',compact('emp1'));
 		}
+
+		public function unauthemployee_data()
+		{
+			$Url="custauth";
+			$emp1['module']=$this->Modules->GetAnyMid($Url);
+			$emp1['UnAuthEmp']=$this->viewcust->GetAuthEmployee();
+			return view('unauthemployee_data',compact('emp1'));
+		}
+
 		public function show_custrejAuthories()
 		{
 			
@@ -46,6 +64,15 @@
 			$c1['module']=$this->Modules->GetAnyMid($Url);
 			$c1['CustRejList']=$this->viewcust->GetcustrejAuthories();
 			return view('custrejectview',compact('c1'));
+		}
+
+		public function custrejectview_data()
+		{
+			
+			$Url="custauth";
+			$c1['module']=$this->Modules->GetAnyMid($Url);
+			$c1['CustRejList']=$this->viewcust->GetcustrejAuthories();
+			return view('custrejectview_data',compact('c1'));
 		}
 		
 		public function accept_custAuthories($id)
@@ -62,6 +89,7 @@
 			return redirect('custrejectview');
 			
 		}
+		
 		public function show_anauthaccount()
 		{
 			$Url="custauth";
@@ -70,6 +98,16 @@
 			$a['data_joint']=$this->viewcust->Getunauthaccount_joint();
 			return view('anauthaccount',compact('a'));
 		}
+		
+		public function authaccount_data()
+		{
+			$Url="custauth";
+			$a['module']=$this->Modules->GetAnyMid($Url);
+			$a['data']=$this->viewcust->Getunauthaccount();
+			$a['data_joint']=$this->viewcust->Getunauthaccount_joint();
+			return view('anauthaccount_data',compact('a'));
+		}
+
 		public function accept_account($id)
 		{
 			$acceptaccount=$this->viewcust->AcceptAccount($id);
@@ -89,6 +127,14 @@
 			return view('rejectedaccount',compact('rejectacc'));
 		}
 		
+		public function rejectedaccount_data()
+		{
+			$Url="custauth";
+			$rejectacc['module']=$this->Modules->GetAnyMid($Url);
+			$rejectacc['data']=$this->viewcust->rejectAccountview();
+			return view('rejectedaccount_data',compact('rejectacc'));
+		}
+		
 		public function show_unauthpigmy()
 		{
 			
@@ -97,6 +143,16 @@
 			$p['data']=$this->viewcust->Getunauthpigmy();
 			return view('anauthpigmyacc',compact('p'));
 		}
+		
+		public function authpigmy_data()
+		{
+			
+			$Url="custauth";
+			$p['module']=$this->Modules->GetAnyMid($Url);
+			$p['data']=$this->viewcust->Getunauthpigmy();
+			return view('anauthpigmyacc_data',compact('p'));
+		}
+
 		public function accept_accountpigmy($id)
 		{
 			$acceptaccounpigmyt=$this->viewcust->AcceptAccountpigmy($id);

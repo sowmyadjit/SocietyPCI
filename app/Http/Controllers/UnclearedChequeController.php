@@ -36,8 +36,10 @@
 			$Url="unclearedcheque";
 			$uc=$this->Modules->GetAnyMid($Url);
 			//$uc['data']=$this->unclrcheque->GetModuleData();
-			return view('UnclearedCheque',compact('uc'));
+			// return view('UnclearedCheque',compact('uc'));
+			return view('UnclearedCheque2',compact('uc'));
 		}
+
 		public function cheque_clear(Request $request)
 		{
 			$chqaccept['cheqchrge']=$request->input('cheqchrge');
@@ -125,7 +127,7 @@
 			$rdcheque['module']=$this->Modules->GetAnyMid($Url);
 			$rdcheque['data']=$this->unclrcheque->get_rdtransdetail();
 			//print_r($cheque);
-			return view('UnclearedRDCheque',compact('rdcheque'));
+			return view('UnclearedRDCheque2',compact('rdcheque'));
 		}
 		
 		public function Show_PgmDetail()
@@ -134,7 +136,7 @@
 			$pgmcheque['module']=$this->Modules->GetAnyMid($Url);
 			$pgmcheque['data']=$this->unclrcheque->get_pgmtransdetail();
 			//print_r($cheque);
-			return view('UnclearedPgmCheque',compact('pgmcheque'));
+			return view('UnclearedPgmCheque2',compact('pgmcheque'));
 		}
 		public function show_loandetail()
 		{
@@ -145,7 +147,7 @@
 			$loancheque['jl']=$this->unclrcheque->get_jlcheque();
 			
 			//print_r($cheque);
-			return view('UnclearedLoanCheque',compact('loancheque'));
+			return view('UnclearedLoanCheque2',compact('loancheque'));
 		}
 		public function Show_FDDetail()
 		{
@@ -153,7 +155,16 @@
 			$fdcheque['module']=$this->Modules->GetAnyMid($Url);
 			$fdcheque['data']=$this->unclrcheque->get_fdtransdetail();
 			//print_r($cheque);
-			return view('UnclearedFDCheque',compact('fdcheque'));
+			return view('UnclearedFDCheque2',compact('fdcheque'));
+		}
+
+		public function Show_KCCDetail()
+		{
+			$Url="unclearedcheque";
+			$kcccheque['module']=$this->Modules->GetAnyMid($Url);
+			$kcccheque['data']=$this->unclrcheque->get_kcctransdetail();
+			//print_r($cheque);
+			return view('UnclearedKCCCheque2',compact('kcccheque'));
 		} 
 		
 		public function Show_ExpenseDetail()
@@ -162,7 +173,7 @@
 			$exp['module']=$this->Modules->GetAnyMid($Url);
 			$exp['data']=$this->unclrcheque->get_Expensedetail();
 			//print_r($cheque);
-			return view('UnclearedExpenseCheque',compact('exp'));
+			return view('UnclearedExpenseCheque2',compact('exp'));
 		}
 		
 		public function AcceptCheque($repayid,$loanid,$type)

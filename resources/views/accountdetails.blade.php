@@ -341,8 +341,8 @@
 							
 							<div class="col-sm-12">
 								<input type="<?php if($edit=='edit'){echo 'button';} else {echo 'hidden';} ?>" value="UPDATE" class="btn btn-success btn-sm sbmbtn<?php echo $acd['module']->Mid; ?>"/>
-								<input type="<?php if($edit=='edit'){echo 'button';} else {echo 'hidden';} ?>" value="CANCEL" class="btn btn-danger btn-sm cnclbtn<?php echo $acd['module']->Mid; ?>"/>
-								<input type="<?php if($edit=='edit'){echo 'hidden';} else {echo 'button';} ?>" value="CLOSE" class="btn btn-danger btn-sm clsbtn<?php echo $acd['module']->Mid; ?>"/>
+								<input type="<?php if($edit=='edit'){echo 'button';} else {echo 'hidden';} ?>" value="CANCEL" class="btn btn-danger btn-sm back_i cnclbtn<?php echo $acd['module']->Mid; ?>"/>
+								<input type="<?php if($edit=='edit'){echo 'hidden';} else {echo 'button';} ?>" value="CLOSE" class="btn btn-danger btn-sm back_i clsbtn<?php echo $acd['module']->Mid; ?>"/>
 							</div>
 						</div>
 						
@@ -362,12 +362,12 @@
 	//Cancel button
 	$('.cnclbtn<?php echo $acd['module']->Mid; ?>').click(function(e)
 	{
-		alert('are you sure?');
-		$('.accclassid').click();
+		// alert('are you sure?');
+		// $('.accclassid').click();
 	});
 	
 	$('.clsbtn<?php echo $acd['module']->Mid; ?>').click(function(e){
-		$('.accclassid').click();
+		// $('.accclassid').click();
 	});
 	
 	//Submit button
@@ -484,5 +484,12 @@ $('.sbmbtn<?php echo $acd['module']->Mid; ?>').click( function(e) {
 				$('.accclassid').click();
 			}
 		});
+	});
+</script>
+
+<script>
+	$(".back_i").click(function() {
+		$("#back").trigger("click");
+		$("#back").show();
 	});
 </script>

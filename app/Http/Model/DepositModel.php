@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Auth;
 use App\Http\Model\OpenCloseModel;
+use App\Http\Model\ReceiptVoucherModel;
+use App\Http\Controllers\ReceiptVoucherController;
+use App\Http\Model\SettingsModel;
 
 class DepositModel extends Model
 {
@@ -17,6 +20,8 @@ class DepositModel extends Model
 	
 	public function __construct() {
 		$this->op = new OpenCloseModel;
+		$this->rv_no = new ReceiptVoucherController;
+		$this->settings = new SettingsModel;
 	}
 	
 	public function insert($id)
@@ -34,7 +39,19 @@ class DepositModel extends Model
 				//$UID=$uname->Uid;
 				$BID=$uname->Bid;
 		
-		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>$dte1,'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$pay_mode,'Bid'=>$BID]);
+		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>$dte1,'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$pay_mode,'Bid'=>$BID,"paid"=>"yes","Deposit_type"=>"Deposit"]);
+		
+			/***********/
+			$fn_data["rv_payment_mode"] = $pay_mode;
+			$fn_data["rv_transaction_id"] = $id;
+			$fn_data["rv_transaction_type"] = "DEBIT";
+			$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+			$fn_data["rv_date"] = $dte1;
+			$fn_data["rv_bid"] = null;//BY DEFAULT LOGIN BRANCH ID
+			$this->rv_no->save_rv_no($fn_data);
+			unset($fn_data);
+			/***********/
+		
 		$totamt=DB::table('addbank')->select('TotalAmt')
 							->where('Bankid','=',$bankID)
 							->first();
@@ -69,23 +86,23 @@ class DepositModel extends Model
        $branch = DB::table('cash')->select('Branch','BID')->get();
         return $branch;
     }
-		public function GetBankDetailForDeposite($id)
-		{
-			return $id=DB::table('addbank')
-			->select('Branch','AddBank_IFSC','TotalAmt')
-			->where('Bankid','=',$id)
-			->first();
-			
-		}
-		public function GetDepositData()
-		{
-			$id= DB::table('deposit')->select('d_id','depo_bank','Branch','amount','date','d_date','depo_bank_id','reason','pay_mode','cheque_no','cheque_date','bank_name','paid','cd')
-			->get();
-			
-			
-			return $id;
-		}
-		public function crateaddeposittobranch($id)
+	public function GetBankDetailForDeposite($id)
+	{
+		return $id=DB::table('addbank')
+		->select('Branch','AddBank_IFSC','TotalAmt')
+		->where('Bankid','=',$id)
+		->first();
+		
+	}
+	public function GetDepositData()
+	{
+		$id= DB::table('deposit')->select('d_id','depo_bank','Branch','amount','date','d_date','depo_bank_id','reason','pay_mode','cheque_no','cheque_date','bank_name','paid','cd')
+		->get();
+		
+		
+		return $id;
+	}
+	public function crateaddeposittobranch($id)
     {   $dte=date('d-m-Y');
 		$bankID=$id['bank'];
 		$amount1=$id['ta'];
@@ -95,7 +112,19 @@ class DepositModel extends Model
 			$UID=$uname->Uid;
 			
 			$BID=$uname->Bid;
-		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>date('Y-m-d'),'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$id['paymode'],'Bid'=>$BID,'Deposit_type'=>"WITHDRAWL"]);
+		$tran_id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>date('Y-m-d'),'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$id['paymode'],'Bid'=>$BID,'Deposit_type'=>"WITHDRAWL","paid"=>"yes"]);
+		
+			/***********/
+			$fn_data["rv_payment_mode"] = $id['paymode'];
+			$fn_data["rv_transaction_id"] = $tran_id;
+			$fn_data["rv_transaction_type"] = "CREDIT";
+			$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+			$fn_data["rv_date"] = date('Y-m-d');
+			$fn_data["rv_bid"] = null;
+			$this->rv_no->save_rv_no($fn_data);
+			unset($fn_data);
+			/***********/
+			
 		$totamt=DB::table('addbank')->select('TotalAmt')
 							->where('Bankid','=',$bankID)
 							->first();
@@ -112,7 +141,7 @@ class DepositModel extends Model
 		
 						
 	
-		return $id;
+		return $tran_id;
 	}
 	
 		public function deposit_account_list_pg($data)
@@ -146,15 +175,26 @@ class DepositModel extends Model
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
 				->join("pigmitype","pigmitype.PigmiTypeid","=","{$table}.PigmiTypeid")
-				->where($branch_id_field,"=",$BID);
+				->where("{$table}.Status","AUTHORISED");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
 			if(!empty($data['allocation_id'])) {
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
 			} else {
 				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data['closed']);
 				$deposit_account_list = $deposit_account_list->where($agent_id_field,"=",$data['agent_id']);
 			}
-			$deposit_account_list = $deposit_account_list//->limit(1)
-										->get();
+			//$deposit_account_list = $deposit_account_list->limit(1);
+			if(!empty($data["skip"])) {
+				$deposit_account_list = $deposit_account_list->skip($data["skip"]);
+			}
+			if(!empty($data["limit"])) {
+				$deposit_account_list = $deposit_account_list->limit($data["limit"]);
+			}
+										//->skip(1)
+										//->limit(10)
+			$deposit_account_list = $deposit_account_list->get();
 				
 			if(empty($deposit_account_list)) {
 				return $ret_data;
@@ -226,8 +266,10 @@ class DepositModel extends Model
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->join("fdtype","fdtype.FdTid","=","{$table}.FdTid")
-				->where($branch_id_field,"=",$BID);
+				->join("fdtype","fdtype.FdTid","=","{$table}.FdTid");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
 			if($data["category"] == "FD") {//FD
 				$deposit_account_list = $deposit_account_list->where("fdtype.FdTid","!=",1);
 			} else {//KCC
@@ -300,8 +342,10 @@ class DepositModel extends Model
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->where($deleted_field,"=",0)
-				->where($branch_id_field,"=",$BID);
+				->where($deleted_field,"=",0);
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
 			if(!empty($data['allocation_id'])) {
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
 			} else {
@@ -472,9 +516,18 @@ class DepositModel extends Model
 													);
 								
 								
-								DB::table($table)
+								$sb_tran_id = DB::table($table)
 									->insertGetId($insert_array);
 								unset($insert_array);
+								/***********/
+								$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+								$fn_data["rv_transaction_id"] = $sb_tran_id;
+								$fn_data["rv_transaction_type"] = "CREDIT";
+								$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+								$fn_data["rv_date"] = date("Y-m-d",$tran_date);
+								$this->rv_no->save_rv_no($fn_data);
+								unset($fn_data);
+								/***********/
 								
 								break;
 			}
@@ -498,8 +551,19 @@ class DepositModel extends Model
 									"deleted" => NOT_DELETED
 								);
 			
-			DB::table($table)
+			$md_tran_id = DB::table($table)
 				->insertGetId($insert_array);
+				
+				/***********/
+				$fn_data["rv_payment_mode"] = $data["pay_mode"];
+				$fn_data["rv_transaction_id"] = $md_tran_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::MD_TRAN;//constant MD_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = date("Y-m-d",$tran_date);
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 				
 			$table = "maturity_deposit";
 			$closed_field = "md_closed";
@@ -545,8 +609,10 @@ class DepositModel extends Model
 			$deposit_account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
-				->where($deleted_field,"=",0)
-				->where($branch_id_field,"=",$BID);
+				->where($deleted_field,"=",0);
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
 			if(!empty($data['allocation_id'])) {
 				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
 			} else {

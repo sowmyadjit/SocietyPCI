@@ -272,6 +272,13 @@
 								</div>
 							</div>
 							
+							<div class="form-group">
+								<label class="control-label col-sm-4">PF Account No.:</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control" id="pf_acc_no" name="pf_acc_no" placeholder="PF Account No." required>
+								</div>
+							</div>
+							
 							
 							
 							<div class="col-md-8 hidden">

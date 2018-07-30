@@ -5,12 +5,21 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	
 	class CustomerModel extends Model
 	{
 		//
 		protected $table = 'customer';
+
+		public function __construct()
+		{
+			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
+		}
 		
 		public function insert($id)
 		{
@@ -73,6 +82,17 @@
 			if($CustType=="CLASS D")
 			{
 				$cid = DB::table('customer')->insertGetId(['Aid'=>$Aid,'Nid'=>$Nid,'FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Bid'=>$id['branchid'],'Uid'=>$uid,'DocProvid'=>$docid,'FatherName'=>$id['fthrname'],'SpouseName'=>$id['spousename'],'Customer_Fee'=>$id['custfee'],'custtyp'=>$id['custtyp'],'Customer_ReceiptNum'=>$r,'Created_on'=>$dte,'LedgerHeadId'=>"32",'SubLedgerId'=>"35"]);
+				
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $cid;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::CUSTOMER_FEE;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+				
 			}
 			else if($CustType=="CUSTOMER")
 			{
@@ -125,14 +145,14 @@
 			->update(['ID_Proof'=>$id['custeidp'],'Address_Proof'=>$id['custeadrpf'],'Photo'=>$id['custephoto'],'Signature'=>$id['custesign']]);*/
 			
 			DB::table('user')->where('Uid',$id['uid'])
-			->update(['FirstName'=> $id['fname'],'Kan_FirstName'=> $id['KaFname'],'MiddleName' => $id['mname'],'Kan_MiddleName' => $id['KaMname'],'Email'=>$id['email'],'LastName' => $id['lname'],'Kan_LastName' => $id['KaLname'],'Aid'=>$id['aid'],'Bid'=>$id['branchid']]);
+			->update(['FirstName'=> $id['fname'],'Kan_FirstName'=> $id['KaFname'],'MiddleName' => $id['mname'],'Kan_MiddleName' => $id['KaMname'],'Email'=>$id['email'],'LastName' => $id['lname'],'Kan_LastName' => $id['KaLname'],'Aid'=>$id['aid'],'Bid'=>$id['branchid'],'Member_No'=>$id['Member_No']]);
 			
 			DB::table('nominee')->where('Nid',$id['nid'])
 			->update(['Nom_Address'=>$id['nadd'],'Nom_Age'=>$id['nage'],'Nom_Birthdate'=>$id['nbdate'],'Nom_City'=>$id['ncity'],'Nom_District'=>$id['ndist'],'Nom_Email'=>$id['nemail'],'Nom_FirstName'=>$id['nfname'],'Kan_Nom_FirstName'=>$id['KaNFname'],'Nom_Gender'=>$id['ngender'],'Nom_LastName'=>$id['nlname'],'Kan_Nom_LastName'=>$id['KaNLname'],'Nom_Marital_Status'=>$id['nmstate'],'Nom_MiddleName'=>$id['nmname'],'Kan_Nom_MiddleName'=>$id['KaNMname'],'Nom_MobNo'=>$id['nmno'],'Nom_Occupation'=>$id['noccup'],'Nom_PhoneNo'=>$id['npno'],'Nom_Pincode'=>$id['npin'],'Nom_State'=>$id['nstate'],'Uid'=>$id['uid'],'Relationship'=>$id['rltn'],'Kan_Relationship'=>$id['KaRelation']]);
 			
 			
 			$id = DB::table('customer')->where('Uid',$id['uid'])//->where('Custid',$id['cid'])
-			->update(['Aid'=>$id['aid'],'FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Bid'=>$id['branchid'],'FatherName'=>$id['fthrnme'],'SpouseName'=>$id['spousenme'],'Kan_FatherName'=>$id['KaFather'],'Kan_SpouseName'=>$id['KaSpouse']]);
+			->update(['Aid'=>$id['aid'],'FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Bid'=>$id['branchid'],'FatherName'=>$id['fthrnme'],'SpouseName'=>$id['spousenme'],'Kan_FatherName'=>$id['KaFather'],'Kan_SpouseName'=>$id['KaSpouse'],'Customer_Fee'=>$id['Customer_Fee']]);
 			return $id;
 		}
 		
@@ -145,10 +165,14 @@
 			$id = DB::table('customer')->select('Custid','customer.FirstName','customer.MiddleName','customer.LastName','BName','AccNum','Gender','OpeningBalance','address.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','MobileNo','Pincode','PhoneNo','custtyp','user.Uid','Member_No')
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
-			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')
-			->where('customer.Bid','=',$BID)
-			->orderBy('Custid','desc')
-			->paginate(10);
+			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$id = $id->where('customer.Bid','=',$BID);
+			}
+			$id = $id->where("customer.AuthStatus","AUTHORISED")
+				->orderBy('Custid','desc')
+				// ->paginate(10);
+				->get();
 			
 			return $id;
 		}
@@ -165,7 +189,7 @@
 		
 		public function GetCustomer($id)
 		{
-			return DB::table('customer')->select('Custid','customer.Nid','customer.Aid','user.FirstName','user.Kan_FirstName','user.MiddleName','FatherName','user.LastName','user.Kan_MiddleName','Kan_FatherName','user.Kan_LastName','BName','AccNum','Gender','OpeningBalance','user.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','Kan_Address','Kan_City','Kan_District','Kan_State','MobileNo','Pincode','PhoneNo','ID_Proof','Address_Proof','photo','Signature','customer.DocProvid','customer.Bid','customer.Uid','SpouseName','Kan_SpouseName','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Kan_Nom_FirstName','Kan_Nom_MiddleName','Kan_Nom_LastName','Kan_Relationship','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_State','Customer_ReceiptNum','custtyp','Customer_Fee','customer.Created_on')
+			return DB::table('customer')->select('Custid','customer.Nid','customer.Aid','user.FirstName','user.Kan_FirstName','user.MiddleName','FatherName','user.LastName','user.Kan_MiddleName','Kan_FatherName','user.Kan_LastName','BName','AccNum','Gender','OpeningBalance','user.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','Kan_Address','Kan_City','Kan_District','Kan_State','MobileNo','Pincode','PhoneNo','ID_Proof','Address_Proof','photo','Signature','customer.DocProvid','customer.Bid','customer.Uid','SpouseName','Kan_SpouseName','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Kan_Nom_FirstName','Kan_Nom_MiddleName','Kan_Nom_LastName','Kan_Relationship','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_State','Customer_ReceiptNum','custtyp','Customer_Fee','customer.Created_on','user.Member_No','customer.Customer_Fee')
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
 			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')
@@ -235,12 +259,13 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BID=$uname->Bid;
-			$id = DB::table('customer')->select('Custid','customer.FirstName','customer.MiddleName','customer.LastName','BName','AccNum','Gender','OpeningBalance','user.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','MobileNo','Pincode','PhoneNo','custtyp','Member_No')
+			$id = DB::table('customer')->select('Custid','customer.FirstName','customer.MiddleName','customer.LastName','BName','AccNum','Gender','OpeningBalance','user.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','MobileNo','Pincode','PhoneNo','custtyp','Member_No','Customer_Fee','user.Uid')
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
 			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')
 			->where('custtyp','=',"CLASS D")
 			->where('user.Bid','=',$BID)
+			->where('customer.AuthStatus','AUTHORISED')
 			//->orderBy('Member_No','desc')
 			->orderBy('Custid','desc')
 			->get();

@@ -104,6 +104,28 @@
 		}
 			return view('FdPayAmountHome',compact('PayAmount'));
 		}
+
+		
+		public function KCCPayAmountIndex()
+		{
+			$Url="RDPayAmountIndex";
+			$PayAmount['module']=$this->Modules->GetAnyMid($Url);
+			
+			$PayAmount['data']=$this->PayAmtMod->GetKCCPayData();
+			$PayAmount['open']=$this->OP_model->openstate();
+			$PayAmount['close']=$this->OP_model->openclosestate();
+			if(empty($PayAmount['open'])) {
+				$PayAmount['open']=0;
+			} else {
+				$PayAmount['open']=1;
+			}
+			if(empty($PayAmount['close'])) {
+				$PayAmount['close']=0;
+			} else {
+				$PayAmount['close']=1;
+			}
+			return view('KccPayAmountHome',compact('PayAmount'));
+		}
 		
 		public function PigmyPayAmountView()
 		{
@@ -114,9 +136,15 @@
 		{
 			return view('RDPayAmt');
 		}
+
 		public function FDPayAmountView()
 		{
 			return view('FDPayAmt');
+		}
+		
+		public function KCCPayAmountView()
+		{
+			return view('KCCPayAmt');
 		}
 		
 		public function PigmyPayAmount(Request $request)
@@ -310,6 +338,7 @@
 			$id['uid']=$get->Uid;
 			$id['mtot']=$get->Total_Amount;
 			$id['intrst']=$get->Interest_Amt;
+			$id['principle']=$get->Principle_Amount;
 			return $id;
 		}
 		
@@ -356,16 +385,20 @@
 			return $id;
 		}
 		
-		
 		public function GetSBForRDPayAmt(Request $request)
 		{
 			$UserID['usrid']=$request->input('usrid');
 			$get=$this->PayAmtMod->GetSBForRDPayAmt($UserID);
+
+			/*********/
+			$fn_data["acc_id"] =  $request->input('usrid');
+			$sb_balance = $this->acc->get_account_balance($fn_data);
+			/*********/
 			
 			if(!empty($get->AccNum))  //if have SB Account
 			{
 				$id['acn']=0;
-				$id['tot']=$get->Total_Amount;
+				$id['tot'] = $sb_balance; // $get->Total_Amount;
 				$id['acccn']=$get->AccNum;
 				$id['acid']=$get->Accid;
 				$id['actid']=$get->AccTid;
@@ -376,13 +409,14 @@
 			}
 			return $id;
 		}
+		
 		public function GetSBForFDPayAmt(Request $request)
 		{
 			$UserID['usrid']=$request->input('usrid');
 			$get=$this->PayAmtMod->GetSBForFDPayAmt($UserID);
 			
 			/*********/
-			$fn_data["acc_id"] =  $request->input('acc_id');
+			$fn_data["acc_id"] =  $request->input('usrid');
 			$sb_balance = $this->acc->get_account_balance($fn_data);
 			/*********/
 			

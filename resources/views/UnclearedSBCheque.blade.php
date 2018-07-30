@@ -1,12 +1,5 @@
 
-<div class="box col-md-12">
-    <div class="bdy_<?php echo $cheque['module']->Mid; ?> box-inner">
-		<div class="box-header well" data-original-title="">
-			<h2><i class="glyphicon glyphicon-user"></i> SB UNCLEARED CHEQUE DETAIL </h2>
-			
-			
-		</div>
-		<div class="box-content"> 
+<?php /*
 			<div class="chequereject">
 				<div>
 					<label class="control-label col-sm-2">Cheque Reject Amount:</label>
@@ -21,14 +14,14 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="chequeaccept">
 				<label class="control-label col-sm-4">Cheque Accept Amount:</label>
 				<div class="col-md-4">
 					<input type="text" class="form-control" id="chaccept" name="chaccept" placeholder="CHEQUE  CHAREGES">
 				</div>
-				</div>
-				
+			</div>
+*/?>
 				<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 					<thead>
 						<tr>
@@ -68,7 +61,7 @@
 								<td>
 									<div class="form-group">
 										<div class="col-sm-12">
-											<input type="button" value="ACCEPT" class="btn btn-success btn-sm accpbtn<?php echo $cheque['module']->Mid; ?>"onclick="acceptcheqe({{ $sb_transaction->Tranid }});" />
+											<input type="button" value="ACCEPT" id="accept_{{ $sb_transaction->Tranid }}" class="btn btn-success btn-sm accept accpbtn<?php echo $cheque['module']->Mid; ?>"onclickkkk="acceptcheqe({{ $sb_transaction->Tranid }});" data="{{ $sb_transaction->Tranid }}" data-toggle="modal" data-target="#popup" />
 											
 										</div>
 									</div>
@@ -77,23 +70,22 @@
 									<div class="form-group">
 										
 										<div class="col-sm-12">
-											<input type="button" value="REJECT" class="btn btn-danger btn-sm rejbtn<?php echo $cheque['module']->Mid; ?>"onclick="rejectcheqe({{ $sb_transaction->Tranid }});" /> 
+											<input type="button" value="REJECT" id="reject_{{ $sb_transaction->Tranid }}" class="btn btn-danger btn-sm reject  rejbtn<?php echo $cheque['module']->Mid; ?>"onclickkkk="rejectcheqe({{ $sb_transaction->Tranid }});"  data="{{ $sb_transaction->Tranid }}" data-toggle="modal" data-target="#popup" /> 
 										</div>
 									</div>
 								</td>
 								
 							</tr>
+							@endforeach
 							
-						</div>
-					</div>
-				</div>
+						</tbody>
+					</table>
 				
 				
 				
-				@endforeach
 				
 				<script>
-					
+					/* 
 					$('.chequereject').hide();
 					$('.chequeaccept').hide();
 					
@@ -101,13 +93,14 @@
 						{
 						e.preventDefault();
 						$('.box-inner').load($(this).attr('href'));
-					});*/
+					});* /
 					$('.accpbtn<?php echo $cheque['module']->Mid; ?>').click(function(e){
 						e.preventDefault();
 						//$('.box-inner').load($(this).attr('href'));
 						$('.bdy_<?php echo $cheque['module']->Mid; ?>').load($(this).attr('href'));
 						//$('.clearclassid').click();
 					});
+					
 					
 					function rejectcheqe(s)
 					{
@@ -132,11 +125,10 @@
 									$('.clearclassid').click();
 								}
 							});
-							/*$('.box-inner').load($(this).attr('href'));*/
+							/*$('.box-inner').load($(this).attr('href'));* /
 							
 						}
 					}
-					
 					function acceptcheqe(a)
 					{
 						
@@ -161,9 +153,71 @@
 									$('.tranclassid').click();
 								}
 							});
-							/*$('.box-inner').load($(this).attr('href'));*/
+							/*$('.box-inner').load($(this).attr('href'));* 
 							
 						}
 					}
-					
-				</script>																								
+					 */
+				</script>
+
+				
+<script>
+		function disable_row(id) {
+			$("#accept_"+id).prop("disabled",true);
+			$("#reject_"+id).prop("disabled",true);
+		}
+</script>
+
+<script>
+	$(".accept").click(function() {
+		// console.log($(this).attr("data"));
+		var tran_id = $(this).attr("data");
+
+		var popup_title = "Accept Amount";
+		var popup_submit_data = "sb_accept";
+		var popup_data =
+				`
+				<div style="display:inline-block;">
+					<label class="control-label col-sm-6">Cheque Accept Amount:</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="chaccept" name="chaccept" placeholder="CHEQUE  CHAREGES">
+					</div>
+				</div>
+				<input id="id" class="hide" value="`+tran_id+`">
+				
+			`;
+		$(".popup_title").html(popup_title);
+		$(".popup_data").html(popup_data);
+		$(".popup_submit").attr("data",popup_submit_data);
+	});
+</script>
+
+<script>
+	$(".reject").click(function() {
+		console.log($(this).attr("data"));
+		var tran_id = $(this).attr("data");
+
+		var popup_title = "Cheque Reject";
+		var popup_submit_data = "sb_reject";
+		var popup_data =
+			 `
+				 <div  style="display:inline-block;">
+					<label class="control-label col-sm-6">Cheque Reject Amount:</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="chqrjct" name="chqrjct" placeholder="CHEQUE REJECT AMOUNT">
+					</div>
+				</div>
+				<div  style="display:inline-block;">
+					<label class="control-label col-sm-6">Cheque Reject Amount IN Bank:</label>
+					<div class="col-md-6">
+						<input type="text" class="form-control" id="chqrjctbank" name="chqrjctbank" placeholder="CHEQUE REJECT AMOUNT bank">
+					</div>
+				</div>
+				<input id="id" class="hide" value="`+tran_id+`">
+				
+			`;
+		$(".popup_title").html(popup_title);
+		$(".popup_data").html(popup_data);
+		$(".popup_submit").attr("data",popup_submit_data);
+	});
+</script>

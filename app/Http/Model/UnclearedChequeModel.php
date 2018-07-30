@@ -5,9 +5,16 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
+	use App\Http\Controllers\ReceiptVoucherController;
+
 	class UnclearedChequeModel extends Model
 	{
 		protected $table = 'sb_transaction';
+
+		public function __construct()
+		{
+			$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		//Uncleared SB Cheque Detail
 		public function get_transdetail()
@@ -99,11 +106,23 @@
 		public function get_fdtransdetail()
 		{
 			return DB::table('fdallocation')
-			->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
-			->join('user','user.Uid','=','createaccount.Uid')
+			// ->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
+			->join('user','user.Uid','=','fdallocation.Uid')
 			->join('addbank','addbank.Bankid','=','fdallocation.FDBnk_ID')
-			->select('FD_StartDate','AccNum','FirstName','MiddleName','LastName','FDChq_No','FDChq_Date','BankName','FDBnk_Branch','FDIFSC_Code','FDUnclear_Bal','Fdid','fdallocation.Accid','user.Uid','FDCleared_State')
+			->select('FD_StartDate',/*'AccNum',*/'FirstName','MiddleName','LastName','FDChq_No','FDChq_Date','BankName','FDBnk_Branch','FDIFSC_Code','FDUnclear_Bal','Fdid','fdallocation.Accid','user.Uid','FDCleared_State', 'FDBnk_Name')
 			->where('FDCleared_State','=','UNCLEARED')
+			->where('FdTid','!=',1)
+			->get();
+		}
+		public function get_kcctransdetail()
+		{
+			return DB::table('fdallocation')
+			// ->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
+			->join('user','user.Uid','=','fdallocation.Uid')
+			->join('addbank','addbank.Bankid','=','fdallocation.FDBnk_ID')
+			->select('FD_StartDate',/*'AccNum',*/'FirstName','MiddleName','LastName','FDChq_No','FDChq_Date','BankName','FDBnk_Branch','FDIFSC_Code','FDUnclear_Bal','Fdid','fdallocation.Accid','user.Uid','FDCleared_State', 'FDBnk_Name')
+			->where('FDCleared_State','=','UNCLEARED')
+			->where('FdTid','=',1)
 			->get();
 		}
 		
@@ -173,8 +192,33 @@
 			$bankupdateamt=$bankamt+$amt;
 			
 			DB::table('addbank')->where('Bankid',$CreditBankId)->update(['TotalAmt'=>$bankupdateamt]);
-			DB::table('deposit')->insert(['Bid'=>$Bid,'d_date'=>$dte,'date'=>$dte,'depo_bank_id'=>$CreditBankId,'pay_mode'=>"CHEQUE",'cheque_no'=>$Cheque_Number,'cheque_date'=>$Cheque_Date,'bank_name'=>$Bank_Name,'amount'=>$amt,'reason'=>$particulars,'cd'=>$dte,'Deposit_type'=>"Deposit"]);
-			
+			$deposit_id = DB::table('deposit')->insertGetId(['Bid'=>$Bid,'d_date'=>$dte,'date'=>$dte,'depo_bank_id'=>$CreditBankId,'pay_mode'=>"CHEQUE",'cheque_no'=>$Cheque_Number,'cheque_date'=>$Cheque_Date,'bank_name'=>$Bank_Name,'amount'=>$amt,'reason'=>$particulars,'cd'=>$dte,'Deposit_type'=>"Deposit", 'paid'=>'yes' ]);
+				// ADJ NO FOR BANK DEPOSIT
+				/***********/
+				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+				$fn_data["rv_transaction_id"] = $deposit_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
+			//INCOME ENTRY FOR CHEQUE CHARGE
+				$insert_data["Income_Head_lid"] = 88;
+				$insert_data["Income_SubHead_lid"] = 85;	//	BANK CHARGES SUBHEAD UNDER OTHER INCOME HEAD IS NOT PRESENT. SO OHTER INCOME SUBHEAD UNDER OTHER INCOME HEAD(85)
+				$insert_data["Income_date"] = $dte;
+				$insert_data["Income_cheque_no"] = $Cheque_Number;
+				$insert_data["Income_cheque_date"] = $Cheque_Date;
+				$insert_data["Bid"] = $Bid;
+				$insert_data["Income_pay_mode"] = "ADJUSTMENT";
+				$insert_data["Income_amount"] = $val;
+				$insert_data["Income_Particulars"] = "CHEQUE CHARGE - {$Cheque_Number}";
+				$insert_data["Income_ExpenseBy"] = $UID;
+				$income_id = DB::table("income")
+					->insertGetId($insert_data);
+				
+				// NO ADJ NO FOR ADJ CREDIT
 			
 			return $id;							   
 		}

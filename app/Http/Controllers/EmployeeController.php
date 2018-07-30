@@ -11,6 +11,7 @@
 	use Input;
 	use App\Http\Model\CustomerModel;
 	use App\Http\Model\ModulesModel;
+	use App\Http\Model\OpenCloseModel;
 	
 	class EmployeeController extends Controller
 	{
@@ -21,6 +22,7 @@
 			$this->employee = new EmployeeModel;
 			$this->customer = new CustomerModel;
 			$this->Modules= new ModulesModel;
+			$this->op= new OpenCloseModel;
 			
 		}
 		public function show_emp()
@@ -28,8 +30,19 @@
 			$Url="emp";
 			$e['module']=$this->Modules->GetAnyMid($Url);
 			$e['Employee']=$this->employee->getData();
+			$e['is_day_open'] = $this->op->is_day_open(date("Y-m-d"));
 			
-			return view('employee',compact('e'));
+			// return view('employee',compact('e'));
+			return view('employee2',compact('e'));
+		}
+
+		public function employee_data()
+		{
+			$Url="emp";
+			$e['module']=$this->Modules->GetAnyMid($Url);
+			$e['Employee']=$this->employee->getData();
+			
+			return view('employee_data',compact('e'));
 		}
 		
 		public function Show_EmpDetails($id,$type=null){
@@ -95,6 +108,7 @@
 			$employee['esi']=$request->input('esi');
 			$employee['sesi']=$request->input('sesi');
 			$employee['spf']=$request->input('spf');
+			$employee['pf_acc_no']=$request->input('pf_acc_no');
 			
 			$usr=$request->input('usrid');
 			
@@ -240,6 +254,8 @@
 			$employee['itax']=$request->input('itax');
 			$employee['pf']=$request->input('pf');
 			$employee['hra']=$request->input('hra');
+			$employee['pf_acc_no']=$request->input('pf_acc_no');
+			$employee['jd']=$request->input('jd');
 			
 			$employee['emptype']=$request->input('emptype');
 			
@@ -252,6 +268,10 @@
 			//print_r($cust);
 			$path = 'Upload/'.$user."_".$fnme."_".$mnme."_".$lnme;
 			
+			$employee['empphoto'] = "";
+			$employee['empidp'] = "";
+			$employee['empadpf'] = "";
+			$employee['empsign'] = "";
 			
 			if(!File::exists($path)) {
 				//$result = File::makeDirectory($path);  for WINDOWS

@@ -517,7 +517,7 @@ var year1=$('#NumberOfYears').val();
 			//alert("hi");monthinterest
 			month=$('#fdintmonthly').val();
 			acc=$('.acctypeahead').data('value');
-			acc1=$('.acctypeahead1').data('value');
+			// acc1=$('.acctypeahead1').data('value');
 			user=$('.typeahead3').data('value');
 			fd=$('.fdtypeahead').data('value');
 			branch=$('#branchname').data('value');
@@ -527,9 +527,9 @@ var year1=$('#NumberOfYears').val();
 				
 				url: 'crtkccalloc',
 				type: 'post',
-				data: $('#form_fdalloc').serialize() + '&accid=' + acc +'&fdtid='+fd+'&bid='+branch+'&userid='+user+'&accid='+acc1,
+				data: $('#form_fdalloc').serialize() + '&accid=' + acc +'&fdtid='+fd+'&bid='+branch+'&userid='+user,//+'&accid='+acc1,
 				success: function(data) {
-					//alert('success');
+					alert('success');
 					$('.kccallocclassid').click();
 					//window.location.reload(true);
 				}

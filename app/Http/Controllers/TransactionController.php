@@ -199,9 +199,10 @@ use App\Http\Model\TransactionModel;
 			$trans['bankid']=$request->input('bankid');
 			$trans['creditbank']=$request->input('creditbank');
 			
-$trans['LedgerId']=$request->input('LedgerId');
+			$trans['LedgerId']=$request->input('LedgerId');
 			$id=$this->acc->insert_tran($trans);
-			return redirect('/');
+			return $id;
+			// return redirect('/');
 			
 		}
 		public function getaccnum(Request $request)
@@ -337,7 +338,8 @@ $trans['LedgerId']=$request->input('LedgerId');
 		
 			$rdtrans['LedgerId']=$request->input('LedgerId');
 			$id=$this->acc->insert_rdtran($rdtrans);
-			return redirect('/');
+			return $id;
+			// return redirect('/');
 	}
 	
 	
@@ -412,9 +414,15 @@ $trans['LedgerId']=$request->input('LedgerId');
 		$id['remtotal']=$get->LoanAlloc_LoanAmt;*/
 		return $id;
 	}
-	public function TranReceiptHome()
+
+		public function TranReceiptHome()
 		{
 			return view('TransactionReceiptHome');
+		}
+
+		public function TranPaymentHome()
+		{
+			return view('TransactionPaymentHome');
 		}
 		
 		
@@ -442,7 +450,6 @@ $trans['LedgerId']=$request->input('LedgerId');
 		
 		public function TranReceipt($type,$id)
 		{
-			
 			if($type=="SB")
 			{
 				$ReceiptData=$this->TranModel->TranReceipt($type,$id);
@@ -457,6 +464,101 @@ $trans['LedgerId']=$request->input('LedgerId');
 			{
 				$ReceiptData=$this->TranModel->TranReceipt($type,$id);
 				return view('TranReceiptPG',compact('ReceiptData'));
+			}
+		}
+		
+		public function rv_print(Request $request)
+		{
+			$in_data['tran_category'] = $request->input("tran_category");//JL,SB,..
+			$in_data['tran_type'] = $request->input("tran_type");//CREDIT,DEBIT
+			$in_data['tran_id'] = $request->input("tran_id");
+			// var_dump($in_data['tran_id']);
+			if(empty($in_data["tran_id"])) {
+				$in_data["tran_list"] = "YES";
+			} else {
+				$in_data["tran_list"] = "NO";
+			}
+			switch($in_data['tran_category']) {
+				case "SB" 			:	$data = $this->TranModel->rv_print_sb($in_data);
+										break;
+				case "RD" 			:	$data = $this->TranModel->rv_print_rd($in_data);
+										break;
+				case "JL" 			:	
+										if($in_data["tran_list"] == "YES") {
+											$data = $this->TranModel->rv_print_jl($in_data);
+										} else {
+											if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+												$data = $this->TranModel->rv_print_jl_cr($in_data);
+											} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+												$data = $this->TranModel->rv_print_jl_db($in_data);
+											}
+										}
+										break;
+				case "DL" 			:	
+										if($in_data["tran_list"] == "YES") {
+											$data = $this->TranModel->rv_print_dl($in_data);
+										} else {
+											if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+												$data = $this->TranModel->rv_print_dl_cr($in_data);
+											} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+												$data = $this->TranModel->rv_print_dl_db($in_data);
+											}
+										}
+										break;
+				case "SL" 			:	$data = $this->TranModel->rv_print_sl($in_data);
+										break;
+				case "PL" 			:	$data = $this->TranModel->rv_print_pl($in_data);
+										break;
+				case "JL_PAY"		:	$data = $this->TranModel->rv_print_jl_pay($in_data);	//	REPAY
+										break;
+				case "DL_PAY"		:	$data = $this->TranModel->rv_print_dl_pay($in_data);
+										break;
+				case "SL_PAY"		:	$data = $this->TranModel->rv_print_sl_pay($in_data);
+										break;
+				case "PL_PAY"		:	$data = $this->TranModel->rv_print_pl_pay($in_data);
+										break;
+				case "FD_PAY_AMT"	:	$data = $this->TranModel->rv_print_fd_pay_amt($in_data);
+										break;
+				case "RD_PAY_AMT"	:	
+										if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+											$data = $this->TranModel->rv_print_rd_pay_amt_cr($in_data);
+										} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+											$data = $this->TranModel->rv_print_rd_pay_amt_db($in_data);
+										}
+										break;
+				case "PG_PAY_AMT"	:	
+										if(strcasecmp($in_data["tran_type"],"CREDIT") == 0) {
+											$data = $this->TranModel->rv_print_pg_pay_amt_cr($in_data);
+										} elseif(strcasecmp($in_data["tran_type"],"DEBIT") == 0) {
+											$data = $this->TranModel->rv_print_pg_pay_amt_db($in_data);
+										}
+										break;
+				case "MEM_FEE"		:	$data = $this->TranModel->rv_print_mem_fee($in_data);
+										break;
+				case "CUST_FEE"		:	$data = $this->TranModel->rv_print_cust_fee($in_data);
+										break;
+				case "PG_PEND"		:	$data = $this->TranModel->rv_print_pg_pend($in_data);
+										break;
+				case "SHARE"		:	$data = $this->TranModel->rv_print_share($in_data);
+										break;
+				case "INCOME"		:	$data = $this->TranModel->rv_print_income($in_data);
+										break;
+				case "EXPENSE"		:	$data = $this->TranModel->rv_print_expense($in_data);
+										break;
+				case "BANK_DEP"		:	$data = $this->TranModel->rv_print_bank_dep($in_data);
+										break;
+				case "BANK_WID"		:	$data = $this->TranModel->rv_print_bank_wid($in_data);
+										break;
+				case "B2B_CR"		:	$data = $this->TranModel->rv_print_b2b_cr($in_data);
+										break;
+				case "B2B_DB"		:	$data = $this->TranModel->rv_print_b2b_db($in_data);
+										break;
+			}
+			if(empty($in_data["tran_id"])) {
+				// return $data;
+				 return view("TransactionReceiptListCommon",compact('data'));
+			} else {
+				return view("TranReceipt_common",compact('data'));
 			}
 		}
 }

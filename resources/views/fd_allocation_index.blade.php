@@ -1,4 +1,3 @@
-
 <script src="js/bootstrap-typeahead.js"></script>
 <script src="js/bootstrap-table.js"/>
 <script src="js/FileSaver.js"/>			
@@ -39,14 +38,15 @@
 								<a href="crtfdallocation" class="btn btn-default crtpal<?php echo $fda['module']->Mid; ?>">FD ALLOCATION</a>
 								<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
 								<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
-								<div class="col-md-3" style="height:38px;">
+								<div class="col-md-4" style="height:38px;">
 									ACCOUNT TYPE:
 									<select id="closed_status" style="height:38px;">
 										<option value="NO">LIVE</option>
 										<option value="YES">CLOSED</option>
 									</select>
+									<button class="btn-sm"><span class="glyphicon glyphicon-refresh" id="refresh" /></button>
 								</div>
-								<div class="col-md-5 pull-right">
+								<div class="col-md-4 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchFd" placeholder="SEARCH FD">
 								</div>
 							</div>
@@ -71,9 +71,14 @@
 	});
 	
 	$("#closed_status").change(function() {
+		$("#deposit_account_list_box").html("Loading...");
 		deposit_account_list("");
 	});
-	
+
+	$("#refresh").click(function() {
+		$("#closed_status").trigger("change");
+	});
+
 	$("#search_box").change(function() {
 		$("#search_box").val("");
 		var allocation_id = $(this).attr("data-value");

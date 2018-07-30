@@ -46,15 +46,16 @@
 						<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
 						<div class="alert alert-info" style="height:60px;">
 							
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH JEWEL ACCOUNT">
 							</div>
-							<div class="col-md-3" style="height:38px;">
+							<div class="col-md-4" style="height:38px;">
 								ACCOUNT TYPE:
 								<select id="closed_status" style="height:38px;">
 									<option value="NO">LIVE</option>
 									<option value="YES">CLOSED</option>
 								</select>
+								<button class="btn-sm" id="refresh" ><span class="glyphicon glyphicon-refresh" /></button>
 							</div>
 							<div class="col-md-3">
 								<select class="form-control" id="ExportType" name="ExportType">
@@ -87,7 +88,12 @@
 	});
 	
 	$("#closed_status").change(function() {
+		$("#account_list_box").html("Loading...");
 		account_list("");
+	});
+	
+	$("#refresh").click(function() {
+		$("#closed_status").trigger("change");
 	});
 	
 	$("#search_loan_id").change(function() {

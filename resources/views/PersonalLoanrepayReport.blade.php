@@ -55,11 +55,13 @@
 			</tbody>
 		</table>
 		
+<?php /*
 		<div id='pagei<?php echo $loanpersonal['module']->Mid; ?>'>
 			
 			{!! $loanpersonal['datapersonal']->appends(Input::except('page'))->render() !!}
 			
 		</div>
+*/?>
 	</div>
 </div>
 

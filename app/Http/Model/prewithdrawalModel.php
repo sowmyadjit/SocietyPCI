@@ -8,6 +8,8 @@
 	use Auth;
 	use App\Http\Model\RoundModel;
 	use App\Http\Model\DepositModel;
+	use App\Http\Model\SettingsModel;
+
 	class prewithdrawalModel extends Model
 	{
 		protected $table = 'pigmiallocation';
@@ -15,20 +17,32 @@
 		public $roundamt;
 		public function __construct()
 		{
+			$this->settings = new SettingsModel;
 			$this->roundamt=new RoundModel;
 			$this->dep_mdl = new DepositModel;
 		}
 		
 		public function Getpigmyacct()
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
 			$dte=date('Y-m-d');
-			return DB::table('pigmiallocation')
+			$ret_data = DB::table('pigmiallocation')
 			->select(DB::raw('PigmiAllocID as id, CONCAT(`PigmiAllocID`,"-",`PigmiAcc_No`,"-",`old_pigmiaccno`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
 			->join('user','user.Uid','=','pigmiallocation.Uid')
 			->where('Status','=',"AUTHORISED")
-			->where('Closed','<>',"YES")
 			//->where('EndDate','>',$dte)
-			->get();
+			->where('Closed','<>',"YES");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("pigmiallocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		
 		
@@ -553,12 +567,23 @@
 		
 		public function getrdprewithdraw()
 		{
-			return DB::table('createaccount')
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+
+			$ret_data = DB::table('createaccount')
 			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
 			->where('Status','=',"AUTHORISED")
 			->where('AccNum','like','%RD%')
-			->where('Closed','<>',"YES")
-			->get();
+			->where('Closed','<>',"YES");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("createaccount.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		
 		public function prefdwithdrawal($id)

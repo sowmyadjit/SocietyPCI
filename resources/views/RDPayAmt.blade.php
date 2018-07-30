@@ -467,7 +467,8 @@
 					$('#RDPayFullName').val(TEST);
 					$('#rdaccount').val(RDIntac);
 					$('#uid').val(data['uid']);
-					$('#rdTot').val(data['mtot']);
+					// $('#rdTot').val(data['mtot']);
+					$('#rdTot').val(data['principle']);
 					$('#rdintamt').val(data['intrst']);
 					//payamt=parseFloat(totamt);
 					//alert(totamt);

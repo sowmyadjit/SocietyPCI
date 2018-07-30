@@ -4,6 +4,7 @@
 	
 	use Illuminate\Http\Request;
 	use DB;
+	use Auth;
 	use App\Http\Requests;
 	use App\Http\Controllers\Controller;
 	use App\Http\Model\ReportModel;
@@ -11,6 +12,8 @@
 	use App\Http\Model\ExpenceModel;
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\MemberModel;
+	use App\Http\Model\DenominationsModel;
+	
 	class ReportController extends Controller
 	{
 		public function __construct()
@@ -19,8 +22,8 @@
 			$this->creadexpencemodel = new ExpenceModel;
 			$this->Modules= new ModulesModel;
 			$this->member_model= new MemberModel;
+			$this->denomination= new DenominationsModel;
 		}
-		
 		
 		
 		public function index()
@@ -321,7 +324,11 @@
 			$SbprintPerData['CustomerDetails']=$this->Report_model->GetSbprintPerData($SbprintPar);
 			$SbprintPerData['TransactionDetails']=$this->Report_model->GetSbprinttranPerData($SbprintPar);
 /********************/
-			$SbprintPerData['prev_balance']=$this->Report_model->get_prev_balance($SbprintPar);
+			if($SbprintPar['tranid'] == 0) {
+				$SbprintPerData['prev_balance']=$this->Report_model->get_prev_balance($SbprintPar);
+			} else {
+				$SbprintPerData['prev_balance'] = $request->input('previous_balance');
+			}
 /********************/
 			
 			$SbprintPerData['module']=$this->Report_model->GetSBPassModule();
@@ -811,6 +818,7 @@
 		{
 			$in_data["date"] = $request->input("date");
 			$data = $this->Report_model->cash_chitta_data($in_data);
+			$data["opening_balance"] = $this->Report_model->get_opening_balance($in_data);
 			//print_r($data);exit();
 			return view("cash_chitta_data",compact('data'));
 		}
@@ -827,19 +835,63 @@
 			$data = $this->Report_model->cash_chitta_details_list([]);
 			return view("cash_chitta_details_list",compact('data'));
 		}
-	/*******/
 	
 		public function cash_chitta_details_edit(Request $request)
 		{
 			$flag = $request->input("flag");
 			switch($flag) {
-				case "data"		:	$in_data["cash_chitta_details_id"] = $request->input("cash_chitta_details_id");
-									$data = $this->Report_model->cash_chitta_details_list($in_data);
-									return view("cash_chitta_details_edit_data",compact("data"));	break;
-				case "update"	:	return "";	break;
-				default	:	return "";
+				case "data"			:	$in_data["cash_chitta_details_id"] = $request->input("cash_chitta_details_id");
+										$data = $this->Report_model->cash_chitta_details_list($in_data);
+										return view("cash_chitta_details_edit_data",compact("data"));	break;
+
+				case "join_data"	:	$in_data["cash_chitta_details_id"] = $request->input("cash_chitta_details_id");
+										$data = $this->Report_model->cash_chitta_details_list($in_data);
+										return view("cash_chitta_details_edit_join",compact("data"));	break;
+
+				case "where_data"	:	$in_data["cash_chitta_details_id"] = $request->input("cash_chitta_details_id");
+										$data = $this->Report_model->cash_chitta_details_list($in_data);
+										return view("cash_chitta_details_edit_where",compact("data"));	break;
+
+				case "update"		:	return "";	break;
+
+				case "add_details"	:
+										$in_data["prefix"] = $request->input("prefix");
+										$in_data["table_name"] = $request->input("table_name");
+										$in_data["pk_field"] = $request->input("pk_field");
+										$in_data["amount_field"] = $request->input("amount_field");
+										$in_data["bid_field"] = $request->input("bid_field");
+										$in_data["date_field"] = $request->input("date_field");
+										$in_data["transaction_type"] = $request->input("transaction_type");
+										$in_data["transaction_type_field"] = $request->input("transaction_type_field");
+										$in_data["table_containing_account_no"] = $request->input("table_containing_account_no");
+										$in_data["account_no_field"] = $request->input("account_no_field");
+										$in_data["deleted"] = $request->input("deleted");
+										$this->Report_model->save_cash_chitta_details($in_data);
+				case "save_data"	:
+										$in_data["table"] = $request->input("table");
+										$in_data["fields"] = $request->input("fields");
+										$in_data["operation"] = $request->input("operation");
+										$in_data["pk"] = $request->input("pk");
+										$this->Report_model->save_data($in_data);
+										return "save_data done";
+										break;
+				default	:	return "11";
 			}
 		}
+		
+		public function cash_chitta_details_add_form(Request $request)
+		{
+			$data = $this->Report_model->get_table_list([]);
+			return view("cash_chitta_details_add_form",compact('data'));
+		}
+
+		public function get_table_fields(Request $request)
+		{
+			$in_data["table_name"] = $request->input("table_name");
+			$data = $this->Report_model->get_table_fields($in_data);
+			return $data;
+		}
+	/*******/
 		
 /*******/
 		public function appraiser_commission_report_index(Request $request)
@@ -854,4 +906,59 @@
 			return view("appraiser_commission_report_data",compact("data"));
 		}
 /*******/
+
+		public function get_denominations(Request $request)
+		{
+			$in_data["date"] = $request->input("date");
+			$data["date"] = $in_data["date"];
+			$data["denomination_row"] = $this->denomination->get_denominations($in_data);
+			return view("cash_chitta_denominations",compact('data'));
+		}
+
+		public function save_denominations(Request $request)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$in_data["{$this->denomination->pk}"] = $request->input("{$this->denomination->pk}");
+			$in_data["{$this->denomination->date_field}"] = $request->input("{$this->denomination->date_field}");
+			$in_data["{$this->denomination->value_2000_field}"] = $request->input("{$this->denomination->value_2000_field}");
+			$in_data["{$this->denomination->value_500_field}"] = $request->input("{$this->denomination->value_500_field}");
+			$in_data["{$this->denomination->value_200_field}"] = $request->input("{$this->denomination->value_200_field}");
+			$in_data["{$this->denomination->value_100_field}"] = $request->input("{$this->denomination->value_100_field}");
+			$in_data["{$this->denomination->value_50_field}"] = $request->input("{$this->denomination->value_50_field}");
+			$in_data["{$this->denomination->value_20_field}"] = $request->input("{$this->denomination->value_20_field}");
+			$in_data["{$this->denomination->value_10_field}"] = $request->input("{$this->denomination->value_10_field}");
+			$in_data["{$this->denomination->value_5_field}"] = $request->input("{$this->denomination->value_5_field}");
+			$in_data["{$this->denomination->value_2_field}"] = $request->input("{$this->denomination->value_2_field}");
+			$in_data["{$this->denomination->value_1_field}"] = $request->input("{$this->denomination->value_1_field}");
+			$in_data["{$this->denomination->value_other_field}"] = $request->input("{$this->denomination->value_other_field}");
+			$in_data["{$this->denomination->bid_field}"] = $BID;
+			$in_data["{$this->denomination->entered_by_field}"] = $UID;
+			
+			$this->denomination->required($in_data,"{$this->denomination->date_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_2000_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_500_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_200_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_100_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_50_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_20_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_10_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_5_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_2_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_1_field}");
+			$this->denomination->required($in_data,"{$this->denomination->value_other_field}");
+			$this->denomination->required($in_data,"{$this->denomination->bid_field}");
+			$this->denomination->required($in_data,"{$this->denomination->entered_by_field}");
+
+			$this->denomination->clear_row_data();
+			$this->denomination->set_row_data($in_data);
+			if(!empty($in_data["{$this->denomination->pk}"])) {//UPDATE
+				$row_id = $this->denomination->update_row();
+			} else {//INSERT
+				$row_id = $this->denomination->insert_row();
+			}
+			$ret_data = $this->denomination->get_row(["{$this->denomination->pk}"=>$row_id]);
+			
+			return $ret_data;
+		}
 	}

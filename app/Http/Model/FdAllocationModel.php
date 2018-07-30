@@ -6,6 +6,9 @@
 	use DB;
 	use Auth;
 	use App\Http\Model\SmsModel;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class FdAllocationModel extends Model
 	{
@@ -14,6 +17,8 @@
 		public function __construct()
 		{
 			$this->smsmodel=new SmsModel;
+			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
 		}
 		public function InsertFdAlloc($id)
 		{
@@ -74,6 +79,23 @@
 				
 				$paccno3=intval($paccno2)+1;
 				$fdcertnum="PCIS".$branchcd."FD".$paccno3;
+				
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
+				$got_unique = false;
+				while(!$got_unique) {
+					$existing_count = DB::table("fdallocation")
+						->where("Fd_CertificateNum",$fdcertnum)
+						->count();
+					if($existing_count > 0) {
+						$paccno3++;
+						$fdcertnum="PCIS".$branchcd."FD".$paccno3;//NEW FD CERTIFICATE NO
+					} else {
+						$got_unique = true;
+					}
+				}
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
+
+
 				$FdReceipt=$branchcd.$RecYear."FDA".$paccno3;
 			
 			$depamt=$id['fddep'];
@@ -82,8 +104,19 @@
 			
 			$Nid=DB::table('nominee')->insertGetId(['Nom_Address'=>$id['nadd'],'Nom_Age'=>$id['nage'],'Nom_Birthdate'=>$id['nbdate'],'Nom_City'=>$id['ncity'],'Nom_District'=>$id['ndist'],'Nom_Email'=>$id['nemail'],'Nom_FirstName'=>$id['nfname'],'Nom_Gender'=>$id['ngender'],'Nom_LastName'=>$id['nlname'],'Nom_Marital_Status'=>$id['nmstate'],'Nom_MiddleName'=>$id['nmname'],'Nom_MobNo'=>$id['nmno'],'Nom_Occupation'=>$id['noccup'],'Nom_PhoneNo'=>$id['npno'],'Nom_Pincode'=>$id['npin'],'Nom_State'=>$id['nstate'],'Uid'=>$id['uid'],'Relationship'=>$id['reltn']]);
 			
-			$fd= DB::table('fdallocation')->insertGetId(['Accid'=> $id['accid_int'],'FdTid'=> $id['fdtid'],'Fd_DepositAmt'=> $id['fddep'],'Created_Date'=> $dte,'Fd_StartDate'=> $s_date,'FdReport_StartDate'=> $id['s_dte'],'Fd_CertificateNum'=> $fdcertnum,'Fd_Remarks'=> $id['fdrem'],'Fd_MatureDate'=> $id['e_dte'],'FdReport_MatureDate'=> $reportenddate,'Fd_TotalAmt'=>$id['mamt'],'Bid'=>$id['bid'],'FDPayment_Mode'=>$id['fdpaymode'],'FDChq_No'=>$id['fdchequeno'],'FDChq_Date'=>$id['fdchdate'],'FDBnk_Name'=>$id['FdBankName'],'FDIFSC_Code'=>$id['fdifsccode'],'FDSB_Amt'=>$id['fdsbamount'],'FDBnk_Branch'=>$id['fdbankbranch'],'FDUnclear_Bal'=>$id['fduncleared'],'FDCleared_State'=>$id['fdunclearedval'],'Nid'=>$Nid,'Uid'=>$id['userid'],'interest_amount'=>$intamt,'FD_ReceiptNum'=>$FdReceipt,'FD_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"41",'createdBy'=>$UID,'intrest_needed'=>$id['intneeded'],'fdmonth'=>$id['month'],'interstmonth'=>$id['monthinterest'],'lastinterestpaid'=>$dte,'Accid'=>$id['accid_int'],'Days'=>$id['days']]);
+			$fd= DB::table('fdallocation')->insertGetId(['Accid'=> $id['accid_int'],'FdTid'=> $id['fdtid'],'Fd_DepositAmt'=> $id['fddep'],'Created_Date'=> $dte,'Fd_StartDate'=> $s_date,'FdReport_StartDate'=> $id['s_dte'],'Fd_CertificateNum'=> $fdcertnum,'Fd_Remarks'=> $id['fdrem'],'Fd_MatureDate'=> $id['e_dte'],'FdReport_MatureDate'=> $reportenddate,'Fd_TotalAmt'=>$id['mamt'],'Bid'=>$id['bid'],'FDPayment_Mode'=>$id['fdpaymode'],'FDChq_No'=>$id['fdchequeno'],'FDChq_Date'=>$id['fdchdate'],'FDBnk_Name'=>$id['FdBankName'],'FDIFSC_Code'=>$id['fdifsccode'],'FDSB_Amt'=>$id['fdsbamount'],'FDBnk_Branch'=>$id['fdbankbranch'],'FDUnclear_Bal'=>$id['fduncleared'],'FDCleared_State'=>$id['fdunclearedval'],'Nid'=>$Nid,'Uid'=>$id['userid'],'interest_amount'=>$intamt,'FD_ReceiptNum'=>$FdReceipt,'FD_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"41",'createdBy'=>$UID,'intrest_needed'=>$id['intneeded'],'fdmonth'=>$id['month'],'interstmonth'=>$id['monthinterest'],'lastinterestpaid'=>$dte,'Accid'=>$id['accid_int'],'Days'=>$id['days'], "FDBnk_ID"=>$id["fd_bank_id"] ]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $id['fdpaymode'];
+				$fn_data["rv_transaction_id"] = $fd;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_ALLOCATION;//constant FD_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['s_dte'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($pmode=="SB ACCOUNT")
 			{
 				/*$actid=DB::table('accounttype')
@@ -97,9 +130,20 @@
 				$sbrem=$id['sbavailable'];
 				$aciddd=$id['accid'];
 				
-				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $BID,'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for FD Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$dte,'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				$sb_transaction_id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $BID,'Accid' => $id['accid'],'TransactionType' => "DEBIT",'particulars' => "Amount debited for FD Account ({$fdcertnum})",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$dte,'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
 				DB::table('createaccount')->where('Accid',$aciddd)
 				->update(['Total_Amount'=>$sbrem]);
+
+				/***********/
+				$fn_data["rv_payment_mode"] = $id['fdpaymode'];
+				$fn_data["rv_transaction_id"] = $sb_transaction_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant FD_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			}
 			if($pmode=="CASH")
 			{
@@ -228,25 +272,77 @@
 		
 		public function GetFDNumForLoanAlloc($q)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			
 			//return DB::select("SELECT `Fdid` as id, CONCAT(`Fdid`,'-',`Fd_CertificateNum`) as name FROM `fdallocation` where `Fd_CertificateNum` LIKE '%".$q."%' ");
 			
-			return DB::table('fdallocation')
+			$ret_data = DB::table('fdallocation')
 			->select(DB::raw('Fdid as id, CONCAT(`Fdid`,"-",`Fd_CertificateNum`) as name'))
-			->where('Closed','=',"NO")
-			->get();
-			
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		
 		public function GetFDNumberForLoanAlloc($q) //for DL allocation typeahead
 		{
 			//return DB::select("SELECT `Fdid` as id, CONCAT(`Fdid`,'-',`Fd_CertificateNum`) as name FROM `fdallocation` where `Fd_CertificateNum` LIKE '%".$q."%' ");
 			
-			return DB::table('fdallocation')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('fdallocation')
 			->select(DB::raw('Fdid as id,Fd_CertificateNum as name'))
-			->where('Closed','=',"NO")
+			->where('fdallocation.FdTid','!=',1)
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
+			}
 			//->where('Loan_Allocated','=',"NO")
 			//->where('Status','=',"AUTHORISED")
-			->get();
+			$ret_data = $ret_data->get();
+			return $ret_data;
+			
+		}
+
+		public function GetFDandKCCNumberForLoanAlloc($q) //for DL allocation typeahead
+		{
+			//return DB::select("SELECT `Fdid` as id, CONCAT(`Fdid`,'-',`Fd_CertificateNum`) as name FROM `fdallocation` where `Fd_CertificateNum` LIKE '%".$q."%' ");
+			
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('fdallocation')
+			->select(DB::raw('Fdid as id,Fd_CertificateNum as name'))
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
+			}
+			//->where('Loan_Allocated','=',"NO")
+			//->where('Status','=',"AUTHORISED")
+			$ret_data = $ret_data->get();
+			return $ret_data;
+			
+		}
+		
+		public function GetKCCNumberForLoanAlloc($q)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('fdallocation')
+			->select(DB::raw('Fdid as id,Fd_CertificateNum as name'))
+			->where('fdallocation.FdTid','=',1)
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 			
 		}
 		
@@ -310,6 +406,7 @@
 				->update(['Fd_CertiPrint'=>"YES"]);
 			}
 		}
+
 		public function crtkccalloc($id)
 		{
 			
@@ -393,6 +490,17 @@
 			
 			$fd= DB::table('fdallocation')->insertGetId(['Accid'=> $id['accid'],'FdTid'=> $id['fdtid'],'Fd_DepositAmt'=> $id['fddep'],'Created_Date'=> $dte,'Fd_StartDate'=> $id['fdalloc'],'FdReport_StartDate'=> $id['fdallocreport'],'Fd_CertificateNum'=> $fdcertnum,'Fd_Remarks'=> $id['fdrem'],'Fd_MatureDate'=> $id['fdedte'],'FdReport_MatureDate'=> $reportenddate,'Fd_TotalAmt'=>$id['mamt'],'Bid'=>$id['bid'],'FDPayment_Mode'=>$id['fdpaymode'],'FDChq_No'=>$id['fdchequeno'],'FDChq_Date'=>$id['fdchdate'],'FDBnk_Name'=>$id['FdBankName'],'FDIFSC_Code'=>$id['fdifsccode'],'FDSB_Amt'=>$id['fdsbamount'],'FDBnk_Branch'=>$id['fdbankbranch'],'FDUnclear_Bal'=>$id['fduncleared'],'FDCleared_State'=>$id['fdunclearedval'],'Nid'=>$Nid,'Uid'=>$id['userid'],'interest_amount'=>$intamt,'FD_resp_No'=>$r,'lastinterestpaid'=>$dte,'Accid'=>$id['accid'],'FDkcc'=>"KCC",'LedgerHeadId'=>"38",'SubLedgerId'=>"40","Days"=>$days]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $pmode;
+				$fn_data["rv_transaction_id"] = $fd;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_ALLOCATION;//constant FD_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($pmode=="SB ACCOUNT")
 			{
 				$actid=DB::table('accounttype')
@@ -404,7 +512,19 @@
 				$sbamt=$id['fdsbamount'];
 				$sbrem=$id['sbavailable'];
 				
-				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $id['bid'],'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for FD Account",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$id['fdallocreport'],'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				$sb_transaction_id = DB::table('sb_transaction')->insertGetId(['AccTid' => $accountid,'Bid' => $id['bid'],'Accid' => $id['accid'],'TransactionType' => "debit",'particulars' => "Amount debited for KCC Account ({$fdcertnum})",'Amount' => $id['fddep'],'CurrentBalance' => $id['fdsbamount'],'tran_Date'=>$id['fdalloc'],'SBReport_TranDate'=>$id['fdallocreport'],'Total_Bal'=>$id['sbavailable'],'Payment_Mode'=>"FD Account",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>$id['fdunclearedval']]);
+				// ADJ NO FOR SB DEBIT
+				/***********/
+				$fn_data["rv_payment_mode"] = $pmode;
+				$fn_data["rv_transaction_id"] = $sb_transaction_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['fdallocreport'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			}
 			if($pmode=="CASH")
 			{
@@ -419,6 +539,7 @@
 				->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Amount Credited to FD Account",'InhandTrans_Cash'=>$fdamt,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Credit",'Present_Inhandcash'=>$inhandcash1,'Total_InhandCash'=>$totcash]);
 			}
 		}
+
 		public function kccallocation()
 		{
 			$uname='';
@@ -435,6 +556,7 @@
 			->orderby('Fdid','desc')
 			->get();
 		}
+
 		public function fdrenew($id)
 		{
 			$fdtyp=$id['fdtype'];
@@ -464,6 +586,33 @@
 			
 			
 		}
+
+		public function kccrenew($id)
+		{
+			$fdtyp=$id['fdtype'];
+			$fdaccno=$id['fdaccno'];
+			$fdmatur=$id['fdmatureaccno'];
+			if($fdtyp=="MATURED")
+			{
+				$id = DB::table('fdallocation')
+					->select('Fdid','fdallocation.Accid','fdallocation.FdTid','fdallocation.Nid','fdallocation.Bid','user.Uid','Custid','createaccount.AccNum','createaccount.AccTid','user.FirstName','user.MiddleName','user.LastName','user.Aid','Gender','MaritalStatus','Occupation','Age','Birthdate','address.Email','Address','City','District','State','PhoneNo','MobileNo','Pincode','BName','FdType','NumberOfDays','FdInterest','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_state','Fd_DepositAmt','Fd_StartDate','FdReport_StartDate','Fd_MatureDate','FdReport_MatureDate','Fd_CertificateNum','Fd_TotalAmt','Fd_Remarks','FDPayment_Mode','FDChq_No','FDChq_Date','FDBnk_Name','FDIFSC_Code','FDSB_Amt','FDBnk_Branch','FDUnclear_Bal','FDCleared_State','FatherName','SpouseName','CustomerType','FD_ReceiptNum','Fd_CertiPrint')
+					->leftJoin('createaccount','createaccount.Accid', '=' , 'fdallocation.Accid')
+					->leftJoin('user','user.Uid', '=' , 'fdallocation.Uid')
+					->leftJoin('customer','customer.Uid', '=' , 'user.Uid')
+					->leftJoin('address','address.Aid', '=' , 'user.Aid')
+					->leftJoin('branch', 'branch.Bid', '=' , 'fdallocation.Bid')
+					->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
+					->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
+					->where('Fdid',$fdmatur)
+					->first();
+				return $id;
+			}
+			else if($fdtyp=="PREWITHDRAWAL")
+			{
+				
+			}
+		}
+
 		public function fdrenewdetails($id)
 		{
 			$uname='';
@@ -503,6 +652,21 @@
 				$paccno3=intval($paccno2)+1;
 				$fdcertnum="PCIS".$branchcd."FD".$paccno3;
 				//$FdReceipt=$branchcd.$RecYear."FDA".$paccno3;
+				
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
+				$got_unique = false;
+				while(!$got_unique) {
+					$existing_count = DB::table("fdallocation")
+						->where("Fd_CertificateNum",$fdcertnum)
+						->count();
+					if($existing_count > 0) {
+						$paccno3++;
+						$fdcertnum="PCIS".$branchcd."FD".$paccno3;//NEW FD CERTIFICATE NO
+					} else {
+						$got_unique = true;
+					}
+				}
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
 			
 			
 			$depamt=$id['depositamount'];
@@ -518,25 +682,131 @@
 			$fd=$fd1->Fd_TotalAmt;
 			$fdacc=$fd1->Fd_CertificateNum;
 			$remainamt=$fd-$depamt;
-			if($remainamt==0)
+			if($remainamt <= 0)
 			{
-				DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Fd_TotalAmt'=>$remainamt,'Paid_State'=>"PAID","fd_renewed"=>"YES","renewed_amount"=>$id['mamt']]);
-				
-				
-				
-				
-				DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['depositamount'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
-				
-				
-				
+				DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Paid_State'=>"PAID"]);
+			}
+			$fd_payamount_id = DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['depositamount'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
+			DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['mamt']]);
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = "RENEWAL";
+				$fn_data["rv_transaction_id"] = $fd_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_PAYAMOUNT;//constant FD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+		}
+		
+		public function kccrenewdetails($id)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			$respit1=DB::table('branch')->select('Recp_No')->where('Bid',$BID)->first();
+			$respit=$respit1->Recp_No;
+			$r=$respit+1;
+			DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r]);
+			$udetail= DB::table('user')->select('Uid','user.FirstName','user.MiddleName','user.LastName','BName','branch.Bid')
+			
+			->leftJoin('branch','branch.Bid','=','user.Bid')
+			->where('user.Uid','=',$UID)
+			->first();
+			
+			//$b=$udetail->BName;
+			$bid=$udetail->Bid;
+			
+			$RecYear=date('my');
+			$dte=date('Y-m-d');
+			$respit1=DB::table('branch')->select('Recp_No','BCode')->where('Bid',$BID)->first();
+			$branchcd=$respit1->BCode;
+			// $branchcd=$id['branchcode'];
+			$countinc=1;
+			$pmode=$id['fdpaymode'];
+			//$edr=$id['fdedte'];
+			$fdamt=$id['fddep'];
+			$tempsDate = explode('/',$id['fdedte']);
+			$consDate = $tempsDate[2]."-".$tempsDate[1]."-".$tempsDate[0];
+			//$sdate=date('Y-m-d',strtotime($consDate));
+			$reportenddate=date('Y-m-d',strtotime($consDate));
+			
+
+			$maxid=DB::table('fdallocation')->where('Bid','=',$BID)->where('FDkcc','=',"KCC")->max('Fdid');
+			if($maxid==0)
+			{
+				$paccno3=1;
 			}
 			else
 			{
-				DB::table('fdallocation')->where('Fdid','=',$fdid)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['mamt']]);
+				$accnum1=DB::table('fdallocation')->select('Fd_CertificateNum')->where('Fdid','=',$maxid)->first();
+				$accnum=$accnum1->Fd_CertificateNum;
+				//print_r($accnum);
+				$paccno1=preg_match('#([a-z]+)([\d]+)#i',$accnum,$matches);
+				$paccno2=$matches[2];
+				$paccno3=intval($paccno2)+1;
 			}
+			$fdcertnum="PCIS".$branchcd."KCC".$paccno3;
 			
+				/***** PREVENT CREATION KCC DUPLICATE FD CERTIFICATE NO. *****/
+				$got_unique = false;
+				while(!$got_unique) {
+					$existing_count = DB::table("fdallocation")
+						->where("Fd_CertificateNum",$fdcertnum)
+						->count();
+					if($existing_count > 0) {
+						$paccno3++;
+						$fdcertnum="PCIS".$branchcd."KCC".$paccno3;//NEW KCC CERTIFICATE NO
+					} else {
+						$got_unique = true;
+					}
+				}
+				/***** PREVENT CREATION OF DUPLICATE KCC CERTIFICATE NO. *****/
+
 			
+			$depamt=$id['fddep'];
+			$amtpayable=$id['mamt'];
+			$intamt=$amtpayable-$depamt;
+			
+			$Nid=DB::table('nominee')->insertGetId(['Nom_Address'=>$id['nadd'],'Nom_Age'=>$id['nage'],'Nom_Birthdate'=>$id['nbdate'],'Nom_City'=>$id['ncity'],'Nom_District'=>$id['ndist'],'Nom_Email'=>$id['nemail'],'Nom_FirstName'=>$id['nfname'],'Nom_Gender'=>$id['ngender'],'Nom_LastName'=>$id['nlname'],'Nom_Marital_Status'=>$id['nmstate'],'Nom_MiddleName'=>$id['nmname'],'Nom_MobNo'=>$id['nmno'],'Nom_Occupation'=>$id['noccup'],'Nom_PhoneNo'=>$id['npno'],'Nom_Pincode'=>$id['npin'],'Nom_State'=>$id['nstate'],'Uid'=>$id['uid'],'Relationship'=>$id['reltn']]);
+			
+			$days = DB::table("fdtype")
+				->where("FdTid","=",$id['fdtid'])
+				->value("NumberOfDays");
+			
+			$fdid= DB::table('fdallocation')->insertGetId(['Accid'=> $id['accid'],'FdTid'=> $id['fdtid'],'Fd_DepositAmt'=> $id['fddep'],'Created_Date'=> $dte,'Fd_StartDate'=> $id['fdalloc'],'FdReport_StartDate'=> $id['fdallocreport'],'Fd_CertificateNum'=> $fdcertnum,'Fd_Remarks'=> $id['fdrem'],'Fd_MatureDate'=> $id['fdedte'],'FdReport_MatureDate'=> $reportenddate,'Fd_TotalAmt'=>$id['mamt'],'Bid'=>$BID,'FDPayment_Mode'=>$id['fdpaymode'],'FDChq_No'=>$id['fdchequeno'],'FDChq_Date'=>$id['fdchdate'],'FDBnk_Name'=>$id['FdBankName'],'FDIFSC_Code'=>$id['fdifsccode'],'FDSB_Amt'=>$id['fdsbamount'],'FDBnk_Branch'=>$id['fdbankbranch'],'FDUnclear_Bal'=>$id['fduncleared'],'FDCleared_State'=>$id['fdunclearedval'],'Nid'=>$Nid,'Uid'=>$id['userid'],'interest_amount'=>$intamt,'FD_resp_No'=>$r,'lastinterestpaid'=>$dte,'Accid'=>$id['accid'],'FDkcc'=>"KCC",'LedgerHeadId'=>"38",'SubLedgerId'=>"40","Days"=>$days]);
+			
+			$old_kcc_id = $id["old_kcc_id"];
+			$fd1=DB::table('fdallocation')->select('Fd_TotalAmt','Fd_CertificateNum')->where('Fdid','=',$old_kcc_id)->first();
+			$fd=$fd1->Fd_TotalAmt;
+			$fdacc=$fd1->Fd_CertificateNum;
+			$remainamt=$fd-$depamt;// var_dump($remainamt);
+			if($remainamt <= 0)
+			{
+				DB::table('fdallocation')->where('Fdid','=',$old_kcc_id)->update(['Paid_State'=>"PAID"]);
+			}
+			$fd_payamount_id = DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdacc,'FDPayAmt_PaymentMode'=>"RENEWAL",'FDPayAmt_PayableAmount'=>$id['fddep'],'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'FDPayAmt_IntType'=>"MATURED",'Bid'=>$BID]);
+			DB::table('fdallocation')->where('Fdid','=',$old_kcc_id)->update(['Fd_TotalAmt'=>$remainamt,"fd_renewed"=>"YES","renewed_amount"=>$id['fddep']]);
+			// var_dump($id['fddep']);
+
+				/***********/
+				$fn_data["rv_payment_mode"] = "RENEWAL";
+				$fn_data["rv_transaction_id"] = $fd_payamount_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_PAYAMOUNT;//constant FD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
+			return "done";
 		}
+
 		public function FDedit($id)
 		{
 			return DB::table('fdallocation')->select('Fd_CertificateNum','Fd_OldCertificateNum','FdReport_StartDate','FdReport_MatureDate','Fd_DepositAmt','Fd_TotalAmt','Fdid')->where('Fdid',$id)->first();

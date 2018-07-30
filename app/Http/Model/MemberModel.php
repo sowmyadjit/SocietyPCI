@@ -4,11 +4,19 @@
 	use Auth;
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class MemberModel extends Model
 	{
 		//
 		protected $table='members';
+		
+		public function __construct() {
+				$this->rv_no = new ReceiptVoucherController;
+				$this->settings = new SettingsModel;
+		}
 		
 		public function GetMember($m)
 		{
@@ -55,7 +63,18 @@
 			$Nid=DB::table('nominee')->insertGetId(['Nom_Address'=>$id['nadd'],'Nom_Age'=>$id['nage'],'Nom_Birthdate'=>$id['nbdate'],'Nom_City'=>$id['ncity'],'Nom_District'=>$id['ndist'],'Nom_Email'=>$id['nemail'],'Nom_FirstName'=>$id['nfname'],'Nom_Gender'=>$id['ngender'],'Nom_LastName'=>$id['nlname'],'Nom_Marital_Status'=>$id['nmstate'],'Nom_MiddleName'=>$id['nmname'],'Nom_MobNo'=>$id['nmno'],'Nom_Occupation'=>$id['noccup'],'Nom_PhoneNo'=>$id['npno'],'Nom_Pincode'=>$id['npin'],'Nom_State'=>$id['nstate'],'Uid'=>$Uid,'Relationship'=>$id['reltn']]);
 			
 			$Memid=DB::table('members')->insertGetId(['Bid'=>$BID,'Nid'=>$Nid,'CreatedDate'=>$id['mdte'],'PancardNum'=>$id['pncrdno'],'AdharCardNum'=>$id['adcrdno'],'VoteridNum'=>$id['voterid'],'PassportNum'=>$id['passportnum'],'Remarks'=>$id['remark'],'FirstName'=>$id['mfname'],'MiddleName'=>$id['mmname'],'LastName'=>$id['mlname'],'Uid'=>$Uid,'Member_Fee'=>$id['mfee'],'DocProvid'=>$docid,'Aid'=>$Aid,'FatherName'=>$id['fthrname'],'SpouseName'=>$id['spousename'],'member_resp_no'=>$r]);
-			
+				//FOR MEMBER FEE
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $Memid;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::MEMBER_ALLOCATION;//constant MEMBER_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['mdte'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			$respit1=DB::table('branch')->select('Recp_No')->where('Bid',$BID)->first();
 				$respit=$respit1->Recp_No;
 				$r=$respit+1;
@@ -92,6 +111,17 @@
 			
 			$pid = DB::table('purchaseshare')->insertGetId(['PURSH_Memid'=> $Memid,'PURSH_Shrclass'=>$id['shclass'],'PURSH_Shareamt'=>$id['shamt'],'PURSH_Memshareid'=>$id['memshr'],'PURSH_Certfid'=>$certid,'PURSH_Shareprice'=>$id['shprice'],'PURSH_Shmaxcount'=>$id['count'],'PURSH_Noofshares'=>$id['totshare'],'PURSH_Totalamt'=>$s3,'PURSH_TotalShareValue'=>$id['totshrval'],'PURSH_Date'=>$id['mdte'],'Bid'=>$BID,'PURSH_Share_resp_no'=>$r,'LedgerHeadId'=>$LedgerHeadId,'SubLedgerId'=>$SubLedgerId]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $pid;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SHARE_ALLOCATION;//constant MEMBER_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['mdte'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			$inhandcashh=DB::table('cash')->select('InHandCash')->where('BID','=',$bid)->first();
 			$inhandcash1=$inhandcashh->InHandCash;
 			$x=$inhandcash1+$amount1+$shamt;
@@ -189,11 +219,17 @@
 		}
 		public function GetMembersForPersLoan($id)
 		{
-			return DB::table('members')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('members')
 			->select(DB::raw('Memid as id, CONCAT(`Memid`,"/",`Member_no`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
-			->where('status','=',"AUTHORISED")
+			->where('status','=',"AUTHORISED");
 			//->where('Loan_Allocated','=','NO')
-			->get();
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("members.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		public function tranmember($id)
 		{
@@ -227,7 +263,18 @@
 			$spname=$custinfo->SpouseName;
 			
 			$Memid=DB::table('members')->insertGetId(['Bid'=>$bid,'Nid'=>$nid,'CreatedDate'=>$dte,'FirstName'=>$fname,'MiddleName'=>$mname,'LastName'=>$lname,'Uid'=>$uid,'Member_Fee'=>$id['memfee'],'DocProvid'=>$docpvd,'Aid'=>$aid,'FatherName'=>$fthrname,'SpouseName'=>$spname,'member_resp_no'=>$r]);
-			
+			//FOR MEMBER FEE
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $Memid;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::MEMBER_ALLOCATION;//constant MEMBER_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			$respit1=DB::table('branch')->select('Recp_No')->where('Bid',$BID)->first();
 				$respit=$respit1->Recp_No;
 				$r=$respit+1;
@@ -252,6 +299,16 @@
 			$s3=$s1+$s2;//	+$mfeeeee;
 			$pid = DB::table('purchaseshare')->insertGetId(['PURSH_Memid'=> $Memid,'PURSH_Shrclass'=>$id['shclass'],'PURSH_Shareamt'=>$id['shamt'],'PURSH_Memshareid'=>$id['memshr'],'PURSH_Certfid'=>$certid,'PURSH_Shareprice'=>$id['shprice'],'PURSH_Shmaxcount'=>$id['count'],'PURSH_Noofshares'=>$id['totshare'],'PURSH_Totalamt'=>$s3,'PURSH_TotalShareValue'=>$id['totshrval'],'PURSH_Date'=>$dte,'PURSH_Share_resp_no'=>$r,'Bid'=>$BID]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $pid;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SHARE_ALLOCATION;//constant MEMBER_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			
 			$inhandcashh=DB::table('cash')->select('InHandCash')->where('BID','=',$bid)->first();
 			$inhandcash1=$inhandcashh->InHandCash;

@@ -2,63 +2,60 @@
 
 <div id="content" class="col-lg-12 col-sm-12">
 	<!-- content starts -->
-	
-	
 	<div class="row">
 		<div class="box col-md-12">
 			<div class="box-inner">
-				
 				<div class="box-header well" data-original-title="">
 					<h2><i class="glyphicon glyphicon-globe"></i>  Transaction Receipt</h2>
 				</div>
-				
-				
-				
-				
-				
 				<div class="col-md-12">
 					<div class="form-group">
 						<div class="row table-row alert alert-info">
-							
-							
-							
 							<!--<div class="col-md-4">
 								<input class="SearchTypeahead form-control" id="searchacc" type="text" name="searchacc" placeholder="SELECT PIGMY ACCOUNT"> 
 							</div>-->
-							
-						
-							
-							<label class="control-label inline col-md-4 col-md-offset-4">Receipt Type:
+							<div class="col-md-4">
+								<label class="control-label inline col-md-offset-4">
+									Receipt Type:
+								</label>
+							</div>
+							<div class="col-md-4">
 								<select class="form-control ReceiptTypeDD"  id="ReceiptTypeDD" name="ReceiptTypeDD">  
 									<option value=""> SELECT RECEIPT TYPE</option>
 									<option value="SB"> SB RECEIPT </option>
 									<option value="RD"> RD RECEIPT </option>
+									<option value="JL"> JL ALLOCATE RECEIPT </option>
+									<option value="DL"> DL ALLOCATE RECEIPT </option>
+									<option value="JL_PAY"> JL REPAY RECEIPT </option>
+									<option value="DL_PAY"> DL REPAY RECEIPT </option>
+									<option value="SL_PAY"> SL REPAY RECEIPT </option>
+									<option value="PL_PAY"> PL REPAY RECEIPT </option>
+									<option value="FD_PAY_AMT"> FD PAY RECEIPT </option>
+									<option value="RD_PAY_AMT"> RD PAY RECEIPT </option>
+									<option value="PG_PAY_AMT"> PG PAY RECEIPT </option>
+									<option value="MEM_FEE"> MEMBER FEE RECEIPT </option>
+									<option value="CUST_FEE"> D CLASS </option>
+									<option value="PG_PEND"> PIGMY PENDING RECEIPT </option>
+									<option value="SHARE"> SHARE ALLOCATION </option>
+									<option value="INCOME"> INCOME RECEIPT </option>
+									<option value="BANK_WID"> BANK WITHDRAWAL </option>
+									<option value="B2B_CR"> HEAD OFFICE </option>
 									<!--<option value="PIGMY"> PIGMY RECEIPT </option>-->
-									
 								</select>
-								
-							</label>
-							
-							
+							</div>
+							<div class="col-md-4">
+								<button class="glyphicon glyphicon-list btn-sm" id="list_refresh">
+									<span class="" />
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
-				
-				
-				
-				
 				</br></br>
-				<div class='SearchRes'>
-					
-					
-					
-				</div>
+				<div class='SearchRes'></div>
 			</div>
 		</div>
-		
-		
 	</div>
-	
 </div>
 
 
@@ -82,6 +79,10 @@
 	$('.clickme').click(function(e){
 		$('.companyclassid').click();
 	});
+
+	$("#list_refresh").click(function() {
+		$(".ReceiptTypeDD").trigger("change");
+	});
 	
 	$('.ReceiptTypeDD').change(function(e){
 		
@@ -93,16 +94,25 @@
 		}
 		else
 		{
+			// $.ajax({
+			// 	url:'TransactionReceiptView',
+			// 	type:'get',
+			// 	data:'&ReceiptTypeDD='+ReceDD,
+			// 	success:function(data)
+			// 	{
+			// 		$('.SearchRes').html('');
+			// 		$('.SearchRes').html(data);
+			// 	}
+			// });
+
 			$.ajax({
-				url:'TransactionReceiptView',
-				type:'get',
-				data:'&ReceiptTypeDD='+ReceDD,
+				url:'rv_print',
+				type:'post',
+				data:'&tran_category='+ReceDD+"&tran_type=CREDIT",
 				success:function(data)
 				{
-					
 					$('.SearchRes').html('');
 					$('.SearchRes').html(data);
-					
 				}
 			});
 		}

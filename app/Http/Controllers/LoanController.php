@@ -808,6 +808,7 @@
 			$id['Branch_ID']=$get->Bid;
 			$id['LType_ID']=$get->LoanType_ID;
 			$id['uid']=$get->Uid;
+			$id['first_payment'] = $this->loan->pl_is_first_payment(["member_id"=>$MemDet['membrid']]);
 			
 			return $id;
 		}
@@ -1251,6 +1252,7 @@
 			$in_data["loan_allocation_id"] = $request->input("loan_allocation_id");//7007;//
 			$data = array();
 			$data = $this->loan->jewel_loan_repay_report_data($in_data);
+			$data["loan_category"] = "JL";
 			
 //			print_r($data);exit;
 			return view("jewel_loan_repay_report_data",compact("data"));
@@ -1269,6 +1271,20 @@
 							//print_r($data);exit();
 							return view("repay_report_data_pl",compact("data"));
 							break;
+				case "DL":	
+							$data = $this->loan->repay_report_data_dl($in_data);
+							$data["loan_category"] = $in_data["loan_category"];
+							// print_r($data);exit();
+							return view("jewel_loan_repay_report_data",compact("data"));
+							// return view("repay_report_data_dl",compact("data"));
+							break;
+				case "SL":	
+							$data = $this->loan->repay_report_data_sl($in_data);
+							$data["loan_category"] = $in_data["loan_category"];
+							// print_r($data);exit();
+							return view("jewel_loan_repay_report_data",compact("data"));
+							// return view("repay_report_data_dl",compact("data"));
+							break;
 			}
 		}
 		
@@ -1280,6 +1296,7 @@
 			$in_data["int_date"] = $request->input("int_date");
 			$in_data["principle_amount"] = $request->input("principle_amount");
 			$in_data["interest_amount"] = $request->input("interest_amount");
+			$in_data["pigmy_commission"] = $request->input("pigmy_commission");
 			
 			switch($in_data["loan_type"]) {
 				case "JL":	$this->loan->save_repay_data_jl($in_data);
@@ -1351,6 +1368,7 @@
 		{
 			$in_data['category'] = $request->input("category");
 			$in_data['closed'] = $request->input("closed");
+			$in_data['pl_type'] = $request->input("pl_type");
 			$in_data['loan_id'] = $request->input("loan_id");
 			switch($in_data['category']) {
 				case "JL":	$ret_data = $this->loan->account_list_jl($in_data);

@@ -27,6 +27,7 @@
 			$Url="openclose";
 			$OpCls['module']=$this->Modules->GetAnyMid($Url);
 			$OpCls['is_day_open'] = $this->op->is_day_open(date("Y-m-d"));
+			$OpCls['did'] = $this->op->get_did();
 			//$OpCls=$this->op->GetOpClsModule();
 			return view('openclose',compact('OpCls'));
 		}
@@ -103,9 +104,11 @@
 			$trandaily['rdpayamttot']=$this->op->show_dailyrdpayamttotbalance($dte);
 			
 			$trandaily['fdallocamt']=$this->op->show_dailyfdallocamtbalance($dte);
+			$trandaily['kccallocamt']=$this->op->show_dailykccallocamtbalance($dte);
 			$trandaily['fdallocamttot']=$this->op->show_dailyfdallocamttotbalance($dte);
 			
 			$trandaily['fdallocamt_adjust']=$this->op->show_dailyfdallocamtbalance_adjust($dte);
+			$trandaily['kccallocamt_adjust']=$this->op->show_dailykccallocamtbalance_adjust($dte);
 			$trandaily['fdallocamttot_adjust']=$this->op->show_dailyfdallocamttotbalance_adjust($dte);
 			
 			$trandaily['fdpayamt']=$this->op->show_dailyfdpayamtbalance($dte);
@@ -470,12 +473,14 @@
 			$trandaily['rdpayamttot']=$this->op->show_dailyrdpayamttotbalance($dte);
 			
 			$trandaily['fdallocamt']=$this->op->show_dailyfdallocamtbalance($dte);
+			$trandaily['kccallocamt']=$this->op->show_dailykccallocamtbalance($dte);
 			$trandaily['fdallocamttot']=$this->op->show_dailyfdallocamttotbalance($dte);
 			
 			$trandaily['fdpayamt']=$this->op->show_dailyfdpayamtbalance($dte);
 			$trandaily['fdpayamttot']=$this->op->show_dailyfdpayamttotbalance($dte);
 			
 			$trandaily['fdallocamt_adjust']=$this->op->show_dailyfdallocamtbalance_adjust($dte);
+			$trandaily['kccallocamt_adjust']=$this->op->show_dailykccallocamtbalance_adjust($dte);
 			$trandaily['fdallocamttot_adjust']=$this->op->show_dailyfdallocamttotbalance_adjust($dte);
 			
 			$trandaily['fdpayamt_adjust']=$this->op->show_dailyfdpayamtbalance_adjust($dte);
@@ -715,6 +720,12 @@
 			$in_data["month"] = $request->input("month");
 			$data = $this->op->saraf_commission_report_data($in_data);
 			return view("saraf_commission_report_data",compact("data"));
+		}
+
+		public function is_day_open()
+		{
+			$ret_data = $this->op->is_day_open(date("Y-m-d"));// "yes" or "no"
+			return $ret_data;
 		}
 		
 		

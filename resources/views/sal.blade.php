@@ -32,31 +32,28 @@
 					</div>
 				</div>
 				
-				<div class="box-content">
+				<div class="box-content" >
+					<div>
 					<script src="js/FileSaver.js"/>			
 					<script src="js/tableExport.js"/>
-					<div class="alert alert-info">
+					<div class="alert alert-info" id='salary_list'>
 						<!--<a href="salcreate" class="btn btn-default salcrt">Salary</a>-->
 						<div class="form-group">
-						<label class="control-label col-sm-4">Salary TYPE:</label>
-						<div class="col-md-4">
-							<select class="form-control" id="sal" name="sal">
-								<option value="">--Select SALARY TYPE--</option>
-								<option value="Employee">Employee Salary</option>
-								<option value="Agent">Agent Commission</option>
-								<option value="RDagent">RD Agent Commission</option>
-								<option value="sarapara">Sarapara Commission</option>
-								
-								
-							</select>
+							<label class="control-label col-sm-4">Salary TYPE:</label>
+							<div class="col-md-4">
+								<select class="form-control" id="sal" name="sal">
+									<option value="">--Select SALARY TYPE--</option>
+									<option value="Employee">Employee Salary</option>
+									<option value="Agent">Agent Commission</option>
+									<option value="RDagent">RD Agent Commission</option>
+									<option value="sarapara">Sarapara Commission</option>	
+								</select>
+							</div>
+							<div class="col-md-4"> 
+								<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
+								<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">									   
+							</div>
 						</div>
-						<div class="col-md-4"> 
-							<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
-							<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">									   
-					</div>
-					</div>
-				
-
 				<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="excel_export">
 				
 					<thead>
@@ -67,6 +64,7 @@
 						<th>BASIC PAY</th>
 						<th>DATE</th>
 						<th>NET PAY</th>
+						<th>Salary Slip</th>
 						</tr>
 						
 					</thead>
@@ -76,58 +74,48 @@
 					
 						@foreach ($s as $salary)
 						<tr>
-						
 							<td class="hidden">{{ $salary->salid }}</td>
 							<td>{{$salary->FirstName}}</td>
 							<td>{{$salary->basicpay}}</td>
 							<td>{{$salary->date}}</td>
 							<td>{{$salary->netpay}}</td>
-					
-							 
+							<td><button class="salary_slip" onClick="salary_function('{{$salary->salid}}')">view</button></td>
 						</tr>
 
 						@endforeach
 
 					</tbody>
 				</table>
-						<div id="toprint" style="position:fixed;opacity:0;">
-				<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="excel_export">
-				
-					<thead>
-					
-						<tr>
-						
-						<th>Employee Name</th>
-						<th>BASIC PAY</th>
-						<th>DATE</th>
-						<th>NET PAY</th>
-						</tr>
-						
-					</thead>
-					
-					<tbody>
-
-					
+				<div id="toprint" style="position:fixed;opacity:0;">
+					<table class="table table-striped table-bordered bootstrap-datatable datatable responsive" id="excel_export">
+						<thead>
+							<tr>
+								<th>Employee Name</th>
+								<th>BASIC PAY</th>
+								<th>DATE</th>
+								<th>NET PAY</th>
+							</tr>
+						</thead>
+						<tbody>
 						@foreach ($s as $salary)
-						<tr>
-						
-							<td class="hidden">{{ $salary->salid }}</td>
-							<td>{{$salary->FirstName}}</td>
-							<td>{{$salary->basicpay}}</td>
-							<td>{{$salary->date}}</td>
-							<td>{{$salary->netpay}}</td>
-					
-							 
-						</tr>
-
+							<tr>
+								<td class="hidden">{{ $salary->salid }}</td>
+								<td>{{$salary->FirstName}}</td>
+								<td>{{$salary->basicpay}}</td>
+								<td>{{$salary->date}}</td>
+								<td>{{$salary->netpay}}</td> 
+							</tr>
 						@endforeach
-
-					</tbody>
-				</table>
-				</div>												
+						</tbody>
+					</table>
+				</div>	
 			</div>
+			<div id="sal_slip_show" style="height:700px;"></div>
+		</div>
+				
 		</div>
 	</div>
+	
 </div>
 </div>
 </div>
@@ -152,40 +140,33 @@
 		alert($saltyp)
 		if($saltyp=="Employee")
 		{
-			
-		$.ajax({
+			$.ajax({
 				url: 'salcreate',
 				type: 'get',
 				success: function(data) {
-						
 						 $('.SearchRes').html(data);
-						
                 }
-		});
+			});
 		}
 		else if($saltyp=="Agent")
 		{
 			$.ajax({
 				url: 'salagent',
 				type: 'get',
-				success: function(data) {
-						 
-						 $('.SearchRes').html(data);
-					
+				success: function(data) {	 
+					$('.SearchRes').html(data);
                 }
-		});
+			});
 		}   
 		else if($saltyp=="RDagent")
 		{
 			$.ajax({
 				url: 'RDagent',
 				type: 'get',
-				success: function(data) {
-						 
-						 $('.SearchRes').html(data);
-					
+				success: function(data) {	 
+					$('.SearchRes').html(data);
                 }
-		});
+			});
 		}
 		else if($saltyp=="sarapara")
 		{
@@ -193,33 +174,50 @@
 				url: 'sarapara',
 				type: 'get',
 				success: function(data) {
-						 
-						 $('.SearchRes').html(data);
-					
+					$('.SearchRes').html(data);
                 }
-		});
+			});
 		}
 	});
-		$('#excel').click(function(e){
-	$('#excel_export').tableExport({type:'excel',escape:'false'});
+	$('#excel').click(function(e){
+		$('#excel_export').tableExport({type:'excel',escape:'false'});
 	});								
-	</script>														   
-	<script src="js/jQuery.print.js"></script>
-	<script>
-	
+</script>														   
+<script src="js/jQuery.print.js"></script>
+<script>
 	$(function() {
 		$(".print").click(function() {
 			var divContents = $("#toprint").html();
-            var printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(divContents);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
+        	var printWindow = window.open('', '', 'height=600,width=800');
+        	printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
+        	printWindow.document.write('</head><body>');
+        	printWindow.document.write(divContents);
+        	printWindow.document.write('</body></html>');
+        	printWindow.document.close();
 			//$("#toprint").print();
-            printWindow.print(); 
+        	printWindow.print(); 
 		});
+	});	
+</script>
+<script>
+$('.salary_slip').click(function(){
+	
+});
+</script>
+<script>
+	function salary_function(sal_id){
+	console.log('sal_id-',sal_id);
+	$.ajax({
+		url: 'salary_slip',
+		type: 'post',
+		data:'sal_id='+sal_id,
+		success: function(data) {
+			$('#salary_list').hide();
+			$('#sal_slip_show').show();
+			$('#sal_slip_show').html(data);
+			document.body.scrollTop = 0;
+    		document.documentElement.scrollTop = 0;
+		}
 	});
-	
-	
+	}
 </script>

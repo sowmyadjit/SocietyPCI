@@ -6,17 +6,24 @@
 			
 		</div>
 		<div class="box-content">
+			<div class="alert alert-info">
+				<button class="btn-sm glyphicon glyphicon-refresh" id="refresh_data"></button>
+			</div>
+
+			<div id="table_data"></div>
+
+
 			<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
 			<!--<div class="alert alert-info">
 				
 				<a href="pigmedetail" class="btn btn-default crtds">Create PIGME TYPES</a>
 			</div>-->
+
+	<?php /*
 			<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 				<thead>
 					<tr>
-						<th> First Name</th>
-						<th> mid Name</th>
-						<th> last Name</th>
+						<th>Name</th>
 						
 						<th>PIGMI Type</th>
 						<th>Max Interest</th>
@@ -34,9 +41,7 @@
 								<td class="hidden">{{ $pigmitype->PigmiTypeid }}</td>
 								<td class="hidden">{{ $pigmitype->PigmiAllocID }}</td>
 								
-								<td>{{ $pigmitype->FirstName }}</td>
-								<td>{{ $pigmitype->MiddleName }}</td>
-								<td>{{ $pigmitype->LastName }}</td>
+								<td>{{ $pigmitype->FirstName }} {{ $pigmitype->MiddleName }} {{ $pigmitype->LastName }}</td>
 								<td>{{ $pigmitype->Pigmi_Type }}</td>
 								<td>{{ $pigmitype->max_Interest}}</td>	
 								<td>{{ $pigmitype->Interest}}</td>
@@ -62,7 +67,7 @@
 					</tbody>
 					@endforeach
 				</table>
-				
+		*/?>
 			</div>
 		</div>
 	</div>
@@ -74,7 +79,7 @@
 	
 	<script>
 		
-		
+		/* 
 		
 		$('.crtds').click(function(e)
 		{
@@ -96,5 +101,49 @@
 			$('.bdy_<?php echo $p['module']->Mid; ?>').load($(this).attr('href'));
 			
 		});
-		
-	</script>																	
+		 */
+	</script>
+
+
+
+<script>
+	function load_data() {
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$("#table_data").html(loading_img);
+		$.ajax({
+			url: 'authpigmy_data',
+			type: 'post',
+			data: "",
+			success: function(data) {
+				$("#table_data").html(data);
+			}
+		});
+
+	}
+</script>
+
+<script>
+	$( document ).ready(function() {
+
+		load_data();
+
+	});
+</script>
+
+<script>
+	$("#back").click(function() {
+		$("#b2").html("");
+		$(".b1").show();
+	})
+</script>
+
+<script>
+	$("#refresh_data").click(function() {
+		load_data();
+	})
+</script>

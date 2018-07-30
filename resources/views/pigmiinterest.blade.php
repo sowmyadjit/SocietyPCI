@@ -48,6 +48,7 @@
 								<option>Pigmi Interest</option>
 								<option>RD Interest</option>
 								<option>FD WITHDRAW</option>
+								<option>KCC WITHDRAW</option>
 							</select>
 						</div>
 					</div></br></br></div>
@@ -69,6 +70,12 @@
 							<label class="control-label col-sm-4">SELECT FD ACCOUNT:</label>
 							<div class="col-md-4">
 								<input class="fdSearchTypeahead form-control" id="fdsearchacc" type="text" name="fdsearchacc" placeholder="SELECT FD ACCOUNT"> 
+							</div>
+						</div>
+						<div class="KCCtypehead">
+							<label class="control-label col-sm-4">SELECT KCC ACCOUNT:</label>
+							<div class="col-md-4">
+								<input class="kccSearchTypeahead form-control" id="kccsearchacc" type="text" name="kccsearchacc" placeholder="SELECT KCC ACCOUNT"> 
 							</div>
 						</div>
 						<div class="RDtypehead">
@@ -116,6 +123,7 @@
 									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnrdint" id="rd_calc" />
 								<?php /*	<input type="button" value="PREVIEW" class="btn btn-success btn-sm sbmbtnFDint" id="fd_preview" />*/?>
 									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnFDint" id="fd_calc" />
+									<input type="button" value="CALCULATE" class="btn btn-success btn-sm sbmbtnKCCint" id="kcc_calc" />
 								</div>
 							</div>
 						</center></br></br>
@@ -168,6 +176,9 @@
 	$('input.fdSearchTypeahead').typeahead({
 		ajax: '/GetFDNumber' 
 	});
+	$('input.kccSearchTypeahead').typeahead({
+		ajax: '/GetKCCNumber' 
+	});
 	
 	$temp1="<?php echo $interest['open'];?>";
 	$temp2="<?php echo $interest['close'];?>";
@@ -218,6 +229,8 @@
 			$('.pigmytypehead').hide();
 			$('.FDtypehead').hide();
 			$('.RDtypehead').hide();
+			$('.sbmbtnKCCint').hide();
+			$('.KCCtypehead').hide();
 		}
 		else if(type=="Pigmi Interest")
 		{
@@ -230,6 +243,8 @@
 			$('.pigmytypehead').show();
 			$('.FDtypehead').hide();
 			$('.RDtypehead').hide();
+			$('.sbmbtnKCCint').hide();
+			$('.KCCtypehead').hide();
 		}
 		else if(type=="RD Interest")
 		{
@@ -242,6 +257,8 @@
 			$('.pigmytypehead').hide();
 			$('.FDtypehead').hide();
 			$('.RDtypehead').show();
+			$('.sbmbtnKCCint').hide();
+			$('.KCCtypehead').hide();
 		}
 		else if(type=="FD WITHDRAW")
 		{
@@ -254,6 +271,22 @@
 			$('.sbmbtnFDint').show();
 			$('.FDtypehead').show();
 			$('.RDtypehead').hide();
+			$('.sbmbtnKCCint').hide();
+			$('.KCCtypehead').hide();
+		}
+		else if(type=="KCC WITHDRAW")
+		{
+			$('.sb_date_interest').hide();
+			$('.sbmbtnsbint').hide();
+			$('.sbmbtnpigmiint').hide();
+			$('.tran').hide();
+			$('.sbmbtnrdint').hide();
+			$('.pigmytypehead').hide();
+			$('.sbmbtnFDint').hide();
+			$('.FDtypehead').hide();
+			$('.RDtypehead').hide();
+			$('.sbmbtnKCCint').show();
+			$('.KCCtypehead').show();
 		}
 		else
 		{
@@ -424,6 +457,28 @@
 				url:'FDwithdraw',
 				type:'post',
 				data: '&fdalocid=' + fdnum,
+				success:function(e){
+					alert('Success');
+					disable_preview();
+				}
+			});
+		}
+	});
+	kccindexid=0;
+	$('#kcc_calc').click(function(e)
+	{
+		console.log("kcc_calc");
+		if(kccindexid==0)
+		{
+			
+			
+			kccindexid++;
+			e.preventDefault();
+			kccnum=$('.kccSearchTypeahead').attr('data-value');
+			$.ajax({
+				url:'FDwithdraw',
+				type:'post',
+				data: '&fdalocid=' + kccnum,
 				success:function(e){
 					alert('Success');
 					disable_preview();

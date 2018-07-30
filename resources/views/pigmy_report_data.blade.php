@@ -21,6 +21,7 @@
 			<th>{{dmy($tran_date)}}</th>
 			@endforeach
 		<th>Total</th>
+		<th>Other Total</th>
 		<th>Grand Total</th>
 		</tr>
 	</thead>
@@ -34,6 +35,7 @@
 			<td>{{$row_det["{$tran_date}"]}}</td>
 		@endforeach
 		<td>{{$row_det["day_sum_row"]}}</td>
+		<td>{{$row_det["other_total"]}}</td>
 		<td>{{$row_det["col_sum"]}}</td>
 	</tr>
 	@endforeach
@@ -141,7 +143,7 @@ $('#view_excel').click(function(e){
 		if({{$data["print"]}} == "print") {
 			$("#view_print").trigger("click");
 		} else {
-			$("#view_excel").trigger("click");	
+			$("#view_excel").trigger("click");
 		}
 	});
 </script>

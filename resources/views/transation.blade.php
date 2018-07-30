@@ -41,7 +41,10 @@
 					<div class="form-group">
 						<div class="row table-row">
 							<center>
-								<a href="TranReceiptHome" class="btn btn-primary ReceView">RECEIPT</a>
+								<?php $dddd='TranReceiptHome' ?>
+								<div id="qwerty"></div>
+								<a href="TranReceiptHome" class="btn btn-primary ReceView" >RECEIPT</a>
+								<a href="TranPaymentHome" class="btn btn-primary PayView" >PAYMENT</a>
 							</center>
 						</div>
 					</div>
@@ -426,7 +429,7 @@
 							<select class="form-control" id="pgmpaymode" name="pgmpaymode">
 								<option>--Select Payment Mode--</option>
 								<option>CASH</option>
-								<option>CHEQUE</option>
+					<?php /*	<option>CHEQUE</option> */?>
 							</select>
 						</div>
 					</div>
@@ -628,7 +631,7 @@
 							<select class="form-control" id="rdpaymode" name="rdpaymode">
 								<option>--Select Payment Mode--</option>
 								<option>CASH</option>
-								<option>CHEQUE</option>
+					<?phpv /*	<option>CHEQUE</option>*/ ?>
 								<option>SB ACCOUNT</option>
 							</select>
 						</div>
@@ -1245,6 +1248,10 @@
 <script>
 	
 	$('.ReceView').click(function(e){
+		e.preventDefault();
+		$('.box').load($(this).attr('href'));
+	});
+	$('.PayView').click(function(e){
 		e.preventDefault();
 		$('.box').load($(this).attr('href'));
 	});
@@ -1899,9 +1906,29 @@
 					type: 'post',
 					data: $('#form_tran').serialize()+'&actid='+accnum+'&actid_adj='+accnum_adj+'&branchid='+brid+'&bankid='+bankid+'&lid='+lid+'&creditbank='+creditbank+'&sb_adj_current_bal='+sb_adj_current_bal,
 					success: function(data) {
-						alert_success();
-//*alert				alert('success');
-						//$('.tranclassid').click();
+						console.log(data);
+						var tran_id = data;
+						var tran_type = $("#trantyp").val();
+						var payment_mode = $("#paymode").val();
+						// console.log("payment_mode:"+payment_mode);
+							if(payment_mode == "CASH") {
+								$.ajax({
+									url:'rv_print',
+									type:'post',
+									data:'&tran_category=SB'+'&tran_type='+tran_type+"&tran_id="+tran_id,
+									success:function(data)
+									{
+										$('.box').html(data);
+									}
+								});
+							} else {
+								alert("Success");
+							}
+
+
+						// $('.box').load("TranReceipt/SB/"+tran_id);
+						//var win = window.open("TranReceipt/SB/"+tran_id, "print","width=1000, height=600");
+						// $('.tranclassid').click();
 					}
 				});
 			}
@@ -2136,19 +2163,19 @@
 	
 	//Typeahead for SB Branch Name (Newly Added)
 	$('input.typeahead3').typeahead({
-		//ajax:'/Getbranchname'
-		source:Getbranchname
+		ajax:'/Getbranchname'
+		// source:Getbranchname
 	});
 	
 	//Typeahead for RD Branch Name (Newly Added)
 	$('input.typeahead4').typeahead({
-		//ajax:'/Getrdbranchname'
-		source:Getrdbranchname
+		ajax:'/Getrdbranchname'
+		// source:Getrdbranchname
 	});
 	//Typeahead for Pigmi Branch Name (Newly Added)
 	$('input.typeahead5').typeahead({
-		//ajax:'/Getpgmbranchname'
-		source:Getpgmbranchname
+		ajax:'/Getpgmbranchname'
+		// source:Getpgmbranchname
 	});
 	
 	//Typeahead for Loan Branch Name (Newly Added)
@@ -2290,6 +2317,28 @@
 					data: $('#form_tran').serialize()+'&rdactid='+rdaccnum+'&rdbranch='+rdbrid+'&LedgerId='+LedgerId+'&AccId='+acct,
 					success: function(data) {
 						alert('success');
+						var tran_id = data;
+						var tran_type = $("#rdtrantypreadonly").val();
+						var payment_mode = $("#rdpaymode").val();
+						console.log("payment_mode:"+payment_mode);
+							if(payment_mode == "CASH") {
+								$.ajax({
+									url:'rv_print',
+									type:'post',
+									data:'&tran_category=RD'+'&tran_type='+tran_type+"&tran_id="+tran_id,
+									success:function(data)
+									{
+										$('.box').html(data);
+									}
+								});
+							} else {
+								// alert("Success");
+							}
+
+
+
+						//var win = window.open("TranReceipt/RD/"+tran_id, "print","width=1000, height=600");
+						// $('.box').load("TranReceipt/RD/"+tran_id);
 						//$('.tranclassid').click();
 					}
 				});
@@ -2534,3 +2583,15 @@
 </script>
 
 
+
+<button id="test" class="hidden">test</button>
+<script>
+	$("#test123").click(function() {
+		$('.box').load($(this).attr('href'));
+		// var win = window.open("http://localhost:8000/TranReceipt/SB/51313", "print","width=1000, height=600");
+	});
+	$('#test').click(function(e){
+		e.preventDefault();
+		$('.box').load("http://localhost:8000/TranReceipt/SB/51313");
+	});
+</script>

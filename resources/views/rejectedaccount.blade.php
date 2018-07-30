@@ -6,9 +6,14 @@
 		<h2><i class="glyphicon glyphicon-globe"></i> Account Detail</h2>
 		
 	</div>
+		<div class="alert alert-info">
+			<button class="btn-sm glyphicon glyphicon-refresh" id="refresh_data_i"></button>
+		</div>
+
+	<div id="table_data_i"></div>
 	
 	
-	
+<?php /*
 	<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 		
 		<thead>
@@ -73,11 +78,12 @@
 		</tbody>
 		
 	</table>
+*/?>
 	
 	<center>
 		<div class="form-group">
 			<div class="col-sm-12">
-				<input type="button" value="Back" class="btn btn-info btn-sm backbtn<?php echo $rejectacc['module']->Mid; ?>" />
+				<input type="button" value="Back" id="back_i" class="btn btn-info btn-sm backbtn<?php echo $rejectacc['module']->Mid; ?>" />
 			</div>
 		</div>
 	</center>
@@ -141,3 +147,48 @@
 		
 	});
 	</script>	
+
+
+
+	
+<script>
+	function load_data_i() {
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$("#table_data_i").html(loading_img);
+		$.ajax({
+			url: 'rejectedaccount_data',
+			type: 'post',
+			data: "",
+			success: function(data) {
+				$("#table_data_i").html(data);
+			}
+		});
+
+	}
+</script>
+
+<script>
+	$( document ).ready(function() {
+
+		load_data_i();
+
+	});
+</script>
+
+<script>
+	$("#back_i").click(function() {
+		$("#back").show();
+		$("#back").trigger("click");
+	});
+</script>
+
+<script>
+	$("#refresh_data_i").click(function() {
+		load_data_i();
+	})
+</script>

@@ -5,6 +5,9 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use App\Http\Model\SmsModel;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class AccountModel extends Model
 	{
@@ -14,6 +17,8 @@
 		public function __construct()
 		{
 			$this->smsmodel=new SmsModel;
+			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
 		}
 		
 		public function insert($id)
@@ -91,6 +96,16 @@
 				//Inserting into sb_transaction Table
 				$sb_id = DB::table('sb_transaction')->insertGetId(['Accid'=> $acid,'AccTid' => $id['acctyp_11'],'TransactionType' => "CREDIT",'particulars' =>"Opening Balance",'Amount' =>$amount1,'CurrentBalance' => $amount1,'Total_Bal' => $id['ob'],'tran_Date' =>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'Bid'=>$BID,'SB_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'Payment_Mode'=>"CASH"]);
 				
+				/***********/
+				$fn_data["rv_payment_mode"] = $mode;
+				$fn_data["rv_transaction_id"] = $sb_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 				if($mode=="SB ACCOUNT")
 				{
 						
@@ -172,6 +187,17 @@
 					
 					$amount1=$id['ob'];
 					$rd_id = DB::table('rd_transaction')->insertGetId(['Accid'=> $acid,'AccTid' => $id['acctyp_11'],'RD_Trans_Type' => "Credit",'RD_Particulars' => "Opening Balance",'RD_Amount' => $amount1,'RD_CurrentBalance' => $amount1,'RD_Total_Bal' => $id['ob'],'RD_Date' => $dte,'RDReport_TranDate'=> $dte,'RD_Month'=>$mnt,'RD_Year'=>$year,'CreatedBy'=>$u,'Bid'=>$BID,'RD_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"43",'RDPayment_Mode'=>$rd_pay_mode]);
+					
+					/***********/
+					$fn_data["rv_payment_mode"] = $mode;
+					$fn_data["rv_transaction_id"] = $rd_id;
+					$fn_data["rv_transaction_type"] = "CREDIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::RD_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $dte;
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
+
 					return $rd_id;
 				
 			}
@@ -190,12 +216,15 @@
 			$BID=$uname->Bid;
 				
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%".$q."%' ");
-			return DB::table('createaccount')
+			$ret_data =  DB::table('createaccount')
 			->select(DB::raw('Accid as id, CONCAT(`Old_AccNo`,"-",`AccNum`) as name'))
 			->where('AccNum','like','%SB%')
-			->where('Status','=',"AUTHORISED")
-			->where('createaccount.Bid','=',$BID)
-			->get();
+			->where('Status','=',"AUTHORISED");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where('createaccount.Bid','=',$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		/*public function getvalue($id)
 			{
@@ -472,6 +501,13 @@
 			else
 				$old_tran = false;
 /*********************/
+
+			/*************** DEBIT CHEQUE *****************/
+				if(strcasecmp($id['paymode'],"CHEQUE")==0 && strcasecmp($id['trantyp'],"DEBIT")==0) {
+					$id['uncleared'] = 0;
+					$id['unclearedval'] = "CLEARED";
+				}
+			/*************** DEBIT CHEQUE *****************/
 			
 			$udetail= DB::table('user')->select('Uid','user.FirstName','user.MiddleName','user.LastName','BName','branch.Bid')
 			
@@ -526,6 +562,16 @@
 				}
 				$r=0;
 				$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $id['actid'],'AccTid' => $id['acctype'],'TransactionType' => $id['trantyp'],'particulars' => $id['par'],'Amount' => $id['sb_amount'],'CurrentBalance' => $id['cb'],'Total_Bal' => $id['tb'],'tran_Date' => $id['dte'],'SBReport_TranDate'=>  $id['dte'],'Time' =>$tm,'Month'=>$mnt,'Year'=>$year,'Time'=>$tm,'Payment_Mode'=>$id['paymode'],'Cheque_Number'=>$id['chequeno'],'Cheque_Date'=>$id['chdate'],'Cleared_State'=>$id['unclearedval'],'Uncleared_Bal'=>$id['uncleared'],'Bank_Name'=>$id['bankname'],'Bank_Branch'=>$id['bankbranch'],'IFSC_Code'=>$id['ifsccode'],'Bid'=>$BID,'CreatedBy'=>$UID,'SB_resp_No'=>$r,'SB_paymentvoucher_No'=>$r1,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'CreditBankId'=>$id['creditbank']]);
+				
+				/***********/
+				$fn_data["rv_payment_mode"] = $pay;
+				$fn_data["rv_transaction_id"] = $res;
+				$fn_data["rv_transaction_type"] = $trantyp;
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['dte'];
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 				
 				if(!$old_tran)
 					$sb=DB::table('createaccount')->where('Accid',$acid)
@@ -588,6 +634,10 @@
 					$Banktot=$Banktot1->TotalAmt;
 					$amt=$id['sb_amount'];
 					$bankamttot=$Banktot-$amt;
+
+					DB::table("sb_transaction")
+						->where("Tranid",$res)
+						->update(["Cleared_State"=>"CLEARED"]);
 					
 					if(!$old_tran)
 						DB::table('addbank')->where('Bankid',$bankid)
@@ -744,8 +794,17 @@
 			$totbal=$id['rdtb'];
 			$acid=$id['rdactid'];
 			$sb_id=$id['AccId'];
-			$id = DB::table('rd_transaction')->insertGetId(['Accid'=> $id['rdactid'],'AccTid' => $id['rdacctype'],'RD_Trans_Type' => $id['rdtrantyp'],'RD_Particulars' => $id['rdpar'],'RD_Amount' => $id['rdamount'],'RD_CurrentBalance' => $id['rdcb'],'RD_Total_Bal' => $id['rdtb'],'RD_Date' => $id['rddte'],'RDReport_TranDate'=>$id['rddte'],'RD_Month'=>$mnt,'RD_Year'=>$year,'RD_Time'=>$tm,'Bid'=>$id['rdbranch'],'RDPayment_Mode'=>$id['rdpaymode'],'RDCheque_Number'=>$id['rdchequeno'],'RDCheque_Date'=>$id['rdchdate'],'RDCleared_State'=>$id['rdunclearedval'],'RDUncleared_Bal'=>$id['rduncleared'],'RDBank_Name'=>$id['rdbankname'],'RDBank_Branch'=>$id['rdbankbranch'],'RDIFSC_Code'=>$id['rdifsccode'],'CreatedBy'=>$UID,'LedgerHeadId'=>"38",'SubLedgerId'=>"43"]); 
+			$rd_tran_id = DB::table('rd_transaction')->insertGetId(['Accid'=> $id['rdactid'],'AccTid' => $id['rdacctype'],'RD_Trans_Type' => $id['rdtrantyp'],'RD_Particulars' => $id['rdpar'],'RD_Amount' => $id['rdamount'],'RD_CurrentBalance' => $id['rdcb'],'RD_Total_Bal' => $id['rdtb'],'RD_Date' => $id['rddte'],'RDReport_TranDate'=>$id['rddte'],'RD_Month'=>$mnt,'RD_Year'=>$year,'RD_Time'=>$tm,'Bid'=>$id['rdbranch'],'RDPayment_Mode'=>$id['rdpaymode'],'RDCheque_Number'=>$id['rdchequeno'],'RDCheque_Date'=>$id['rdchdate'],'RDCleared_State'=>$id['rdunclearedval'],'RDUncleared_Bal'=>$id['rduncleared'],'RDBank_Name'=>$id['rdbankname'],'RDBank_Branch'=>$id['rdbankbranch'],'RDIFSC_Code'=>$id['rdifsccode'],'CreatedBy'=>$UID,'LedgerHeadId'=>"38",'SubLedgerId'=>"43"]); 
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $rdpay;
+				$fn_data["rv_transaction_id"] = $rd_tran_id;
+				$fn_data["rv_transaction_type"] = $id['rdtrantyp'];
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::RD_TRAN;//constant RD_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['rddte'];
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			
 			if($rdpay!="SB ACCOUNT")
 			{
@@ -760,9 +819,9 @@
 				$tr_date = $id['rddte'];
 				$td_date = date("Y-m-d");
 				
-				$diff = abs(strtotime($td_date) - strtotime($tr_date));
-				$diff_in_hrs = $diff/60/60;
-				echo "diff_in_hrs="; print_r("$diff_in_hrs");
+				// $diff = abs(strtotime($td_date) - strtotime($tr_date));
+				// $diff_in_hrs = $diff/60/60;
+				// echo "diff_in_hrs="; print_r("$diff_in_hrs");
 				
 				
 				
@@ -802,7 +861,7 @@
 				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $AccTid,'Bid' =>$bid,'Accid' => $sb_id,'TransactionType' => "DEBIT",'particulars' => "Amount debited for RD account",'Amount' =>$rdamt,'CurrentBalance' => $Amount_total,'tran_Date'=>date('Y-m-d'),'Time'=>$tm,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$totalAmount,'Payment_Mode'=>"SB ACCOUNT",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>'']);
 				
 			}
-			return $id;
+			return $rd_tran_id;
 		}
 		
 		public function getrdvalue($id)
@@ -832,23 +891,41 @@
 		}
 		public function getrdaccount($q)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%".$q."%' ");
-			return DB::table('createaccount')
+			$ret_data = DB::table('createaccount')
 			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
 			->where('AccNum','like','%RD%')
-			->where('Status','=',"AUTHORISED")
-			->get();
+			->where('Status','=',"AUTHORISED");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where('createaccount.Bid','=',$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function get_running_rd_num($q)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%".$q."%' ");
-			return DB::table('createaccount')
-			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
-			->where('AccNum','like','%RD%')
-			->where('Status','=',"AUTHORISED")
-			->where('createaccount.Closed','=',"NO")
-			->get();
+			$ret_data =  DB::table('createaccount')
+				->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
+				->where('AccNum','like','%RD%')
+				->where('Status','=',"AUTHORISED")
+				->where('createaccount.Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("createaccount.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		
 		public function GetSeachedAcc($q)
@@ -946,12 +1023,18 @@
 		
 		public function GetSearchSbAccWithOldAcc($q) 
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			
+			$check_branch = "";
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$check_branch = "AND `createaccount`.`Bid`={$BID}";
+			}
+
 			return DB::select("SELECT `Accid` as id, CONCAT(`Old_AccNo`,'/',`AccNum`,':',CASE Closed
                WHEN 'YES' THEN 'Closed'
                WHEN 'NO' THEN 'Active'
               ELSE Closed
-            END) as name FROM `createaccount` where `AccNum` LIKE '%SB%' ");
+		END) as name FROM `createaccount` where `AccNum` LIKE '%SB%' {$check_branch}");
 			
 		}
 		
@@ -1198,14 +1281,19 @@
 		{
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%RD%' ");
 			
-			return DB::table('createaccount')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data =  DB::table('createaccount')
 			->select(DB::raw('Accid as id,AccNum as name'))
 			->where('Closed','<>',"YES")
 			->where('Loan_Allocated','=',"NO")
-			->where('AccNum','like','%RD%')
+			->where('AccNum','like','%RD%');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("createaccount.Bid", $BID);
+			}
 			//->where('Status','=',"AUTHORISED")
-			->get();
-			
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function calc_sb_bal($data = 0)
@@ -1338,6 +1426,7 @@
 									"{$table}.JointUid as joint_user_ids",
 									"{$table}.Closed as closed",
 									"{$table}.Total_Amount as balance",
+									"{$table}.Agent_ID as agent_id",
 									"user.Uid as user_id",
 									"user.FirstName as first_name",
 									"user.MiddleName as middle_name",
@@ -1347,8 +1436,11 @@
 			$account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$table}.Uid")
-				->join("accounttype","accounttype.AccTid","=","{$table}.AccTid")
-				->where($branch_id_field,"=",$BranchId);
+				->join("accounttype","accounttype.AccTid","=","{$table}.AccTid");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$account_list = $account_list->where($branch_id_field,"=",$BranchId);
+				}
+				// 
 			if(!empty($data["account_id"])) {
 				$account_list = $account_list
 									->where($account_id_field,"=",$data["account_id"]);
@@ -1396,6 +1488,23 @@
 					$ret_data["account_list"][$i]["balance"] = $row_acc_list->balance;
 				}
 				$ret_data["account_list"][$i]["closed"] = $row_acc_list->closed;
+
+				//RD AGENT NAME
+				if($row_acc_list->agent_id != 0) {
+					$agent = DB::table("user")
+						->select(
+							DB::raw(" concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'agent_name' ")
+						)
+						->where("user.Uid",$row_acc_list->agent_id)
+						->first();
+					$temp_agent_id = "({$row_acc_list->agent_id})";
+					$temp_agent_name = $agent->agent_name;
+				} else {
+					$temp_agent_id = "";
+					$temp_agent_name = "";
+				}
+				// $ret_data["account_list"][$i]["agent_id"] = $temp_agent_id;
+				$ret_data["account_list"][$i]["agent_name"] = $temp_agent_name . $temp_agent_id;
 			}
 			
 			//print_r($ret_data);exit();

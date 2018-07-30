@@ -1,5 +1,5 @@
 <div class="box-content">
-	<div  id="toprint">
+	<div  id="toprint_receipt">
 		<link href="css/bootstrap.min.css" rel='stylesheet' type="text/css" media="all">
 		<link href="css/bootstrap-cerulean.min.css" rel='stylesheet' type="text/css" media="all">
 		<!--this css should be inside the toprint div , for printing the table borders-->	
@@ -108,14 +108,16 @@
 						
 						
 						
-						var divContents = $("#toprint").html();
+						var divContents = $("#toprint_receipt").html();
 						var printWindow = window.open('', '', 'height=600,width=800');
 						printWindow.document.write('<html><head><title>FD RECEIPT</title>');
 						printWindow.document.write('</head><body>');
 						printWindow.document.write(divContents);
 						printWindow.document.write('</body></html>');
 						printWindow.document.close();
-						printWindow.print();
+						setTimeout(function(){
+							printWindow.print();
+						}, 3500);
 					});
 				});
 				

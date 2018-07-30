@@ -291,6 +291,20 @@
 								</div>
 							</div>
 							
+							<div class="form-group">
+								<label class="control-label col-sm-4">MEMBER NO.:</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="mem_no" name="mem_no" value="{{ $customer->Member_No }}" <?php if($edit=='edit'){}else {echo 'readonly';} ?>>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label col-sm-4">CUSTOMER FEE:</label>
+								<div class="col-sm-8">
+									<input type="text" class="form-control" id="cust_fee" name="cust_fee" value="{{ $customer->Customer_Fee }}" <?php if($edit=='edit'){}else {echo 'readonly';} ?>>
+								</div>
+							</div>
+							
 							
 							
 						</div> <!--CUSTOMER alert-INFO div ends-->
@@ -644,7 +658,7 @@
 								<!--<input type="button" value="Upload" class="btn btn-info btn-sm sbmbtn"/>-->
 								<input type="<?php if($edit=='edit'){echo 'submit';} else {echo 'hidden';} ?>" value="UPDATE" class="btn btn-success btn-sm sbmbtn<?php echo $cd['module']->Mid; ?>"/>
 								<input type="<?php if($edit=='edit'){echo 'button';} else {echo 'hidden';} ?>" value="CANCEL" class="btn btn-danger btn-sm cnclbtn"/>
-								<input type="<?php if($edit=='edit'){echo 'hidden';} else {echo 'button';} ?>" value="CLOSE" class="btn btn-danger btn-sm clsbtn"/>
+							<?php /*	<input type="<?php if($edit=='edit'){echo 'hidden';} else {echo 'button';} ?>" value="CLOSE" class="btn btn-danger btn-sm clsbtn"/> */?>
 							</div>
 						</div>
 						</center>

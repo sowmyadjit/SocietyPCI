@@ -56,11 +56,13 @@
 		</tbody>
 	</table>
 	
+<?php /*
 	<div id='pagei<?php echo $loanjewel['module']->Mid; ?>'>
 		
 		{!!$loanjewel['datajewel']->appends(Input::except('page'))->render() !!}
 		
 	</div>
+*/?>
 </div>
 
 

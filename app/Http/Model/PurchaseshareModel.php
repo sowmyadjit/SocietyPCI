@@ -4,11 +4,17 @@
 	use Auth;
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	
 	class PurchaseshareModel extends Model
 	{
 		//
 		protected $table='purchaseshare'; 
+		
+		public function __construct() {
+			$this->rv_no = new ReceiptVoucherController;
+		}
 		
 		public function getmaxcount()
 		{
@@ -56,8 +62,19 @@
 			$s1=$noofshare*$shareprice;
 			$s2=$noofshare*$shareval;
 			$s3=$s1+$s2;
-			$id = DB::table('purchaseshare')->insertGetId(['Bid'=>$BID,'PURSH_Memid'=> $id['mid'],'PURSH_Shrclass'=>$id['shclass'],'PURSH_Shareamt'=>$id['shamt'],'PURSH_Memshareid'=>$id['memshr'],'PURSH_Certfid'=>$certid,'PURSH_Shareprice'=>$id['shprice'],'PURSH_Shmaxcount'=>$id['count'],'PURSH_Noofshares'=>$id['totshare'],'PURSH_Totalamt'=>$s3,'PURSH_TotalShareValue'=>$id['totshrval'],'PURSH_Date'=>$id['spdate'],'LedgerHeadId'=>"32",'SubLedgerId'=>"34"]);
+			$purchaseshare_id = DB::table('purchaseshare')->insertGetId(['Bid'=>$BID,'PURSH_Memid'=> $id['mid'],'PURSH_Shrclass'=>$id['shclass'],'PURSH_Shareamt'=>$id['shamt'],'PURSH_Memshareid'=>$id['memshr'],'PURSH_Certfid'=>$certid,'PURSH_Shareprice'=>$id['shprice'],'PURSH_Shmaxcount'=>$id['count'],'PURSH_Noofshares'=>$id['totshare'],'PURSH_Totalamt'=>$s3,'PURSH_TotalShareValue'=>$id['totshrval'],'PURSH_Date'=>$id['spdate'],'LedgerHeadId'=>"32",'SubLedgerId'=>"34"]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $purchaseshare_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SHARE_ALLOCATION;//constant SHARE_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $id['spdate'];
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			$inhandcashh=DB::table('cash')->select('InHandCash')->where('BID','=',$bid)->first();
 			$inhandcash1=$inhandcashh->InHandCash;
 			$totinhand=$inhandcash1+$puramt;
@@ -78,7 +95,7 @@
 			}
 			
 			
-			return $id;
+			return $purchaseshare_id;
 		}
 		
 		public function GetData()
@@ -267,8 +284,19 @@
 				->where("PURSH_Certfid","=",$id["cerificateid"])
 				->first();
 			
-			DB::table('shareclosed')->insert(['ShareClose_Date'=>$dte,'ShareClose_Pid'=>$id['pid'],'ShareClose_CertificateNum'=>$id['cerificateid'],'ShareClose_AmountPaid'=>$id['payamt'],'bid'=>$purchase_share->Bid,'LedgerHeadId'=>$purchase_share->LedgerHeadId,'SubLedgerId'=>$purchase_share->SubLedgerId]);
+			$share_close_tran_id = DB::table('shareclosed')->insertGetId(['ShareClose_Date'=>$dte,'ShareClose_Pid'=>$id['pid'],'ShareClose_CertificateNum'=>$id['cerificateid'],'ShareClose_AmountPaid'=>$id['payamt'],'bid'=>$purchase_share->Bid,'LedgerHeadId'=>$purchase_share->LedgerHeadId,'SubLedgerId'=>$purchase_share->SubLedgerId]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $id['tt'];
+				$fn_data["rv_transaction_id"] = $share_close_tran_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SHARE_CLOSE;//constant SHARE_CLOSE is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			$pid=$id['pid'];
 			$cid=$id['cerificateid'];
 			DB::table('purchaseshare')->where('PURSH_Pid',$pid)
@@ -351,8 +379,19 @@
 				}
 				$z++;
 			}
-			DB::table('shareclosed')->insert(['ShareClose_Date'=>$dte,'ShareClose_Pid'=>$pid_share,'ShareClose_CertificateNum'=>$cid_share,'ShareClose_AmountPaid'=>$id['payamt'],'ShareClose_ShareID'=>$sid_share]);
+			$share_close_tran_id = DB::table('shareclosed')->insertGetId(['ShareClose_Date'=>$dte,'ShareClose_Pid'=>$pid_share,'ShareClose_CertificateNum'=>$cid_share,'ShareClose_AmountPaid'=>$id['payamt'],'ShareClose_ShareID'=>$sid_share,'bid'=>$BID]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $id['tt'];
+				$fn_data["rv_transaction_id"] = $share_close_tran_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SHARE_CLOSE;//constant SHARE_CLOSE is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($id['tt']=="CASH")
 			{
 				$inhandcashh=DB::table('cash')->select('InHandCash')->where('BID','=',$BID)->first();

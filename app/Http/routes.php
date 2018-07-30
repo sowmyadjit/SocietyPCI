@@ -6,6 +6,7 @@
 	define("DAY_IS_CLOSED",2);
 	define("CREDIT",1);
 	define("DEBIT",2);
+	define("BOTH",3);
 	//USED IN CD
 	define("USER_TYPE_EMPLOYEE",1);
 	define("USER_TYPE_USER",1);
@@ -79,17 +80,23 @@
 				//AuthoriseController
 				Route::get('/custauth','AuthorisedController@show_custauth');
 				Route::get('/authaccount','AuthorisedController@show_anauthaccount');
+				Route::post('/authaccount_data','AuthorisedController@authaccount_data');
 				Route::get('/authcust','AuthorisedController@show_custAuthories');
+				Route::post('/custauthorise_data','AuthorisedController@custauthorise_data');
 				Route::get('/custrejectview','AuthorisedController@show_custrejAuthories');
+				Route::post('/custrejectview_data','AuthorisedController@custrejectview_data');
 				Route::get('/authpigmy','AuthorisedController@show_unauthpigmy');
+				Route::post('/authpigmy_data','AuthorisedController@authpigmy_data');
 				Route::get('/authorisecust/{id}','AuthorisedController@accept_custAuthories');
 				Route::get('/rejectcust/{id}','AuthorisedController@reject_custAuthories');
 				Route::get('/acceptaccount/{id}','AuthorisedController@accept_account');
 				Route::get('/rejectedaccount','AuthorisedController@reject_accountview');
+				Route::post('/rejectedaccount_data','AuthorisedController@rejectedaccount_data');
 				Route::get('/rejectaccount/{id}','AuthorisedController@reject_account');
 				Route::get('/acceptaccountpigmy/{id}','AuthorisedController@accept_accountpigmy');
 				Route::get('/rejectedaccountpigmy/{id}','AuthorisedController@reject_accountpigmy');
 				Route::get('/authemp','AuthorisedController@show_unauthemp');
+				Route::post('/unauthemployee_data','AuthorisedController@unauthemployee_data');
 				Route::get('/acceptemp/{id}','AuthorisedController@accept_empAuthories');
 				Route::get('/rejectemp/{id}','AuthorisedController@reject_empAuthories');
 				Route::get('/authloan','AuthorisedController@show_unauthLoan');
@@ -163,6 +170,7 @@
 				
 				//DepositController
 				Route::get('/deposit','DepositController@show_deposit');
+				Route::post('/deposit_data','DepositController@deposit_data');
 				Route::get('/depodetail','DepositController@display_deposit');
 				Route::post('/crateaddeposit','DepositController@create_deposit');
 				Route::post('/depgetbankdetail','DepositController@GetBankDetailForDeposite');
@@ -186,6 +194,7 @@
 				
 				//EmployeeController
 				Route::get('/emp','EmployeeController@show_emp');
+				Route::post('/employee_data','EmployeeController@employee_data');
 				Route::get('/empcreate','EmployeeController@show_empcreate');
 				Route::post('/insertemp','EmployeeController@create_employee');
 				Route::post('/updateemp','EmployeeController@UpdateEmployee');
@@ -196,6 +205,7 @@
 				
 				//ExpenceController
 				Route::get('/expence','ExpenceController@show_expence');
+				Route::post('/expence_data','ExpenceController@expence_data');
 				Route::get('/expencedetail','ExpenceController@display_expence');
 				Route::post('/crateaexpence','ExpenceController@create_expence');
 				
@@ -212,6 +222,7 @@
 				Route::post('/transferbranchamt','ExpenceController@transferbranchamt');
 				Route::get('/ExReceipt/{id}','ExpenceController@ExReceipt');
 				Route::get('/income','ExpenceController@income');
+				Route::post('/income_data','ExpenceController@income_data');
 				Route::get('/createIncome','ExpenceController@createIncome');
 				Route::post('/createincomes','ExpenceController@createincomes');
 				
@@ -246,7 +257,9 @@
 				Route::post('/crtkccalloc','FdAllocationController@crtkccalloc');
 				Route::get('/crtkccallocation','FdAllocationController@crtkccallocation');
 				Route::post('/fdrenew','FdAllocationController@fdrenew');
+				Route::post('/kccrenew','FdAllocationController@kccrenew');
 				Route::post('/fdrenewdetails','FdAllocationController@fdrenewdetails');
+				Route::post('/kccrenewdetails','FdAllocationController@kccrenewdetails');
 				//InterestController
 				Route::get('/pigmiinterest','InterestController@pigmiInterest');
 				Route::post('/pigmiInterestCalc','InterestController@pigmiInterestCalc');
@@ -399,6 +412,7 @@
 				Route::post('/edit_cash_details','OpenCloseBalanceController@edit_cash_details');
 				Route::post('/update_cash_details','OpenCloseBalanceController@update_cash_details');
 				Route::post('/check_day_open','OpenCloseBalanceController@check_day_open');
+				Route::post('/is_day_open','OpenCloseBalanceController@is_day_open');
 				
 				
 				//PermissionController
@@ -517,10 +531,17 @@
 				Route::match(["get","post"],'pigmy_report','ReportController@pigmy_report');
 				
 				Route::post('/user_details','ReportController@user_details');
-				Route::post('/cash_chitta_index','ReportController@cash_chitta_index');
+				Route::get('/cash_chitta_index','ReportController@cash_chitta_index');//CASH CHITTA = DAY BOOK
 				Route::post('/cash_chitta_data','ReportController@cash_chitta_data');
+				Route::get('/cash_chitta_add_details_index','ReportController@cash_chitta_add_details_index');
+				Route::post('/cash_chitta_details_list','ReportController@cash_chitta_details_list');
+				Route::post('/cash_chitta_details_edit','ReportController@cash_chitta_details_edit');
 				Route::get('/appraiser_commission_report_index','ReportController@appraiser_commission_report_index');
 				Route::post('/appraiser_commission_report_data','ReportController@appraiser_commission_report_data');
+				Route::post('/get_table_fields','ReportController@get_table_fields');
+				Route::post('/cash_chitta_details_add_form','ReportController@cash_chitta_details_add_form');
+				Route::post('/get_denominations','ReportController@get_denominations');
+				Route::post('/save_denominations','ReportController@save_denominations');
 				
 				
 				
@@ -572,6 +593,8 @@
 				Route::get('/GetRDNum','SearchController@GetRDNumForLoanAlloc');//For Create Loan Allocation
 				Route::get('/GetFDNum','SearchController@GetFDNumForLoanAlloc');//For Fd Prewithdrawal
 				Route::get('/GetFDNumber','SearchController@GetFDNumberForLoanAlloc');//For Create Loan Allocation
+				Route::get('/GetFDandKCCNumber','SearchController@GetFDandKCCNumberForLoanAlloc');
+				Route::get('/GetKCCNumber','SearchController@GetKCCNumberForLoanAlloc');
 				Route::get('/Getrdprewithdrawaccnum','SearchController@getrdprewithdraw');//For Create Loan Allocation
 				Route::get('/GetSalary','SearchController@GetSalary');
 				Route::get('/pigmydlacc','SearchController@pigmydlacc'); 
@@ -581,8 +604,10 @@
 				Route::get('/GetBranchForExpenseTran','SearchController@GetBranch');
 				Route::get('/GetRDAccForPayAmt','SearchController@GetRDAccForPayAmt'); 
 				Route::get('/GetRDIntAccForPayAmt','SearchController@GetRDIntAccForPayAmt'); 
-				Route::get('/GetFDAccForPayAmt','SearchController@GetFDAccForPayAmt'); 
-				Route::get('/GetFDMatuAccForPayAmt','SearchController@GetFDMatuAccForPayAmt'); 
+				Route::get('/GetFDAccForPayAmt','SearchController@GetFDAccForPayAmt');
+				Route::get('/GetKCCAccForPayAmt','SearchController@GetKCCAccForPayAmt');
+				Route::get('/GetFDMatuAccForPayAmt','SearchController@GetFDMatuAccForPayAmt');
+				Route::get('/GetKCCMatuAccForPayAmt','SearchController@GetKCCMatuAccForPayAmt');
 				Route::get('/GetSearchSbAccWithOldAcc','SearchController@GetSearchSbAccWithOldAcc');//31-03-16
 				Route::get('/GetSearchRdAccWithOldAcc','SearchController@GetSearchRdAccWithOldAcc');//04-04-16
 				Route::get('/GetSearchFdAccWithOldAcc','SearchController@GetSearchFdAccWithOldAcc');//04-04-16
@@ -672,10 +697,11 @@
 				Route::post('/retrieveloanacc','TransactionController@Retrieve_Loaninfo');
 				Route::post('/RetrieveSBAmt','TransactionController@RetriveSB_Amt');
 				Route::post('/inserloantrans','TransactionController@Create_LoanTrans');
-				Route::get('/TranReceiptHome','TransactionController@TranReceiptHome'); 
+				Route::get('/TranReceiptHome','TransactionController@TranReceiptHome');
+				Route::get('/TranPaymentHome','TransactionController@TranPaymentHome');
 				Route::get('/TransactionReceiptView','TransactionController@TransactionReceiptView'); //M 23-06-16
 				Route::get('/TranReceipt/{type}/{id}','TransactionController@TranReceipt'); 
-				
+				Route::post('/rv_print','TransactionController@rv_print');
 				//UnclearedCheque Controller
 				Route::get('/unclearsb','UnclearedChequeController@show_detail');
 				Route::get('/unclearedcheque','UnclearedChequeController@show_uncleareddetail');
@@ -691,6 +717,7 @@
 				Route::get('/loanclearcheque/{id}','UnclearedChequeController@loan_clear');
 				Route::post('/loanrejectcheque','UnclearedChequeController@loan_reject');
 				Route::get('/unclearfd','UnclearedChequeController@Show_FDDetail');
+				Route::get('/unclearkcc','UnclearedChequeController@Show_KCCDetail');
 				Route::get('/fdclearcheque/{id}','UnclearedChequeController@fd_clear');
 				Route::post('/fdrejectcheque','UnclearedChequeController@fd_reject');
 				//Route::get('/uncleardl','UnclearedChequeController@Show_DLDetail');
@@ -712,10 +739,13 @@
 				
 				//ViewsharesController
 				Route::get('/authmemb','ViewsharesController@show_shares');
+				Route::post('/viewshares_data','ViewsharesController@viewshares_data');
 				Route::get('/memberejectview','ViewsharesController@show_rejshares');
 				Route::get('/acceptshares/{mid}/{purid}','ViewsharesController@accept_shares');
 				Route::get('/acceptsuspendshares/{purid}','ViewsharesController@accept_suspendshares');
+				Route::get('/acceptsuspendshares/{purid}/{amt}','ViewsharesController@accept_suspendshares');
 				Route::get('/membesuspendview','ViewsharesController@show_suspendedshares');
+				Route::post('/membesuspendview_data','ViewsharesController@membesuspendview_data');
 				Route::get('/rejectshare/{mid}/{purid}','ViewsharesController@reject_Shares');
 				Route::get('/AcceptRejectedShare/{mid}/{purid}','ViewsharesController@AcceptRejectedShare');
 				Route::get('/RejectSuspendShare/{purid}','ViewsharesController@RejectSuspendShare');
@@ -728,6 +758,7 @@
 				Route::get('/PigmyPayAmountView','PayAmtController@PigmyPayAmountView');
 				Route::get('/RdPayAmountView','PayAmtController@RdPayAmountView');
 				Route::get('/FDPayAmountView','PayAmtController@FDPayAmountView');
+				Route::get('/KCCPayAmountView','PayAmtController@KCCPayAmountView');
 				Route::post('/PigmyPayAmount','PayAmtController@PigmyPayAmount');
 				Route::get('/GetPigmyDetailsForPayAmt','PayAmtController@GetPigmyDetailsForPayAmt');//For PayAmt PigmyAccNum
 				Route::get('/GetBankDetailsForPayAmt','PayAmtController@GetBankDetailsForPayAmt');//For PayAmt PigmyAccNum
@@ -743,6 +774,7 @@
 				Route::get('/GetPigmyIntDetailsForPayAmt','PayAmtController@GetPigmyIntDetailsForPayAmt');//For PayAmt get Interest Detail (Newly Added)
 				Route::get('/RDPayAmountIndex','PayAmtController@RDPayAmountIndex');//For RD Pay Amount Home
 				Route::get('/FDPayAmountIndex','PayAmtController@FDPayAmountIndex');//For FD Pay Amount home
+				Route::get('/KCCPayAmountIndex','PayAmtController@KCCPayAmountIndex');//For KCC Pay Amount home
 				Route::get('/GetRDIntDetailsForPayAmt','PayAmtController@GetRDIntDetailsForPayAmt');//For PayAmt get Interest Detail
 				Route::get('/GetRDDetailsForPayAmt','PayAmtController@GetRDDetailsForPayAmt');//For PayAmt get perwithdraw Detail	
 				Route::post('/GetSBForRDPayAmt','PayAmtController@GetSBForRDPayAmt');//For PayAmt get perwithdraw Detail 
@@ -750,7 +782,6 @@
 				Route::post('/GetSBForFDPayAmt','PayAmtController@GetSBForFDPayAmt');
 				Route::get('/GetFDMatuDetailsForPayAmt','PayAmtController@GetFDMatuDetailsForPayAmt');
 				Route::get('/GetFDDetailsForPayAmt','PayAmtController@GetFDDetailsForPayAmt');
-				Route::post('/FDPayAmount','PayAmtController@FDPayAmount');
 				Route::post('/FDPayAmount','PayAmtController@FDPayAmount');
 				Route::get('/PigmyPaySearchView','PayAmtController@PigmyPaySearchView');//M 20-4-16
 				Route::get('/RdPaySearchView','PayAmtController@RdPaySearchView');//M 20-4-16
@@ -772,6 +803,7 @@
 				
 				//salarycontroller
 				Route::get('/salary','salcontroller@showsal');
+				Route::post('/salary_slip','salcontroller@salary_slip');
 				Route::get('/salcreate','salcontroller@show_salcreate');
 				Route::post('/getsal','salcontroller@get_saldet');
 				Route::post('/salaryinsert','salcontroller@create_sal');
@@ -785,6 +817,7 @@
 				Route::get('/getagentsalary_1','salcontroller@getagentsalary_1');
 				Route::get('/getsaraparasalary','salcontroller@getsaraparasalary');
 				Route::get('/getrdagentsalary','salcontroller@getrdagentsalary');
+				Route::get('/salary_slip_data','salcontroller@salary_slip_data');
 				
 				
 				
@@ -958,6 +991,16 @@
 
 //LogController
 		Route::get("aa","LogController@aa");
+		
+//TestController
+		Route::match(["get","post"],"rv","TestController@rv");
+		Route::match(["get","post"],"chq","TestController@chq");
+		Route::match(["get","post"],"soc_cont","TestController@soc_cont");
+		Route::match(["get","post"],"agent_ded","TestController@agent_ded");
+		Route::match(["get","post"],"chq_charge","TestController@chq_charge");
+		Route::match(["get","post"],"test","TestController@test");
+		Route::match(["get","post"],"update_settings","TestController@update_settings");
+		Route::post("save_to_db","TestController@save_to_db");
 		
 
 //	CLEAR CACHE

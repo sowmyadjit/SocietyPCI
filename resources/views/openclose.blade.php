@@ -22,10 +22,12 @@
 				<div class="box-content">
 					<div class="alert alert-info">
 						<a href="viewdailybal1" style="margin-right:50px;" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>" id="daily_transaction" >Daily Transaction</a>
-						<a href="fdinterstmonthly" style="margin-right:10px;" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>">FD Month Pay</a>
-						<a href="viewFDInterest" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>">View FD Interest</a>
-						<a href="viewclosebal" style="margin-left:15px;" class="btn btn-danger pull-right ClsBalBtn<?php echo $OpCls['module']->Mid; ?>">Day Close</a>
-						<a href="viewbal"  class="btn btn-success pull-right OpenBalBtn<?php echo $OpCls['module']->Mid; ?>" >Day Open</a>
+						@if($OpCls['did'] != 2) <!--  Don't show this for clerks -->
+							<a href="fdinterstmonthly" style="margin-right:10px;" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>" data="FD_MONTHLY_INT">FD Month Pay</a>
+							<a href="viewFDInterest" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>">View FD Interest</a>
+							<a href="viewclosebal" style="margin-left:15px;" class="btn btn-danger pull-right ClsBalBtn<?php echo $OpCls['module']->Mid; ?>">Day Close</a>
+							<a href="viewbal"  class="btn btn-success pull-right OpenBalBtn<?php echo $OpCls['module']->Mid; ?>" >Day Open</a>
+						@endif
 					</div>
 					<div id="cash_details">
 					</div>
@@ -61,16 +63,22 @@
 	
 	$('.DailyTranBtn<?php echo $OpCls['module']->Mid; ?>').click(function(e){
 		e.preventDefault();
-		
-		var id = $(this).attr("id");
-		var is_day_open = "{{$OpCls['is_day_open']}}";
-		console.log(is_day_open);
-		if(id == "daily_transaction" && is_day_open == "no") {
-			alert("Day is not open");
-			return;
+		var flag = true;
+		var data = $(this).attr("data");
+		if(data == "FD_MONTHLY_INT") {
+			flag = confirm("Are you sure?");
 		}
+		if(flag) {
+			var id = $(this).attr("id");
+			var is_day_open = "{{$OpCls['is_day_open']}}";
+			console.log(is_day_open);
+			if(id == "daily_transaction" && is_day_open == "no") {
+				alert("Day is not open");
+				return;
+			}
 		
-		$('.bdy_<?php echo $OpCls['module']->Mid; ?>').load($(this).attr('href'));
+			$('.bdy_<?php echo $OpCls['module']->Mid; ?>').load($(this).attr('href'));
+		}
 	});
 	
 	

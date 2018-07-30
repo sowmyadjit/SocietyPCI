@@ -115,7 +115,7 @@
 								<select class="form-control" id="PgPayMode" name="PgPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="PIGMI ACCOUNT">PIGMI ACCOUNT</option>
 									<option value="FD_ACCOUNT">FD ACCOUNT</option>
@@ -318,7 +318,7 @@
 								<select class="form-control" id="RdPayMode" name="RdPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 								</select>
@@ -525,7 +525,7 @@
 								<select class="form-control" id="FdPayMode" name="FdPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 <!--edit-->							<option value="FD_ACCOUNT">FD ACCOUNT</option>
@@ -774,7 +774,7 @@
 								<select class="form-control" id="plPayMode" name="plPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+					<?php /*		<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="ADJUSTMENT">ADJUSTMENT</option>
@@ -1001,7 +1001,7 @@
 								<select class="form-control" id="jlPayMode" name="jlPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="ADJUSTMENT">ADJUSTMENT</option>
@@ -1172,13 +1172,23 @@
 								<select class="form-control" id="slPayMode" name="slPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="CD">CD</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
+									<option value="ADJUSTMENT">ADJUSTMENT</option>
 								</select>
 							</div>
 						</div>
+
+						
+						<div class="form-group adjust_sl">
+							<label class="control-label col-sm-4" for="">Adjustment Number :</label>
+							<div id="the-basics" class="col-sm-4">
+								<input class="adjustmentTypeAheadSL form-control"  type="text"  id="adjustnum_sl">  
+							</div>
+						</div>
+
 						<div class="cheque_sl">
 							
 							<div class="form-group ">
@@ -1384,6 +1394,7 @@
 	$('.cheque_pl').hide();
 	$('.cheque_jl').hide();
 	$('.cheque_sl').hide();
+	$('.adjust_sl').hide();
 	$('.pgsbaccnumb').hide();
 	$('.pgsbavailable').hide();
 	$('.pgsbtotamt').hide();
@@ -2010,6 +2021,7 @@
 			$('.sltotamt').hide();
 			$('.sbaccsl').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
 		}
 		else if(pmode=="SB ACCOUNT")
 		{$('.adjustmentcarg').hide();
@@ -2021,6 +2033,7 @@
 			$('.slavailable').hide();
 			$('.sltotamt').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
 			$('.SBAccNumTypeAheadSL').change(function(e)
 			{
 				AccNum=$('.SBAccNumTypeAheadSL').data('value');
@@ -2045,6 +2058,7 @@
 		{$('.adjustmentcarg').hide();
 			$('.cheque_sl').hide();
 			$('.CD').show();
+			$('.adjust_sl').hide();
 			AccNum=$('.SLAccNumTypeAhead').data('value');
 			$.ajax({
 				url:'/getcd_of_employee',
@@ -2076,6 +2090,19 @@
 			$('.sltotamt').hide();
 			$('.sbaccsl').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
+		}
+		else if(pmode=="ADJUSTMENT")
+		{$('.adjustmentcarg').hide();
+			$('.cheque_sl').hide();
+			$('.slsbaccnumb').hide();
+			$('.slsbavailable').hide();
+			$('.slsbtotamt').hide();
+			$('.slavailable').hide();
+			$('.sltotamt').hide();
+			$('.sbaccsl').hide();
+			$('.CD').hide();
+			$('.adjust_sl').show();
 		}
 		
 	});
@@ -2182,6 +2209,9 @@
 	$('.adjustmentTypeAheadPL').typeahead({
 		ajax:'/adjustment_num'
 	});
+	$('.adjustmentTypeAheadSL').typeahead({
+		ajax:'/adjustment_num'
+	});
 	$('.adjustmentTypeAheadJL').typeahead({
 		ajax:'/adjustment_num'
 	});
@@ -2269,14 +2299,16 @@
 				});
 
 				
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=PG',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		
@@ -2356,14 +2388,16 @@
 					}
 				});
 
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=RD',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 				
 				
 			}
@@ -2450,14 +2484,16 @@ console.log("amt="+bal);
 					}
 				});
 
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=FD',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		
@@ -2715,6 +2751,7 @@ console.log("amt="+bal);
 																days = parseInt(start_to_today) + 1;//THIS IS FIRST REPAYMENT
 															
 															//	console.log("days="+days);
+/* 
 																if(days <= 15) {
 																	console.log("days bw 0 - 15");
 																	days = 15;
@@ -2724,6 +2761,7 @@ console.log("amt="+bal);
 																} else {
 																	days = days;
 																}
+																 */
 																//print_days();
 																calculate_jewel_interest(days,LoanType_Interest,JewelLoan_remaininginterest,bal);
 															}
@@ -2736,11 +2774,17 @@ console.log("amt="+bal);
 															type:"post",
 															data:'&first='+last_paid_date+'&second='+today,
 															success:function(last_to_today) {console.log("last_to_today="+last_to_today);
+																if(last_paid_date > today) {
+																	console.log("last_paid_date > today");
+																	var last_to_today = 0;
+																}
 																console.log("last_to_today="+last_to_today);
 																days = parseInt(last_to_today);//THIS IS SECOND REPAYMENT
+/* 
 																if(days <= 15) {
 																	days = 15;
 																}
+																 */
 																//print_days();
 																calculate_jewel_interest(days,LoanType_Interest,JewelLoan_remaininginterest,bal);
 															}
@@ -2752,6 +2796,10 @@ console.log("amt="+bal);
 															type:"post",
 															data:'&first='+last_paid_date+'&second='+today,
 															success:function(last_to_today) {
+																if(last_paid_date > today) {
+																	console.log("last_paid_date > today");
+																	var last_to_today = 0;
+																}
 																console.log("last_to_today="+last_to_today);
 																days = parseInt(last_to_today);
 																//print_days();
@@ -2883,14 +2931,17 @@ console.log("amt="+bal);
 						
 					}
 				});
+				
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=SL',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+slaccid+'&loan_category=SL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		
@@ -3609,6 +3660,24 @@ console.log("amt="+bal);
 		});
 		
 	});
+	
+	$('.adjustmentTypeAheadSL').change(function(e)
+	{
+		adid=$('.adjustmentTypeAheadSL').attr('data-value');
+		
+		
+		$.ajax({
+			url:'/Getadjustmentdetails',
+			type:'post',
+			data:'&adid='+adid,
+			success:function(data)
+			{
+				$('#slpayamt').val(data['amount']);
+			}
+		});
+		
+	});
+	
 	
 	
 	var htmltextast="";

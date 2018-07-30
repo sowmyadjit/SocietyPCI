@@ -1,11 +1,5 @@
-        <noscript>
-            <div class="alert alert-block col-md-12">
-                <h4 class="alert-heading">Warning!</h4>
 
-          </div>
-        </noscript>
-
-<div id="content" class="col-lg-12 col-sm-12">
+<div id="content" class="col-lg-12 col-sm-12 b1">
     <!-- content starts -->
     <div>
         <ul class="breadcrumb">
@@ -30,25 +24,23 @@
 						<a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
 					</div>
 				</div>
+
+<div id="table_data"></div>
 				
 			
-				
+		<?php /*
 				
 				<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 				
 					<thead>
 					
 						<tr>
-						<th>EMPLOYEE CODE</th>
-						<th>FIRST NAME</th>
-						<th>MIDDLE NAME</th>
-						<th>LAST NAME</th>
-						<th>BRANCH NAME</th>
-						<th>DESIGNATION</th>
-						<th>MOBILE NUMBER</th>
-						<th>PHONE NUMBER</th>
-						
-						<th>Action</th>
+							<th>EMPLOYEE CODE</th>
+							<th>NAME</th>
+							<th>BRANCH NAME</th>
+							<th>DESIGNATION</th>
+							<th>MOBILE NUMBER</th>
+							<th colspan="3">Action</th>
 						</tr>
 						
 					</thead>
@@ -60,13 +52,10 @@
 						<tr>
 							<td class="hidden">{{ $employee->Eid }}</td>
 							<td><a  href="empdetails/{{ $employee->Eid }}" class="empdet">{{$employee->ECode}}</a></td>
-							<td><a  href="empdetails/{{ $employee->Eid }}" class="empdet">{{ $employee->FirstName }}</a></td>
-							<td>{{ $employee->MiddleName}}</td>
-							<td>{{$employee->LastName}}</td>
+							<td><a  href="empdetails/{{ $employee->Eid }}" class="empdet">{{ $employee->FirstName }} {{ $employee->MiddleName}} {{$employee->LastName}}</a></td>
 							<td>{{$employee->BName}}</td>
 							<td>{{$employee->DName}}</td>
 							<td>{{$employee->MobileNo}}</td>
-							<td>{{$employee->PhoneNo}}</td>
 							
 							
 							<td>
@@ -98,11 +87,22 @@
 
 					</tbody>
 				</table>
-				
+			*/?>
 			
 		</div>
 	</div>
 </div>
+</div>
+
+<div id="b2">.</div>
+<div id="b3">
+	<center>
+		<div class="form-group">
+			<div class="col-sm-12">
+				<input type="button" id="back" value="Back" class="btn btn-danger btn-sm" />
+			</div>
+		</div>
+	</center>	
 </div>
 
 
@@ -144,4 +144,43 @@ $('.loadmc').click(function(e)
 	$('#maincontents').load($(this).attr('href'));
 });
 
+</script>
+
+
+
+
+<script>
+	function load_data() {
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$("#table_data").html(loading_img);
+		$.ajax({
+			url: 'unauthemployee_data',
+			type: 'post',
+			data: "",
+			success: function(data) {
+				$("#table_data").html(data);
+			}
+		});
+
+	}
+</script>
+
+<script>
+	$( document ).ready(function() {
+
+		load_data();
+
+	});
+</script>
+
+<script>
+	$("#back").click(function() {
+		$("#b2").html("");
+		$(".b1").show();
+	})
 </script>

@@ -24,6 +24,14 @@
 			return view('sal',compact('s'));
 			
 		}
+
+		public function salary_slip(Request $request)
+		{
+			$sal_id = $request->input("sal_id");
+			$salary_slip_data = $this->salary->salary_slip_data(["sal_id"=>$sal_id]);
+			return view('salary_slip',compact('salary_slip_data'));
+		}
+
 		public function show_salcreate()
 		{
 			return view('s');
@@ -260,6 +268,7 @@
 			
 /*************edit**************/
 			$agentsal['sal_extra_all']=$request->input('sal_extra_all');
+			$agentsal['sarafara_payment'] = true;
 /*************edit end**************/
 
 			$get=$this->salary->payagentcommision($agentsal);

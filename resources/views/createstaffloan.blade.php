@@ -739,8 +739,8 @@
 			$('.sbaccnumb').show();
 			$('.sbtotamt').show();
 			
-			usr=$('.StfEmpnameTypeahead').data('value');
-			//usr=$('#staffuid').val();
+			// usr=$('.StfEmpnameTypeahead').data('value');
+			usr=$('#staffuid').val();
 			$.ajax({
 				url:'/getSBForStaff',
 				type:'post',

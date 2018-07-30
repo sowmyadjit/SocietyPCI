@@ -1,6 +1,6 @@
 
 
-<div class="bdy_<?php echo $a['module']->Mid; ?> box-inner">
+<div class="bdy_<?php echo $a['module']->Mid; ?> box-inner b1">
 	
 	<div class="box-header well" data-original-title="">
 		<h2><i class="glyphicon glyphicon-globe"></i> Account Detail</h2>
@@ -10,9 +10,13 @@
 	
 	<div class="box-content">
 		<div class="alert alert-info">
-			<a href="rejectedaccount" class="btn btn-default crtacc<?php echo $a['module']->Mid; ?>">Rejected Account</a>
+			<a href="rejectedaccount" class="btn btn-default rejacc<?php echo $a['module']->Mid; ?>">Rejected Account</a>
+			<button class="btn-sm glyphicon glyphicon-refresh" id="refresh_data"></button>
 		</div>
+
+		<div id="table_data"></div>
 		
+	<?php /*
 		<table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 			
 			<thead>
@@ -125,19 +129,22 @@
 				
 			</tbody>
 		</table>
-		
-		<center>
-			<div class="form-group">
-				<div class="col-sm-12">
-					<input type="button" value="Back" class="btn btn-info btn-sm backbtn<?php echo $a['module']->Mid; ?>" />
-				</div>
-			</div>
-		</center>
-		
+	*/?>
 		
 	</div>	
 	
 </div>	
+
+<div id="b2">.</div>
+<div id="b3">
+	<center>
+		<div class="form-group">
+			<div class="col-sm-12">
+				<input type="button" id="back" value="Back" class="btn btn-danger btn-sm" />
+			</div>
+		</div>
+	</center>	
+</div>
 
 
 
@@ -146,7 +153,7 @@
 
 
 <script>
-	
+	/* 
 	$('.clickme<?php echo $a['module']->Mid; ?>').click(function(e)
 	{
 		$('.accclassid').click();
@@ -191,5 +198,61 @@
 		//$('.box-inner').load($(this).attr('href'));
 		$('.bdy_<?php echo $a['module']->Mid; ?>').load($(this).attr('href'));
 		
+	});
+	 */
+</script>
+
+
+
+<script>
+	function load_data() {
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$("#table_data").html(loading_img);
+		$.ajax({
+			url: 'authaccount_data',
+			type: 'post',
+			data: "",
+			success: function(data) {
+				$("#table_data").html(data);
+			}
+		});
+
+	}
+</script>
+
+<script>
+	$( document ).ready(function() {
+
+		load_data();
+
+	});
+</script>
+
+<script>
+	$("#back").click(function() {
+		$("#b2").html("");
+		$(".b1").show();
+	})
+</script>
+
+<script>
+	$("#refresh_data").click(function() {
+		load_data();
+	})
+</script>
+
+
+<script>
+	$('.rejacc<?php echo $a['module']->Mid; ?>').click(function(e)
+	{
+		e.preventDefault();
+		$(".b1").hide();
+		$('#b2').load($(this).attr('href'));
+		$("#back").hide();
 	});
 </script>

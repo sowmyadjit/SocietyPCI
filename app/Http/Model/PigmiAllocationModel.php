@@ -5,10 +5,18 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use File;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class PigmiAllocationModel extends Model
 	{
 		protected $table='pigmiallocation';
+		
+		public function __construct() {
+			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
+		}
 		
 		public function insert($id)
 		{
@@ -218,7 +226,12 @@
 		
 		public function GetSeachedpigmyAcc($q)
 		{
-			return DB::select("SELECT `PigmiAllocID` as id, CONCAT(`PigmiAllocID`,'-',`PigmiAcc_No`) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%".$q."%' ");
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+
+			return DB::select("SELECT `PigmiAllocID` as id, CONCAT(`PigmiAllocID`,'-',`PigmiAcc_No`) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%".$q."%' AND `pigmiallocation`.`Bid`={$BID}");
 			
 			
 		/*	$uname='';
@@ -262,15 +275,19 @@
 		
 		public function GetPigmyNumForLoanAlloc($q)
 		{
-			
-			
-			return DB::table('pigmiallocation')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('pigmiallocation')
 			//	->select(DB::raw('PigmiAllocID as id, CONCAT(`PigmiAllocID`,"-",`PigmiAcc_No`) as name'))
 			->select(DB::raw('PigmiAllocID as id, PigmiAcc_No as name'))
 			->where('Status','=',"AUTHORISED")
 			->where('Loan_Allocated','=',"NO")
-			->where('Closed','=',"NO")
-			->get();		
+			->where('Closed','=',"NO");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("pigmiallocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function PigmiPendingAmtView()
@@ -345,6 +362,16 @@
 			DB::table('pending_pigmy')->where('PpId',$PPrPpId)
 			->update(['PendPigmy_PendingAmount'=>$PPrPendingBal,'PenPigmy_AmountReceived'=>$ReceivedAmt,'PendPigmy_ReceivedDate'=>$ReceivedDte,'PendPigmy_Status'=>$Stat,'PenPigmy_ReceivedBy'=>$UID]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = "CASH";
+				$fn_data["rv_transaction_id"] = $PPrPpId;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::AGENT_COLLECTION;//constant AGENT_COLLECTION is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $ReceivedDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 			
 			
 		}

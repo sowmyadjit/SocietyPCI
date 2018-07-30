@@ -3,11 +3,20 @@
 	namespace App\Http\Model;
 	use DB;
 	use Auth;
+	use Exception;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Model\ReceiptVoucherTranCatModel;
 	
 	use Illuminate\Database\Eloquent\Model;
 	
 	class ReportModel extends Model
 	{
+		private $rv_no;
+		public function __construct()
+		{
+			$this->rv_no = new ReceiptVoucherModel;
+			$this->rv_tran_cat = new ReceiptVoucherTranCatModel;
+		}
 		protected $table='sb_transaction';
 		public function getData()
 		{
@@ -2782,6 +2791,7 @@
 					//->where("Closed","=","NO")
 					->where("Agentid","=",$data["agent_uid"])
 					->where("{$table}.Bid","=",$Bid)
+					->where("{$table}.Status","=","AUTHORISED")
 					//->limit(500)
 					->get();
 			}
@@ -2794,13 +2804,14 @@
 							"pigmiallocation.PigmiAllocID",
 							"PigReport_TranDate",
 							"Amount",
-							"Transaction_Type"
+							"Transaction_Type",
+							"pigmi_transaction.Agentid"
 						)
 				->join("pigmiallocation","pigmiallocation.PigmiAllocID","=","{$table}.PigmiAllocID")
 				->where("{$table}.tran_reversed","=","NO")
 				->where("{$table}.Bid","=",$Bid)
 				->where("{$table}.service_charge","=",0)
-				->where("{$table}.Agentid","=",$data["agent_uid"]);
+				->whereIn("{$table}.Agentid",[$data["agent_uid"], 0]);
 			if(!empty($data["allocation_id"])) {
 				$all_pigmi_transaction = $all_pigmi_transaction->where("pigmiallocation.PigmiAllocID","=",$data["allocation_id"]);
 			}
@@ -2812,12 +2823,37 @@
 			foreach($all_pigmi_transaction as $row_all_tran) {
 				$tran_date_arr[$row_all_tran->PigmiAllocID][] = $row_all_tran->PigReport_TranDate;
 				$all_pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"][] = $row_all_tran;
-				if(isset($pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"])) {
-					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] += $row_all_tran->Amount;
-				} else {
-					$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] = $row_all_tran->Amount;
+
+
+				
+				if(! isset($pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"])) {
+					$other_total["{$row_all_tran->PigmiAllocID}"] = 0;
 				}
-			}//return 'show';
+
+				if($row_all_tran->Agentid != 0) { // THROUGH AGENT
+					$temp_amount = 0;
+					if(strcasecmp($row_all_tran->Transaction_Type, "CREDIT") == 0) {
+						$temp_amount = $row_all_tran->Amount;
+					} else {
+						$temp_amount = (-1) * $row_all_tran->Amount;
+					}
+
+					if(isset($pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"])) {
+						$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] += $temp_amount;
+					} else {
+						$pigmi_transaction_arr["{$row_all_tran->PigmiAllocID}"]["{$row_all_tran->PigReport_TranDate}"] = $temp_amount;
+					}
+				} else { // NOT THROUGH AGENT
+					$temp_amount = 0;
+					if(strcasecmp($row_all_tran->Transaction_Type, "CREDIT") == 0) {
+						$temp_amount = $row_all_tran->Amount;
+					} else {
+						$temp_amount = (-1) * $row_all_tran->Amount;
+					}
+					$other_total["{$row_all_tran->PigmiAllocID}"] += $temp_amount;
+				}
+			}
+			// print_r($other_total);exit();
 //			print_r($tran_date_arr);exit();
 			foreach($tran_date_arr as $key_tran_date => $row_tran_date) {
 //				print_r($row_tran_date);exit();
@@ -2873,11 +2909,20 @@
 				} else {
 					echo "empty";
 				}
+
+				$other_debit_amt = DB::table("pigmi_transaction")
+					->where("PigmiAllocID",$row_alloc->PigmiAllocID)
+					->where("tran_reversed","No")
+					->where("Agentid",0)
+					->where("Transaction_Type","DEBIT")
+					->where("PigReport_TranDate","<=",$data["from_date"])
+					->sum("Amount");
 				
 				$ret_data["pg_tr"][$i]["day_sum_row"] = 0;
+				$ret_data["pg_tr"][$i]["other_total"] = 0;
 				$ret_data["pg_tr"][$i]["col_sum"] = 0;
-				$ret_data["pg_tr"][$i]["prev_amt"] = $credit_amount - $debit_amount;
-				$ret_data["pg_tr"][$i]["col_sum"] = $credit_amount - $debit_amount;
+				$ret_data["pg_tr"][$i]["prev_amt"] = $credit_amount - $debit_amount - $other_debit_amt;
+				$ret_data["pg_tr"][$i]["col_sum"] = $credit_amount - $debit_amount - $other_debit_amt;
 				$ret_data["pg_tr"][$i]["total_amt"] = $total_credit_amount - $total_debit_amount;
 				foreach($ret_data["dates"] as $tran_date) {
 					$day_amt = 0;
@@ -2887,7 +2932,8 @@
 					$ret_data["pg_tr"][$i]["{$tran_date}"] = $day_amt;
 					$ret_data["pg_tr"][$i]["day_sum_row"] += $day_amt;
 				}
-				$ret_data["pg_tr"][$i]["col_sum"] += $ret_data["pg_tr"][$i]["day_sum_row"];
+				$ret_data["pg_tr"][$i]["other_total"] = $other_total[$row_alloc->PigmiAllocID];
+				$ret_data["pg_tr"][$i]["col_sum"] = $ret_data["pg_tr"][$i]["col_sum"] + $ret_data["pg_tr"][$i]["day_sum_row"] + $ret_data["pg_tr"][$i]["other_total"];
 				$ret_data["dates_col_total_sum"] += $ret_data["pg_tr"][$i]["day_sum_row"];
 			}
 			
@@ -3045,6 +3091,7 @@
 			$ret_data["receipt_amount_sum"] = 0;
 			$ret_data["voucher_amount_sum"] = 0;
 			
+			//CASH CHITTA DETAILS TABLE
 			$chitta_list = DB::table("cash_chitta_details")
 				->where("deleted",0)
 				->where("pk_field","!=","")
@@ -3053,30 +3100,21 @@
 				->where("transaction_type","!=",0)
 				->get();
 				
+			$rv_tran_cat_list = DB::table("{$this->rv_tran_cat->tbl}")
+				->where("{$this->rv_tran_cat->deleted_field}",0)
+				->get();
+			$tran_category_arr = $this->parse_table_data(["table_data"=>$rv_tran_cat_list]);
+			
+			$tran_category = [];
+			foreach($tran_category_arr as $row_tran_cat) {
+				$tran_category["{$row_tran_cat[$this->rv_tran_cat->rv_tran_table_field]}"] = $row_tran_cat["{$this->rv_tran_cat->pk}"];
+				// like
+				// $tran_category["sb_transaction"] = 1
+			}
 			$i = -1;
 			foreach($chitta_list as $row_ch) {
-				$bid_field = "{$row_ch->table_name}.{$row_ch->bid_field}";
+				$bid_field = "{$row_ch->table_containing_bid}.{$row_ch->bid_field}";
 				$date_field = "{$row_ch->table_name}.{$row_ch->date_field}";
-				
-				$select_array = array(
-										"{$row_ch->table_name}.{$row_ch->pk_field} as pk",
-										"{$row_ch->table_name}.{$row_ch->amount_field} as amount",
-										"{$row_ch->table_containing_account_no}.{$row_ch->account_no_field} as account_no"
-										//,"aa as bb"
-									);
-				switch($row_ch->transaction_type) {
-					case CREDIT	:	
-									$raw_obj = DB::raw("'CREDIT' as 'transaction_type'");
-									break;
-					case DEBIT	:	
-									$raw_obj = DB::raw("'DEBIT' as 'transaction_type'");
-									break;
-					case BOTH	:	
-									$raw_obj = DB::raw("{$row_ch->table_name}.{$row_ch->transaction_type_field} as 'transaction_type'");
-									break;
-				}
-				
-				array_push($select_array,$raw_obj);
 				
 				$where_list = DB::table("cash_chitta_where_clause")
 					->where("deleted",0)
@@ -3086,55 +3124,199 @@
 					->where("deleted",0)
 					->where("cash_chitta_id",$row_ch->cash_chitta_id)
 					->get();
-/*+++++++++++++++*/
-				$temp = DB::table($row_ch->table_name);
-				$temp = $temp->select($select_array);
-				foreach($join_list as $row_jo) {
-					$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
-											"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
+				$amount_list = DB::table("cash_chitta_amount_fields")
+					->where("deleted",0)
+					->where("cash_chitta_id",$row_ch->cash_chitta_id)
+					->get();
+				
+				//SELECT ARRAY
+				$select_array = array(
+										"{$row_ch->table_name}.{$row_ch->pk_field} as pk",
+										"{$row_ch->table_containing_account_no}.{$row_ch->account_no_field} as account_no",
+										"{$this->rv_no->tbl}.{$this->rv_no->receipt_voucher_no_field} as rv_no",
+										"{$this->rv_no->tbl}.{$this->rv_no->time_field} as time"
+										
+										//,"aa as bb"
+									);
+				if(!empty($row_ch->name_field) && $row_ch->name_field != "NA") {
+					$select_ele = DB::raw("{$row_ch->table_containing_name}.{$row_ch->name_field} as name");
+					array_push($select_array,$select_ele);
 				}
-				$temp = $temp->where($bid_field,$BID);
-				$temp = $temp->where($date_field,$data["date"]);
-				foreach($where_list as $row_wh) {
-					$where_table = $row_wh->table_name;
-					$where_operator = $row_wh->operator;
-					$where_field = $row_wh->field_name;
-					$where_value = $row_wh->field_value;
-					$where_value = "\"{$where_value}\"";
-					$where_value = str_replace(",","\",\"",$where_value);
-					$where_value = explode(",", $where_value);
-					switch($where_operator) {
-						
-						case "="		:	
-						case "LIKE"		:	
-						case "like"		:	
-											$temp->where("{$where_table}.{$where_field}","{$where_operator}",$where_value);
-											break;
-						case "IN"		:
-						case "in"		:
-											$temp->whereIn("{$where_table}.{$where_field}",$where_value);
-											break;
-						case "NOT IN"	:
-						case "not in"	:
-											$temp->whereNotIn("{$where_table}.{$where_field}",$where_value);
-											break;
+				if(!empty($row_ch->amount_field) && $row_ch->amount_field != "NA") {
+					$select_ele = DB::raw("{$row_ch->table_name}.{$row_ch->amount_field} as amount");
+					array_push($select_array,$select_ele);
+				} else {
+					$amt_fields = "(";
+					$first_flag = true;
+					//	print_r($amount_list);//exit();
+					foreach($amount_list as $row_amt) {
+						if($first_flag) {
+							$first_flag = false;
+							$amt_fields .= "{$row_amt->amount_table}.{$row_amt->amount_field}";
+						} else {
+							$amt_fields .= " + {$row_amt->amount_table}.{$row_amt->amount_field}";
+						}
 					}
+					$amt_fields .= ")";
+					// var_dump($amt_fields);
+					$select_ele = DB::raw(" {$amt_fields} as 'amount'");
+					array_push($select_array,$select_ele);
 				}
-				$temp = $temp->get();
-				//print_r($temp);exit();
-/*---------------*/
+				if(!empty($row_ch->table_containing_particulars) && $row_ch->table_containing_particulars != "NA" && $row_ch->particulars_field != "NA") {
+					$select_ele = "{$row_ch->table_containing_particulars}.{$row_ch->particulars_field} as particulars";
+					array_push($select_array,$select_ele);
+				}
+				switch($row_ch->transaction_type) {
+					case CREDIT	:	//constant defined in route.php file
+									$raw_obj = DB::raw("'CREDIT' as 'transaction_type'");
+									$temp_rv_type = [1];
+									break;
+					case DEBIT	:	
+									$raw_obj = DB::raw("'DEBIT' as 'transaction_type'");
+									$temp_rv_type = [2];
+									break;
+					case BOTH	:	
+									$raw_obj = DB::raw("{$row_ch->table_name}.{$row_ch->transaction_type_field} as 'transaction_type'");
+									
+									$temp_rv_type = [1,2];
+									break;
+				}
+				array_push($select_array,$raw_obj);
+				// print_r($select_array);
+					
+				//QUERY STARTS HERE
+					try {
+						$temp = DB::table($row_ch->table_name);
+						$temp = $temp->select($select_array);
+						//JOINS
+						
+						foreach($join_list as $row_jo) {
+							$temp = $temp->join("{$row_jo->joining_table_1_name}","{$row_jo->joining_table_1_name}.{$row_jo->joining_table_1_field}","=",
+													"{$row_jo->joining_table_2_name}.{$row_jo->joining_table_2_field}");
+						}
+
+						if($row_ch->table_name == "charges_tran") {
+							//JOIN RECEIPT VOUCHER TABLE
+							switch($row_ch->prefix) {
+								case "LOAN CHARGES JL"	:
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","jewelloan_repay.JLRepay_Id");
+															$tran_category["charges_tran"] = $tran_category["jewelloan_repay"];
+															break;
+								case "LOAN CHARGES PL"	:
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","personalloan_repay.PLRepay_Id");
+															$tran_category["charges_tran"] = $tran_category["personalloan_repay"];
+															break;
+								case "LOAN CHARGES SL"	:
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","staffloan_allocation.StfLoanAllocID");
+															$tran_category["charges_tran"] = $tran_category["staffloan_allocation"];
+															break;
+								case "LOAN CHARGES DL"	:
+															$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","depositeloan_allocation.DepLoanAllocId");
+															$tran_category["charges_tran"] = $tran_category["depositeloan_allocation"];
+															break;
+							}
+						} else {
+							$temp = $temp->join("{$this->rv_no->tbl}","{$this->rv_no->tbl}.{$this->rv_no->transaction_id_field}","=","{$row_ch->table_name}.{$row_ch->pk_field}");//JOIN RECEIPT VOUCHER TABLE
+						}
+
+						$temp = $temp->where($bid_field,$BID);
+						$temp = $temp->whereDate($date_field,"=",$data['date']);
+						
+						//WHERE CLAUSE
+						$temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->transaction_category_field}",$tran_category["{$row_ch->table_name}"]);
+						$temp = $temp->whereIn("{$this->rv_no->tbl}.{$this->rv_no->receipt_voucher_type_field}",$temp_rv_type);
+						// $temp = $temp->where("{$this->rv_no->tbl}.{$this->rv_no->bid_field}",$BID);
+						foreach($where_list as $row_wh) {
+							$where_table = $row_wh->table_name;
+							$where_operator = $row_wh->operator;
+							$where_field = $row_wh->field_name;
+							$where_type = $row_wh->field_type;
+							$where_value = $row_wh->field_value;
+							$where_value = $where_value;
+							switch($where_type) {
+								case "INT"		:	$where_value = (int)$where_value;
+													break;
+								case "STR"		:	$where_value = "{$where_value}";
+													break;
+								case "STR_ARR"	:	
+													$where_value = "\"{$where_value}\"";
+													$where_value = str_replace(",","\",\"",$where_value);
+													$where_value = explode(",", $where_value);
+													$where_value = (array)$where_value;
+													break;
+								case "FLOAT"	:	$where_value = (float)$where_value;
+													break;
+							}
+							// $where_value = str_replace(",","\",\"",$where_value);
+							// $where_value = explode(",", $where_value);
+							switch($where_operator) {
+								
+								case "="		:	
+								case "LIKE"		:	
+								case "like"		:	
+													$temp->where("{$where_table}.{$where_field}","{$where_operator}",$where_value);
+													break;
+								case "IN"		:
+								case "in"		:	
+													$temp->whereIn("{$where_table}.{$where_field}",$where_value);
+													break;
+								case "NOT IN"	:	
+								case "not in"	:	
+													$temp->whereNotIn("{$where_table}.{$where_field}",$where_value);
+													break;
+							}
+						}
+						$temp = $temp->get();
+					} catch(Exception $e) {
+						// echo "Exception occured : <br />\n";
+						echo "<br /><br /><br />\n\n\n";
+    					echo $e->getMessage();
+						continue;
+					}
+				//QUERY ENDS HERE
+				
+				// print_r($temp);exit();
+				//PROCESS QUERY RESULT
 				foreach($temp as $row_te) {
+					switch($row_te->transaction_type) {
+						case "1"			:	
+						case "WITHDRAWL"	:	
+												$row_te->transaction_type = "CREDIT";
+												break;
+						case "2"			:	
+						case "Deposit"		:	//deposite to bank - deposit table
+						case ""				:	//BLANK is deposit to bank
+												$row_te->transaction_type = "DEBIT";
+												break;
+					}
 					$ret_data["chitta"][++$i]["receipt_no"] = 0;
 					$ret_data["chitta"][$i]["voucher_no"] = 0;
-					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} {$row_te->account_no} {$row_te->transaction_type}";
+					$ret_data["chitta"][$i]["time"] = $row_te->time;
+					if(isset($row_te->particulars)) {
+						$temp_particulars = " - {$row_te->particulars}";
+					} else {
+						$temp_particulars = "";
+					}
+					if(isset($row_te->name)) {
+						$temp_name = " - {$row_te->name}";
+					} else {
+						$temp_name = "";
+					}
+					$ret_data["chitta"][$i]["particulars"] = "{$row_ch->prefix} - {$row_te->account_no}{$temp_particulars}{$temp_name}";// - {$row_te->transaction_type}";
 					$ret_data["chitta"][$i]["transaction_type"] = $row_te->transaction_type;
-					switch($row_te->transaction_type) {
-						case "CREDIT"	:	$ret_data["chitta"][$i]["receipt_amount"] = $row_te->amount;
+					switch(strtoupper($row_te->transaction_type)) {
+						case "CREDIT"	:	
+											$ret_data["chitta"][$i]["receipt_amount"] = $row_te->amount;
 											$ret_data["chitta"][$i]["voucher_amount"] = 0;
+											$ret_data["chitta"][$i]["receipt_no"] = $row_te->rv_no;
+											$ret_data["chitta"][$i]["voucher_no"] = "";
 											break;
 						case "DEBIT"	:	$ret_data["chitta"][$i]["receipt_amount"] = 0;
 											$ret_data["chitta"][$i]["voucher_amount"] = $row_te->amount;
+											$ret_data["chitta"][$i]["receipt_no"] = "";
+											$ret_data["chitta"][$i]["voucher_no"] = $row_te->rv_no;
 											break;
+						default			:	throw new exception("\n\ninvalid value for transaction_type : {$row_te->transaction_type} ({$row_te->account_no})\n\n");
 					}
 					$ret_data["receipt_amount_sum"] += $ret_data["chitta"][$i]["receipt_amount"];
 					$ret_data["voucher_amount_sum"] += $ret_data["chitta"][$i]["voucher_amount"];
@@ -3142,10 +3324,22 @@
 				
 			}
 			
-				//print_r($ret_data);exit();
+			//SORT ENTRIES BASED ON TIME
+			usort($ret_data["chitta"],array("self","cmp"));//cmp - CALLBACK METHOD
+		
+			//print_r($ret_data);exit();
 			return $ret_data;
 		}
 		
+		// CALLBACK METHOD
+		function cmp($a, $b)
+		{
+			if ($a["time"] == $b["time"]) {
+				return 0;
+			}
+			return ($a["time"] < $b["time"]) ? -1 : 1;
+		}
+
 		public function cash_chitta_details_list($data)
 		{
 			$ret_data["chitta"] = [];
@@ -3159,12 +3353,15 @@
 									"table_name",
 									"pk_field",
 									"amount_field",
-									"bid_field",
 									"date_field",
 									"transaction_type",
 									"transaction_type_field",
+									"table_containing_bid",
+									"bid_field",
 									"table_containing_account_no",
-									"account_no_field"
+									"account_no_field",
+									"table_containing_particulars",
+									"particulars_field"
 								);
 			
 			$cash_chitta_details_list = DB::table($table)
@@ -3182,12 +3379,29 @@
 				$ret_data["chitta"][$i]["table_name"] = $row_ca->table_name;
 				$ret_data["chitta"][$i]["pk_field"] = $row_ca->pk_field;
 				$ret_data["chitta"][$i]["amount_field"] = $row_ca->amount_field;
-				$ret_data["chitta"][$i]["bid_field"] = $row_ca->bid_field;
 				$ret_data["chitta"][$i]["date_field"] = $row_ca->date_field;
 				$ret_data["chitta"][$i]["transaction_type"] = $row_ca->transaction_type;
 				$ret_data["chitta"][$i]["transaction_type_field"] = $row_ca->transaction_type_field;
+				$ret_data["chitta"][$i]["table_containing_bid"] = $row_ca->table_containing_bid;
+				$ret_data["chitta"][$i]["bid_field"] = $row_ca->bid_field;
 				$ret_data["chitta"][$i]["table_containing_account_no"] = $row_ca->table_containing_account_no;
 				$ret_data["chitta"][$i]["account_no_field"] = $row_ca->account_no_field;
+				$ret_data["chitta"][$i]["table_containing_particulars"] = $row_ca->table_containing_particulars;
+				$ret_data["chitta"][$i]["particulars_field"] = $row_ca->particulars_field;
+
+				$table_data = DB::table("cash_chitta_joining_tables")
+					->where("cash_chitta_joining_tables.cash_chitta_id",$row_ca->cash_chitta_id)
+					->where("cash_chitta_joining_tables.deleted",0)
+					->get();
+				$ret_data["chitta"][$i]["join"] = $this->parse_table_data(["table_data"=>$table_data]);
+
+				$table_data = DB::table("cash_chitta_where_clause")
+					->where("cash_chitta_where_clause.cash_chitta_id",$row_ca->cash_chitta_id)
+					->where("cash_chitta_where_clause.deleted",0)
+					->get();
+				$ret_data["chitta"][$i]["where"] = $this->parse_table_data(["table_data"=>$table_data]);
+
+
 			}
 			
 			
@@ -3201,6 +3415,92 @@
 			
 			//print_r($ret_data);exit();
 			return $ret_data;
+		}
+
+		public function get_table_list($data)
+		{
+			$ret_data = [];
+			$tables = DB::select('SHOW TABLES');
+			$tables_in_member = "Tables_in_".DB::getDatabaseName();
+			$i = -1;
+			foreach($tables as $row_table)
+			{
+				$ret_data["tables"][++$i] = $row_table->$tables_in_member;
+			}
+			return $ret_data;
+		}
+
+		public function get_table_fields($data)
+		{
+			$ret_data = [];
+			$ret_data = DB::getSchemaBuilder()->getColumnListing($data["table_name"]);
+			return $ret_data;
+		}
+
+		public function save_data($data)
+		{
+			$table = $data["table"];
+			$fields = $data["fields"];
+			$operation = $data["operation"];
+
+			$data_array = (array)json_decode($fields);
+
+			// echo "*****";
+			// print_r($data_array);
+			// echo "*****";exit();
+
+			switch($operation) {
+				case "insert"	:
+									DB::table("{$table}")
+										->insertGetId($data_array);
+									break;
+				case "update"	:
+									$pk = $data["pk"];
+									$pk_value = $data_array["{$pk}"];
+									unset($data_array["{$pk}"]);
+
+									DB::table("{$table}")
+										->where("{$pk}",$pk_value)
+										->update($data_array);
+									break;		
+			}
+			return;
+		}
+
+		public function parse_table_data($data)
+		{
+			$ret_data = [];
+			$table_data = (array)$data["table_data"];
+
+			$i = -1;
+			foreach($table_data as $row_obj) {
+				$i++;
+				$table_row = (array)$row_obj;
+				foreach($table_row as $field => $value) {
+					$ret_data[$i]["{$field}"] = $value;
+				}
+			}
+			return $ret_data;
+		}
+
+		public function parse_table_row($data)
+		{
+			$ret_data = [];
+			$table_row = (array)$data['table_row'];
+			foreach($table_row as $field => $value) {
+				$ret_data["{$field}"] = $value;
+			}
+			return $ret_data;
+		}
+
+		public function get_opening_balance($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			return DB::table("dailyopenclose")
+				->where("Daily_Date",$data["date"])
+				->where("Daily_Status","OPEN")
+				->where("Daily_Bid",$BID)
+				->value("Daily_TotBal");
 		}
 		
 	}

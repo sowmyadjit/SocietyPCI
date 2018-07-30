@@ -4,19 +4,33 @@
 	use Auth;
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
+	use App\Http\Model\SettingsModel;
 	
 	class DLRepaymentModel extends Model
 	{
 		protected $table='depositeloan_allocation';
+		
+		public function __construct() {
+			$this->rv_no = new ReceiptVoucherController;
+			$this->settings = new SettingsModel;
+		}
+		
 		public function pigmydlacc()
-		{
-			
-			return DB::table('depositeloan_allocation')
+		{	
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('depositeloan_allocation')
 			//->select(DB::raw('DepLoanAllocId as id, CONCAT(`DepLoanAllocId`,"-",`DepLoan_AccNum`) as name'))
 			->select(DB::raw('DepLoanAllocId as id, DepLoan_AccNum as name'))
 			->where('DepLoan_AccNum','like','%PG%')
-			->where('LoanClosed_State','<>',"YES")
-			->get();		
+			->where('LoanClosed_State','<>',"YES");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;	
 		}
 		public function GetDLDetail($id)
 		{
@@ -356,6 +370,18 @@
 			{
 				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['FDDLAlloc'],'DLRepay_PaidAmt'=>$id['fdpayamt'],'DLRepay_PayMode'=>$id['FdPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1"]);
 			}
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $DLTran;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DL_REPAY;//constant DL_REPAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $RepayDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="PIGMI ACCOUNT"||$paymode=="FD_ACCOUNT")
 			{
 				DB::table('depositeloan_allocation')
@@ -444,7 +470,7 @@
 						$int_type = 'PREWITHDRAWAL';
 					}
 
-					DB::table('pigmi_payamount')->insertGetId(['Bid'=>$bid,'PayAmount_PigmiAccNum'=>$pg_ac_no,'PayAmount_PaymentMode'=>'DL REPAY','PayAmount_PayableAmount'=>$payAmt,'PayAmountReport_PayDate'=>$RepayDte,'PayAmount_PayDate'=>$PayAmount_PayDate,'PayAmount_IntType'=>$int_type]);
+					DB::table('pigmi_payamount')->insertGetId(['Bid'=>$bid,'PayAmount_PigmiAccNum'=>$pg_ac_no,'PayAmount_PaymentMode'=>'DL REPAY','PayAmount_PayableAmount'=>$id['pgpayamt'],'PayAmountReport_PayDate'=>$RepayDte,'PayAmount_PayDate'=>$PayAmount_PayDate,'PayAmount_IntType'=>$int_type]);
 				}
 /***************** pigmi paid amount entry *************************/
 				
@@ -485,23 +511,31 @@
 		
 		public function RDdlacc()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			
-			return DB::table('depositeloan_allocation')
-			
+			$ret_data = DB::table('depositeloan_allocation')
 			->select(DB::raw('DepLoanAllocId as id, DepLoan_AccNum as name'))
-			->where('DepLoan_AccNum','like','%RD%')
-			->get();		
+			->where('DepLoan_AccNum','like','%RD%');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		
 		public function FDdlacc()
 		{
-			
-			return DB::table('depositeloan_allocation')
-			
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('depositeloan_allocation')
 			->select(DB::raw('DepLoanAllocId as id, DepLoan_AccNum as name'))
-			->where('LoanClosed_State','<>',"YES")
+			->where('LoanClosed_State','<>',"YES");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("depositeloan_allocation.DepLoan_Branch",$BID);
+			}
 			//->where('DepLoan_AccNum','like','%FD%')
-			->get();		
+			$ret_data = $ret_data->get();		
+			return $ret_data;
 		}
 		public function FDdlacc_fd()
 		{
@@ -556,20 +590,32 @@
 		}
 		public function SBdlacc()
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
 			
-			return DB::table('createaccount')
-			
-			->select(DB::raw('Accid as id, AccNum as name'))
-			->where('AccNum','like','%SB%')
-			->get();		
+			$ret_data = DB::table('createaccount')
+				->select(DB::raw('Accid as id, AccNum as name'))
+				->where('AccNum','like','%SB%');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("createaccount.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();		
+			return $ret_data;
 		}
 		public function getplacc()
 		{
-			
-			return DB::table('personalloan_allocation')
-			
-			->select(DB::raw('PersLoanAllocID as id, PersLoan_Number as name'))
-			->get();		
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('personalloan_allocation')
+			->select(DB::raw('PersLoanAllocID as id, PersLoan_Number as name'));
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("personalloan_allocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+			return $ret_data;
 		}
 		public function getjlacc()
 		{
@@ -584,14 +630,26 @@
 				$bids = array($BID);
 			}
 			
-			return DB::table('jewelloan_allocation')
-			
-			->select(DB::raw('JewelLoanId as id, JewelLoan_LoanNumber as name'))
-			->where('JewelLoan_Closed','!=','YES')
-			->whereIn('JewelLoan_Bid',$bids)
-			->orWhere("auction_status","=","1")
-			->orWhere("auction_status","=","2")
-			->get();		
+			$ret_data1 = DB::table('jewelloan_allocation')
+				->select(DB::raw('JewelLoanId as id, JewelLoan_LoanNumber as name'))
+				->where('JewelLoan_Closed','!=','YES');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data1 = $ret_data1->whereIn('JewelLoan_Bid',$bids);
+			}
+			$ret_data1 = $ret_data1->get();
+
+			$ret_data2 = DB::table('jewelloan_allocation')
+				->select(DB::raw('JewelLoanId as id, JewelLoan_LoanNumber as name'))
+				->where("auction_status","=","1")
+				->orWhere("auction_status","=","2");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$ret_data2 = $ret_data2->whereIn('JewelLoan_Bid',$bids);
+				}
+			$ret_data2 = $ret_data2->get();
+
+			$ret_data = array_merge($ret_data1,$ret_data2);
+
+			return $ret_data;
 		}
 		public function getplacc_partpayment()
 		{
@@ -698,11 +756,15 @@
 		
 		public function getslacc()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 			
-			return DB::table('staffloan_allocation')
-			
-			->select(DB::raw('StfLoanAllocID as id,StfLoan_Number as name'))
-			->get();		
+			$ret_data = DB::table('staffloan_allocation')
+			->select(DB::raw('StfLoanAllocID as id,StfLoan_Number as name'));
+			if($this->settings->get_value("allow_inter_branch") == 0 && false) {
+				$ret_data = $ret_data->where("staffloan_allocation.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();// print_r($ret_data);exit();
+			return $ret_data;
 		}
 		public function getslacc_partpayment()
 		{
@@ -825,8 +887,11 @@
 				$PgTotRem=($pigmyavilableamt-$payAmt);
 				abs($PgTotRem);
 				$pigmycommision=(($payAmt*4)/100);
+				$pigmycommision = round($pigmycommision);
 				$payAmt=(Floatval($payAmt)-Floatval($pigmycommision));
 				abs($payAmt);
+			} else {
+				$pigmycommision = 0;
 			}
 			
 			
@@ -928,7 +993,19 @@
 				//$loanremainingamt=0;
 				$remainigemi=$emi;
 			}	     
-			$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$DepAlID,'PLRepay_PaidAmt'=>$id['plpayamt'],'PLRepay_PayMode'=>$id['plPayMode'],'PLRepay_Bid'=>$branch,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$RepayDte,'PLRepay_CalculatedInterest'=>$loaninterest,'RemainingInterest_Amt'=>$remaininginterst,'PLRepay_PaidInterest'=>$paidinterest,'PLRepay_Amtpaidtoprincpalamt'=>$payAmt,'PLRepay_EMIremaining'=>$remainigemi,'PL_ReceiptNum'=>$r,'PL_ChequeNO'=>$chequeno,'PL_ChequeDate'=>$chequedate,'PL_BankName'=>$bankname,'PL_BankBranch'=>$bankbranch,'PL_IFSC'=>$ifsc,'PL_CreditBank'=>$bankid,'interest_paid_upto'=>$interest_upto_pl]);
+			$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$DepAlID,'PLRepay_PaidAmt'=>$id['plpayamt'],'PLRepay_PayMode'=>$id['plPayMode'],'PLRepay_Bid'=>$branch,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$RepayDte,'PLRepay_CalculatedInterest'=>$loaninterest,'RemainingInterest_Amt'=>$remaininginterst,'PLRepay_PaidInterest'=>$paidinterest,'PLRepay_Amtpaidtoprincpalamt'=>$payAmt,'PLRepay_EMIremaining'=>$remainigemi,'PL_ReceiptNum'=>$r,'PL_ChequeNO'=>$chequeno,'PL_ChequeDate'=>$chequedate,'PL_BankName'=>$bankname,'PL_BankBranch'=>$bankbranch,'PL_IFSC'=>$ifsc,'PL_CreditBank'=>$bankid,'interest_paid_upto'=>$interest_upto_pl, 'pigmy_commission'=>$pigmycommision]);
+			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $plTran;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PL_REPAY;//constant PL_REPAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $RepayDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+			
 			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="PYGMY ACCOUNT"||$paymode=="ADJUSTMENT")
 			{
 				DB::table('personalloan_allocation')
@@ -1094,10 +1171,22 @@
 			
 			$jlTran=DB::table('jewelloan_repay')->InsertGetId(['JLRepay_JLAllocID'=>$DepAlID,'JLRepay_PaidAmt'=>$id['jlpayamt'],'JLRepay_PayMode'=>$paymode,'JLRepay_Bid'=>$bid,'JLRepay_Created_By'=>$UID,'JLRepay_Date'=>$RepayDte,'JLRepay_interestcalculated'=>$Loaninterest,'JLRepay_interestpaid'=>$paidinterest,'JLRepay_interestpending'=>$remaininginterst,'JLRepay_paidtoprincipalamt'=>$payAmt,'JL_ChequeNo'=>$chequeno,'JL_ChequeDate'=>$chequedate,'JL_BankName'=>$bankname,'JL_BankBranch'=>$bankbranch,'JL_CreditBank'=>$bankid,'JL_IFSC'=>$ifsc,'repay_through_auction'=>$repay_through_auction,'interest_paid_upto'=>$interest_upto]);
 			
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $jlTran;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_REPAY;//constant JL_REPAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $RepayDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+
 			DB::table('jewelloan_allocation')
 			->where('JewelLoanId',$DepAlID)
 			->update(['JewelLoan_LoanRemainingAmount'=>$pendingloanamt,'JewelLoan_remaininginterest'=>$remaininginterst,'JewelLoan_lastpaiddate'=>$RepayDte]);
-			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="ADJUSTMENT")
+			// if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="ADJUSTMENT")
+			if($paymode!="CHEQUE")
 			{
 				if($pendingloanamt<=0)
 				{
@@ -1199,7 +1288,7 @@
 				$subhead=$head_sub->subhead;
 				
 				
-				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"SL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+				$chargtabid[]=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"SL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -1222,12 +1311,38 @@
 			$totrem=$LoanRem-$payAmt;
 			$acid=$id['slacid'];
 			$actid=$id['slactid'];
-			
-			$slTran=DB::table('staffloan_repay')->InsertGetId(['SLRepay_SLAllocID'=>$DepAlID,'SLRepay_PaidAmt'=>$id['slpayamt'],'SLRepay_PayMode'=>$id['slPayMode'],'SLRepay_Bid'=>$branch,'SLRepay_Created_By'=>$UID,'SLRepay_Date'=>$RepayDte]);
-			
+
+			/****** ******/
+			$prev_remaining_amount = DB::table("staffloan_allocation")->where('StfLoanAllocID',$DepAlID)->value("StaffLoan_LoanRemainingAmount");
+			$total_paid = $id['slpayamt'];
+			$interest_paid = $id["slintamt"];
+			$principle_paid = $total_paid - $interest_paid - $chargsum;
+			$remaining_amount = $prev_remaining_amount - $principle_paid;
+			/****** ******/
+
+			$slTran=DB::table('staffloan_repay')->InsertGetId(['SLRepay_SLAllocID'=>$DepAlID,'SLRepay_PaidAmt'=>$id['slpayamt'],'SLRepay_PayMode'=>$id['slPayMode'],'SLRepay_Bid'=>$branch,'SLRepay_Created_By'=>$UID,'SLRepay_Date'=>$RepayDte,'SLRepay_Interest'=>$interest_paid,'paid_principle'=>$principle_paid]);
+
+				/***********/
+				$fn_data["rv_payment_mode"] = $paymode;
+				$fn_data["rv_transaction_id"] = $slTran;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SL_REPAY;//constant SL_REPAY is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $RepayDte;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+			// print_r($chargtabid);
+			foreach($chargtabid as $key => $value) {
+				DB::table("charges_tran")
+					->where("charg_id", $value)
+					->update(["repay_id"=>$slTran]);
+			}
+
 			DB::table('staffloan_allocation')
 			->where('StfLoanAllocID',$DepAlID)
-			->update(['StaffLoan_LoanRemainingAmount'=>$totrem]);
+			// ->update(['StaffLoan_LoanRemainingAmount'=>$totrem]);
+			->update(['StaffLoan_LoanRemainingAmount'=>$remaining_amount, "LastPaidDate"=>$RepayDte]);
 			
 			if($paymode=="CASH")
 			{
@@ -1327,7 +1442,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else if($PLoanTId=="CSL")
@@ -1338,7 +1454,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else if($PLoanTId=="AMTL")
@@ -1349,7 +1466,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else if($PLoanTId=="CMTL")
@@ -1360,7 +1478,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else if($PLoanTId=="ALL")
@@ -1369,7 +1488,8 @@
 					$id=DB::table('personalloan_repay')->select('PLRepay_Id','PLRepay_Date','PLRepay_PaidAmt','PLRepay_CalculatedInterest','personalloan_repay.RemainingInterest_Amt','PLRepay_PaidInterest','PLRepay_Amtpaidtoprincpalamt','PLRepay_EMIremaining','personalloan_allocation.RemainingLoan_Amt','PersLoan_Number')
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				
@@ -1380,7 +1500,8 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
 					->where('PLRepay_PLAllocID','=',$loanrepayid)
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				
@@ -1395,7 +1516,8 @@
 					->leftJoin('depositeloan_allocation', 'depositeloan_allocation.DepLoanAllocId', '=' , 'depositeloan_repay.DLRepay_DepAllocID')
 					->leftJoin('user', 'user.Uid', '=' , 'depositeloan_allocation.DepLoan_Uid')
 					->whereRaw("DATE(depositeloan_repay.DLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				else
@@ -1406,7 +1528,8 @@
 					->leftJoin('user', 'user.Uid', '=' , 'depositeloan_allocation.DepLoan_Uid')
 					->whereRaw("DATE(depositeloan_repay.DLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
 					->where('DLRepay_DepAllocID','=',$loanrepayid)
-					->paginate(20);
+					// ->paginate(20);
+					->get();
 					return $id;
 				}
 				
@@ -1417,7 +1540,8 @@
 				->select('staffloan_allocation.Uid','StfLoan_Number','staffloan_allocation.Bid','LoanAmt','otherCharges','Book_FormCharges','AjustmentCharges','ShareCharges','PayableAmt','LoandurationYears','LoanduratiobDays','Staff_Surety','Loan_Type','StartDate','EndDate','StaffLoan_LoanRemainingAmount','EMI_Amount','StfLoanAllocID')
 				->leftJoin('user', 'user.Uid', '=' , 'staffloan_allocation.Uid')
 				->whereRaw("DATE(staffloan_allocation.StartDate) BETWEEN '".$start."' AND '".$end."'")
-				->paginate(20);
+				// ->paginate(20);
+				->get();
 				return $id;
 			}
 			
@@ -1428,7 +1552,8 @@
 				->leftJoin('jewelloan_allocation', 'jewelloan_allocation.JewelLoanId', '=' , 'jewelloan_repay.JLRepay_JLAllocID')
 				->leftJoin('user', 'user.Uid', '=' , 'jewelloan_allocation.JewelLoan_Uid')
 				->whereRaw("DATE(jewelloan_repay.JLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
-				->paginate(20);
+				// ->paginate(20);
+				->get();
 				return $id;
 			}
 			
@@ -1592,6 +1717,7 @@
 			//->select(DB::raw('Branch_Id as id, Branch_Id as name'))
 			->select(DB::raw('Branch_Id as id, CONCAT(`Branch_Id`,"-",`Branch_per`) as name'))
 			->where('Branch_Branch2_Id','=',$BID)
+			->orWhere('Branch_Branch1_Id','=',$BID)
 			->get();
 			return $data;
 		}

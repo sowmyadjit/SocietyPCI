@@ -17,7 +17,7 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BID=$uname->Bid;
-			$id = DB::table('customer')->select('Custid','customer.FirstName','customer.MiddleName','customer.LastName','BName','AccNum','Gender','OpeningBalance','address.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','MobileNo','Pincode','PhoneNo')
+			$id = DB::table('customer')->select('Custid','customer.FirstName','customer.MiddleName','customer.LastName','BName','AccNum','Gender','OpeningBalance','address.Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','MobileNo','Pincode','PhoneNo','Member_No')
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
 			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')
@@ -28,12 +28,16 @@
 		}
 		public function GetcustrejAuthories()
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
 			
 			$id = DB::table('customer')->select('Custid','customer.FirstName','customer.MiddleName','customer.LastName','BName','AccNum','Gender','OpeningBalance','Email','MaritalStatus','Occupation','Age','Birthdate','Address','City','District','State','MobileNo','Pincode','PhoneNo')
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
 			->where('AuthStatus','=',"rejected")
-			
+			->where('customer.Bid',$BID)
 			->get();
 			return $id;
 		}
@@ -248,19 +252,28 @@
 		
 		public function Getunauthpigmy()
 		{
-		
 			$uname='';
 			if(Auth::user())
 			$uname= Auth::user();
 			$BID=$uname->Bid;
-			return DB::table('pigmiallocation')
+			$ret_data = DB::table('pigmiallocation')
 			->join('user','pigmiallocation.Uid','=','user.Uid')
 			->join('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
-			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','Interest','max_Interest','Max_Commission','LastName','MiddleName')
+			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','Interest','max_Interest','Max_Commission','LastName','MiddleName','Agentid')
 			->where('status','=','UNAUTHORISED')
 			->where('pigmiallocation.Bid',$BID)
 			->get();
+
+			foreach($ret_data as $key_pg => $row_pg) {
+				$agent_row = DB::table("user")
+					->where("user.Uid",$row_pg->Agentid)
+					->first();
+				$agent_name = "{$agent_row->FirstName} {$agent_row->MiddleName} {$agent_row->LastName}";
+				$ret_data[$key_pg]->agent_name = $agent_name;
+			}
+			return $ret_data;
 		}
+
 		public function AcceptAccountpigmy($id)
 		{
 			$uname='';
@@ -314,15 +327,44 @@
 			DB::table('inhandcash_trans')
 			->insert(['InhandTrans_Date'=>$trandate,'InhandTrans_Particular'=>"Pigmy Account Rejected",'InhandTrans_Cash'=>$ob,'InhandTrans_Bid'=>$bid,'InhandTrans_Type'=>"Debit",'Present_Inhandcash'=>$totcash,'Total_InhandCash'=>$totinhand]);
 			
-			$id=DB::table('pigmiallocation')->where('PigmiAllocID',$id)
+			DB::table('pigmiallocation')->where('PigmiAllocID',$id)
 			->update(['Status'=>"rejected",'AuthorisedBy'=>$UID]);
 			
-			
-			
-			return $id;								   
-			
-			
+			/******** REJECT *******/
+				$pigmiallocation = DB::table("pigmiallocation")
+					->select(
+						"pending_pigmy.PpId",
+						"pigmiallocation.Agentid",
+						"pigmiallocation.StartDate",
+						"pigmiallocation.Opening_Balance",
+						"pending_pigmy.PendPigmy_Bid"
+					)
+					->join("pending_pigmy","pending_pigmy.PendPigmy_AgentUid","=","pigmiallocation.Agentid")
+					->where("pigmiallocation.PigmiAllocID",$id)
+					->where("pending_pigmy.PendPigmy_Status","PENDING")
+					// ->where("pigmiallocation.StartDate","=","pending_pigmy.PendPigmy_CollectionDate")
+					// ->where("pigmiallocation.Opening_Balance","=","pending_pigmy.PendPigmy_PendingAmount")
+					->get();
+					
+					foreach($pigmiallocation as $row_pg) {
+						$temp = DB::table("pending_pigmy")
+							->where("pending_pigmy.PpId",$row_pg->PpId)
+							->where("pending_pigmy.PendPigmy_AgentUid",$row_pg->Agentid)
+							->where("pending_pigmy.PendPigmy_CollectionDate",$row_pg->StartDate)
+							->where("pending_pigmy.PendPigmy_PendingAmount",$row_pg->Opening_Balance)
+							->where("pending_pigmy.PendPigmy_Bid",$row_pg->PendPigmy_Bid)
+							->first();
+						if(!empty($temp)) {
+							DB::table("pending_pigmy")
+								->where("PpId",$temp->PpId)
+								->update(["PendPigmy_Status"=>"REJECTED"]);
+							break;
+						}
+					}
+			/******** REJECT *******/
+			return;
 		}
+		
 		public function GetAuthEmployee()
 		{
 			$id = DB::table('employee')->select('Eid','ECode','basicpay','incometax','pf','hra','Gender','MaritalStatus','Occupation','Age','Birthdate','user.Email','Address','District','City','State','PhoneNo','MobileNo','Pincode','BName','DName','user.FirstName','user.MiddleName','user.LastName')
@@ -669,6 +711,12 @@
 		//Show Details of UnAuthorised Personal Loans
 		public function show_unauthPLoan($id)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID = $uname->Bid;
+
 			$lid1=DB::table('loancategory')->select('LoanCategoryId')->where('LoanCategoryName','=',$id)->first();
 				$lid=$lid1->LoanCategoryId;
 			
@@ -677,6 +725,7 @@
 			->Join('members', 'members.Memid', '=' , 'request_loan.RL_MemId')
 			->where('Auth_Status','=',"UNAUTHORISED")
 			->where('Loan_Category','=',$lid)
+			->where("request_loan.Bid", $BID)
 			->get();
 			return $id;
 		}
@@ -720,6 +769,13 @@
 		//Show Details of UnAuthorised Deposit Loans
 		public function show_unauthDLoan($id)
 		{
+			
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID = $uname->Bid;
+
 				$lid1=DB::table('loancategory')->select('LoanCategoryId')->where('LoanCategoryName','=',$id)->first();
 				$lid=$lid1->LoanCategoryId;
 		
@@ -728,6 +784,7 @@
 			->leftJoin('user', 'user.Uid', '=', 'request_loan.Uid')
 			->where('Auth_Status','=',"UNAUTHORISED")
 			->where('Loan_Category','=',$lid)
+			->where("request_loan.Bid", $BID)
 			->get();
 			return $id;
 		}
@@ -770,6 +827,11 @@
 		//Show Details of UnAuthorised Staff Loans
 		public function show_unauthSLoan($id)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID = $uname->Bid;
 		
 			$lid1=DB::table('loancategory')->select('LoanCategoryId')->where('LoanCategoryName','=',$id)->first();
 				$lid=$lid1->LoanCategoryId;
@@ -778,6 +840,7 @@
 			->leftJoin('user', 'user.Uid', '=', 'request_loan.Uid')
 			->where('Auth_Status','=',"UNAUTHORISED")
 			->where('Loan_Category','=',$lid)
+			->where("request_loan.Bid", $BID)
 			->get();
 			return $id;
 		}
@@ -817,6 +880,11 @@
 		//Show Details of UnAuthorised Jewel Loans
 		public function show_unauthJLoan($id)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID = $uname->Bid;
 		
 			$lid1=DB::table('loancategory')->select('LoanCategoryId')->where('LoanCategoryName','=',$id)->first();
 		$lid=$lid1->LoanCategoryId;
@@ -825,6 +893,7 @@
 			->leftJoin('user', 'user.Uid', '=', 'request_loan.Uid')
 			->where('Auth_Status','=',"UNAUTHORISED")
 			->where('Loan_Category','=',$lid)
+			->where("request_loan.Bid", $BID)
 			->get();
 			return $id;
 		}

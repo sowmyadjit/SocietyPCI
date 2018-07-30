@@ -40,12 +40,13 @@
 							<?php /*	<div class="col-md-5 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchFd" placeholder="SEARCH MATURITY ACCOUNT">
 								</div>*/?>
-								<div class="col-md-3" style="height:38px;">
+								<div class="col-md-4" style="height:38px;">
 									ACCOUNT TYPE:
 									<select id="closed_status" style="height:38px;">
 										<option value="NO">LIVE</option>
 										<option value="YES">CLOSED</option>
 									</select>
+									<button class="btn-sm"><span class="glyphicon glyphicon-refresh" id="refresh" /></button>
 								</div>
 							</div>
 						</div>
@@ -71,6 +72,10 @@
 	$("#closed_status").change(function() {
 		$("#deposit_account_list_box").html("Loading...");
 		deposit_account_list("");
+	});
+
+	$("#refresh").click(function() {
+		$("#closed_status").trigger("change");
 	});
 	
 	$("#search_box").change(function() {

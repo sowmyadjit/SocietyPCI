@@ -57,11 +57,13 @@
 					</tbody>
 					</table>
 				
+<?php /*
 				<div id='pagei<?php echo $loanstaff['module']->Mid; ?>'>
 			
 				{!!$loanstaff['datastaff']->appends(Input::except('page'))->render() !!}
 
 				</div>
+*/?>
 </div>
 				
 				

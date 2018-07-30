@@ -48,7 +48,7 @@
 							</div>
 						</div>	
 						
-						<div class="col-md-4 ">
+						<div class="col-md-4 hidden">
 							<input type="text" class="form-control" id="fdaccount" name="fdaccount">
 						</div>
 						
@@ -323,7 +323,7 @@
 <script>
 	
 	$('#account').change( function(e) {
-		usr=$('#account').data('value');
+		usr=$('#account').attr('data-value');
 		$.ajax({
 			url:'GetSBForFDPayAmt',
 			type:'post',
@@ -359,8 +359,8 @@
 	});
 	
 	$('input.typeahead').typeahead({
-		//ajax: '/Getaccnum'
-		source:Getaccnum
+		ajax: '/Getaccnum'
+		//source:Getaccnum
 	});
 	//Typeahead for Bank Branch Name from AddBank Table
 	$('input.BankNameTypeAhead').typeahead({

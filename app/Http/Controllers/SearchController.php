@@ -321,7 +321,17 @@
 			return ($this->GetFdAllocation->GetFDNumberForLoanAlloc($request->search));
 		}
 		
+		public function GetFDandKCCNumberForLoanAlloc(Request $request)//for DL allocation
+		{
+			
+			return ($this->GetFdAllocation->GetFDandKCCNumberForLoanAlloc($request->search));
+		}
 		
+		public function GetKCCNumberForLoanAlloc(Request $request)//for DL allocation
+		{
+			
+			return ($this->GetFdAllocation->GetKCCNumberForLoanAlloc($request->search));
+		}
 		
 		public function getrdprewithdraw(Request $request)
 		{
@@ -356,9 +366,19 @@
 			return ($this->get_PayAmt->GetFDAccForPayAmt($request->search));
 		}
 		
+		public function GetKCCAccForPayAmt(Request $request)
+		{
+			return ($this->get_PayAmt->GetKCCAccForPayAmt($request->search));
+		}
+		
 		public function GetFDMatuAccForPayAmt(Request $request)
 		{
 			return ($this->get_PayAmt->GetFDMatuAccForPayAmt($request->search));
+		}
+		
+		public function GetKCCMatuAccForPayAmt(Request $request)
+		{
+			return ($this->get_PayAmt->GetKCCMatuAccForPayAmt($request->search));
 		}
 		
 		public function GetSalary(Request $request)

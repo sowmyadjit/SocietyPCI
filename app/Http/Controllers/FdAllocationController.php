@@ -69,7 +69,8 @@ public function Show_FdAlloc()
 			$fda=$this->fdallocation_model->crtfdalloc();
 			return view('createfdallocation',compact('fda'));
 		}
-public function create_fdalloc(Request $request)
+		
+		public function create_fdalloc(Request $request)
 		{
 			$fdalloc['accid']=$request->input('accid');
 			$fdalloc['accid_int']=$request->input('accid_int');
@@ -123,6 +124,7 @@ public function create_fdalloc(Request $request)
 			$fdalloc['month']=$request->input('month');
 			$fdalloc['monthinterest']=$request->input('monthinterest');
 			$fdalloc['accid']=$request->input('accid');
+			$fdalloc['fd_bank_id']=$request->input('fd_bank_id');
 			
 			$id=$this->fdallocation_model->InsertFdAlloc($fdalloc);
 			return redirect('/');
@@ -167,9 +169,18 @@ public function create_fdalloc(Request $request)
 	
 	public function GetSBAmt(Request $request)
     {
+
+
 	 $sbamt=$request->input('actid');
+
+			/*********/
+			$fn_data["acc_id"] =  $request->input('actid');
+			$sb_balance = $this->acc->get_account_balance($fn_data);
+			/*********/
+
+
 		$get=$this->fdallocation_model->GetSBAmt($sbamt);
-		$id['total']=$get->Total_Bal;
+		$id['total'] = $sb_balance; // $get->Total_Bal;
 		return $id;
 
     }
@@ -298,6 +309,7 @@ public function create_fdalloc(Request $request)
 			return redirect('/');
 			
 		}
+
 		public function fdrenew(Request $request)
 		{
 			$fdrenew['fdtype']=$request->input('fdtype');
@@ -309,6 +321,20 @@ public function create_fdalloc(Request $request)
 			return view('FdReNewHome',compact('fdrenew'));
 			
 		}
+		
+		public function kccrenew(Request $request)
+		{
+			$fdrenew['fdtype']=$request->input('fdtype');
+			$fdrenew['fdaccno']=$request->input('fdaccno');
+			$fdrenew['fdmatureaccno']=$request->input('fdmatureaccno');
+			
+			$fdrenew['data']=$this->fdallocation_model->kccrenew($fdrenew);
+			$fdrenew['data']->old_kcc_id = $request->input('fdmatureaccno');
+
+			$fdrenew['int']=$this->fdallocation_model->crtfdalloc();
+			return view('KccReNewHome',compact('fdrenew'));
+		}
+
 		public function fdrenewdetails(Request $request)
 		{
 			
@@ -348,6 +374,61 @@ public function create_fdalloc(Request $request)
 			
 			$this->fdallocation_model->fdrenewdetails($fdalloc);
 		}
+		
+		public function kccrenewdetails(Request $request)
+		{
+			$fdalloc['old_kcc_id'] = $request->input("old_kcc_id");
+			
+			$fdalloc['accid']=$request->input('accid');
+			$fdalloc['userid']=$request->input('userid');
+			$fdalloc['fdtid']=$request->input('fdtid');
+			$fdalloc['fddep']=$request->input('fddep');
+			$fdalloc['mamt']=$request->input('mamt');
+			
+			$fdalloc['fdalloc']=$request->input('fdalloc');
+			$fdalloc['fdallocreport']=$request->input('fdallocreport');
+			$fdalloc['fdedte']=$request->input('fdedte');
+			$fdalloc['fdrem']=$request->input('fdrem');
+			
+			$fdalloc['branchcode']=$request->input('branchcode');
+			$fdalloc['FdBankName']="";
+			
+			$fdalloc['fdpaymode']=$request->input('fdpaymode');
+			$fdalloc['fdsbamount']="";
+			$fdalloc['fdchequeno']="";
+			$fdalloc['fdchdate']="";
+			$fdalloc['bnk']="";
+			$fdalloc['fdbankbranch']="";
+			$fdalloc['fdifsccode']="";
+			$fdalloc['fduncleared']="";
+			$fdalloc['fdunclearedval']="CLEARED";
+			$fdalloc['sbavailable']=$request->input('sbavailable');
+			$fdalloc['bid']=$request->input('bid');
+			$fdalloc['uid']=$request->input('uid');
+			
+			
+			$fdalloc['nfname']=$request->input('nfname');
+			$fdalloc['nmname']=$request->input('nmname');
+			$fdalloc['nlname']=$request->input('nlname');
+			$fdalloc['reltn']=$request->input('reltn');
+			$fdalloc['nemail']=$request->input('nemail');
+			$fdalloc['ngender']=$request->input('ngender');
+			$fdalloc['nmstate']=$request->input('nmstate');
+			$fdalloc['nage']=$request->input('nage');
+			$fdalloc['nbdate']=$request->input('nbdate');
+			$fdalloc['noccup']=$request->input('noccup');
+			$fdalloc['nmno']=$request->input('nmno');
+			$fdalloc['npno']=$request->input('npno');
+			$fdalloc['nadd']=$request->input('nadd');
+			$fdalloc['ncity']=$request->input('ncity');
+			$fdalloc['ndist']=$request->input('ndist');
+			$fdalloc['nstate']=$request->input('nstate');
+			$fdalloc['npin']=$request->input('npin');
+			
+			
+			$this->fdallocation_model->kccrenewdetails($fdalloc);
+		}
+
 		public function FDedit($id)
 		{
 			$fddetails=$this->fdallocation_model->FDedit($id);
