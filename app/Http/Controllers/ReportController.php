@@ -314,6 +314,11 @@
 			$SbprintPerData['pnum']=$request->input('pnum');
 			$SbprintPerData['previous_bal']=$request->input('pbval');
 			$SbprintPar['tranid']=$request->input('tranid');
+			$SbprintPar['sb_id_set']=$request->input('sb_id_set'); // STRING
+
+			$SbprintPar['sb_id_set'] = explode(",", $SbprintPar['sb_id_set']);
+			// var_dump($SbprintPar['sb_id_set']);
+
 			$lineval1=$request->input('lineval');
 			if($lineval1>1)
 			{

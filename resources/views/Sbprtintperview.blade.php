@@ -139,7 +139,7 @@
 							
 					<tr class="small">
 						<?php $b=0;?>
-						<td><input type="radio" name="sele" value="<?php $temp=$SLPD->Tranid; echo $temp;?>" onclick="setid($id=<?php $temp=$SLPD->Tranid; echo $temp;?>);"></td>
+						<td><input type="radio" name="sele" class="sele" data="<?php $temp=$SLPD->Tranid; echo $temp;?>" value="<?php $temp=$SLPD->Tranid; echo $temp;?>" onclick="setid($id=<?php $temp=$SLPD->Tranid; echo $temp;?>);"></td>
 						<td>{{$SLPD->Tranid}}</td>
 						<td  width="10%"><?php $trandate=date("d-m-Y",strtotime($SLPD->SBReport_TranDate));  echo $trandate; ?></td>
 						<td  width="37%"><?php  echo $s=$SLPD->particulars; $f=strlen($s);if($f>=43){$d=($f/43);$b=$b+intval($d);}?></td>
@@ -683,6 +683,25 @@
 			a=$temp;
 			$('#t').val(a);
 			previous_balance = $("#running_amt_"+a).html();
+
+			var flag = false;
+			var sb_id = new Array();
+			var i = 0;
+
+			$(".sele").each(function() {
+				// console.log($(this).attr("data"));
+				var temp_id = $(this).attr("data");
+				// console.log(flag);
+				if(flag) {
+					sb_id[i++] = temp_id;
+				}
+				if($(this).attr("data") == a) {
+					flag = true;
+				}
+				
+			});
+			// console.log(sb_id);
+			sb_id_set = sb_id;
 			
 			
 		}
