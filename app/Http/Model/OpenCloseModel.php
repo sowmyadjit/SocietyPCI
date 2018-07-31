@@ -1502,7 +1502,7 @@
 			$BranchId=$uname->Bid;
 			
 			$id1=DB::table('branch_to_branch')
-				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as receipt_no')
+				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as receipt_no',DB::raw(" '' as 'adj_no' "))
 				->join('branch','branch.Bid','=','Branch_Branch1_Id')
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
 				->where("receipt_voucher.transaction_category",4)
@@ -2524,7 +2524,10 @@
 			$month=date('m');
 			$yer=date('Y');
 			
-			$Adata=DB::table('fd_monthly_interest')->select('Accid','amount','fdnum','id','Bid')->where('id','=',"1")->where('Bid',$Branchid)->get();
+			$Adata=DB::table('fd_monthly_interest')->select('FD_ID','Accid','amount','fdnum','id','Bid')->where('id','=',"1")->where('Bid',$Branchid)->get();
+
+			$failed = array();
+			$i = 0;
 			
 			foreach($Adata AS $ada)
 			{
@@ -2536,17 +2539,21 @@
 				$sb_particulars = "FD Interest ({$accno1})";
 				
 				$sbtotamt1=DB::table('createaccount')->select('Total_Amount')->where('Accid',$accid)->first();
-				$sbtotamt=$sbtotamt1->Total_Amount;
-				$totamount=$sbtotamt+$totamt;
-				DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>$totamount]);
-				
-				$sbid=DB::table('sb_transaction')->insertGetId(['Accid'=>$accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>$sb_particulars,'Amount' =>$totamt,'CurrentBalance'=>$sbtotamt,'Total_Bal'=>$totamount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$month,'Year'=>$yer,'Payment_Mode'=>"FD Interest",'Bid'=>$Branchid,'CreatedBy'=>$UID,'ignore_for_service_charge'=>1]); 
-				
-				DB::table('fdallocation')->where('Fd_CertificateNum',$accno1)
-				->update(['lastinterestpaid'=>$dte]);
-				/*DB::table('fd_interest')->insert(['FD_Interest_date'=>$dte,'FD_Interest_AccountNo'=>$accno1,'FD_Interest_SB_Accid'=>$accid,'FD_Interest_Amount'=>$totamt,'FD_Interest_Bid'=>$Branchid,'FD_Interest_Sb_Tranid'=>$sbid]);*/
+				if(!empty($sbtotamt1)) {
+					$sbtotamt=$sbtotamt1->Total_Amount;
+					$totamount=$sbtotamt+$totamt;
+					DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>$totamount]);
+					
+					$sbid=DB::table('sb_transaction')->insertGetId(['Accid'=>$accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>$sb_particulars,'Amount' =>$totamt,'CurrentBalance'=>$sbtotamt,'Total_Bal'=>$totamount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$month,'Year'=>$yer,'Payment_Mode'=>"FD Interest",'Bid'=>$Branchid,'CreatedBy'=>$UID,'ignore_for_service_charge'=>1]); 
+					
+					DB::table('fdallocation')->where('Fd_CertificateNum',$accno1)
+					->update(['lastinterestpaid'=>$dte]);
+					/*DB::table('fd_interest')->insert(['FD_Interest_date'=>$dte,'FD_Interest_AccountNo'=>$accno1,'FD_Interest_SB_Accid'=>$accid,'FD_Interest_Amount'=>$totamt,'FD_Interest_Bid'=>$Branchid,'FD_Interest_Sb_Tranid'=>$sbid]);*/
+				} else {
+					$failed[$i++] = $ada->FD_ID;
+				}
 			}
-			DB::table('fd_monthly_interest')->where('Bid',$Branchid)->update(['id'=>"0"]);
+			DB::table('fd_monthly_interest')->where('Bid',$Branchid)->whereNotIn("fd_monthly_interest.FD_ID",$failed)->update(['id'=>"0"]);
 		}
 		public function editFDdata($id)
 		{
