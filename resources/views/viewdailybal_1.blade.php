@@ -2765,6 +2765,7 @@
 						<td>{{$adj_db}}</td>
 						<td>-</td>
 						<td>-</td>
+						<td>-</td>
 					</tr>
 				@endforeach
 				
