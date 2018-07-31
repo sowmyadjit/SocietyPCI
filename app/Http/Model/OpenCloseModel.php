@@ -2830,7 +2830,7 @@
 										$alloc_row = DB::table('personalloan_repay')
 											->select("receipt_voucher_no","PLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
 											->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","personalloan_repay.PLRepay_Id")
-											->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_Id")
+											->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_PLAllocID")
 											->join("members","members.Memid","=","personalloan_allocation.MemId")
 											->join("user","user.Uid","=","members.Uid")
 											->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
