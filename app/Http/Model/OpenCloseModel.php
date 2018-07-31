@@ -2370,9 +2370,15 @@
 			$month=date('m');
 			$yer=date('Y');
 			
-			$fdaccno=DB::table('fdallocation')->select('Fd_CertificateNum')
-			->where('intrest_needed',"YES")->where('Fd_Withdraw',"NO")->where('Closed',"NO")->where('Bid',$Branchid)->get();
-			
+			$fdaccno=DB::table('fdallocation')
+				->select('Fd_CertificateNum')
+				->where('intrest_needed',"YES")
+				->where('Fd_Withdraw',"NO")
+				->where('Closed',"NO")
+				->where('Bid',$Branchid)
+				->where('fdallocation.FdReport_MatureDate',">=",date("Y-m-d"))
+				->get();
+			print_r($fdaccno);
 			foreach($fdaccno as $accno)
 			{
 				$saleem=0;
