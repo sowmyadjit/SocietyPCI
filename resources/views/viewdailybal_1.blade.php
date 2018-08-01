@@ -374,6 +374,9 @@
 					@foreach ($trandaily['pigmypayamt'] as $pigmyamt)
 						<?php
 							$pigmypay_cash_db = $pigmyamt->PayAmount_PayableAmount;
+							if($pigmypay_cash_db <= 0) {
+								continue;
+							}
 							$pigmypay_cash_db_total += $pigmypay_cash_db;
 						?>
 						<tr>
@@ -392,6 +395,9 @@
 					@foreach ($trandaily['pigmypayamt_per'] as $pigmyamt)
 						<?php
 							$pigmypay_cash_db = $pigmyamt->PgmTotal_Amt;
+							if($pigmypay_cash_db <= 0) {
+								continue;
+							}
 							$pigmypay_cash_db_total += $pigmypay_cash_db;
 						?>
 						<tr>
@@ -410,6 +416,9 @@
 					@foreach ($trandaily['pigmypayamt_adjust'] as $pigmyamt)
 						<?php
 							$pigmypay_adj_db = $pigmyamt->PayAmount_PayableAmount;
+							if($pigmypay_adj_db <= 0) {
+								continue;
+							}
 							$pigmypay_adj_db_total += $pigmypay_adj_db;
 						?>
 						<tr>
@@ -428,6 +437,9 @@
 					@foreach ($trandaily['pigmypayamt_per_adjust'] as $pigmyamt)
 						<?php
 							$pigmypay_adj_db = $pigmyamt->PayAmount_PayableAmount;
+							if($pigmypay_adj_db <= 0) {
+								continue;
+							}
 							$pigmypay_adj_db_total += $pigmypay_adj_db;
 						?>
 						<tr>
@@ -446,6 +458,9 @@
 					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt)
 						<?php
 							$pigmypay_cash_cr = $pigmyamt->Deduct_Commission;
+							if($pigmypay_cash_cr <= 0) {
+								continue;
+							}
 							$pigmypay_cash_cr_total += $pigmypay_cash_cr;
 						?>
 						<tr>
@@ -464,6 +479,9 @@
 					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt)
 						<?php
 							$pigmypay_cash_cr = $pigmyamt->Deduct_Amount;
+							if($pigmypay_cash_cr <= 0) {
+								continue;
+							}
 							$pigmypay_cash_cr_total += $pigmypay_cash_cr;
 						?>
 						<tr>
@@ -482,6 +500,9 @@
 					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt)
 						<?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Commission;
+							if($pigmypay_adj_cr <= 0) {
+								continue;
+							}
 							$pigmypay_adj_cr_total += $pigmypay_adj_cr;
 						?>
 						<tr>
@@ -498,6 +519,9 @@
 						</tr>
 						<?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Amount;
+							if($pigmypay_adj_cr <= 0) {
+								continue;
+							}
 							$pigmypay_adj_cr_total += $pigmypay_adj_cr;
 						?>
 						<tr>
