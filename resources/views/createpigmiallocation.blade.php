@@ -58,10 +58,10 @@
 						</div>
 					</div>
 					
-					<div class="form-group">
+					<div class="form-group hide">
 						<label class="control-label col-sm-4">Opening Balance:</label>
 						<div class="col-md-4">
-							<input type="text" class="form-control" id="opngbal" name="opngbal" placeholder="ENTER OPENING BALANCE">
+							<input type="text" class="form-control" id="opngbal" name="opngbal" placeholder="ENTER OPENING BALANCE" value="0" readonly />
 						</div>
 					</div>
 					
