@@ -286,6 +286,7 @@
 			->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 			->where('createaccount.Agent_ID','=',$agentid)
 			->where('tran_reversed','=',"NO")
+			->where('RD_Particulars','!=',"RD INTEREST CAL")
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
 			->sum('RD_Amount');
 			
