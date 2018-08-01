@@ -153,10 +153,11 @@
 			return view('anauthpigmyacc_data',compact('p'));
 		}
 
-		public function accept_accountpigmy($id)
+		public function accept_accountpigmy($id, REQUEST $request)
 		{
-			$acceptaccounpigmyt=$this->viewcust->AcceptAccountpigmy($id);
-			return redirect('authpigmy');
+			$opening_balance = $request->input("opening_balance");
+			$acceptaccounpigmyt=$this->viewcust->AcceptAccountpigmy($id, $opening_balance);
+			// return redirect('authpigmy');
 		}
 		public function reject_accountpigmy($id)
 		{

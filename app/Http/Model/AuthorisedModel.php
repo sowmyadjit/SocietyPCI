@@ -274,16 +274,32 @@
 			return $ret_data;
 		}
 
-		public function AcceptAccountpigmy($id)
+		public function AcceptAccountpigmy($id, $opening_balance)
 		{
 			$uname='';
 			if(Auth::user())
 			$uname= Auth::user();
 			$UID=$uname->Uid;
 			
-			$id=DB::table('pigmiallocation')->where('PigmiAllocID',$id)
+			DB::table('pigmiallocation')->where('PigmiAllocID',$id)
 			->update(['Status'=>"AUTHORISED",'AuthorisedBy'=>$UID]);
-			return $id;								   
+
+			DB::table("pigmi_transaction")
+				->where("pigmi_transaction.PigmiAllocID",$id)
+				->where("pigmi_transaction.Particulars", "Opening Balance")
+				->update([
+							"pigmi_transaction.Amount"=>$opening_balance,
+							"Current_Balance"=>0,
+							"Total_Amount"=>$opening_balance
+						]);
+			DB::table("pigmiallocation")
+				->where("pigmiallocation.PigmiAllocID", $id)
+				->update([
+							"Total_Amount"=>$opening_balance,
+							"Opening_Balance"=>$opening_balance
+						]);
+
+			return;
 			
 			
 		}
