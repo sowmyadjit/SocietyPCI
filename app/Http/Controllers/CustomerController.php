@@ -49,10 +49,44 @@
 			}
 			
 			
+			$id["is_day_open"] = $this->OP_model->is_day_open(date("Y-m-d"));
 			
 
 
-			return view('customer',compact('id'));
+			// return view('customer',compact('id'));
+			return view('customer2',compact('id'));
+		}
+
+		public function customer_data()
+		{
+			$Url="customer";
+			$id['module']=$this->Modules->GetAnyMid($Url);
+			
+			$id['open']=$this->OP_model->openstate();
+			$id['close']=$this->OP_model->openclosestate();
+			$id['customer']=$this->customer->GetData();
+			if(empty($id['open']))
+			{
+				$id['open']=0;
+			}
+			else
+			{
+				$id['open']=1;
+			} 
+			if(empty($id['close']))
+			{
+				$id['close']=0;
+			}
+			else
+			{
+				$id['close']=1;
+			}
+			
+			
+			
+
+			// return view('customer',compact('id'));
+			return view('customer_data',compact('id'));
 		}
 		
 		public function Show_CustDetails($id,$type=null)

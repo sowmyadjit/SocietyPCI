@@ -147,6 +147,7 @@
 				
 				//CustomerController
 				Route::get('/customer','CustomerController@show_cust');
+				Route::post('/customer_data','CustomerController@customer_data');
 				Route::get('/createcustomer','CustomerController@show_createcust');
 				Route::post('/updatecust','CustomerController@UpdateCustomer');
 				Route::post('/createcust','CustomerController@create_cust');
