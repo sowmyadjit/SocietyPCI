@@ -2219,7 +2219,7 @@
 							"address.Address",
 							"address.MobileNo"
 						)
-				->join("address","address.Aid","=","user.Aid")
+				->leftjoin("address","address.Aid","=","user.Aid")
 				->where("Uid","=",$allocation->JewelLoan_Uid)
 				->first();
 				
