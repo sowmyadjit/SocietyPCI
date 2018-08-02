@@ -1536,7 +1536,7 @@
 			$id1=DB::table('deposit')->select('deposit.date','BankName','amount','reason','pay_mode','Deposit_type','receipt_voucher_no as receipt_no','receipt_voucher_no as voucher_no','receipt_voucher_no as adj_no')
 			->leftJoin('addbank','addbank.Bankid','=','deposit.depo_bank_id')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","deposit.d_id")
-			->where("receipt_voucher.transaction_category",6)
+			->where("receipt_voucher.transaction_category", ReceiptVoucherModel::DEPOSIT)
 			->where("receipt_voucher.bid", $BranchId)
 			->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 			->where('deposit.Bid',$BranchId)
@@ -1728,6 +1728,7 @@
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","income.Income_id")
 				->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 				->where("receipt_voucher.transaction_category",7)
+				->where("receipt_voucher.bid",$BranchId)
 				->where('Income_date',$dte)
 				->where('income.Bid',$BranchId)
 				->get();
