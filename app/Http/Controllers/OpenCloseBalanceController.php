@@ -426,8 +426,14 @@
 		}*/
 		public function dailytrandate_details(Request $request)
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+			
 			$dte=$request->input('finddate');
 			$trandaily["date"] = $dte;
+			$trandaily['bid'] = $BID;
 			//SB
 			$trandaily['sb']=$this->op->show_dailysbbalance($dte);
 			$trandaily['sbcredit']=$this->op->show_dailysbcreditbalance($dte);
