@@ -2781,9 +2781,10 @@
 					$adj_cr_total = 0;
 					$adj_db_total = 0;
 				?>
-				@foreach ($trandaily['agent_sal'] as $row)
+				@foreach ($trandaily['agent_sal'] as $row)	<?php /* AGENT SALARY - PG, RD, APPRAISER */?>
 					<?php
-						$adj_db = $row->Agent_Commission_PaidAmount + $row->Tds + $row->securityDeposit ;
+						// $adj_db = $row->Agent_Commission_PaidAmount + $row->Tds + $row->securityDeposit ;
+						$adj_db = $row->total_commission;
 						if($adj_db <= 0) {
 							continue;
 						}

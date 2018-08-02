@@ -2640,7 +2640,7 @@
 			$bid=$uname->Bid;
 			
 			$emp_sal=DB::table('agent_commission_payment')
-				->select('Agent_Commission_PaidDate','FirstName','MiddleName','LastName','Agent_Commission_PaidforAmt','Tds','securityDeposit','Agent_Commission_PaidAmount','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+				->select('Agent_Commission_PaidDate','FirstName','MiddleName','LastName','Agent_Commission_PaidforAmt','Tds','securityDeposit','Agent_Commission_PaidAmount','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), "total_commission")
 				->join('user','user.Uid','=','agent_commission_payment.Agent_Commission_Uid')
 				->where('Agent_Commission_PaidDate','=',$date)
 				->where('user.Bid','=',$bid)
