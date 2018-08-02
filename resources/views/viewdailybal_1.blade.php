@@ -2402,7 +2402,7 @@
 					<?php
 						$b2b_name = "Branch to Branch";
 						if($trandaily["bid"] == 6) {
-							$b2b_name = "Branch";
+							$b2b_name = "Branch Account";
 						} else {
 							$b2b_name = "Head Office";
 						}
@@ -2588,7 +2588,7 @@
 					@foreach ($trandaily['Bank_Branch'] as $Bank_Branch)
 						<?php
 							if(strcasecmp($Bank_Branch->Deposit_type, 'WITHDRAWL') == 0) {
-								if(strcasecmp($Bank_Branch->pay_mode, 'INHAND') == 0 ) {
+								if(strcasecmp($Bank_Branch->pay_mode, 'INHAND') == 0 ) {	// CASH WITHDRAW
 									$b2b_cash_cr = $Bank_Branch->amount;
 									$b2b_cash_cr_total += $b2b_cash_cr;
 						?>
@@ -2605,7 +2605,7 @@
 										<td>-</td>
 									</tr>
 						<?php
-								} else {
+								} else {	// ADJ WITHDRAW
 									$b2b_adj_cr = $Bank_Branch->amount;
 									$b2b_adj_cr_total += $b2b_adj_cr;
 						?>
@@ -2624,7 +2624,7 @@
 						<?php
 								}
 							} else
-								if(strcasecmp($Bank_Branch->pay_mode, 'INHAND') == 0) {
+								if(strcasecmp($Bank_Branch->pay_mode, 'INHAND') == 0) {	// CASH DEPOSIT
 									$b2b_cash_db = $Bank_Branch->amount;
 									$b2b_cash_db_total += $b2b_cash_db;
 						?>
@@ -2641,7 +2641,7 @@
 										<td>-</td>
 									</tr>
 						<?php
-								} else {
+								} else {	// ADJ DEPOSIT
 									$b2b_adj_db = $Bank_Branch->amount;
 									$b2b_adj_db_total += $b2b_adj_db;
 						?>
