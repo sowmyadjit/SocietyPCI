@@ -280,6 +280,7 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$UID=$uname->Uid;
+			$BID = $uname->Bid;
 			
 			DB::table('pigmiallocation')->where('PigmiAllocID',$id)
 			->update(['Status'=>"AUTHORISED",'AuthorisedBy'=>$UID]);
@@ -298,6 +299,40 @@
 							"Total_Amount"=>$opening_balance,
 							"Opening_Balance"=>$opening_balance
 						]);
+
+
+			//	ADDING OPENING BALNCE TO PENDING PIGMY OF AGENT
+				$pigmiallocation_row = DB::table('pigmiallocation')
+					->where('PigmiAllocID',$id)
+					->first();
+				$agentid = $pigmiallocation_row->Agentid;
+				$reportdte = $pigmiallocation_row->AllocationDate;
+				$bid = $BID;
+				$amt = $opening_balance;
+					/**************************/
+							$data1=DB::table('pending_pigmy')->where('PendPigmy_AgentUid','=',$agentid)
+								->where('PendPigmy_CollectionDate','=',$reportdte)
+								->count('PpId');
+							
+							if($data1==0)
+							{
+								DB::table('pending_pigmy')->insertGetId(['PendPigmy_AgentUid'=>$agentid,'PendPigmy_CollectionDate'=>$reportdte,'PendPigmy_PendingAmount'=>$amt,'PendPigmy_Bid'=>$bid]);
+								
+							}
+							else
+							{
+								$totamt1=DB::table('pending_pigmy')->select('PendPigmy_PendingAmount')
+								->where('PendPigmy_AgentUid','=',$agentid)
+								->where('PendPigmy_CollectionDate','=',$reportdte)
+								->first();
+								$totamt=$totamt1->PendPigmy_PendingAmount;
+								$totalamount=$totamt+$amt;
+								
+								DB::table('pending_pigmy')->where('PendPigmy_AgentUid','=',$agentid)
+								->where('PendPigmy_CollectionDate','=',$reportdte)
+								->update(['PendPigmy_PendingAmount'=>$totalamount,'PendPigmy_Status'=>"PENDING"]);
+							}
+					/**************************/
 
 			return;
 			
