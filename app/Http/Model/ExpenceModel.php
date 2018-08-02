@@ -498,7 +498,10 @@
 				DB::table('cash')->where('BID',$b2)
 				->update(['InHandCash'=>$totB2]);
 			}
-			$b2b_tran_id = DB::table('branch_to_branch')->insertGetId(['Branch_Branch1_Id'=>$id['Br2'],'Branch_Branch2_Id'=>$id['Br1'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
+			
+			if($tt=="ADJUSTMENT")
+			{
+				$b2b_tran_id = DB::table('branch_to_branch')->insertGetId(['Branch_Branch1_Id'=>$id['Br2'],'Branch_Branch2_Id'=>$id['Br1'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
 
 				/***********/
 				$fn_data["rv_payment_mode"] = $tt;
@@ -520,6 +523,32 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+			}
+			else	//INHAND
+			{
+				$b2b_tran_id = DB::table('branch_to_branch')->insertGetId(['Branch_Branch1_Id'=>$id['Br1'],'Branch_Branch2_Id'=>$id['Br2'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
+
+				/***********/
+				$fn_data["rv_payment_mode"] = $tt;
+				$fn_data["rv_transaction_id"] = $b2b_tran_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = $id['Br1'];
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+				/***********/
+				$fn_data["rv_payment_mode"] = $tt;
+				$fn_data["rv_transaction_id"] = $b2b_tran_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $dte;
+				$fn_data["rv_bid"] = $id['Br2'];
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
+			}
 
 /* 			if($id['Br1'] == 6 && strcasecmp($tt,"ADJUSTMENT") == 0) {
 				DB::table('branch_to_branch')->insert(['Branch_Branch1_Id'=>$id['Br2'],'Branch_Branch2_Id'=>$id['Br1'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['amt'],'Branch_per'=>$per,'Branch_payment_Mode'=>$tt,'LedgerHeadId'=>$hid,'SubLedgerId'=>$sid]);
@@ -673,6 +702,50 @@
 				$amt=$tt+$amount1;
 				DB::table('addbank')->where('Bankid','=',$bankID)
 				->update(['TotalAmt'=>$amt]);
+
+					//	ADJUSTMENT DEBIT ENTRY FOR BANK
+					/*************/
+						$bank_id = $id['bankid2'];
+						$reason = "Income Adjustment";
+						$Deposit_type = "WITHDRAWL";
+						$addbank = DB::table('addbank')
+						->where('Bankid','=',$bank_id)
+						->first();
+						
+						unset($insert_array_deposit);
+						$insert_array_deposit["Bid"] = $BID;
+						$insert_array_deposit["d_date"] = date("d-m-Y",strtotime($trandate));
+						$insert_array_deposit["date"] = date("Y-m-d",strtotime($trandate));
+						$insert_array_deposit["Branch"] = $addbank->Branch;
+						$insert_array_deposit["depo_bank"] = $addbank->BankName;
+						$insert_array_deposit["depo_bank_id"] = $addbank->Bankid;
+						$insert_array_deposit["pay_mode"] = "ADJUSTMENT";
+						// $insert_array_deposit["cheque_no"] = $cheque_no;
+						// $insert_array_deposit["cheque_date"] = $cheque_date;
+						// $insert_array_deposit["bank_name"] = "";
+						$insert_array_deposit["amount"] = $amount1;
+						$insert_array_deposit["paid"] = "yes";
+						$insert_array_deposit["reason"] = $reason;
+						// $insert_array_deposit["cd"] = "";
+						$insert_array_deposit["Deposit_type"] = $Deposit_type;
+
+						$deposit_insert_id = DB::table("deposit")
+							->insertGetId($insert_array_deposit);
+							
+										//	ADJ NO FOR BANK ENTRY
+										/***********/
+										unset($fn_data);
+										$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+										$fn_data["rv_transaction_id"] = $deposit_insert_id;
+										$fn_data["rv_transaction_type"] = "DEBIT";
+										$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;
+										$fn_data["rv_date"] = $trandate;
+										$fn_ret_data = $this->rv_no->save_rv_no($fn_data);
+										/***********/
+					/*************/
+
+				
+
 			}
 /*EDIT END 22SEP2017*/
 
