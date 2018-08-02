@@ -434,7 +434,7 @@
 				$tranid=DB::table('sb_transaction')->insertGetId(['Accid'=>$id['sbAcNo'],'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"AGENT COMMISION",'Amount'=>$id['pay'],'CurrentBalance'=>$avilablebal,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$total,'Bid'=>$BID,'Payment_Mode'=>"SALARY",'CreatedBy'=>$UID]);
 				DB::table('createaccount')->where('Accid','=',$accid)->update(['Total_Amount'=>$total]);
 			}
-			$agt_cmm_id = DB::table('agent_commission_payment')->insertGetId(['Agent_Commission_Uid'=>$id['aguid'],'Agent_Commission_Bid'=>$BID,'Agent_Commission_PaidDate'=>$dte,'Agent_Commission_PaidforAmt'=>$id['totalamt'],'Agent_Commission_PaidAmount'=>$id['pay'],'Agent_Commission_PaidStatus'=>"PAID",'Agent_Commission_PaidBY'=>$UID,'Agent_Commission_Persent'=>$id['cp'],'securityDeposit'=>$id['sdpo'],'Tds'=>$id['tdsval'],'paymentmode'=>$pmode,'sbtranid'=>$tranid]);
+			$agt_cmm_id = DB::table('agent_commission_payment')->insertGetId(['Agent_Commission_Uid'=>$id['aguid'],'Agent_Commission_Bid'=>$BID,'Agent_Commission_PaidDate'=>$dte,'Agent_Commission_PaidforAmt'=>$id['totalamt'],'Agent_Commission_PaidAmount'=>$id['pay'],'Agent_Commission_PaidStatus'=>"PAID",'Agent_Commission_PaidBY'=>$UID,'Agent_Commission_Persent'=>$id['cp'],'securityDeposit'=>$id['sdpo'],'Tds'=>$id['tdsval'],'paymentmode'=>$pmode,'sbtranid'=>$tranid,'total_commission'=>$id['commdis']]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $pmode;

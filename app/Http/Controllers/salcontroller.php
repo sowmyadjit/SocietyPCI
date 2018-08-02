@@ -221,7 +221,7 @@
 			$agentsal['aguid']=$request->input('aguid');
 			$agentsal['cp']=$request->input('com_per');
 			$agentsal['totalamt']=$request->input('totalamt');
-			$agentsal['commdis']=$request->input('com_val');
+			$agentsal['commdis']=$request->input('com_val',0);
 			$agentsal['tdsval']=$request->input('tds_value');
 			$agentsal['sdpo']=$request->input('sd_value');
 			$agentsal['sbAcNo']=$request->input('sbAcNo');
@@ -250,7 +250,7 @@
 			$agentsal['aguid']=$request->input('aguid');
 			$agentsal['cp']=$request->input('cp');//com_per
 			$agentsal['totalamt']=$request->input('totalamt');
-			$agentsal['commdis']=$request->input('com_val');
+			$agentsal['commdis']=$request->input('commdis');
 			$agentsal['tdsval']=$request->input('tdsval');//tds_value
 			$agentsal['sdpo']=$request->input('sdpo');//sd_value
 			$agentsal['sbAcNo']=$request->input('sbAcNo');
