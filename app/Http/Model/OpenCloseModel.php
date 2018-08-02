@@ -1596,6 +1596,7 @@
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","pending_pigmy.PpId")
 			->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 			->where("receipt_voucher.transaction_category",9)
+			->where("receipt_voucher.bid",$BranchId)
 			->where('PendPigmy_ReceivedDate',$dte)
 			->where('PendPigmy_Bid',$BranchId)
 			->get();
