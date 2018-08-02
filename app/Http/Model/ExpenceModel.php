@@ -707,7 +707,7 @@
 					/*************/
 						$bank_id = $id['bankid2'];
 						$reason = "Income Adjustment";
-						$Deposit_type = "WITHDRAWL";
+						$Deposit_type = "Deposit";
 						$addbank = DB::table('addbank')
 						->where('Bankid','=',$bank_id)
 						->first();
@@ -732,7 +732,7 @@
 						$deposit_insert_id = DB::table("deposit")
 							->insertGetId($insert_array_deposit);
 							
-										//	ADJ NO FOR BANK ENTRY
+										//	ADJ NO FOR BANK ENTRY (no adj number for adj credit)
 										/***********/
 										unset($fn_data);
 										$fn_data["rv_payment_mode"] = "ADJUSTMENT";
