@@ -1123,7 +1123,7 @@
 				$fa_name=DB::table('members')->select('FatherName')->where('Uid',$uid)->first();
 			}
 			$id['fa_name']=$fa_name->FatherName;
-			
+			/* 
 			if(empty($id['fa_name'])) {
 					$spouse_name = DB::table('customer')->where('Uid',$uid)->value('SpouseName');
 					if(empty($spouse_name)) {
@@ -1131,6 +1131,12 @@
 					}
 					$id['spouse_name']=$spouse_name;
 			}
+			 */
+			$spouse_name = DB::table('customer')->where('Uid',$uid)->value('SpouseName');
+			if(empty($spouse_name)) {
+				$spouse_name = DB::table('members')->where('Uid',$uid)->value('SpouseName');
+			}
+			$id['spouse_name']=$spouse_name;
 			
 			return $id;
 		}
