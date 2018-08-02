@@ -2711,7 +2711,6 @@
 							<td>{{$agentcoll_tran->receipt_no}}</td>
 							<td>-</td>
 							<td>-</td>
-							<td>-</td>
 						</tr>
 					@endforeach
 					<tr>
