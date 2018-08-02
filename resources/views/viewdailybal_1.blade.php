@@ -2399,10 +2399,18 @@
 
 
 <!-- ------------------------------- loan charges end ------------------------------- -->
+					<?php
+						$b2b_name = "Branch to Branch";
+						if($trandaily["bid"] == 6) {
+							$b2b_name = "Branch";
+						} else {
+							$b2b_name = "Head Office";
+						}
+					?>
 					
 					
-					
-					<tr><td colspan="10"><h5><b><center>Head Office<center></b></h5></td></tr>
+					<?php /*<tr><td colspan="10"><h5><b><center>Head Office<center></b></h5></td></tr>*/ ?>
+					<tr><td colspan="10"><h5><b><center>{{$b2b_name}}<center></b></h5></td></tr>
 					<?php
 						$b2b_cash_cr = 0;
 						$b2b_cash_db = 0;

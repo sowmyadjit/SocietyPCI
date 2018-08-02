@@ -51,8 +51,14 @@
 		}
 		function show_dailybalance1()
 		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+
 			$dte=date('Y-m-d');
 			$trandaily['date'] = $dte;
+			$trandaily['bid'] = $BID;
 			//SB
 			$trandaily['sb']=$this->op->show_dailysbbalance($dte);
 			$trandaily['sbcredit']=$this->op->show_dailysbcreditbalance($dte);
