@@ -371,7 +371,7 @@
 						$pigmypay_adj_cr_total = 0;
 						$pigmypay_adj_db_total = 0;
 					?>
-					@foreach ($trandaily['pigmypayamt'] as $pigmyamt)
+					@foreach ($trandaily['pigmypayamt'] as $pigmyamt)	<?php /* CASH - INTEREST */?>
 						<?php
 							$pigmypay_cash_db = $pigmyamt->PayAmount_PayableAmount;
 							if($pigmypay_cash_db <= 0) {
@@ -392,7 +392,7 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['pigmypayamt_per'] as $pigmyamt)
+					@foreach ($trandaily['pigmypayamt_per'] as $pigmyamt) <?php /* CASH - PREWITHDRAWAL */?>
 						<?php
 							$pigmypay_cash_db = $pigmyamt->PgmTotal_Amt;
 							if($pigmypay_cash_db <= 0) {
@@ -413,7 +413,7 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['pigmypayamt_adjust'] as $pigmyamt)
+					@foreach ($trandaily['pigmypayamt_adjust'] as $pigmyamt) <?php /* ADJUSTMENT - INTEREST */?>
 						<?php
 							$pigmypay_adj_db = $pigmyamt->PayAmount_PayableAmount;
 							if($pigmypay_adj_db <= 0) {
@@ -434,7 +434,7 @@
 							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['pigmypayamt_per_adjust'] as $pigmyamt)
+					@foreach ($trandaily['pigmypayamt_per_adjust'] as $pigmyamt) <?php /* ADJUSTMENT - PREWITHDRAWAL */?>
 						<?php
 							$pigmypay_adj_db = $pigmyamt->PayAmount_PayableAmount;
 							if($pigmypay_adj_db <= 0) {
@@ -455,7 +455,7 @@
 							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt)
+					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) <?php /* CASH - PREWITHDRAWAL - DEDUCT COMMISSION */?>
 						<?php
 							$pigmypay_cash_cr = $pigmyamt->Deduct_Commission;
 							if($pigmypay_cash_cr <= 0) {
@@ -476,7 +476,7 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt)
+					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) <?php /* CASH - PREWITHDRAWAL - DEDUCT AMOUNT */?>
 						<?php
 							$pigmypay_cash_cr = $pigmyamt->Deduct_Amount;
 							if($pigmypay_cash_cr <= 0) {
@@ -497,7 +497,7 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt)
+					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) <?php /* ADJUSTMENT - PREWITHDRAWAL - DEDUCT COMMISSION */?>
 						<?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Commission;
 							if($pigmypay_adj_cr <= 0) {
@@ -517,6 +517,8 @@
 							<td>-</td>
 							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
+					@endforeach
+					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) <?php /* ADJUSTMENT - PREWITHDRAWAL - DEDUCT AMOUNT */?>
 						<?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Amount;
 							if($pigmypay_adj_cr <= 0) {
