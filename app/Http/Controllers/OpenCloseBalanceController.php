@@ -699,6 +699,18 @@
 			}
 		}
 		
+		public function view_bank_details(Request $request)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$Branchid=$uname->Bid;
+
+			$data = array();
+			$data = $this->op->view_bank_details();
+			return view("view_bank_details",compact('data'));
+		}
+		
 		public function edit_cash_details(Request $request)
 		{
 			$in_data = array();

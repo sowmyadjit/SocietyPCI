@@ -25,11 +25,14 @@
 						@if($OpCls['did'] != 2) <!--  Don't show this for clerks -->
 							<a href="fdinterstmonthly" style="margin-right:10px;" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>" data="FD_MONTHLY_INT">FD Month Pay</a>
 							<a href="viewFDInterest" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>">View FD Interest</a>
+							<button id="refresh" class="btn-sm glyphicon glyphicon-refresh"></button>
 							<a href="viewclosebal" style="margin-left:15px;" class="btn btn-danger pull-right ClsBalBtn<?php echo $OpCls['module']->Mid; ?>">Day Close</a>
 							<a href="viewbal"  class="btn btn-success pull-right OpenBalBtn<?php echo $OpCls['module']->Mid; ?>" >Day Open</a>
 						@endif
 					</div>
 					<div id="cash_details">
+					</div>
+					<div id="bank_details">
 					</div>
 			</div>
 		</div>
@@ -45,7 +48,7 @@
 					{
 						//$("#cash_details").html(data);//CASH EDITING TEMPERARILY DISABLED
 					}
-	});
+		});
 	});
 	$('.clickme').click(function(e){
 		$('.custclassid').click();
@@ -111,5 +114,30 @@
 	{
 		e.preventDefault();
 		$('#<?php echo $OpCls['module']->Mid; ?>_content').load($(this).attr('href'));
+	});
+</script>
+
+<script>
+	view_bank_details();
+	function view_bank_details() {
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$("#bank_details").html(loading_img);
+		$.ajax({
+					url:'/view_bank_details',
+					type:'post',
+					data:'',
+					success:function(data)
+					{
+						$("#bank_details").html(data);
+					}
+		});
+	}
+	$("#refresh").click(function() {
+		view_bank_details();
 	});
 </script>

@@ -3073,6 +3073,24 @@
 				->get();
 		}
 		
+		public function view_bank_details()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			return DB::table("addbank")
+				->select(
+							"Bankid",
+							"BankName",
+							"Branch",
+							"Bid",
+							"AddBank_IFSC",
+							"SocietyBranch",
+							"AccountNo",
+							"TotalAmt"
+						)
+				->where("addbank.Bid", $BID)
+				->get();
+		}
+		
 		public function edit_cash_details($data)
 		{
 			$log_data = array(
