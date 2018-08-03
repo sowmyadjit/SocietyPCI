@@ -64,12 +64,19 @@
 							</div>
 						</div>
 								
-							<div id="deposit_account_list_box">Loading...</div>
+							<div id="deposit_account_list_box">Please Wait...</div>
 								
 					</div>
 				</div>
 				<div id="temp_box"></div>
 				<button class="btn btn-info btn-sm" id="back" style="margin-left:47.5%;margin-bottom:50px;">BACK</button>
+				<div id="temp_loading" class="hide">
+						<div>
+							<center>
+								<img src="img\\loading3.gif" width="100px" height="100px"/>
+							</center>
+						</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -101,7 +108,8 @@
 	});
 	
 	function deposit_account_list(allocation_id) {
-		$("#deposit_account_list_box").html("");
+		var loading_img = $("#temp_loading").html();
+		$("#deposit_account_list_box").html(loading_img);
 		var closed = $("#closed_status").val();
 		var agent_id = $("#agent_id").val();
 		$.ajax({
