@@ -123,7 +123,7 @@
 								<div class="form-group fdbnkname">
 									<label class="control-label col-sm-4">Bank Name:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="FdBankName" name="FdBankName" placeholder="BANK NAME">
+										<input type="text" class="typeaheadbank form-control" id="FdBankName" name="FdBankName" placeholder="BANK NAME">
 									</div>
 								</div>
 								
@@ -709,4 +709,25 @@ var year1=$('#NumberOfYears').val();
 		}
 		
 	}	
+</script>
+
+
+<script>
+	$('input.typeaheadbank').typeahead({
+		ajax: '/GetBank'
+		// source:GetBank
+	});
+
+	$("#FdBankName").change(function() {
+		var bank_id = $("#FdBankName").attr("data-value");
+		$.ajax({
+			url: "depgetbankdetail",
+			type: "post",
+			data: "&bankid="+bank_id,
+			success: function(data) {
+				$("#fdbankbranch").val(data["bnkbranch"]);
+				$("#fdifsccode").val(data["ifsc"]);
+			}
+		});
+	});
 </script>
