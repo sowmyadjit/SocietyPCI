@@ -19,6 +19,7 @@
 		//Uncleared SB Cheque Detail
 		public function get_transdetail()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
 			
 			return DB::table('sb_transaction')
 			->join('createaccount','createaccount.Accid','=','sb_transaction.Accid')
@@ -26,6 +27,7 @@
 			->select('tran_Date','AccNum','FirstName','MiddleName','LastName','Cheque_Number','Cheque_Date','Bank_Name','Bank_Branch','IFSC_Code','Uncleared_Bal','sb_transaction.Tranid','createaccount.Accid','user.Uid','TransactionType','Cleared_State')
 			->where('Cleared_State','=','UNCLEARED')
 			->where('TransactionType','=','CREDIT')
+			->where('sb_transaction.Bid','=',$BID)
 			->get();
 		} 
 		
@@ -105,6 +107,10 @@
 		
 		public function get_fdtransdetail()
 		{
+			$uname='';
+				if(Auth::user())
+				$uname= Auth::user();
+				$BID=$uname->Bid;
 			return DB::table('fdallocation')
 			// ->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
 			->join('user','user.Uid','=','fdallocation.Uid')
@@ -112,10 +118,15 @@
 			->select('FD_StartDate',/*'AccNum',*/'FirstName','MiddleName','LastName','FDChq_No','FDChq_Date','BankName','FDBnk_Branch','FDIFSC_Code','FDUnclear_Bal','Fdid','fdallocation.Accid','user.Uid','FDCleared_State', 'FDBnk_Name')
 			->where('FDCleared_State','=','UNCLEARED')
 			->where('FdTid','!=',1)
+			->where('fdallocation.Bid', $BID)
 			->get();
 		}
 		public function get_kcctransdetail()
 		{
+			$uname='';
+				if(Auth::user())
+				$uname= Auth::user();
+				$BID=$uname->Bid;
 			return DB::table('fdallocation')
 			// ->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
 			->join('user','user.Uid','=','fdallocation.Uid')
@@ -123,6 +134,7 @@
 			->select('FD_StartDate',/*'AccNum',*/'FirstName','MiddleName','LastName','FDChq_No','FDChq_Date','BankName','FDBnk_Branch','FDIFSC_Code','FDUnclear_Bal','Fdid','fdallocation.Accid','user.Uid','FDCleared_State', 'FDBnk_Name')
 			->where('FDCleared_State','=','UNCLEARED')
 			->where('FdTid','=',1)
+			->where('fdallocation.Bid', $BID)
 			->get();
 		}
 		
