@@ -79,7 +79,8 @@
 	
 	$('input.typeahead1').typeahead({
 		//ajax: '/GetBank'
-		source:GetBank
+		// source:GetBank
+		ajax:"GetBank_all_branch"
 	});
 	indexid=0;
 	$('.CrtTrExpBtn<?php echo $ex['module']->Mid; ?>').click( function(e) {

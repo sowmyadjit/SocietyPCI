@@ -560,7 +560,12 @@
 		
 		public function GetBankNameForPayAmt($q) //For AmtPay
 		{
-			return DB::select("SELECT `Bankid` as id, `BankName` as name FROM `addbank` where `BankName` LIKE '%".$q."%' ");
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID=$uname->Uid;
+			$BID=$uname->Bid;
+			return DB::select("SELECT `Bankid` as id, `BankName` as name FROM `addbank` where `addbank`.`Bid`={$BID} AND `BankName` LIKE '%".$q."%' ");
 		}
 		
 		

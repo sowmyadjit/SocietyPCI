@@ -81,6 +81,11 @@ class DepositModel extends Model
 		
 	
 	}
+
+	public function GetBank_all_branch($q)
+    {
+		return DB::select("SELECT `Bankid` as id, CONCAT(`BankName`,'-',`AccountNo`) as name FROM `addbank` where `BankName` LIKE '%".$q."%' ");
+	}
 	
 	public function GetBranchDropD()
     {

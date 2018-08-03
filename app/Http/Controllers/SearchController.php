@@ -264,6 +264,11 @@
 			return ($this->get_deposit->Getbankdetail($request->search));
 		}
 		
+		public function GetBank_all_branch(Request $request)
+		{
+			return ($this->get_deposit->GetBank_all_branch($request->search));
+		}
+		
 		//Newly Added
 		public function GetLoanAcct(Request $request)
 		{

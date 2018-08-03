@@ -580,6 +580,7 @@
 				//Route::get('/GetAccNum','SearchController@Getloanaccountnum'); it has to be change becz both root are same url
 				Route::get('/GetBranchCode','SearchController@GetBranch');//GTD
 				Route::get('/GetBank','SearchController@Getbank');
+				Route::get('/GetBank_all_branch','SearchController@GetBank_all_branch');
 				Route::get('/GetMinorUser','SearchController@GetMinorUser');
 				Route::get('/Getbranchname','SearchController@GetBranch');//GTD
 				Route::get('/Getrdbranchname','SearchController@GetBranch');//GTD
