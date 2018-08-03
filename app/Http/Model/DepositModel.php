@@ -75,7 +75,9 @@ class DepositModel extends Model
 	}
 	public function Getbankdetail($q)
     {
-		return DB::select("SELECT `Bankid` as id, CONCAT(`BankName`,'-',`AccountNo`) as name FROM `addbank` where `BankName` LIKE '%".$q."%' ");
+		$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+		// return DB::select("SELECT `Bankid` as id, CONCAT(`BankName`,'-',`AccountNo`) as name FROM `addbank` where `BankName` LIKE '%".$q."%' ");
+		return DB::select("SELECT `Bankid` as id, CONCAT(`BankName`,'-',`AccountNo`) as name FROM `addbank` where `addbank`.`Bid` = {$BID} AND `BankName` LIKE '%".$q."%' ");
 		
 	
 	}
@@ -94,14 +96,17 @@ class DepositModel extends Model
 		->first();
 		
 	}
+	
 	public function GetDepositData()
 	{
-		$id= DB::table('deposit')->select('d_id','depo_bank','Branch','amount','date','d_date','depo_bank_id','reason','pay_mode','cheque_no','cheque_date','bank_name','paid','cd')
-		->get();
-		
-		
+		$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+		$id= DB::table('deposit')
+			->select('d_id','depo_bank','Branch','amount','date','d_date','depo_bank_id','reason','pay_mode','cheque_no','cheque_date','bank_name','paid','cd')
+			->where("deposit.Bid", $BID)
+			->get();
 		return $id;
 	}
+
 	public function crateaddeposittobranch($id)
     {   $dte=date('d-m-Y');
 		$bankID=$id['bank'];
