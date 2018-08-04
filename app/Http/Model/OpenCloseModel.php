@@ -1710,6 +1710,7 @@
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","expense.id")
 			->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 			->where("receipt_voucher.transaction_category",5)
+			->where("receipt_voucher.bid",$BranchId)
 			->where('e_date',$dte)
 			->where('expense.Bid',$BranchId)
 			->get();
