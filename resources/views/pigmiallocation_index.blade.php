@@ -51,7 +51,7 @@
 										<option value="NO">LIVE</option>
 										<option value="YES">CLOSED</option>
 									</select>
-									<button class="btn-sm"><span class="glyphicon glyphicon-refresh" id="refresh" /></button>
+									<button id="refresh" class="btn-sm glyphicon glyphicon-refresh"></button>
 								</div>
 								<div class="col-md-4 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
@@ -70,18 +70,25 @@
 				</div>
 				<div id="temp_box"></div>
 				<button class="btn btn-info btn-sm" id="back" style="margin-left:47.5%;margin-bottom:50px;">BACK</button>
-				<div id="temp_loading" class="hide">
-						<div>
-							<center>
-								<img src="img\\loading3.gif" width="100px" height="100px"/>
-							</center>
-						</div>
+				<div id="temp_loading_img" class="hide">
+					<div>
+						<center>
+							<img src="img\\loading2.gif" width="100px" height="100px"/>
+						</center>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
+
+<script>
+	function show_loading_img(selector) {
+		var loading_img = $("#temp_loading_img").html();
+		$(selector).html(loading_img);
+	}
+</script>
 
 <script>
 	$(document).ready(function() {
@@ -108,11 +115,11 @@
 	});
 	
 	function deposit_account_list(allocation_id) {
-		var loading_img = $("#temp_loading").html();
-		$("#deposit_account_list_box").html(loading_img);
+		show_loading_img("#deposit_account_list_box");
 		var closed = $("#closed_status").val();
 		var agent_id = $("#agent_id").val();
-		$.ajax({
+		// console.log("ajax strart");
+		var xhr = $.ajax({
 			url:"deposit_account_list",
 			type:"post",
 			data:"&category=PG&closed="+closed+"&agent_id="+agent_id+"&allocation_id="+allocation_id,
@@ -122,6 +129,9 @@
 				$("#deposit_account_list_box").html(data);
 			}
 		});
+		// console.log("aborting...");
+		// xhr.abort();
+		// console.log("req cancelled...");
 	}
 </script>
 
@@ -136,6 +146,7 @@
 	{
 		e.preventDefault();
 		$("#deposit_details_box").hide();
+		show_loading_img("#temp_box");
 		$('#temp_box').load($(this).attr('href'));
 	});
 </script>

@@ -112,6 +112,7 @@
 	{
 		e.preventDefault();
 		$("#loan_details_box").hide();
+		show_loading_img("#receipt_box");
 		$('#receipt_box').load($(this).attr('href'));
 	});
 </script>

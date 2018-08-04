@@ -44,7 +44,7 @@
 										<option value="NO">LIVE</option>
 										<option value="YES">CLOSED</option>
 									</select>
-									<button class="btn-sm"><span class="glyphicon glyphicon-refresh" id="refresh" /></button>
+									<button id="refresh" class="btn-sm glyphicon glyphicon-refresh"></button>
 								</div>
 								
 								<a href="crtkccallocation" class="btn btn-default crtpal<?php echo $fda['module']->Mid; ?>">KCC ALLOCATION</a>
@@ -60,11 +60,25 @@
 				</div>
 				<div id="temp_box"></div>
 				<button class="btn btn-info btn-sm" id="back" style="margin-left:47.5%;margin-bottom:50px;">BACK</button>
+				<div id="temp_loading_img" class="hide">
+					<div>
+						<center>
+							<img src="img\\loading2.gif" width="100px" height="100px"/>
+						</center>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
+
+<script>
+	function show_loading_img(selector) {
+		var loading_img = $("#temp_loading_img").html();
+		$(selector).html(loading_img);
+	}
+</script>
 
 <script>
 	$(document).ready(function() {
@@ -89,6 +103,7 @@
 	});
 	
 	function deposit_account_list(allocation_id) {
+		show_loading_img("#deposit_account_list_box");
 		var closed = $("#closed_status").val();
 		$.ajax({
 			url:"deposit_account_list",
@@ -114,6 +129,7 @@
 	{
 		e.preventDefault();
 		$("#deposit_details_box").hide();
+		show_loading_img("#temp_box");
 		$('#temp_box').load($(this).attr('href'));
 	});
 </script>

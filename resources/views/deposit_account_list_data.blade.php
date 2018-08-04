@@ -183,6 +183,7 @@
 		console.log("sfsd");
 		e.preventDefault();
 		$("#deposit_details_box").hide();
+		show_loading_img("#temp_box");
 		$('#temp_box').load($(this).attr('href'));
 	});
 </script>

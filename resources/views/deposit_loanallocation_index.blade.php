@@ -55,7 +55,7 @@
 									<option value="NO">LIVE</option>
 									<option value="YES">CLOSED</option>
 								</select>
-								<button class="btn-sm" id="refresh" ><span class="glyphicon glyphicon-refresh" /></button>
+								<button class="btn-sm glyphicon glyphicon-refresh" id="refresh" ></button>
 							</div>
 							<div class="col-md-3">
 								<select class="form-control" id="ExportType" name="ExportType">
@@ -76,10 +76,24 @@
 				</div>
 				<div id="receipt_box"></div>
 				<button class="btn btn-info btn-sm" id="back" style="margin-left:47.5%;margin-bottom:50px;">BACK</button>
+				<div id="temp_loading_img" class="hide">
+					<div>
+						<center>
+							<img src="img\\loading2.gif" width="100px" height="100px"/>
+						</center>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script>
+	function show_loading_img(selector) {
+		var loading_img = $("#temp_loading_img").html();
+		$(selector).html(loading_img);
+	}
+</script>
 
 <script>
 	$(document).ready(function() {
@@ -103,6 +117,7 @@
 	});
 	
 	function account_list(loan_id) {
+		show_loading_img("#account_list_box");
 		var closed = $("#closed_status").val();
 		$.ajax({
 			url:"account_list",
@@ -179,6 +194,7 @@
 	{
 		e.preventDefault();
 		$("#loan_details_box").hide();
+		show_loading_img("#receipt_box");
 		$('#receipt_box').load($(this).attr('href'));
 	});
 </script>

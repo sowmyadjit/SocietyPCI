@@ -4040,5 +4040,73 @@
 			return $first_payment;
 		}
 		
+		public function account_list_sl($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$ret_data['loan_details'] = array();
+			$ret_data['loan_category'] = $data["category"];
+			$table = "staffloan_allocation";
+			// $closed_field = "";
+			$branch_id_field = "{$table}.Bid";
+			$loan_id_field = "StfLoanAllocID";
+			$user_id_field = "Uid";
+			
+			$select_array = array(
+									"{$table}.StfLoanAllocID as loan_id",
+									"{$table}.StfLoan_Number as loan_no",
+									"{$table}.old_saffloan_no as loan_old_no",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$table}.LoanAmt as loan_amount",
+									"{$table}.StartDate as start_date",
+									"{$table}.EndDate as end_date",
+									"{$table}.StaffLoan_LoanRemainingAmount as ramaining_amount",
+									"{$table}.EMI_Amount as emi",
+									// "  as cd",
+									"{$table}.LastPaidDate as last_paid_date",
+								);
+			$account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$table}.{$user_id_field}");
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$account_list = $account_list->where($branch_id_field,"=",$BID);
+				}
+			if(!empty($data['loan_id'])) {
+				$account_list = $account_list->where($loan_id_field,'=',$data['loan_id']);
+			}
+			$account_list = $account_list//->limit(1)
+										->get();
+//			print_r($account_list);exit();
+			
+			if(empty($account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($account_list as $row) {
+				$ret_data['loan_details'][++$i]['loan_id'] = $row->loan_id;
+				$ret_data['loan_details'][$i]['loan_no'] = $row->loan_no;
+				$ret_data['loan_details'][$i]['loan_old_no'] = $row->loan_old_no;
+				$ret_data['loan_details'][$i]['user_id'] = $row->user_id;
+				$ret_data['loan_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['loan_details'][$i]['loan_amount'] = $row->loan_amount;
+				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
+				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
+			/* 	$ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
+																								"loan_allocation_id"=>$row->loan_id,
+																								"loan_category"=>$data['category']
+																							]); */
+				$ret_data['loan_details'][$i]['ramaining_amount'] = $row->ramaining_amount; //$row->loan_amount - $ret_data['loan_details'][$i]['paid_principle_amt'];
+				$ret_data['loan_details'][$i]['emi'] = $row->emi;
+				$ret_data['loan_details'][$i]['cd'] = "";
+				$ret_data['loan_details'][$i]['last_paid_date'] = $row->last_paid_date;
+			}
+//			print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
 	}
 	

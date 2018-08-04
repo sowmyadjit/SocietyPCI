@@ -1362,7 +1362,12 @@
 		public function show_loanalloc2()//DEPOSIT LOAN
 		{
 			return view('deposit_loanallocation_index');
-		} 
+		}
+		
+		public function show_Staffloanalloc2()//DEPOSIT LOAN
+		{
+			return view('staff_loanallocation_index');
+		}
 		
 		public function account_list(Request $request)
 		{
@@ -1379,6 +1384,9 @@
 							break;
 				case "DL":	$ret_data = $this->loan->account_list_dl($in_data);
 							return view("deposit_loanallocation_data",compact("ret_data"));
+							break;
+				case "SL":	$ret_data = $this->loan->account_list_sl($in_data);
+							return view("staff_loanallocation_data",compact("ret_data"));
 							break;
 			}
 		}

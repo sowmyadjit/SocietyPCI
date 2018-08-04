@@ -304,7 +304,8 @@
 				Route::get('/RetrieveRdAccDetail','LoanController@RetrieveRdAccDetail'); //for FD Loan Allocation
 				Route::get('/GetBranchIDForDL','LoanController@GetBranchIDForDL'); //for DL
 				Route::get('/GetSBForDL','LoanController@GetSBForDL'); //for DL
-				Route::get('/StffLoan','LoanController@show_Staffloanalloc'); 
+				// Route::get('/StffLoan','LoanController@show_Staffloanalloc'); 
+				Route::get('/StffLoan','LoanController@show_Staffloanalloc2'); 
 				Route::get('/staffloan_home','LoanController@show_Staffloanalloc1'); 
 				Route::post('/GetEmployeeDetail','LoanController@Get_EmpDetails');
 				Route::get('/PersonalLoan','LoanController@show_Persnloanalloc');

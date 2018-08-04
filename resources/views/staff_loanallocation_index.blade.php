@@ -32,7 +32,7 @@
 			<div class="box-inner">
 				<div id="loan_details_box">
 					<div class="box-header well" data-original-title="">
-						<h2><i class="glyphicon glyphicon-user"></i>LOAN ALLOCATION DETAIL</h2>
+						<h2><i class="glyphicon glyphicon-user"></i> STAFF ALLOCATION DETAIL</h2>
 						
 						<div class="box-icon">
 							<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
@@ -44,45 +44,17 @@
 					
 					<div class="box-content">
 						<!-- <div class="alert alert-info">For help with such table please check <a href="http://datatables.net/" target="_blank">http://datatables.net/</a></div>-->
-						<div class="alert alert-info" style="height:120px;">
-							<div class="col-md-12">
-								<div class="col-md-3">
-									<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH JEWEL ACCOUNT">
-								</div>
-								<div class="col-md-4" style="height:38px;">
-									ACCOUNT TYPE:
-									<select id="closed_status" style="height:38px;">
-										<option value="NO">LIVE</option>
-										<option value="YES">CLOSED</option>
-									</select>
-									<button class="btn-sm glyphicon glyphicon-refresh" id="refresh" ></button>
-								</div>
-								<div class="col-md-4" style="height:38px;">
-									PL TYPE:
-									<select id="pl_type" style="height:38px;">
-										<option value="ASL">ASL</option>
-										<option value="CSL">CSL</option>
-										<option value="AMTL">AMTL</option>
-										<option value="CMTL">CMTL</option>
-									</select>
-								</div>
+						<div class="alert alert-info" style="height:60px;">
+
+							<a href="staffloan_home" class="btn btn-default crtlal">LOAN ALLOCATION</a>
+							<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
+							<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
+							<button class="btn-sm glyphicon glyphicon-refresh" id="refresh" ></button>
+							<div class="col-md-5 pull-right">
+								<input class="SearchTypeahead form-control" id="search_loan_id" type="text" name="search_loan_id" placeholder="SEARCH STAFF LOAN ACCOUNT">
 							</div>
 
-							<div class="col-md-12" style="margin-top: 10px;">
-								<div class="col-md-2">
-									<select class="form-control" id="ExportType" name="ExportType">
-										<option value="">SELECT TYPE TO EXPORT</option>
-										<option value="word">WORD</option>
-										<option value="excel">EXCEL</option>
-										<option value="pdf">PDF</option>
-									</select>
-								</div>
-								<a href="PersonalLoan" class="btn btn-info btn-sm col-md-2 crtlal">LOAN ALLOCATION</a>
-								
-								<input type="button" value="Print" class="btn btn-info btn-sm print col-md-1" id="print">
-							</div>
 						</div>
-					</div>
 								
 							<div id="account_list_box">Loading...</div>
 								
@@ -102,7 +74,6 @@
 	</div>
 </div>
 
-
 <script>
 	function show_loading_img(selector) {
 		var loading_img = $("#temp_loading_img").html();
@@ -116,11 +87,12 @@
 		account_list("");
 	});
 	
-	$("#closed_status").change(function() {
+/* 	$("#closed_status").change(function() {
+		$("#account_list_box").html("Loading...");
 		account_list("");
-	});
+	}); */
 	
-	$("#pl_type").change(function() {
+	$("#refresh").click(function() {
 		account_list("");
 	});
 	
@@ -130,18 +102,13 @@
 		account_list(loan_id);
 	});
 	
-	$("#refresh").click(function() {
-		$("#closed_status").trigger("change");
-	});
-	
 	function account_list(loan_id) {
 		show_loading_img("#account_list_box");
 		var closed = $("#closed_status").val();
-		var pl_type = $("#pl_type").val();
 		$.ajax({
 			url:"account_list",
 			type:"post",
-			data:"&category=PL&closed="+closed+"&loan_id="+loan_id+"&pl_type="+pl_type,
+			data:"&category=SL&closed="+closed+"&loan_id="+loan_id,
 			success: function(data) {
 				console.log("done");
 				$("#back").show();
@@ -152,7 +119,7 @@
 </script>
 <script>
 	$('input.SearchTypeahead').typeahead({
-		ajax: '/getplaccsearch'
+		ajax: '/slsearchacc'
 	});
 </script>
 <script>
@@ -162,52 +129,6 @@
 	})
 </script>
 
-
-
-<script>
-	$(function() {
-		$(".print").click(function() {
-			//var divContents = $("#toprint").html();
-			var divContents = $("#account_list_box").html();
-            var printWindow = window.open('', '', 'height=600,width=800');
-            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(divContents);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-			//$("#toprint").print();
-            printWindow.print(); 
-		});
-	});
-</script>
-
-
-
-<script>
-	$('#ExportType').change( function(e) {
-		type=$('#ExportType').val();
-		
-		if(type=="word")
-		{
-			
-			$('#account_list_box').tableExport({type:'doc',escape:'false',fileName: 'tableExport'});
-		}
-		else if(type=="excel")
-		{
-			$('#account_list_box').tableExport({type:'excel',escape:'false'});
-		}
-		else if(type=="pdf")
-		{
-			//alert("Please Select Type For Export");
-			$('#account_list_box').tableExport({type:'pdf',escape:'false',fileName: 'tableExport'});
-			
-		}
-		
-	});
-</script>
-
-
-
 <script>
 	$('.crtlal').click(function(e)
 	{
@@ -215,5 +136,6 @@
 		$("#loan_details_box").hide();
 		show_loading_img("#receipt_box");
 		$('#receipt_box').load($(this).attr('href'));
+		$("#back").show();
 	});
 </script>

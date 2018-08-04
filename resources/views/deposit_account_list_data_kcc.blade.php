@@ -188,6 +188,7 @@
 		e.preventDefault();
 		$("#deposit_details_box").hide();
 		$('#temp_box').html("Loading...");
+		show_loading_img("#temp_box");
 		$('#temp_box').load($(this).attr('href'));
 	});
 </script>
