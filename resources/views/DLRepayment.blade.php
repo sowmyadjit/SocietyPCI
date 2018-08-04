@@ -3861,17 +3861,47 @@ console.log("amt="+bal);
 	});
 </script>
 
+
+
+
+
 <script>
 	function check_submit_jl() {
 		var error_flag = false;
 		var pay_amt = $("#jlpayamt").val();
 		var payment_mode = $("#jlPayMode").val();
-		if(pay_amt == "") {
+		var JLAccNum = $("#JLAccNum").val();
+		var jlBranch = $("#jlBranch").val();
+		if(jlBranch == "") {
+			error_flag = true;
+			alert("Select Branch");
+		} else if(JLAccNum == "") {
+			error_flag = true;
+			alert("Enter Jewel Account Number");
+		} else if(pay_amt == "") {
 			error_flag = true;
 			alert("Enter Pay Amount");
-		} else if(payment_mode == "") {
-			error_flag = true;
-			alert("Select payment mode");
+		} else if(true) {
+			switch(payment_mode) {
+				case "":
+							error_flag = true;
+							alert("Select payment mode");
+							break;
+				case "SB ACCOUNT":
+							var SBAccNumjl = $("#SBAccNumjl").val();
+							if(SBAccNumjl == "") {
+								error_flag = true;
+								alert("Enter SB Account Number");
+							}
+							break;
+				case "ADJUSTMENT":
+							var jladjust = $("#jladjust").val();
+							if(jladjust == "") {
+								error_flag = true;
+								alert("Enter ADjustment Number");
+							}
+							break;
+			}
 		} else if(true) {
 			$(".xtr_drop").each(function() {
 				var temp_name = $(this).val();
@@ -3896,12 +3926,45 @@ console.log("amt="+bal);
 		var error_flag = false;
 		var pay_amt = $("#slpayamt").val();
 		var payment_mode = $("#slPayMode").val();
-		if(pay_amt == "") {
+		var SLAccNum = $("#SLAccNum").val();
+		var slBranch = $("#slBranch").val();
+		if(slBranch == "") {
+			error_flag = true;
+			alert("Select Branch");
+		} else if(SLAccNum == "") {
+			error_flag = true;
+			alert("Enter Staff Loan Account Number");
+		} else if(pay_amt == "") {
 			error_flag = true;
 			alert("Enter Pay Amount");
-		} else if(payment_mode == "") {
-			error_flag = true;
-			alert("Select payment mode");
+		} else if(true) {
+			switch(payment_mode) {
+				case "":
+							error_flag = true;
+							alert("Select payment mode");
+							break;
+				case "CD":
+							var cdamt_dis = $("#cdamt_dis").val();
+							if(cdamt_dis == "") {
+								error_flag = true;
+								alert("Enter CD Amount");
+							}
+							break;
+				case "SB ACCOUNT":
+							var SBAccNumsl = $("#SBAccNumsl").val();
+							if(SBAccNumsl == "") {
+								error_flag = true;
+								alert("Enter SB Account Number");
+							}
+							break;
+				case "ADJUSTMENT":
+							var adjustnum_sl = $("#adjustnum_sl").val();
+							if(adjustnum_sl == "") {
+								error_flag = true;
+								alert("Enter ADjustment Number");
+							}
+							break;
+			}
 		} else if(true) {
 			$(".xtr_drop").each(function() {
 				var temp_name = $(this).val();
@@ -3926,12 +3989,45 @@ console.log("amt="+bal);
 		var error_flag = false;
 		var pay_amt = $("#plpayamt").val();
 		var payment_mode = $("#plPayMode").val();
-		if(pay_amt == "" || pay_amt == 0) {
+		var PLAccNum = $("#PLAccNum").val();
+		var plBranch = $("#plBranch").val();
+		if(plBranch == "") {
+			error_flag = true;
+			alert("Select Branch");
+		} else if(PLAccNum == "") {
+			error_flag = true;
+			alert("Enter Personal Loan Account Number");
+		} else if(pay_amt == "" || pay_amt == 0) {
 			error_flag = true;
 			alert("Enter Pay Amount");
-		} else if(payment_mode == "") {
-			error_flag = true;
-			alert("Select payment mode");
+		} else if(true) {
+			switch(payment_mode) {
+				case "":
+							error_flag = true;
+							alert("Select payment mode");
+							break;
+				case "PYGMY ACCOUNT":
+							var PGMAccNumPL = $("#PGMAccNumPL").val();
+							if(PGMAccNumPL == "") {
+								error_flag = true;
+								alert("Enter Pigmy Account");
+							}
+							break;
+				case "SB ACCOUNT":
+							var SBAccNumpl = $("#SBAccNumpl").val();
+							if(SBAccNumpl == "") {
+								error_flag = true;
+								alert("Enter SB Account Number");
+							}
+							break;
+				case "ADJUSTMENT":
+							var adjustnum = $("#adjustnum").val();
+							if(adjustnum == "") {
+								error_flag = true;
+								alert("Enter ADjustment Number");
+							}
+							break;
+			}
 		} else if(true) {
 			$(".xtr_drop").each(function() {
 				var temp_name = $(this).val();
@@ -3962,12 +4058,45 @@ console.log("amt="+bal);
 				case "pygmy DL" :
 									var pay_amt = $("#pgpayamt").val();
 									var payment_mode = $("#PgPayMode").val();
-									if(pay_amt == "" || pay_amt == 0) {
+									var PygmyAccNum = $("#PygmyAccNum").val();
+									var BranchTypeAheadPG = $(".BranchTypeAheadPG").val();
+									if(BranchTypeAheadPG == "") {
+										error_flag = true;
+										alert("Select Branch");
+									} else if(PygmyAccNum == "") {
+										error_flag = true;
+										alert("Enter Pygmy Account Number");
+									} else if(pay_amt == "" || pay_amt == 0) {
 										error_flag = true;
 										alert("Enter Pay Amount");
-									} else if(payment_mode == "") {
-										error_flag = true;
-										alert("Select payment mode");
+									} else if(true) {
+										switch(payment_mode) {
+											case "":
+														error_flag = true;
+														alert("Select payment mode");
+														break;
+											case "SB ACCOUNT":
+														var SBAccNum = $("#SBAccNum").val();
+														if(SBAccNum == "") {
+															error_flag = true;
+															alert("Enter SB Account Number");
+														}
+														break;
+											case "PIGMI ACCOUNT":
+														var PGMAccNumPDL = $("#PGMAccNumPDL").val();
+														if(PGMAccNumPDL == "") {
+															error_flag = true;
+															alert("Enter Pigmy Account Number");
+														}
+														break;
+											case "FD_ACCOUNT":
+														var FDAccNumPDL = $("#FDAccNumPDL").val();
+														if(FDAccNumPDL == "") {
+															error_flag = true;
+															alert("Enter FD Account Number");
+														}
+														break;
+										}
 									} else if(true) {
 										$(".xtr_drop").each(function() {
 											var temp_name = $(this).val();
@@ -3988,12 +4117,38 @@ console.log("amt="+bal);
 				case "RD DL" :
 									var pay_amt = $("#rdpayamt").val();
 									var payment_mode = $("#RdPayMode").val();
-									if(pay_amt == "" || pay_amt == 0) {
+									var RDAccNum = $("#RDAccNum").val();
+									var BranchTypeAheadRD = $(".BranchTypeAheadRD").val();
+									if(BranchTypeAheadRD == "") {
+										error_flag = true;
+										alert("Select Branch");
+									} else if(RDAccNum == "") {
+										error_flag = true;
+										alert("Enter RD Account Number");
+									} else if(pay_amt == "" || pay_amt == 0) {
 										error_flag = true;
 										alert("Enter Pay Amount");
-									} else if(payment_mode == "") {
-										error_flag = true;
-										alert("Select payment mode");
+									} else if(true) {
+										switch(payment_mode) {
+											case "":
+														error_flag = true;
+														alert("Select payment mode");
+														break;
+											case "PYGMY ACCOUNT":
+														var PGMAccNumRDL = $("#PGMAccNumRDL").val();
+														if(PGMAccNumRDL == "") {
+															error_flag = true;
+															alert("Enter Pigmy Account Number");
+														}
+														break;
+											case "SB ACCOUNT":
+														var SBAccNumRD = $("#SBAccNumRD").val();
+														if(SBAccNumRD == "") {
+															error_flag = true;
+															alert("Enter SB Account Number");
+														}
+														break;
+										}
 									} else if(true) {
 										$(".xtr_drop").each(function() {
 											var temp_name = $(this).val();
@@ -4011,16 +4166,41 @@ console.log("amt="+bal);
 										});
 									}
 									break;
-							break;
 				case "FD DL" :
 									var pay_amt = $("#fdpayamt").val();
 									var payment_mode = $("#FdPayMode").val();
-									if(pay_amt == "" || pay_amt == 0) {
+									var FDAccNum = $("#FDAccNum").val();
+									var BranchTypeAheadFD = $(".BranchTypeAheadFD").val();
+									if(BranchTypeAheadFD == "") {
+										error_flag = true;
+										alert("Select Branch");
+									} else if(FDAccNum == "") {
+										error_flag = true;
+										alert("Enter FD Account Number");
+									} else if(pay_amt == "" || pay_amt == 0) {
 										error_flag = true;
 										alert("Enter Pay Amount");
-									} else if(payment_mode == "") {
-										error_flag = true;
-										alert("Select payment mode");
+									} else if(true) {
+										switch(payment_mode) {
+											case "":
+														error_flag = true;
+														alert("Select payment mode");
+														break;
+											case "SB ACCOUNT":
+														var SBAccNumFD = $("#SBAccNumFD").val();
+														if(SBAccNumFD == "") {
+															error_flag = true;
+															alert("Enter SB Account Number");
+														}
+														break;
+											case "FD_ACCOUNT":
+														var SearchFd = $("#SearchFd").val();
+														if(SearchFd == "") {
+															error_flag = true;
+															alert("Enter FD Account Number");
+														}
+														break;
+										}
 									} else if(true) {
 										$(".xtr_drop").each(function() {
 											var temp_name = $(this).val();
@@ -4039,7 +4219,7 @@ console.log("amt="+bal);
 									}
 									break;
 			}
-		}
+		}//console.log(error_flag);
 		return error_flag;
 	}
 </script>
