@@ -28,14 +28,26 @@
 		
 		public function pigmiDLPigmy()
 		{
-		$Url="pigmiDLPigmy";	
-		//$chargeslist['module']=$this->Modules->GetAnyMid($Url);
-		$chargeslist=$this->pigmtDLrepay->chargeslist();
-		return view('DLRepayment',compact('chargeslist'));
+			$Url="pigmiDLPigmy";	
+			//$chargeslist['module']=$this->Modules->GetAnyMid($Url);
+			$chargeslist=$this->pigmtDLrepay->chargeslist();
+			// return view('DLRepayment',compact('chargeslist'));
+			return view('DLRepayment2',compact('chargeslist'));
 		}
+		
+		public function pigmiDLPigmy_data()
+		{
+			$Url="pigmiDLPigmy";	
+			//$chargeslist['module']=$this->Modules->GetAnyMid($Url);
+			$chargeslist=$this->pigmtDLrepay->chargeslist();
+			// return view('DLRepayment',compact('chargeslist'));
+			return view('DLRepayment_data',compact('chargeslist'));
+		}
+
 		public function Receipt(){
 			return view('jewel_loan_repay_report_data_print',compact(''));
 		}
+
 		public function GetDLDetail(Request $request)
 		{
 			$Url="pigmiDLPigmy";	

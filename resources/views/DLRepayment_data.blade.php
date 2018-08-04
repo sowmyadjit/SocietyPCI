@@ -10,21 +10,11 @@
     font-size: 19px;
 }	
 </style>
-<div id="content" class="col-md-10">
 	
 	<!-- content starts -->
     <div class="row">
 		<div class="box col-md-12">
 			<div class="box-inner">
-				<div class="box-header well" data-original-title="">
-					<h2><i class="glyphicon glyphicon-globe"></i>Loan Repayment</h2>
-					
-					<div class="box-icon">
-						<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
-						<a href="#" class="btn btn-minimize btn-round btn-default"><i class="glyphicon glyphicon-chevron-up"></i></a>
-						<a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
-					</div>
-				</div>
 				
 				<div class="box-content">
 					
@@ -115,7 +105,7 @@
 								<select class="form-control" id="PgPayMode" name="PgPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="PIGMI ACCOUNT">PIGMI ACCOUNT</option>
 									<option value="FD_ACCOUNT">FD ACCOUNT</option>
@@ -318,7 +308,7 @@
 								<select class="form-control" id="RdPayMode" name="RdPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 								</select>
@@ -525,7 +515,7 @@
 								<select class="form-control" id="FdPayMode" name="FdPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 <!--edit-->							<option value="FD_ACCOUNT">FD ACCOUNT</option>
@@ -774,7 +764,7 @@
 								<select class="form-control" id="plPayMode" name="plPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+					<?php /*		<option value="CHEQUE">CHEQUE</option> */?>
 									<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="ADJUSTMENT">ADJUSTMENT</option>
@@ -1001,7 +991,7 @@
 								<select class="form-control" id="jlPayMode" name="jlPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
 									<option value="ADJUSTMENT">ADJUSTMENT</option>
@@ -1172,13 +1162,23 @@
 								<select class="form-control" id="slPayMode" name="slPayMode">
 									<option value="">--Select Payment Mode--</option>
 									<option value="CASH">CASH</option>
-									<option value="CHEQUE">CHEQUE</option>
+						<?php /*	<option value="CHEQUE">CHEQUE</option> */?>
 									<!--<option value="PYGMY ACCOUNT">PYGMY ACCOUNT</option>-->
 									<option value="CD">CD</option>
 									<option value="SB ACCOUNT">SB ACCOUNT</option>
+									<option value="ADJUSTMENT">ADJUSTMENT</option>
 								</select>
 							</div>
 						</div>
+
+						
+						<div class="form-group adjust_sl">
+							<label class="control-label col-sm-4" for="">Adjustment Number :</label>
+							<div id="the-basics" class="col-sm-4">
+								<input class="adjustmentTypeAheadSL form-control"  type="text"  id="adjustnum_sl">  
+							</div>
+						</div>
+
 						<div class="cheque_sl">
 							
 							<div class="form-group ">
@@ -1384,6 +1384,7 @@
 	$('.cheque_pl').hide();
 	$('.cheque_jl').hide();
 	$('.cheque_sl').hide();
+	$('.adjust_sl').hide();
 	$('.pgsbaccnumb').hide();
 	$('.pgsbavailable').hide();
 	$('.pgsbtotamt').hide();
@@ -1539,7 +1540,6 @@
 					type:'post',
 					data:'&sbAcNo='+AccNum,
 					success:function(data)
-					
 					{
 						$('#Pgacid').val(data['acid']);
 						$('#PgSBAccountNum').val(data['acnum']);
@@ -2011,6 +2011,7 @@
 			$('.sltotamt').hide();
 			$('.sbaccsl').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
 		}
 		else if(pmode=="SB ACCOUNT")
 		{$('.adjustmentcarg').hide();
@@ -2022,6 +2023,7 @@
 			$('.slavailable').hide();
 			$('.sltotamt').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
 			$('.SBAccNumTypeAheadSL').change(function(e)
 			{
 				AccNum=$('.SBAccNumTypeAheadSL').data('value');
@@ -2046,6 +2048,7 @@
 		{$('.adjustmentcarg').hide();
 			$('.cheque_sl').hide();
 			$('.CD').show();
+			$('.adjust_sl').hide();
 			AccNum=$('.SLAccNumTypeAhead').data('value');
 			$.ajax({
 				url:'/getcd_of_employee',
@@ -2077,6 +2080,19 @@
 			$('.sltotamt').hide();
 			$('.sbaccsl').hide();
 			$('.CD').hide();
+			$('.adjust_sl').hide();
+		}
+		else if(pmode=="ADJUSTMENT")
+		{$('.adjustmentcarg').hide();
+			$('.cheque_sl').hide();
+			$('.slsbaccnumb').hide();
+			$('.slsbavailable').hide();
+			$('.slsbtotamt').hide();
+			$('.slavailable').hide();
+			$('.sltotamt').hide();
+			$('.sbaccsl').hide();
+			$('.CD').hide();
+			$('.adjust_sl').show();
 		}
 		
 	});
@@ -2183,6 +2199,9 @@
 	$('.adjustmentTypeAheadPL').typeahead({
 		ajax:'/adjustment_num'
 	});
+	$('.adjustmentTypeAheadSL').typeahead({
+		ajax:'/adjustment_num'
+	});
 	$('.adjustmentTypeAheadJL').typeahead({
 		ajax:'/adjustment_num'
 	});
@@ -2270,14 +2289,16 @@
 				});
 
 				
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=PG',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		
@@ -2357,14 +2378,16 @@
 					}
 				});
 
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=RD',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 				
 				
 			}
@@ -2451,14 +2474,16 @@ console.log("amt="+bal);
 					}
 				});
 
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=FD',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+dlalid+'&loan_category=DL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		
@@ -2716,6 +2741,7 @@ console.log("amt="+bal);
 																days = parseInt(start_to_today) + 1;//THIS IS FIRST REPAYMENT
 															
 															//	console.log("days="+days);
+/* 
 																if(days <= 15) {
 																	console.log("days bw 0 - 15");
 																	days = 15;
@@ -2725,6 +2751,7 @@ console.log("amt="+bal);
 																} else {
 																	days = days;
 																}
+																 */
 																//print_days();
 																calculate_jewel_interest(days,LoanType_Interest,JewelLoan_remaininginterest,bal);
 															}
@@ -2737,11 +2764,17 @@ console.log("amt="+bal);
 															type:"post",
 															data:'&first='+last_paid_date+'&second='+today,
 															success:function(last_to_today) {console.log("last_to_today="+last_to_today);
+																if(last_paid_date > today) {
+																	console.log("last_paid_date > today");
+																	var last_to_today = 0;
+																}
 																console.log("last_to_today="+last_to_today);
 																days = parseInt(last_to_today);//THIS IS SECOND REPAYMENT
+/* 
 																if(days <= 15) {
 																	days = 15;
 																}
+																 */
 																//print_days();
 																calculate_jewel_interest(days,LoanType_Interest,JewelLoan_remaininginterest,bal);
 															}
@@ -2753,6 +2786,10 @@ console.log("amt="+bal);
 															type:"post",
 															data:'&first='+last_paid_date+'&second='+today,
 															success:function(last_to_today) {
+																if(last_paid_date > today) {
+																	console.log("last_paid_date > today");
+																	var last_to_today = 0;
+																}
 																console.log("last_to_today="+last_to_today);
 																days = parseInt(last_to_today);
 																//print_days();
@@ -2884,14 +2921,17 @@ console.log("amt="+bal);
 						
 					}
 				});
+				
+				//REPAY REPORT
 				$.ajax({
-				url:'/jewel_loan_repay_report_data',
-				type:'post',
-				data:'&DLAlcID='+dlalid+'&loan_type=SL',
-				success:function(data){
-				 
-				}
+					url:'/repay_report_data',
+					type:'post',
+					data:'&loan_allocation_id='+slaccid+'&loan_category=SL',
+					success:function(data){
+						$("#jewel_repayment").html(data);
+					}
 				});
+				//REPAY REPORT END
 			}
 		});
 		
@@ -2916,8 +2956,8 @@ console.log("amt="+bal);
 				$('#fdFDAvail').val(adj_amt);
 				$('#fdFDRem').val(parseFloat(adj_amt - amt_paid));
 /**********************/
-				//$('#fdFDAvail').val(Fd_TotalAmt);
-				//$('#fdFDRem').val(rem);
+				$('#fdFDAvail').val(Fd_TotalAmt);
+				$('#fdFDRem').val(rem);
 				$('#Fdid').val(data['Fdid']);
 			}
 		});
@@ -2949,117 +2989,122 @@ console.log("amt="+bal);
 	});
 	dlsubindex=0;
 	$('.sbmbtn').click( function(e) {
-		dl=$('#dl').val();
-		
-		if(dlsubindex==0)
-		{
-			dlsubindex++;
-			if(dl=="pygmy DL")
+		var error_flag = check_submit_dl();//	CHECK FOR REQUIRED FIEDS TO BE FILLED
+		if(error_flag) {
+			console.log("error");
+		} else {
+			dl=$('#dl').val();
+			
+			if(dlsubindex==0)
 			{
-				
-				
-				temp="";
-				temp1="";
-				for(i=1;i<xpdl;i++)
+				dlsubindex++;
+				if(dl=="pygmy DL")
 				{
-					amt=$('#BranchListDDpdl'+i).val();
-					amt1=$('#xtr_chargpdl'+i).val();
-					if(i < xpdl-1){
-						temp+=amt+",";
-						temp1+=amt1+",";
-						}else{
-						temp+=amt;
-						temp1+=amt1;
+					
+					
+					temp="";
+					temp1="";
+					for(i=1;i<xpdl;i++)
+					{
+						amt=$('#BranchListDDpdl'+i).val();
+						amt1=$('#xtr_chargpdl'+i).val();
+						if(i < xpdl-1){
+							temp+=amt+",";
+							temp1+=amt1+",";
+							}else{
+							temp+=amt;
+							temp1+=amt1;
+						}
 					}
+					
+					x=xpdl;
+					charges=temp;
+					amount=temp1;
+					
+					alert(charges);
+					alert(amount);
 				}
-				
-				x=xpdl;
-				charges=temp;
-				amount=temp1;
-				
-				alert(charges);
-				alert(amount);
-			}
-			else if(dl=="RD DL")
-			{
-				temp="";
-				temp1="";
-				for(i=1;i<xrddl;i++)
+				else if(dl=="RD DL")
 				{
-					amt=$('#BranchListDDrddl'+i).val();
-					amt1=$('#xtr_chargrddl'+i).val();
-					if(i < xrddl-1){
-						temp+=amt+",";
-						temp1+=amt1+",";
-						}else{
-						temp+=amt;
-						temp1+=amt1;
+					temp="";
+					temp1="";
+					for(i=1;i<xrddl;i++)
+					{
+						amt=$('#BranchListDDrddl'+i).val();
+						amt1=$('#xtr_chargrddl'+i).val();
+						if(i < xrddl-1){
+							temp+=amt+",";
+							temp1+=amt1+",";
+							}else{
+							temp+=amt;
+							temp1+=amt1;
+						}
 					}
+					
+					x=xrddl;
+					charges=temp;
+					amount=temp1;
+					
+					alert(charges);
+					alert(amount);
 				}
-				
-				x=xrddl;
-				charges=temp;
-				amount=temp1;
-				
-				alert(charges);
-				alert(amount);
-			}
-			else if(dl=="FD DL")
-			{
-				
-				temp="";
-				temp1="";
-				for(i=1;i<xfddl;i++)
+				else if(dl=="FD DL")
 				{
-					amt=$('#BranchListDDfddl'+i).val();
-					amt1=$('#xtr_chargfddl'+i).val();
-					if(i < xfddl-1){
-						temp+=amt+",";
-						temp1+=amt1+",";
-						}else{
-						temp+=amt;
-						temp1+=amt1;
+					
+					temp="";
+					temp1="";
+					for(i=1;i<xfddl;i++)
+					{
+						amt=$('#BranchListDDfddl'+i).val();
+						amt1=$('#xtr_chargfddl'+i).val();
+						if(i < xfddl-1){
+							temp+=amt+",";
+							temp1+=amt1+",";
+							}else{
+							temp+=amt;
+							temp1+=amt1;
+						}
 					}
+					
+					x=xrddl;
+					charges=temp;
+					amount=temp1;
+					
+					alert(charges);
+					alert(amount);
 				}
+				DlAlocID=$('.PygmyAccNumTypeAhead').data('value');
+				RDDlAlocID=$('.RDAccNumTypeAhead').data('value');
+				FDDlAlocID=$('.FDAccNumTypeAhead').data('value');
+				bank_pigmy=$('#creditbank_pigmy').data('value');
+				bank_rd=$('#creditbank_rd').data('value');
+				bank_fd=$('#creditbank_fd').data('value');
 				
-				x=xrddl;
-				charges=temp;
-				amount=temp1;
 				
-				alert(charges);
-				alert(amount);
+				
+				BidP=$('.BranchTypeAheadPG').data('value');
+				BidR=$('.BranchTypeAheadRD').data('value');
+				BidF=$('.BranchTypeAheadFD').data('value');
+				//alert(BidR);
+				DlAccNo=$('.PygmyAccNumTypeAhead').val();
+				RDDlAccNo=$('.RDAccNumTypeAhead').val();
+				FDDlAccNo=$('.FDAccNumTypeAhead').val();
+				
+				FD_pay_num=$('.FDAccNumTypeAheadPDL').data('value');
+			//	FDAccNumFDL=$('.SearchTypeahead').data('value');
+				Fdid=$('#Fdid').val();
+				//alert(DlAlocID);
+				e.preventDefault();
+				$.ajax({
+					url: 'createPigmyDL',
+					type: 'post',
+					data: $('#form_dlrepay').serialize()+'&DLAlloc='+DlAlocID+'&RDDLAlloc='+RDDlAlocID+'&FDDLAlloc='+FDDlAlocID+'&BranchIDP='+BidP+'&BranchIDR='+BidR+'&BranchIDF='+BidF+'&DLAccNum='+DlAccNo+'&RDDLAccNum='+RDDlAccNo+'&FDDLAccNum='+FDDlAccNo+'&dltype='+dl+'&charges='+temp+'&amount='+temp1+'&loopid='+x+'&bank_pigmy='+bank_pigmy+'&bank_rd='+bank_rd+'&bank_fd='+bank_fd+'&FD_pay_num='+FD_pay_num+'&Fdid='+Fdid,
+					success: function(data) {
+						alert('success');
+						$('.pigmidlrepayclassid').click();
+					}
+				});
 			}
-			DlAlocID=$('.PygmyAccNumTypeAhead').data('value');
-			RDDlAlocID=$('.RDAccNumTypeAhead').data('value');
-			FDDlAlocID=$('.FDAccNumTypeAhead').data('value');
-			bank_pigmy=$('#creditbank_pigmy').data('value');
-			bank_rd=$('#creditbank_rd').data('value');
-			bank_fd=$('#creditbank_fd').data('value');
-			
-			
-			
-			BidP=$('.BranchTypeAheadPG').data('value');
-			BidR=$('.BranchTypeAheadRD').data('value');
-			BidF=$('.BranchTypeAheadFD').data('value');
-			//alert(BidR);
-			DlAccNo=$('.PygmyAccNumTypeAhead').val();
-			RDDlAccNo=$('.RDAccNumTypeAhead').val();
-			FDDlAccNo=$('.FDAccNumTypeAhead').val();
-			
-			FD_pay_num=$('.FDAccNumTypeAheadPDL').data('value');
-		//	FDAccNumFDL=$('.SearchTypeahead').data('value');
-			Fdid=$('#Fdid').val();
-			//alert(DlAlocID);
-			e.preventDefault();
-			$.ajax({
-				url: 'createPigmyDL',
-				type: 'post',
-				data: $('#form_dlrepay').serialize()+'&DLAlloc='+DlAlocID+'&RDDLAlloc='+RDDlAlocID+'&FDDLAlloc='+FDDlAlocID+'&BranchIDP='+BidP+'&BranchIDR='+BidR+'&BranchIDF='+BidF+'&DLAccNum='+DlAccNo+'&RDDLAccNum='+RDDlAccNo+'&FDDLAccNum='+FDDlAccNo+'&dltype='+dl+'&charges='+temp+'&amount='+temp1+'&loopid='+x+'&bank_pigmy='+bank_pigmy+'&bank_rd='+bank_rd+'&bank_fd='+bank_fd+'&FD_pay_num='+FD_pay_num+'&Fdid='+Fdid,
-				success: function(data) {
-					alert('success');
-					$('.pigmidlrepayclassid').click();
-				}
-			});
 		}
 	});
 	
@@ -3178,53 +3223,58 @@ console.log("amt="+bal);
 	plsubindex=0;
 	//SUBMIT FOR PERSONAL LOAN
 	$('.PLRPSbmBtn').click( function(e) {
-		if(plsubindex==0)
-		{
-			plsubindex++;
-			temp="";
-			temp1="";
-			for(i=1;i<x;i++)
+		var error_flag = check_submit_pl();
+		if(error_flag) {
+			console.log("error");
+		} else {
+			if(plsubindex==0)
 			{
-				amt=$('#BranchListDD'+i).val();
-				amt1=$('#xtr_charg'+i).val();
-				if(i < x-1){
-					temp+=amt+",";
-					temp1+=amt1+",";
-					}else{
-					temp+=amt;
-					temp1+=amt1;
+				plsubindex++;
+				temp="";
+				temp1="";
+				for(i=1;i<x;i++)
+				{
+					amt=$('#BranchListDD'+i).val();
+					amt1=$('#xtr_charg'+i).val();
+					if(i < x-1){
+						temp+=amt+",";
+						temp1+=amt1+",";
+						}else{
+						temp+=amt;
+						temp1+=amt1;
+					}
 				}
+				
+				
+				charges=temp;
+				amount=temp1;
+				
+				alert(charges);
+				alert(amount);
+				
+				plAlocID=$('.PLAccNumTypeAhead').data('value');
+				
+				
+				Bidpl=$('.BranchTypeAheadPL').data('value');
+				
+				adid=$('.adjustmentTypeAheadPL').data('value');
+				plAccNo=$('.PlAccNumTypeAhead').val();
+				bank_pl=$('#creditbank_pl').data('value');
+				var interest_upto_pl = $('#interest_upto_pl').val();
+				var rec_date_pl = $('#rec_date_pl').val();
+				//dl=$('#dl').val();
+				
+				e.preventDefault();
+				$.ajax({
+					url: 'PersonalLoanRepay',
+					type: 'post',
+					data: $('#form_dlrepay').serialize()+'&plAlloc='+plAlocID+'&branch='+Bidpl+'&plloanno='+plAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+x+'&bank_pl='+bank_pl+'&adid='+adid+'&interest_upto_pl='+interest_upto_pl+'&rec_date_pl='+rec_date_pl,
+					success: function(data) {
+						alert('success');
+						$('.pigmidlrepayclassid').click();
+					}
+				});
 			}
-			
-			
-			charges=temp;
-			amount=temp1;
-			
-			alert(charges);
-			alert(amount);
-			
-			plAlocID=$('.PLAccNumTypeAhead').data('value');
-			
-			
-			Bidpl=$('.BranchTypeAheadPL').data('value');
-			
-			adid=$('.adjustmentTypeAheadPL').data('value');
-			plAccNo=$('.PlAccNumTypeAhead').val();
-			bank_pl=$('#creditbank_pl').data('value');
-			var interest_upto_pl = $('#interest_upto_pl').val();
-			var rec_date_pl = $('#rec_date_pl').val();
-			//dl=$('#dl').val();
-			
-			e.preventDefault();
-			$.ajax({
-				url: 'PersonalLoanRepay',
-				type: 'post',
-				data: $('#form_dlrepay').serialize()+'&plAlloc='+plAlocID+'&branch='+Bidpl+'&plloanno='+plAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+x+'&bank_pl='+bank_pl+'&adid='+adid+'&interest_upto_pl='+interest_upto_pl+'&rec_date_pl='+rec_date_pl,
-				success: function(data) {
-					alert('success');
-					$('.pigmidlrepayclassid').click();
-				}
-			});
 		}
 	});
 	
@@ -3274,48 +3324,53 @@ console.log("amt="+bal);
 	jlsubindex=0;
 	//SUBMIT FOR jewel LOAN
 	$('.JLRPSbmBtn').click( function(e) {
-		if(jlsubindex==0)
-		{
-			jlsubindex++;
-			temp="";
-			temp1="";
-			for(i=1;i<xjl;i++)
+		var error_flag = check_submit_jl();
+		if(error_flag) {
+			console.log("error");
+		} else {
+			if(jlsubindex==0)
 			{
-				amt=$('#BranchListDDjl'+i).val();
-				amt1=$('#xtr_chargjl'+i).val();
-				if(i < xjl-1){
-					temp+=amt+",";
-					temp1+=amt1+",";
-					}else{
-					temp+=amt;
-					temp1+=amt1;
+				jlsubindex++;
+				temp="";
+				temp1="";
+				for(i=1;i<xjl;i++)
+				{
+					amt=$('#BranchListDDjl'+i).val();
+					amt1=$('#xtr_chargjl'+i).val();
+					if(i < xjl-1){
+						temp+=amt+",";
+						temp1+=amt1+",";
+						}else{
+						temp+=amt;
+						temp1+=amt1;
+					}
 				}
+				
+				
+				charges=temp;
+				amount=temp1;
+				
+				alert(charges);
+				alert(amount);
+				
+				jlAlocID=$('.JLAccNumTypeAhead').data('value');
+				Bidjl=$('.BranchTypeAheadJL').data('value');
+				bank_jl=$('#creditbank_jl').data('value');
+				jlAccNo=$('.JlAccNumTypeAhead').val();
+				var interest_upto = $("#interest_upto").val();
+				var rec_date_jl = $("#rec_date_jl").val();
+				
+				e.preventDefault();
+				$.ajax({
+					url: 'JewelLoanRepay',
+					type: 'post',
+					data: $('#form_dlrepay').serialize()+'&jlAlloc='+jlAlocID+'&branch='+Bidjl+'&jlloanno='+jlAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+xjl+'&bank_jl='+bank_jl+'&interest_upto='+interest_upto+'&rec_date_jl='+rec_date_jl,
+					success: function(data) {
+						alert('success');
+					//	$('.pigmidlrepayclassid').click();
+					}
+				});
 			}
-			
-			
-			charges=temp;
-			amount=temp1;
-			
-			alert(charges);
-			alert(amount);
-			
-			jlAlocID=$('.JLAccNumTypeAhead').data('value');
-			Bidjl=$('.BranchTypeAheadJL').data('value');
-			bank_jl=$('#creditbank_jl').data('value');
-			jlAccNo=$('.JlAccNumTypeAhead').val();
-			var interest_upto = $("#interest_upto").val();
-			var rec_date_jl = $("#rec_date_jl").val();
-			
-			e.preventDefault();
-			$.ajax({
-				url: 'JewelLoanRepay',
-				type: 'post',
-				data: $('#form_dlrepay').serialize()+'&jlAlloc='+jlAlocID+'&branch='+Bidjl+'&jlloanno='+jlAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+xjl+'&bank_jl='+bank_jl+'&interest_upto='+interest_upto+'&rec_date_jl='+rec_date_jl,
-				success: function(data) {
-					alert('success');
-				//	$('.pigmidlrepayclassid').click();
-				}
-			});
 		}
 	});
 	
@@ -3373,53 +3428,58 @@ console.log("amt="+bal);
 	$('.SLRPSbmBtn').click( function(e) {
 		if(jlsubindex==0)
 		{
-/********************* sl add charge **************************/
-			
-				temp="";
-				temp1="";
-				for(i=1;i<xsl;i++)
-				{
-					amt=$('#BranchListDDsl'+i).val();
-					amt1=$('#xtr_chargsl'+i).val();
-					if(i < xsl-1){
-						temp+=amt+",";
-						temp1+=amt1+",";
-						}else{
-						temp+=amt;
-						temp1+=amt1;
+			var error_flag = check_submit_sl();
+			if(error_flag) {
+				console.log("error");
+			} else {
+	/********************* sl add charge **************************/
+				
+					temp="";
+					temp1="";
+					for(i=1;i<xsl;i++)
+					{
+						amt=$('#BranchListDDsl'+i).val();
+						amt1=$('#xtr_chargsl'+i).val();
+						if(i < xsl-1){
+							temp+=amt+",";
+							temp1+=amt1+",";
+							}else{
+							temp+=amt;
+							temp1+=amt1;
+						}
 					}
-				}
+					
+					x=xsl;
+					charges=temp;
+					amount=temp1;
+					
+					alert(charges);
+					alert(amount);
+					
+					
+	/********************* sl add charge **************************/
+				jlsubindex++;
+				slAlocID=$('.SLAccNumTypeAhead').data('value');
 				
-				x=xsl;
-				charges=temp;
-				amount=temp1;
 				
-				alert(charges);
-				alert(amount);
+				Bidsl=$('.BranchTypeAheadSL').data('value');
 				
 				
-/********************* sl add charge **************************/
-			jlsubindex++;
-			slAlocID=$('.SLAccNumTypeAhead').data('value');
-			
-			
-			Bidsl=$('.BranchTypeAheadSL').data('value');
-			
-			
-			slAccNo=$('.SlAccNumTypeAhead').val();
-			
-			//dl=$('#dl').val();
-			
-			e.preventDefault();
-			$.ajax({
-				url: 'StaffLoanRepay',
-				type: 'post',
-				data: $('#form_dlrepay').serialize()+'&slAlloc='+slAlocID+'&branch='+Bidsl+'&slloanno='+slAccNo+'&charges='+charges+'&amount='+amount+'&xsl='+xsl,
-				success: function(data) {
-					alert('success');
-					$('.pigmidlrepayclassid').click();
-				}
-			});
+				slAccNo=$('.SlAccNumTypeAhead').val();
+				
+				//dl=$('#dl').val();
+				
+				e.preventDefault();
+				$.ajax({
+					url: 'StaffLoanRepay',
+					type: 'post',
+					data: $('#form_dlrepay').serialize()+'&slAlloc='+slAlocID+'&branch='+Bidsl+'&slloanno='+slAccNo+'&charges='+charges+'&amount='+amount+'&xsl='+xsl,
+					success: function(data) {
+						alert('success');
+						$('.pigmidlrepayclassid').click();
+					}
+				});
+			}
 		}
 	});
 	x=1;
@@ -3611,6 +3671,24 @@ console.log("amt="+bal);
 		
 	});
 	
+	$('.adjustmentTypeAheadSL').change(function(e)
+	{
+		adid=$('.adjustmentTypeAheadSL').attr('data-value');
+		
+		
+		$.ajax({
+			url:'/Getadjustmentdetails',
+			type:'post',
+			data:'&adid='+adid,
+			success:function(data)
+			{
+				$('#slpayamt').val(data['amount']);
+			}
+		});
+		
+	});
+	
+	
 	
 	var htmltextast="";
 	i=0;
@@ -3771,4 +3849,367 @@ console.log("amt="+bal);
 	$("#interest_upto").change(function() {
 		console.log("change");
 	});
+</script>
+
+
+
+
+
+<script>
+	function check_submit_jl() {
+		var error_flag = false;
+		var pay_amt = $("#jlpayamt").val();
+		var payment_mode = $("#jlPayMode").val();
+		var JLAccNum = $("#JLAccNum").val();
+		var jlBranch = $("#jlBranch").val();
+		if(jlBranch == "") {
+			error_flag = true;
+			alert("Select Branch");
+		} else if(JLAccNum == "") {
+			error_flag = true;
+			alert("Enter Jewel Account Number");
+		} else if(pay_amt == "") {
+			error_flag = true;
+			alert("Enter Pay Amount");
+		} else if(true) {
+			switch(payment_mode) {
+				case "":
+							error_flag = true;
+							alert("Select payment mode");
+							break;
+				case "SB ACCOUNT":
+							var SBAccNumjl = $("#SBAccNumjl").val();
+							if(SBAccNumjl == "") {
+								error_flag = true;
+								alert("Enter SB Account Number");
+							}
+							break;
+				case "ADJUSTMENT":
+							var jladjust = $("#jladjust").val();
+							if(jladjust == "") {
+								error_flag = true;
+								alert("Enter ADjustment Number");
+							}
+							break;
+			}
+		} else if(true) {
+			$(".xtr_drop").each(function() {
+				var temp_name = $(this).val();
+				if(temp_name == "-------------") {
+					error_flag = true;
+					alert("Invalid Charge Name: "+temp_name);
+				}
+			});
+			$(".xtr_charg").each(function() {
+				var temp_amt = $(this).val();
+				if(temp_amt == "") {
+					error_flag = true;
+					alert("Enter Add Charge Amount");
+				}
+			});
+		}
+		return error_flag;
+	}
+</script>
+<script>
+	function check_submit_sl() {
+		var error_flag = false;
+		var pay_amt = $("#slpayamt").val();
+		var payment_mode = $("#slPayMode").val();
+		var SLAccNum = $("#SLAccNum").val();
+		var slBranch = $("#slBranch").val();
+		if(slBranch == "") {
+			error_flag = true;
+			alert("Select Branch");
+		} else if(SLAccNum == "") {
+			error_flag = true;
+			alert("Enter Staff Loan Account Number");
+		} else if(pay_amt == "") {
+			error_flag = true;
+			alert("Enter Pay Amount");
+		} else if(true) {
+			switch(payment_mode) {
+				case "":
+							error_flag = true;
+							alert("Select payment mode");
+							break;
+				case "CD":
+							var cdamt_dis = $("#cdamt_dis").val();
+							if(cdamt_dis == "") {
+								error_flag = true;
+								alert("Enter CD Amount");
+							}
+							break;
+				case "SB ACCOUNT":
+							var SBAccNumsl = $("#SBAccNumsl").val();
+							if(SBAccNumsl == "") {
+								error_flag = true;
+								alert("Enter SB Account Number");
+							}
+							break;
+				case "ADJUSTMENT":
+							var adjustnum_sl = $("#adjustnum_sl").val();
+							if(adjustnum_sl == "") {
+								error_flag = true;
+								alert("Enter ADjustment Number");
+							}
+							break;
+			}
+		} else if(true) {
+			$(".xtr_drop").each(function() {
+				var temp_name = $(this).val();
+				if(temp_name == "-------------") {
+					error_flag = true;
+					alert("Invalid Charge Name: "+temp_name);
+				}
+			});
+			$(".xtr_charg").each(function() {
+				var temp_amt = $(this).val();
+				if(temp_amt == "") {
+					error_flag = true;
+					alert("Enter Add Charge Amount");
+				}
+			});
+		}
+		return error_flag;
+	}
+</script>
+<script>
+	function check_submit_pl() {
+		var error_flag = false;
+		var pay_amt = $("#plpayamt").val();
+		var payment_mode = $("#plPayMode").val();
+		var PLAccNum = $("#PLAccNum").val();
+		var plBranch = $("#plBranch").val();
+		if(plBranch == "") {
+			error_flag = true;
+			alert("Select Branch");
+		} else if(PLAccNum == "") {
+			error_flag = true;
+			alert("Enter Personal Loan Account Number");
+		} else if(pay_amt == "" || pay_amt == 0) {
+			error_flag = true;
+			alert("Enter Pay Amount");
+		} else if(true) {
+			switch(payment_mode) {
+				case "":
+							error_flag = true;
+							alert("Select payment mode");
+							break;
+				case "PYGMY ACCOUNT":
+							var PGMAccNumPL = $("#PGMAccNumPL").val();
+							if(PGMAccNumPL == "") {
+								error_flag = true;
+								alert("Enter Pigmy Account");
+							}
+							break;
+				case "SB ACCOUNT":
+							var SBAccNumpl = $("#SBAccNumpl").val();
+							if(SBAccNumpl == "") {
+								error_flag = true;
+								alert("Enter SB Account Number");
+							}
+							break;
+				case "ADJUSTMENT":
+							var adjustnum = $("#adjustnum").val();
+							if(adjustnum == "") {
+								error_flag = true;
+								alert("Enter ADjustment Number");
+							}
+							break;
+			}
+		} else if(true) {
+			$(".xtr_drop").each(function() {
+				var temp_name = $(this).val();
+				if(temp_name == "-------------") {
+					error_flag = true;
+					alert("Invalid Charge Name: "+temp_name);
+				}
+			});
+			$(".xtr_charg").each(function() {
+				var temp_amt = $(this).val();
+				if(temp_amt == "") {
+					error_flag = true;
+					alert("Enter Add Charge Amount");
+				}
+			});
+		}
+		return error_flag;
+	}
+</script>
+<script>
+	function check_submit_dl() {
+		var error_flag = false;
+		var dl_type = $("#dl").val();
+		if(dl_type == 0) {
+			error_flag = true;
+		} else {
+			switch(dl_type) {
+				case "pygmy DL" :
+									var pay_amt = $("#pgpayamt").val();
+									var payment_mode = $("#PgPayMode").val();
+									var PygmyAccNum = $("#PygmyAccNum").val();
+									var BranchTypeAheadPG = $(".BranchTypeAheadPG").val();
+									if(BranchTypeAheadPG == "") {
+										error_flag = true;
+										alert("Select Branch");
+									} else if(PygmyAccNum == "") {
+										error_flag = true;
+										alert("Enter Pygmy Account Number");
+									} else if(pay_amt == "" || pay_amt == 0) {
+										error_flag = true;
+										alert("Enter Pay Amount");
+									} else if(true) {
+										switch(payment_mode) {
+											case "":
+														error_flag = true;
+														alert("Select payment mode");
+														break;
+											case "SB ACCOUNT":
+														var SBAccNum = $("#SBAccNum").val();
+														if(SBAccNum == "") {
+															error_flag = true;
+															alert("Enter SB Account Number");
+														}
+														break;
+											case "PIGMI ACCOUNT":
+														var PGMAccNumPDL = $("#PGMAccNumPDL").val();
+														if(PGMAccNumPDL == "") {
+															error_flag = true;
+															alert("Enter Pigmy Account Number");
+														}
+														break;
+											case "FD_ACCOUNT":
+														var FDAccNumPDL = $("#FDAccNumPDL").val();
+														if(FDAccNumPDL == "") {
+															error_flag = true;
+															alert("Enter FD Account Number");
+														}
+														break;
+										}
+									} else if(true) {
+										$(".xtr_drop").each(function() {
+											var temp_name = $(this).val();
+											if(temp_name == "-------------") {
+												error_flag = true;
+												alert("Invalid Charge Name: "+temp_name);
+											}
+										});
+										$(".xtr_charg").each(function() {
+											var temp_amt = $(this).val();
+											if(temp_amt == "") {
+												error_flag = true;
+												alert("Enter Add Charge Amount");
+											}
+										});
+									}
+									break;
+				case "RD DL" :
+									var pay_amt = $("#rdpayamt").val();
+									var payment_mode = $("#RdPayMode").val();
+									var RDAccNum = $("#RDAccNum").val();
+									var BranchTypeAheadRD = $(".BranchTypeAheadRD").val();
+									if(BranchTypeAheadRD == "") {
+										error_flag = true;
+										alert("Select Branch");
+									} else if(RDAccNum == "") {
+										error_flag = true;
+										alert("Enter RD Account Number");
+									} else if(pay_amt == "" || pay_amt == 0) {
+										error_flag = true;
+										alert("Enter Pay Amount");
+									} else if(true) {
+										switch(payment_mode) {
+											case "":
+														error_flag = true;
+														alert("Select payment mode");
+														break;
+											case "PYGMY ACCOUNT":
+														var PGMAccNumRDL = $("#PGMAccNumRDL").val();
+														if(PGMAccNumRDL == "") {
+															error_flag = true;
+															alert("Enter Pigmy Account Number");
+														}
+														break;
+											case "SB ACCOUNT":
+														var SBAccNumRD = $("#SBAccNumRD").val();
+														if(SBAccNumRD == "") {
+															error_flag = true;
+															alert("Enter SB Account Number");
+														}
+														break;
+										}
+									} else if(true) {
+										$(".xtr_drop").each(function() {
+											var temp_name = $(this).val();
+											if(temp_name == "-------------") {
+												error_flag = true;
+												alert("Invalid Charge Name: "+temp_name);
+											}
+										});
+										$(".xtr_charg").each(function() {
+											var temp_amt = $(this).val();
+											if(temp_amt == "") {
+												error_flag = true;
+												alert("Enter Add Charge Amount");
+											}
+										});
+									}
+									break;
+				case "FD DL" :
+									var pay_amt = $("#fdpayamt").val();
+									var payment_mode = $("#FdPayMode").val();
+									var FDAccNum = $("#FDAccNum").val();
+									var BranchTypeAheadFD = $(".BranchTypeAheadFD").val();
+									if(BranchTypeAheadFD == "") {
+										error_flag = true;
+										alert("Select Branch");
+									} else if(FDAccNum == "") {
+										error_flag = true;
+										alert("Enter FD Account Number");
+									} else if(pay_amt == "" || pay_amt == 0) {
+										error_flag = true;
+										alert("Enter Pay Amount");
+									} else if(true) {
+										switch(payment_mode) {
+											case "":
+														error_flag = true;
+														alert("Select payment mode");
+														break;
+											case "SB ACCOUNT":
+														var SBAccNumFD = $("#SBAccNumFD").val();
+														if(SBAccNumFD == "") {
+															error_flag = true;
+															alert("Enter SB Account Number");
+														}
+														break;
+											case "FD_ACCOUNT":
+														var SearchFd = $("#SearchFd").val();
+														if(SearchFd == "") {
+															error_flag = true;
+															alert("Enter FD Account Number");
+														}
+														break;
+										}
+									} else if(true) {
+										$(".xtr_drop").each(function() {
+											var temp_name = $(this).val();
+											if(temp_name == "-------------") {
+												error_flag = true;
+												alert("Invalid Charge Name: "+temp_name);
+											}
+										});
+										$(".xtr_charg").each(function() {
+											var temp_amt = $(this).val();
+											if(temp_amt == "") {
+												error_flag = true;
+												alert("Enter Add Charge Amount");
+											}
+										});
+									}
+									break;
+			}
+		}//console.log(error_flag);
+		return error_flag;
+	}
 </script>

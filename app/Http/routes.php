@@ -844,6 +844,7 @@
 				
 				//DLRepayment Controller
 				Route::get('/pigmiDLPigmy','DLRepaymentController@pigmiDLPigmy');
+				Route::post('/pigmiDLPigmy_data','DLRepaymentController@pigmiDLPigmy_data');
 				Route::post('/GetDLDetail','DLRepaymentController@GetDLDetail');
 				Route::post('/GetFDDetail','DLRepaymentController@GetFDDetail');
 				Route::post('/CalcDayDiff','DLRepaymentController@CalcDayDiff');
