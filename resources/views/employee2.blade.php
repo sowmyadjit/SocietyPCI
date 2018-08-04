@@ -60,6 +60,13 @@
 		<div class="b_back">
 			<center><button class="btn-sm btn-info ">back</button></center>
 		</div>
+		<div id="temp_loading_img" class="hide">
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="100px" height="100px"/>
+				</center>
+			</div>
+		</div>
 
 
 			
@@ -71,35 +78,37 @@
 
 
 
+
 <script>
-		$("document").ready(function() {
-			load_data();
+	function show_loading_img(selector) {
+		var loading_img = $("#temp_loading_img").html();
+		$(selector).html(loading_img);
+	}
+</script>
+
+<script>
+	$("document").ready(function() {
+		load_data();
+	});
+
+	function load_data() {
+		show_loading_img("#table_data");
+		$.ajax({
+			url: "employee_data",
+			type: "post",
+			data: "",
+			success: function(data) {
+				$("#table_data").html(data);
+			}
 		});
-	
-		function load_data() {
-			var loading_img = `
-				<div>
-					<center>
-						<img src="img\\loading2.gif" width="50px" height="50px"/>
-					</center>
-				</div>`;
-			$("#table_data").html(loading_img);
-			$.ajax({
-				url: "employee_data",
-				type: "post",
-				data: "",
-				success: function(data) {
-					$("#table_data").html(data);
-				}
-			});
-		}
-	</script>
-	
-	<script>
-		$(".refresh_data").click(function() {
-			load_data();
-		});
-	</script>
+	}
+</script>
+
+<script>
+	$(".refresh_data").click(function() {
+		load_data();
+	});
+</script>
 
 <script>
 	$(".empcrt").click(function(e) {
@@ -115,6 +124,7 @@
 	function load_url(url,check_day_open=true) {
 		if(is_day_open == "yes" || !check_day_open) {
 			$(".b_main").hide();
+			show_loading_img(".b_sub_1");
 			$(".b_sub_1").load(url);
 		} else {
 			alert("Day is not open!");

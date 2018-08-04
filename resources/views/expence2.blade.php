@@ -137,13 +137,19 @@
 
 
 <script>
+	function show_loading_img(selector) {
+		var loading_img = $("#temp_loading_img").html();
+		$(selector).html(loading_img);
+	}
+</script>
+
+<script>
 	$("document").ready(function() {
 		load_data();
 	});
 
 	function load_data() {
-		var loading_img = $("#temp_loading_img").html();
-		$("#table_data").html(loading_img);
+		show_loading_img("#table_data");
 		$.ajax({
 			url: "expence_data",
 			type: "post",
@@ -185,6 +191,7 @@
 	function load_url(url,check_day_open=true) {
 		if(is_day_open == "yes" || !check_day_open) {
 			$(".b_main").hide();
+			show_loading_img(".b_sub_1");
 			$(".b_sub_1").load(url);
 		} else {
 			alert("Day is not open!");
@@ -195,6 +202,6 @@
 <script>
 	$(".b_back").click(function() {
 		$(".b_main").show();
-		$(".b_sub_1").html("b_sub_1");
+		$(".b_sub_1").html("");
 	});
 </script>
