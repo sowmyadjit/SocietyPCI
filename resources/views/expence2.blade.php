@@ -116,6 +116,13 @@
 					<div class="b_back">
 						<center><button class="btn-sm btn-info ">back</button></center>
 					</div>
+					<div id="temp_loading_img" class="hide">
+						<div>
+							<center>
+								<img src="img\\loading2.gif" width="100px" height="100px"/>
+							</center>
+						</div>
+					</div>
 
 
 
@@ -135,12 +142,7 @@
 	});
 
 	function load_data() {
-		var loading_img = `
-			<div>
-				<center>
-					<img src="img\\loading2.gif" width="50px" height="50px"/>
-				</center>
-			</div>`;
+		var loading_img = $("#temp_loading_img").html();
 		$("#table_data").html(loading_img);
 		$.ajax({
 			url: "expence_data",
