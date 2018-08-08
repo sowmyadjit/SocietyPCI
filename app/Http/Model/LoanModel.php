@@ -516,6 +516,7 @@
 			$sbamt=$id['PersLoanSBtotalhidn'];
 			$Persloantypeid=$id['Persloantypeid'];
 			
+			$id['PersLoanEndDate'] = date("d/m/Y",strtotime($id['PersLoanEndDate']));
 			$tempeDate = explode('/',$id['PersLoanEndDate']);
 			$coneDate = $tempeDate[2]."-".$tempeDate[1]."-".$tempeDate[0];
 			
@@ -4038,6 +4039,35 @@
 				}
 			}
 			return $first_payment;
+		}
+
+		public function pl_details_for_partpayment($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$ret_data = DB::table("personalloan_allocation")
+				->where("MemId", $data['member_id'])
+				->where("Closed","NO")
+				->where("Bid",$BID)
+				->orderBy("PersLoanAllocID", "desc")
+				->first();
+			return $ret_data;
+		}
+
+		public function pending_part_amt($data)
+		{
+			$total_amt = $data["total_amt"];
+			$allocated_amt = DB::table("personalloan_payment")
+				->where("pl_allocation_id", $data["allocation_id"])
+				->where("paid_status", 1)
+				->where("deleted", 0)
+				->sum("paid_amount");
+			// var_dump($total_amt);
+			// var_dump($allocated_amt);
+			$pending_part_amt =  $total_amt -  $allocated_amt;
+			if($pending_part_amt < 0) {
+				$pending_part_amt = 0;
+			}
+			return $pending_part_amt;
 		}
 		
 		public function account_list_sl($data)

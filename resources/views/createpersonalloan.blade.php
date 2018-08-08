@@ -61,6 +61,7 @@
 												<option value="FullPayment">FullPayment</option>
 												
 											</select>
+											<input id="pending_part_amt" class="hidden" value="0" />
 										</div>
 									</div>
 									
@@ -161,7 +162,7 @@
 										<div class="form-group">
 											<label class="control-label col-sm-4">First Surety</label>
 											<div id="the-basics" class="col-sm-6">
-												<input class="PersWitness1TypeAhead form-control"  type="text" placeholder="SELECT WITNESS NAME" id="persWitness1" onblur="CalcEMI();" Required>  
+												<input class="PersWitness1TypeAhead form-control"  type="text" placeholder="SELECT WITNESS NAME" id="persWitness1" value=" " onblur="CalcEMI();" Required>  
 											</div>
 										</div>
 										
@@ -170,7 +171,7 @@
 										<div class="form-group">
 											<label class="control-label col-sm-4">Second Surety</label>
 											<div id="the-basics" class="col-sm-6">
-												<input class="persWitness2TypeAhead form-control"  type="text" placeholder="SELECT WITNESS NAME" id="PersWitness2"  onblur="LoanEndDate();" Required>  
+												<input class="persWitness2TypeAhead form-control"  type="text" placeholder="SELECT WITNESS NAME" id="PersWitness2" value=" "  onblur="LoanEndDate();" Required>  
 											</div>
 										</div>
 									</div>
@@ -607,27 +608,35 @@
 			}
 		});
 		
-		$.ajax({
-			url:'/GetMemDetailForPLAlloc',
-			type:'post',
-			data:'&membrid='+memid,
-			success:function(data)
-			{
-				$('#PersLoanBranch').val(data['Branch_Name']);
-				$('#PLBranchID').val(data['Branch_ID']);
-				$('#PersLoanAmt').val(data['Board_Amt']);
-				$('#pay_amt').val(data['Board_Amt']);
-				$('#Persloantype').val(data['Loan_Type']);
-				$('#Persloantypeid').val(data['LType_ID']);
-				$('#LoanDurationYears').val(data['Dur_Year']);
-				$('#uid').val(data['uid']);
-				console.log("first_payment:"+ data['first_payment']);
-				if(data['first_payment'] == "NO") {// NO
-					$("#PersShrChrg").val(0);
-					$("#surety_box").hide();
+		if(typeof memid != 'undefined') {
+			$.ajax({
+				url:'/GetMemDetailForPLAlloc',
+				type:'post',
+				data:'&membrid='+memid,
+				success:function(data)
+				{
+					$('#PersLoanBranch').val(data['Branch_Name']);
+					$('#PLBranchID').val(data['Branch_ID']);
+					$('#PersLoanAmt').val(data['Board_Amt']);
+					$('#pay_amt').val(data['Board_Amt']);
+					$('#Persloantype').val(data['Loan_Type']);
+					$('#Persloantypeid').val(data['LType_ID']);
+					$('#LoanDurationYears').val(data['Dur_Year']);
+					$('#uid').val(data['uid']);
+					console.log("first_payment:"+ data['first_payment']);
+					if(data['first_payment'] == "NO") {// NO
+						$("#PersShrChrg").val(0);
+						$("#surety_box").hide();
+						$("#PersEMIAmt").val(data['emi']);
+						$("#PersLoanStartDate").val(data['start_date']);
+						$("#PersLoanEndDate").val(data['end_date']);
+						$("#pending_part_amt").val(data['pending_part_amt']);
+					}
 				}
-			}
-		});
+			});
+		}
+
+
 	});
 	
 	//First Surety Name Selected Check for SB Account
@@ -831,6 +840,7 @@
 				type: 'post',
 				data: $('#form_loanalloc').serialize()+'&PLBranchID='+PLBrnch+'&PLSurety1ID='+Surety1+'&PLSurety2ID='+Surety2+'&PLMembID='+Member,
 				success: function(data) {
+					alret("success");
 					//$('.ploanclassid').click();
 				}
 			});
@@ -977,9 +987,10 @@
 	function partpay_toggle()
 	{
 		var part_pay_select_value = $("#Partpayment").val();
+		var pending_part_amt = $("#pending_part_amt").val();
 		console.log("part_pay_select_value="+part_pay_select_value);
 		if(part_pay_select_value == "Partpayment") {
-			$("#pay_amt").val("0");
+			$("#pay_amt").val(pending_part_amt);
 		} else {
 			$("#pay_amt").val($("#PersLoanAmt").val());
 		}

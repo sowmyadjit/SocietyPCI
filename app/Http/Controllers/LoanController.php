@@ -809,6 +809,18 @@
 			$id['LType_ID']=$get->LoanType_ID;
 			$id['uid']=$get->Uid;
 			$id['first_payment'] = $this->loan->pl_is_first_payment(["member_id"=>$MemDet['membrid']]);
+			if($id['first_payment'] == "NO") {
+				$id['emi'] = "0";
+				$id['pending_part_amt'] = "0";
+
+				$pl_allocation_details_for_partpayment = $this->loan->pl_details_for_partpayment(["member_id"=>$MemDet['membrid']]);
+				if(!empty($pl_allocation_details_for_partpayment)) {
+					$id['emi'] = $pl_allocation_details_for_partpayment->EMI_Amount;
+					$id['start_date'] = $pl_allocation_details_for_partpayment->StartDate;
+					$id['end_date'] = $pl_allocation_details_for_partpayment->EndDate;
+					$id['pending_part_amt'] = $this->loan->pending_part_amt(["allocation_id"=>$pl_allocation_details_for_partpayment->PersLoanAllocID, "total_amt"=>$id['Board_Amt']]);
+				}
+			}
 			
 			return $id;
 		}
