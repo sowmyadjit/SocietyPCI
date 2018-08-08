@@ -20,6 +20,7 @@
 										<th>Deposit Amount</th>
 										<th>Start Date</th>
 										<th>Mature Date</th>
+										<th>Mature Amount</th>
 										<th>Remarks</th>
 										<th>
 											<div>
@@ -50,6 +51,7 @@
 											<td>{{ $row['total_amount']}}</td>
 											<td>{{ $row['start_date']}}</td>
 											<td>{{ $row['end_date']}}</td>
+											<td>{{ $row['maturity_amount']}}</td>
 											<td>{{ $row['remarks']}}</td>
 											<td>
 												<?php
