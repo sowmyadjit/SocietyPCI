@@ -1092,6 +1092,7 @@
 			->join("user","user.Uid","=","fdallocation.Uid")
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
 			->where('receipt_voucher.transaction_category',16)//16-fd pay amt
+			->where('receipt_voucher.bid', $BranchId)
 			->where('fdallocation.Bid',$BranchId)
 			->where('FDPayAmt_PaymentMode','<>',"CASH")
 			->where('FDPayAmtReport_PayDate',$dte)

@@ -1488,6 +1488,8 @@
 							<td>-</td>
 							<td>{{ $plallocation->paid_amount }}</td>
 							<td>-</td>
+							<td>-</td>
+							<td>-</td>
 							<td>{{$plallocation->voucher_no}}</td>
 							<td>-</td>
 						</tr>
@@ -1668,6 +1670,8 @@
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $plallocation->ShareCharges }}</td>
+							<td>-</td>
+							<td>-</td>
 							<td>-</td>
 							<td>-</td>
 						</tr>
