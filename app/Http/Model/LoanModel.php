@@ -3260,19 +3260,20 @@
 				$this->cl("last paid date is not valid (0000-00-00)\n");
 				return ["int"=>"last paid date is not valid (0000-00-00)","remaining_amount"=>$balance_amount];
 			}
+			$this->cl("last interest paid date = {$last_date}\n");
 //			echo "last_date: $last_date <br />\n"; exit();
 			/********** get interest paid upto END **********/
 			
 			/********** get interest paid upto **********/
-			$personalloan_repay = DB::table("personalloan_repay")
+			$personalloan_repay_principle = DB::table("personalloan_repay")
 				->where("PLRepay_PLAllocID","=",$loan_allocation_id)
 				->where("PL_ChequeStatus","=",0)
 				->where("PLRepay_Amtpaidtoprincpalamt",">",0)
 				->orderBy("PLRepay_Date","desc")
 				->first();
 					
-			if($personalloan_repay) {
-				$last_pricliple_paid_date = $personalloan_repay->PLRepay_Date;
+			if($personalloan_repay_principle) {
+				$last_pricliple_paid_date = $personalloan_repay_principle->PLRepay_Date;
 			} else {
 				$last_pricliple_paid_date = $start_date;
 			}
@@ -3312,7 +3313,7 @@
 						->where("deleted","=",0)
 						->sum("paid_amount");
 						
-					$fn_data["first"] = $last_repay_date;
+					$fn_data["first"] = $last_date;
 					$fn_data["second"] = $interest_upto;
 					$days = $this->dateDiff($fn_data);
 					unset($fn_data);
@@ -3329,7 +3330,7 @@
 					$personalloan_payment_after_last_repay = DB::table("personalloan_payment")
 						->select(DB::raw('sum(paid_amount) as paid_amount_on_date'),'pl_payment_date')
 						->where("pl_allocation_id","=",$loan_allocation_id)
-						->where("pl_payment_date",">",$last_repay_date)
+						->where("pl_payment_date",">",$last_date) // $last_repay_date
 						->where("paid_status","=",1)
 						->where("deleted","=",0)
 						->groupBy("pl_payment_date")
