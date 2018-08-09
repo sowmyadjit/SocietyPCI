@@ -3947,6 +3947,7 @@
 									"{$table}.DepLoanAllocId as loan_id",
 									"{$table}.DepLoan_LoanNum as loan_no",
 									"{$table}.Old_loan_number as loan_old_no",
+									"{$table}.DepLoan_AccNum as deposit_account_no",
 									"user.Uid as user_id",
 									"user.FirstName as first_name",
 									"user.MiddleName as middle_name",
@@ -3985,6 +3986,7 @@
 				$ret_data['loan_details'][++$i]['loan_id'] = $row->loan_id;
 				$ret_data['loan_details'][$i]['loan_no'] = $row->loan_no;
 				$ret_data['loan_details'][$i]['loan_old_no'] = $row->loan_old_no;
+				$ret_data['loan_details'][$i]['deposit_account_no'] = $row->deposit_account_no;
 				$ret_data['loan_details'][$i]['user_id'] = $row->user_id;
 				$ret_data['loan_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
 				$ret_data['loan_details'][$i]['dep_type'] = $row->dep_type;
