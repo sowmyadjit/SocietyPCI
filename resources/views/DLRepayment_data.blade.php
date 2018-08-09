@@ -3892,7 +3892,8 @@ console.log("amt="+bal);
 							}
 							break;
 			}
-		} else if(true) {
+		}
+		if(true) {
 			$(".xtr_drop").each(function() {
 				var temp_name = $(this).val();
 				if(temp_name == "-------------") {
@@ -3955,7 +3956,8 @@ console.log("amt="+bal);
 							}
 							break;
 			}
-		} else if(true) {
+		}
+		if(true) {
 			$(".xtr_drop").each(function() {
 				var temp_name = $(this).val();
 				if(temp_name == "-------------") {
@@ -4018,7 +4020,8 @@ console.log("amt="+bal);
 							}
 							break;
 			}
-		} else if(true) {
+		}
+		if(true) {
 			$(".xtr_drop").each(function() {
 				var temp_name = $(this).val();
 				if(temp_name == "-------------") {
@@ -4087,7 +4090,8 @@ console.log("amt="+bal);
 														}
 														break;
 										}
-									} else if(true) {
+									}
+									if(true) {
 										$(".xtr_drop").each(function() {
 											var temp_name = $(this).val();
 											if(temp_name == "-------------") {
@@ -4139,7 +4143,8 @@ console.log("amt="+bal);
 														}
 														break;
 										}
-									} else if(true) {
+									}
+									if(true) {
 										$(".xtr_drop").each(function() {
 											var temp_name = $(this).val();
 											if(temp_name == "-------------") {
@@ -4191,7 +4196,8 @@ console.log("amt="+bal);
 														}
 														break;
 										}
-									} else if(true) {
+									}
+									if(true) {
 										$(".xtr_drop").each(function() {
 											var temp_name = $(this).val();
 											if(temp_name == "-------------") {
