@@ -859,7 +859,7 @@
 			->where('rd_transaction.Accid','=',$accid)
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$dte."'")
 			->groupBy('rd_transaction.RD_Month')
-			->selectRaw('sum(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')
+			->selectRaw('min(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')	//	CHANGE sum TO min
 			->lists('sum','rd_transaction.RD_Month');
 /****edit***/
 			$temp = date("m",strtotime($sdate));
