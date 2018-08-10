@@ -42,7 +42,7 @@
 								<div class="form-group">
 									<label class="control-label col-sm-4">User Name:</label>
 									<div class="col-md-8">
-										<input style="border-color:red"id="usr" class="typeahead3 form-control"  type="text" name="user" placeholder="SELECT user" value="<?php echo $fdrenew['data']->FirstName;echo $fdrenew['data']->MiddleName;echo $fdrenew['data']->LastName; ?>" readonly>  
+										<input style="border-color:red"id="usr" class="typeahead3 form-control"  type="text" name="user" placeholder="SELECT user" value="<?php echo $fdrenew['data']->FirstName;echo $fdrenew['data']->MiddleName;echo $fdrenew['data']->LastName; ?>" data-value="<?php echo $fdrenew['data']->Uid; ?>" readonly>  
 									</div>
 								</div>
 								
@@ -74,7 +74,13 @@
 								<div class="form-group">
 									<label class="control-label col-sm-4">Deposit Amount:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="fddep" name="fddep" value="{{$fdrenew['data']->Fd_DepositAmt}}" onblur="enddate();" onkeyup="enddate();" readonly>
+										<input type="text" class="form-control" id="fddep" name="fddep" value="{{$fdrenew['data']->Fd_DepositAmt}}" data="{{$fdrenew['data']->Fd_DepositAmt}}" onblur="enddate();" onkeyup="enddate();" readonly>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4">With Interest:</label>
+									<div class="col-md-8">
+										<input type="checkbox" id="with_interest" name="with_interest"  data="{{$fdrenew['data']->interest_amount}}" />
 									</div>
 								</div>
 								
@@ -626,4 +632,27 @@ var year1=$('#NumberOfYears').val();
 		}
 		
 	}	
+</script>
+
+<script>
+	// CAN BE RENEWED WITH INTEREST
+	$("#with_interest").change(function() {
+		var prev_kcc_amt = $("#fddep").attr("data");
+		var prev_interest_amt = $("#with_interest").attr("data");
+		// console.log("prev_kcc_amt = "+prev_kcc_amt);
+		// console.log("prev_interest_amt = "+prev_interest_amt);
+
+		var new_kcc_amt = 0;
+		var new_maturity_amt = 0;
+
+		if($(this).prop("checked")) { // with interest
+			new_kcc_amt = parseFloat(prev_kcc_amt) + parseFloat(prev_interest_amt);
+		} else { // WITHOUT INTEREST
+			new_kcc_amt = parseFloat(prev_kcc_amt);
+		}
+		new_maturity_amt = parseFloat(new_kcc_amt) * 2;
+		// console.log("new_kcc_amt = "+new_kcc_amt);
+		$("#fddep").val(new_kcc_amt);
+		$("#mamtreadonly").val(new_maturity_amt);
+	});
 </script>
