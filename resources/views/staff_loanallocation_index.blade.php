@@ -119,7 +119,8 @@
 </script>
 <script>
 	$('input.SearchTypeahead').typeahead({
-		ajax: '/slsearchacc'
+		// ajax: '/slsearchacc'
+		ajax: '/getslaccsearch'
 	});
 </script>
 <script>

@@ -6,7 +6,7 @@
 <script src="js/moment.min.js"></script>
 <script src="js/daterangepicker.js"></script>
 
-<div id="content" class="col-md-10">
+<div id="content" class="col-md-12">
 	<div class="row">
 		<div class="box col-md-12">
 			<div class="box-inner">
@@ -839,24 +839,27 @@
 		}
 	});
 	
+	var i = 0;
 	$('.StfSbmBtn').click( function(e) {
-		
-		//StfLnT=$('.StfLoanTTypeAhead').data('value');
-		//StfBr=$('.StfBranchTypeAhead').data('value');
-		Bankid=$('.StfLoanBankNameTypeAhead').data('value');
-		surety=$('.StfWitnessTypeAhead').data('value');
-		Staff=$('.StfEmpnameTypeahead').data('value');
-		
-		e.preventDefault();
-		$.ajax({
-			url: 'StaffLoanAllocation',
-			type: 'post',
-			data: $('#form_stfloanalloc').serialize()+'&StfBankId='+Bankid+'&suretyid='+surety+'&StaffID='+Staff,
-			success: function(data) {
-				//alert('success');
-				$('.stloanclassid').click();
-			}
-		});
+		if(i == 0) {
+			i++;
+			//StfLnT=$('.StfLoanTTypeAhead').data('value');
+			//StfBr=$('.StfBranchTypeAhead').data('value');
+			Bankid=$('.StfLoanBankNameTypeAhead').data('value');
+			surety=$('.StfWitnessTypeAhead').data('value');
+			Staff=$('.StfEmpnameTypeahead').data('value');
+			
+			e.preventDefault();
+			$.ajax({
+				url: 'StaffLoanAllocation',
+				type: 'post',
+				data: $('#form_stfloanalloc').serialize()+'&StfBankId='+Bankid+'&suretyid='+surety+'&StaffID='+Staff,
+				success: function(data) {
+					alert('success');
+					// $('.stloanclassid').click();
+				}
+			});
+		}
 		
 	});
 	
