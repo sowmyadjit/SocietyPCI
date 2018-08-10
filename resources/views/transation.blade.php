@@ -5,38 +5,15 @@
 
 <script src="js/bootstrap-typeahead.js"></script>
 
-<noscript>
-	<div class="alert alert-block col-md-12">
-		<h4 class="alert-heading">Warning!</h4>
-	</div>
-</noscript>
 
-<div id="content" class="col-lg-10 col-sm-10">
+<?php /*<div id="content" class="col-lg-10 col-sm-10">
+<div id="content" class="col-lg-12 col-lg-12">
     <!-- content starts -->
-	<div>
-		<ul class="breadcrumb">
-			<li>
-				<a href="#">Home</a>
-			</li>
-			<li>
-				<a class="clickme" >Transaction</a>
-			</li>
-		</ul>
-	</div>
 	
 	<div class="row">
 		<div class="box col-md-12">
-			<div class="box-inner">
-				<div class="box-header well" data-original-title="">
-					<h2><i class="glyphicon glyphicon-globe"></i> Transaction</h2>
-					<div class="box-icon">
-						<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
-						<a href="#" class="btn btn-minimize btn-round btn-default"><i
-						class="glyphicon glyphicon-chevron-up"></i></a>
-						<a href="#" class="btn btn-close btn-round btn-default"><i class="glyphicon glyphicon-remove"></i></a>
-					</div>
-				</div>
-				
+			<div class="box-inner"> */ ?>
+			<?php /*
 				<div class="alert alert-info">
 					<div class="form-group">
 						<div class="row table-row">
@@ -48,7 +25,7 @@
 							</center>
 						</div>
 					</div>
-				</div>
+				</div> */?>
 				
 				{!! Form::open(['url' => "createtransaction",'class' => 'form-horizontal','id' => 'form_tran','method'=>'post', 'onreset'=>'close_alert();']) !!}
 				<div class="Message1">
@@ -1148,11 +1125,11 @@
 <script src="js/sidebar/sidebar.js"></script>
 
 			
-			
+<?php /*			
 		</div>
 	</div>
 </div>
-</div>
+</div> */?>
 
 <script>
 	$("#check").click(function(e) {
@@ -1247,14 +1224,14 @@
 
 <script>
 	
-	$('.ReceView').click(function(e){
+	/* $('.ReceView').click(function(e){
 		e.preventDefault();
 		$('.box').load($(this).attr('href'));
 	});
 	$('.PayView').click(function(e){
 		e.preventDefault();
 		$('.box').load($(this).attr('href'));
-	});
+	}); */
 	
 	$('.sb_adj').hide();
 	$('.tran').hide();
@@ -1918,7 +1895,7 @@
 									data:'&tran_category=SB'+'&tran_type='+tran_type+"&tran_id="+tran_id,
 									success:function(data)
 									{
-										$('.box').html(data);
+										$('#main_data').html(data);
 									}
 								});
 							} else {

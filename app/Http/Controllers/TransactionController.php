@@ -12,7 +12,7 @@
 	use App\Http\Model\LoanModel;
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\OpenCloseModel;
-use App\Http\Model\TransactionModel;
+	use App\Http\Model\TransactionModel;
 	use App\Http\Model\ledgermodel;
 	use App\Http\Model\DepositModel;
 	
@@ -88,7 +88,9 @@ use App\Http\Model\TransactionModel;
 			}
 			$Teller['ledger']=$this->ledger->GetSubHeads();
 			
-			return view('transation',compact('Teller'));
+			// return view('transation',compact('Teller'));
+			$Teller["is_day_open"] = $this->OP_model->is_day_open(date("Y-m-d"));
+			return view('teller_index',compact('Teller'));
 		}
 		
 		public function ShowDepTeller()
@@ -115,10 +117,42 @@ use App\Http\Model\TransactionModel;
 				$Teller['close']=1;
 			}
 			$Teller['ledger']=$this->ledger->GetSubHeads();
-			return view('transation',compact('Teller'));
+			// return view('transation',compact('Teller'));
+			$Teller["is_day_open"] = $this->OP_model->is_day_open(date("Y-m-d"));
+			return view('teller_index',compact('Teller'));
 		}
 		
 		public function ShowAccTeller()
+		{
+			
+			$Url="AccTransaction";
+			$Teller['module']=$this->Modules->GetAnyMid($Url);
+			$id['open']=$this->OP_model->openstate();
+			$id['close']=$this->OP_model->openclosestate();
+			if(empty($id['open']))
+			{
+				$Teller['open']=0;
+			}
+			else
+			{
+				$Teller['open']=1;
+			} 
+			if(empty($id['close']))
+			{
+				$Teller['close']=0;
+			}
+			else
+			{
+				$Teller['close']=1;
+			}
+			$Teller['ledger']=$this->ledger->GetSubHeads();
+			//print_r($Teller);
+			// return view('transation',compact('Teller'));
+			$Teller["is_day_open"] = $this->OP_model->is_day_open(date("Y-m-d"));
+			return view('teller_index',compact('Teller'));
+		}
+		
+		public function teller_data()
 		{
 			
 			$Url="AccTransaction";

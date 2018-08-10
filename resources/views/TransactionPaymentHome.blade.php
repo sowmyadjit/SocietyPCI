@@ -1,19 +1,4 @@
 <script src="js/bootstrap-typeahead.js"></script>
-
-<div id="content" class="col-lg-12 col-sm-12">
-	<!-- content starts -->
-	<div class="row">
-		<div class="box col-md-12">
-			<div class="box-inner">
-				<div class="box-header well" data-original-title="">
-					<h2><i class="glyphicon glyphicon-globe"></i>  Transaction Payment</h2>
-				</div>
-				<div class="col-md-12">
-					<div class="form-group">
-						<div class="row table-row alert alert-info">
-							<!--<div class="col-md-4">
-								<input class="SearchTypeahead form-control" id="searchacc" type="text" name="searchacc" placeholder="SELECT PIGMY ACCOUNT"> 
-							</div>-->
 							<div class="col-md-4">
 								<label class="control-label inline col-md-offset-4">
 									Payment Type:
@@ -42,15 +27,10 @@
 									<span class="" />
 								</button>
 							</div>
-						</div>
-					</div>
-				</div>
-				</br></br>
-				<div class='SearchRes'></div>
-			</div>
-		</div>
-	</div>
-</div>
+							<br />
+							<br />
+							<br />
+							<div class='SearchRes'></div>
 
 
 <script>
@@ -99,6 +79,7 @@
 			// 	}
 			// });
 
+			show_loading_img(".SearchRes");
 			$.ajax({
 				url:'rv_print',
 				type:'post',

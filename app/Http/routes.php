@@ -690,6 +690,7 @@
 				Route::get('/Transaction','TransactionController@ShowTeller');// FOR TELLER>Teller
 				Route::get('/DepTransaction','TransactionController@ShowDepTeller');//FOR DEPOSIT>Teller
 				Route::get('/AccTransaction','TransactionController@ShowAccTeller');//FOR ACCOUNTS>Teller
+				Route::post('/teller_data','TransactionController@teller_data');
 				Route::post('/retriveacc','TransactionController@retrive_val');
 				Route::post('/createtransaction','TransactionController@create_transaction');
 				Route::get('/getAccountnumber','TransactionController@getaccnum');
