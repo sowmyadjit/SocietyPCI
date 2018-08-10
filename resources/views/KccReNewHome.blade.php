@@ -654,5 +654,6 @@ var year1=$('#NumberOfYears').val();
 		// console.log("new_kcc_amt = "+new_kcc_amt);
 		$("#fddep").val(new_kcc_amt);
 		$("#mamtreadonly").val(new_maturity_amt);
+		$("#mamt").val(new_maturity_amt);
 	});
 </script>
