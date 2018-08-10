@@ -62,6 +62,7 @@
 							<div id="the-basics" class="col-sm-4">
 								<input class="PygmyAccNumTypeAhead form-control"  type="text" placeholder="SELECT PYGMY ACCOUNT NUMBER" id="PygmyAccNum">  
 							</div>
+							<button id="refresh_dl_pg" class="btn-xs glyphicon glyphicon-refresh" style="margin-top:7px;"></button>
 						</div>
 						
 						<div class="form-group">
@@ -265,6 +266,7 @@
 							<div id="the-basics" class="col-sm-4">
 								<input class="RDAccNumTypeAhead form-control"  type="text" placeholder="SELECT RD ACCOUNT NUMBER" id="RDAccNum">  
 							</div>
+							<button id="refresh_dl_rd" class="btn-xs glyphicon glyphicon-refresh" style="margin-top:7px;"></button>
 						</div>
 						
 						<div class="form-group">
@@ -472,6 +474,7 @@
 							<div id="the-basics" class="col-sm-4">
 								<input class="FDAccNumTypeAhead form-control"  type="text" placeholder="SELECT FD ACCOUNT NUMBER" id="FDAccNum">  
 							</div>
+							<button id="refresh_dl_fd" class="btn-xs glyphicon glyphicon-refresh" style="margin-top:7px;"></button>
 						</div>
 						
 						<div class="form-group">
@@ -687,6 +690,7 @@
 							<div id="the-basics" class="col-sm-4">
 								<input class="PLAccNumTypeAhead form-control"  type="text" placeholder="SELECT PL ACCOUNT NUMBER" id="PLAccNum">  
 							</div>
+							<button id="refresh_pl" class="btn-xs glyphicon glyphicon-refresh" style="margin-top:7px;"></button>
 						</div>
 						
 						
@@ -946,6 +950,7 @@
 							<div id="the-basics" class="col-sm-4">
 								<input class="JLAccNumTypeAhead form-control"  type="text" placeholder="SELECT PL ACCOUNT NUMBER" id="JLAccNum">  
 							</div>
+							<button id="refresh_jl" class="btn-xs glyphicon glyphicon-refresh" style="margin-top:7px;"></button>
 						</div>
 						
 						
@@ -1124,6 +1129,7 @@
 							<div id="the-basics" class="col-sm-4">
 								<input class="SLAccNumTypeAhead form-control"  type="text" placeholder="SELECT SL ACCOUNT NUMBER" id="SLAccNum">  
 							</div>
+							<button id="refresh_sl" class="btn-xs glyphicon glyphicon-refresh" style="margin-top:7px;"></button>
 						</div>
 						
 						
@@ -4218,4 +4224,37 @@ console.log("amt="+bal);
 		}//console.log(error_flag);
 		return error_flag;
 	}
+</script>
+
+<script>
+	// REFRESH BUTTNON FOR ACCOUNT NUMBERS (TYPEAHEAD)
+	$("#refresh_jl").click(function(e) {
+		e.preventDefault();
+		$(".JLAccNumTypeAhead").trigger("change");
+	});
+
+	$("#refresh_sl").click(function(e) {
+		e.preventDefault();
+		$(".SLAccNumTypeAhead").trigger("change");
+	});
+
+	$("#refresh_pl").click(function(e) {
+		e.preventDefault();
+		$(".PLAccNumTypeAhead").trigger("change");
+	});
+
+	$("#refresh_dl_pg").click(function(e) {
+		e.preventDefault();
+		$(".PygmyAccNumTypeAhead").trigger("change");
+	});
+
+	$("#refresh_dl_rd").click(function(e) {
+		e.preventDefault();
+		$(".RDAccNumTypeAhead").trigger("change");
+	});
+
+	$("#refresh_dl_fd").click(function(e) {
+		e.preventDefault();
+		$(".FDAccNumTypeAhead").trigger("change");
+	});
 </script>
