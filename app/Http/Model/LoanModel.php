@@ -3954,6 +3954,7 @@
 									"user.LastName as last_name",
 									"{$table}.DepLoan_DepositeType as dep_type",
 									"{$table}.DepLoan_LoanAmount as loan_amount",
+									"{$table}.DepLoan_RemailningAmt as ramaining_amount",
 									"{$table}.DepLoan_LoanStartDate as start_date",
 									"{$table}.DepLoan_LoanEndDate as end_date",
 									"{$table}.LoanClosed_State as closed"
@@ -3994,11 +3995,11 @@
 				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
 				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
 				$ret_data['loan_details'][$i]['closed'] = $row->closed;
-				$ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
+				/* $ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
 																								"loan_allocation_id"=>$row->loan_id,
 																								"loan_category"=>$data['category']
-																							]);
-				$ret_data['loan_details'][$i]['ramaining_amount'] = $row->loan_amount - $ret_data['loan_details'][$i]['paid_principle_amt'];
+																							]); */
+				$ret_data['loan_details'][$i]['ramaining_amount'] = $row->ramaining_amount; // $row->loan_amount - $ret_data['loan_details'][$i]['paid_principle_amt'];
 			/*	$fn_data = array(
 										'loan_id'=>$row->loan_id,
 										'loan_category'=>$data["category"],
