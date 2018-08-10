@@ -55,7 +55,7 @@
 									<div class="form-group">
 										<label class="control-label col-sm-4">Payment Type:</label>
 										<div class="col-md-6">
-											<select class="form-control" id="Partpayment" name="partpay" onchange="partpay_toggle();">
+											<select class="form-control" id="Partpayment" name="partpay" onchange="partpay_toggle();PartAmtChanges();">
 												<option value="">--Select Payment Type--</option>
 												<option value="Partpayment">Partpayment</option>
 												<option value="FullPayment">FullPayment</option>
@@ -68,7 +68,7 @@
 									<div class="form-group">
 										<label class="control-label col-sm-4">Pay Amount:</label>
 										<div class="col-md-6">
-											<input type="text" class="form-control" id="pay_amt" name="PersLoanAmt" placeholder="ENTER LOAN AMOUNT" onchange="PartAmtChanges();" Required>
+											<input type="text" class="form-control" id="pay_amt" name="PersLoanAmt" placeholder="ENTER LOAN AMOUNT" onblur="PartAmtChanges();" Required>
 										</div>
 									</div>
 									
