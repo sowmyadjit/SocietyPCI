@@ -502,12 +502,17 @@
 			$UID=$uname->Uid;
 			$BID=$uname->Bid;
 			
-			return DB::table('extraagentamount')->select('FirstName','MiddleName','LastName','BName','ExtraAmt_AccountNum','ExtraAmt_Amount','ExtraAmt_Date','ExtraAmt_Id')
+			$ret_data = DB::table('extraagentamount')->select('FirstName','MiddleName','LastName','BName','ExtraAmt_AccountNum','ExtraAmt_Amount','ExtraAmt_Date','ExtraAmt_Id')
 			->join('user','user.Uid','=','extraagentamount.ExtraAmt_AgentId')
 			->join('branch','branch.Bid','=','extraagentamount.ExtraAmt_Bid')
-			->where('ExtraAmt_Status',"PENDING")
+			->where('ExtraAmt_Status',"PENDING");
 			//->where('ExtraAmt_Bid',$BID)
-			->get();
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("extraagentamount.ExtraAmt_Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		public function paybackamt($id)
 		{

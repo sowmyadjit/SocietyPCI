@@ -85,7 +85,11 @@
 	$('.edtbtn').click(function(e){
 		e.preventDefault();
 		//alert($(this).attr('href'));
-		$('.box-inner').load($(this).attr('href'));
+		var flag = confirm("Are you sure?");
+		if(flag) {
+			$('.box-inner').load($(this).attr('href'));
+			alert("success");
+		}
 	});
 	
 </script>
