@@ -1690,9 +1690,13 @@
 				
 				if(ob<=250)			//changed by manju
 				{
-					
-					
-					alert("Account Balance is low");     //changed by manju
+					/***********/
+					var temp_pay_amount = $("#sb_amount").val();//console.log("temp_pay_amount"+temp_pay_amount);
+					if(temp_pay_amount > 0) { //console.log("true");
+						$("#sb_amount").val("0");
+						alert("Account Balance is low");     //changed by manju
+					}
+					/***********/
 				}
 				else
 				{
