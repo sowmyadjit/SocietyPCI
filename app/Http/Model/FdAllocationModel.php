@@ -576,6 +576,25 @@
 				->where('Fdid',$fdmatur)
 				->first();
 				//print_r($id);
+
+				$mature_date = $id->FdReport_MatureDate;
+				$today = date("Y-m-d");
+
+
+				$first = $mature_date;
+				$second = $today;
+				$first_date = date_create($first);
+				$second_date = date_create($second);
+				$diff = date_diff($first_date,$second_date);
+				$diff_days = $diff->format('%a');
+				$days = (int)$diff_days;
+
+				// var_dump($days);
+				// var_dump($days > 90);
+				if($days > 90) {
+					$id->FdReport_MatureDate = $today;
+				}
+
 				return $id;
 			}
 			else if($fdtyp=="PREWITHDRAWAL")
@@ -605,6 +624,25 @@
 					->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
 					->where('Fdid',$fdmatur)
 					->first();
+
+				$mature_date = $id->FdReport_MatureDate;
+				$today = date("Y-m-d");
+
+
+				$first = $mature_date;
+				$second = $today;
+				$first_date = date_create($first);
+				$second_date = date_create($second);
+				$diff = date_diff($first_date,$second_date);
+				$diff_days = $diff->format('%a');
+				$days = (int)$diff_days;
+
+				// var_dump($days);
+				// var_dump($days > 90);
+				if($days > 90) {
+					$id->FdReport_MatureDate = $today;
+				}
+
 				return $id;
 			}
 			else if($fdtyp=="PREWITHDRAWAL")
