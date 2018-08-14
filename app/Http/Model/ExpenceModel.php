@@ -678,6 +678,8 @@
 			}
 			else if($paydone=="SB")
 			{
+				$income_id = DB::table('income')->insertGetId(['Income_date'=> $trandate,'Income_cheque_date'=>'adjustment','Income_cheque_no'=>'adjustment','Bid'=>$id['branchid'],'Income_pay_mode'=>$id['paydone'],'Income_amount'=>$amount1,'Income_Particulars'=>$particlr,'Income_ChequeClear_State'=>'','Income_ExpenseBy'=>$uid,'Income_Head_lid'=>$id['incomehead'],'Income_SubHead_lid'=>$id['incomesubhead']]);
+
 				$ca1=DB::table('createaccount')->select('Total_Amount')->where('Accid',$accnum)->first();
 				$ca=$ca1->Total_Amount;
 				$tot=$ca-$amount1;
