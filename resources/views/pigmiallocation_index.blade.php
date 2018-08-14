@@ -51,7 +51,8 @@
 										<option value="NO">LIVE</option>
 										<option value="YES">CLOSED</option>
 									</select>
-									<button id="refresh" class="btn-sm glyphicon glyphicon-refresh"></button>
+									<button id="refresh" class="btn-sm glyphicon glyphicon-refresh" style="color:#28acff; font-weight:bold;" title="REFRESH"></button>
+									<button id="force_refresh" class="btn-sm glyphicon glyphicon-repeat" style="color:#28acff; font-weight:bold;" title="FORCE REFRESH" ></button>
 								</div>
 								<div class="col-md-4 pull-right">
 									<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchPigmy" placeholder="SEARCH PIGMY">
@@ -64,7 +65,7 @@
 							</div>
 						</div>
 								
-							<div id="deposit_account_list_box">Please Wait...</div>
+							<div id="deposit_account_list_box">...</div>
 								
 					</div>
 				</div>
@@ -95,8 +96,8 @@
 		$("#back").hide();
 		
 		setTimeout(function(){
-			deposit_account_list("");
-		}, 5*1000);
+			// deposit_account_list("");
+		}, 1*1000);
 	});
 	
 	$("#closed_status, #agent_id").change(function() {
@@ -104,7 +105,14 @@
 		deposit_account_list("");
 	});
 
+	var force_refresh = "NO";
 	$("#refresh").click(function() {
+		force_refresh = "NO";
+		$("#closed_status").trigger("change");
+	});
+
+	$("#force_refresh").click(function() {
+		force_refresh = "YES";
 		$("#closed_status").trigger("change");
 	});
 	
@@ -122,13 +130,14 @@
 		var xhr = $.ajax({
 			url:"deposit_account_list",
 			type:"post",
-			data:"&category=PG&closed="+closed+"&agent_id="+agent_id+"&allocation_id="+allocation_id,
+			data:"&category=PG&closed="+closed+"&agent_id="+agent_id+"&allocation_id="+allocation_id+"&force_reload="+force_refresh,
 			success: function(data) {
 				console.log("done");
 				$("#back").show();
 				$("#deposit_account_list_box").html(data);
 			}
 		});
+		force_refresh = "NO";
 		// console.log("aborting...");
 		// xhr.abort();
 		// console.log("req cancelled...");

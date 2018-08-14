@@ -8,6 +8,7 @@
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\DepositModel;
 	use App\Http\Model\OpenCloseModel;
+	use Auth;
 	
 	class depositController extends Controller
 	{
@@ -100,14 +101,35 @@
 	//	PIGMY FD KCC MATURITY-DEPOSIT
 		public function deposit_account_list(Request $request)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			$force_reload_flag = false;
+			$force_reload = $request->input("force_reload");
 			$in_data['category'] = $request->input("category");
 			$in_data['closed'] = $request->input("closed");
 			$in_data['agent_id'] = $request->input("agent_id");//USED IN PG
 			$in_data['user_type'] = $request->input("user_type");// USED IN CD
 			$in_data['allocation_id'] = $request->input("allocation_id");
+			if(strcasecmp($force_reload,"YES") == 0) {
+				$force_reload_flag = true;
+			} elseif(!empty($in_data['allocation_id'])) {
+				$force_reload_flag = true;
+			}
 			switch($in_data['category']) {
-				case "PG":	$ret_data = $this->creadepositmodel->deposit_account_list_pg($in_data);
-							return view("deposit_account_list_data",compact("ret_data"));
+				case "PG":	
+							// CACHE
+
+							$cache_ele_name = "cache_{$BID}_{$in_data['category']}_{$in_data['closed']}_{$in_data['agent_id']}"; //cache element name - cache_BID_PG_CLOSED_AGENTID
+							if(\Cache::has($cache_ele_name) && $force_reload_flag == false) {
+								return \Cache::get($cache_ele_name);
+							} else {
+								// return 'cachekey was forgotten, so this is just random data';
+								$ret_data = $this->creadepositmodel->deposit_account_list_pg($in_data);
+									$vw = (string)view("deposit_account_list_data",compact("ret_data"));
+									\Cache::forever($cache_ele_name, $vw);
+								return view("deposit_account_list_data",compact("ret_data"));
+							}
+							
 							break;
 				case "FD":	$ret_data = $this->creadepositmodel->deposit_account_list_fd($in_data);
 							return view("deposit_account_list_data_fd",compact("ret_data"));
