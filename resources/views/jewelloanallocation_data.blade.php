@@ -101,10 +101,18 @@
 					</div>
 					<label class="control-label col-sm-5">Closed Status:</label>
 					<div class="col-md-7">
+						<?php
+							if(strcasecmp($row['closed'], "YES") == 0) {
+								$yes_selected = "selected";
+								$no_selected = "";
+							} else {
+								$yes_selected = "";
+								$no_selected = "selected";
+							}
+						?>
 						<select class="form-control closed_drop" id="closed_drop" name="closed_drop">
-							<option selected disabled>SELECT STATUS</option>
-							<option value="NO">NO</option>		
-							<option value="YES">YES</option>					
+							<option value="NO" {{$no_selected}} >NO</option>		
+							<option value="YES" {{$yes_selected}} >YES</option>					
 						</select>
 					</div>
 				</div>
@@ -129,13 +137,12 @@ function edit_net_wt(net_wt, jewel_alloc_id,closedstatus)
 {
 	$('#net_wt').val(net_wt);
 	$('#jewel_alloc_id').val(jewel_alloc_id);
-	$('#closed_drop option:selected').val("YES");
 }
 
 $('.save').click( function(e) {
 	net_wt=$('#net_wt').val();
 	jewel_alloc_id=$('#jewel_alloc_id').val();
-	 closed_status=$('#closed_drop option:selected').val();
+	 closed_status=$('#closed_drop').val();
 	 console.log(closed_status);
 	
 	$.ajax({
