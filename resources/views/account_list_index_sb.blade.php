@@ -72,14 +72,21 @@
 						</div>
 						</div>
 								
-							<div id="account_list_box">Loading...</div>
+							<div id="account_list_box">...</div>
 								
 					</div>
 				</div>
 				<div id="temp_box"></div>
 				<div style="margin-left: 44%;">
-				<button class="btn btn-info btn-sm" id="back" style="">BACK</button>
-				<a href="#top"><button class="btn btn-info btn-sm" id="back" >TOP</button></a>
+					<button class="btn btn-info btn-sm" id="back" style="">BACK</button>
+					<a href="#top"><button class="btn btn-info btn-sm" id="back" >TOP</button></a>
+					<div id="temp_loading_img" class="hide">
+						<div>
+							<center>
+								<img src="img\\loading2.gif" width="100px" height="100px"/>
+							</center>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -87,9 +94,18 @@
 </div>
 
 <script>
+	function show_loading_img(selector) {
+		var loading_img = $("#temp_loading_img").html();
+		$(selector).html(loading_img);
+	}
+</script>
+
+<script>
 	$(document).ready(function() {
-	$("#back").hide();
-		account_list_sb("");
+		$("#back").hide();
+		setTimeout(() => {
+			account_list_sb("");
+		}, 1000);
 	});
 	
 	$("#closed_status").change(function() {
@@ -112,9 +128,9 @@
 	});
 	
 	function account_list_sb(account_id) {
+		show_loading_img("#account_list_box");
 		var closed = $("#closed_status").val();
 		var account_type = $("#account_type").val();
-		$("#account_list_box").html("Loading...");
 		$.ajax({
 			url:"account_list_sb",
 			type:"post",
@@ -138,6 +154,7 @@
 		e.preventDefault();
 		$("#back").show();
 		$("#account_details_box").hide();
+		show_loading_img("#temp_box");
 		$('#temp_box').load($(this).attr('href'));
 	})
 </script>

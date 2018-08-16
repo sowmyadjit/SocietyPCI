@@ -150,6 +150,7 @@
 	{
 		e.preventDefault();
 		$("#account_details_box").hide();
+		show_loading_img("#temp_box");
 		$('#temp_box').load($(this).attr('href'));
 		$("#back").show();
 	});
@@ -159,6 +160,7 @@
 	{
 		e.preventDefault();
 		$("#account_details_box").hide();
+		show_loading_img("#temp_box");
 		$('#temp_box').load($(this).attr('href'));
 		$("#back").show();
 	});
