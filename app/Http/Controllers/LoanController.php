@@ -324,6 +324,7 @@
 			$PersLoan['partpayment']=$request->input('partpayment');
 			$PersLoan['uid']=$request->input('uid');
 			$PersLoan['Persloantypeid']=$request->input('Persloantypeid');
+			$PersLoan['request_id']=$request->input('request_id');
 		/*******/
 			$PersLoan['partpay']=$request->input('partpay');
 		/*******/
@@ -800,6 +801,7 @@
 			$MemDet['membrid']=$request->input('membrid');
 			$get=$this->loan->GetMemDetailForPLAlloc($MemDet['membrid']);
 			//$id['Req_Amt']=$get->Requested_LoanAmt;
+			$id["request_id"] = $get->PersLoanAllocID;
 			$id['Dur_Year']=$get->LoandurationYears;
 			$id['Dur_Day']=$get->LoandurationDays;
 			$id['Board_Amt']=$get->AmountDecideBy_Board;

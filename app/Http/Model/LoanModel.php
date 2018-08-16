@@ -675,7 +675,7 @@
 			
 			
 			DB::table('request_loan')
-			->where('PersLoanAllocID','=',$pid)
+			->where('PersLoanAllocID','=',$id["request_id"])
 			->update(['Request_LoanAllocated'=>"YES",'Request_LoanAllocted_Id'=>$perslid]);
 			
 			
@@ -1144,7 +1144,7 @@
 			return DB::table('request_loan')
 			->join('branch','branch.Bid','=','request_loan.Bid')
 			->join('loan_type','loan_type.LoanType_ID','=','request_loan.LoanType_ID')
-			->select('LoandurationYears','LoandurationDays','AmountDecideBy_Board','BName','LoanType_Name','branch.Bid','loan_type.LoanType_ID','Uid')
+			->select('PersLoanAllocID', 'LoandurationYears','LoandurationDays','AmountDecideBy_Board','BName','LoanType_Name','branch.Bid','loan_type.LoanType_ID','Uid')
 			->where('RL_MemId','=',$id)
 			->where('Request_LoanAllocated','=','NO')
 			->orderBy('PersLoanAllocID','desc')

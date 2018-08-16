@@ -49,6 +49,7 @@
 										<label class="control-label col-sm-4">Requested Loan Amount:</label>
 										<div class="col-md-6">
 											<input type="text" class="form-control" id="PersLoanAmt" name="PersLoanAmt" placeholder="ENTER LOAN AMOUNT"  Required>
+											<input type="text" class="form-control hidden"hiddennnn id="request_id" name="request_id">
 										</div>
 									</div>
 									
@@ -617,6 +618,7 @@
 				{
 					$('#PersLoanBranch').val(data['Branch_Name']);
 					$('#PLBranchID').val(data['Branch_ID']);
+					$('#request_id').val(data['request_id']);
 					$('#PersLoanAmt').val(data['Board_Amt']);
 					$('#pay_amt').val(data['Board_Amt']);
 					$('#Persloantype').val(data['Loan_Type']);
