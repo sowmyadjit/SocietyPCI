@@ -1138,7 +1138,7 @@
 			//Inserting into Nominee Table
 			$nid = DB::table('nominee')->insertGetId(['Nom_FirstName'=> $id['nfname'],'Nom_MiddleName' => $id['nmname'],'Nom_LastName' => $id['nlname'],'Nom_Gender' => $id['ngender'],'Nom_Marital_Status' => $id['nmstate'],'Nom_Occupation' => $id['noccup'],'Nom_Age' => $id['nage'],'Nom_Birthdate' => $id['nbdate'],'Nom_Email' => $id['nemail'],'Nom_Address' => $id['nadd'],'Nom_City' => $id['ncity'],'Nom_District' => $id['ndist'],'Nom_state' => $id['nstate'],'Nom_MobNo' => $id['nmno'],'Nom_Pincode' => $id['npin'],'Nom_PhoneNo'=>$id['npno'],'Uid'=>$id['jointuid'],'JointUid'=>$id['jointuid'],'Nom_District'=>$id['ndist']]); 
 			//Inserting into createaccount Table
-			$acid = DB::table('createaccount')->insertGetId(['AccNum'=>$count_inc,'Old_AccNo'=>$id['oldaccno'],'Duration'=>$id['rddurtn'],'AccTid'=>$id['acctyp_11'],'Bid'=>$id['branchid'],'Uid'=>$id['jointuid'],'JointUid'=>$id['jointuid'],'opening_blance'=>$id['ob'],'nid'=>$nid,'Created_on'=>$id['crtdte'],'AccountCategory'=>"JOINTACCOUNT"]);
+			$acid = DB::table('createaccount')->insertGetId(['AccNum'=>$count_inc,'Old_AccNo'=>$id['oldaccno'],'Duration'=>$id['rddurtn'],'AccTid'=>$id['acctyp_11'],'Bid'=>$id['branchid'],'Uid'=>$id['jointuid'],'JointUid'=>$id['jointuid'],'opening_blance'=>$id['ob'],'nid'=>$nid,'Created_on'=>$id['crtdte'],'AccountCategory'=>"JOINTACCOUNT", 'Closed'=>"NO" ]);
 			if($type=="SB")
 			{
 				
@@ -1462,18 +1462,23 @@
 				if($row_acc_list->account_category == "JOINTACCOUNT") {
 					$joint_user_ids = explode(",",$row_acc_list->joint_user_ids);
 					$ret_data["account_list"][$i]["name"] = "";
+					$first_flag = true;
 					foreach($joint_user_ids as $joint_uid) {
 						$joint_user = DB::table("user")
 							->select(
 										"user.Uid as user_id",
 										"user.FirstName as first_name",
-										"user.Uid as middle_name",
-										"user.Uid as last_name"
+										"user.MiddleName as middle_name",
+										"user.LastName as last_name"
 									)
 							->where("Uid","=",$joint_uid)
 							->first();
-						
-						$ret_data["account_list"][$i]["name"] .= "{$joint_user->first_name} {$joint_user->middle_name} {$joint_user->last_name}<br />";
+						if($first_flag) {
+							$first_flag = false;
+							$ret_data["account_list"][$i]["name"] .= "{$joint_user->first_name} {$joint_user->middle_name} {$joint_user->last_name}";
+						} else {
+							$ret_data["account_list"][$i]["name"] .= ", {$joint_user->first_name} {$joint_user->middle_name} {$joint_user->last_name}";
+						}
 					}
 				} else {
 					$ret_data["account_list"][$i]["name"] = "{$row_acc_list->first_name} {$row_acc_list->middle_name} {$row_acc_list->last_name}";
