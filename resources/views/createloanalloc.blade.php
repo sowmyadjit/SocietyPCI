@@ -1064,8 +1064,8 @@
 					type: 'post',
 					data: $('#form_loanalloc').serialize()+'&DepLoanType='+DepLnT+'&DepBranch='+DepBr+'&LoanBankId='+Bankid+'&sb='+accnum,
 					success: function(data) {
-						//alert('success');
-						$('.loanalcclassid').click();
+						alert('success');
+						// $('.loanalcclassid').click();
 					}
 				});
 			}
