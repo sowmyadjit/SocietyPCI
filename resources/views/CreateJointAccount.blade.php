@@ -302,22 +302,23 @@ $('#rdd').hide();
 
 //Get BranchCode
 $('.typeahead2').change(function(e){
-	//alert("aa");
-	branchid=$('.typeahead2').data('value');
-	alert(branchid);
-	$.ajax({
-		url:'GetBranchid',
-		type:'post',
-		data:'&branch='+branchid,
-		success:function(data)
-		{
-			$('#branchcd').val(data['bcode']);
-		}
-	});
+				//alert("aa");
+				branchid=$('.typeahead2').attr('data-value');
+				// alert(branchid);
+				$.ajax({
+					url:'GetBranchid',
+					type:'post',
+					data:'&branch='+branchid,
+					success:function(data)
+					{
+						$('#branchcd').val(data['bcode']);
+					}
+				});
 	});
 
 var jointusers="";
 
+var count = 0;
 //Submit button
 $('.sbmbtn<?php echo $JAccCreate['module']->Mid; ?>').click( function(e) {
 $("#form_acc").validate({
@@ -368,15 +369,18 @@ if($("#form_acc").valid())
  acctyp=$('.typeahead1').data('value');
  //user_name=$('.typeahead3').data('value');
 	e.preventDefault();
-    $.ajax({
-        url: 'CreateJointAcc',
-        type: 'post',
-        data: $('#form_acc').serialize()+ '&branchid=' + a + '&acctyp_11=' + acctyp +'&atype='+acttype,
-        success: function(data) {
-			//alert('success');
-                   $('.accclassid').click();
-                 }
-    });
+		if(count == 0) {
+			count++;
+			$.ajax({
+				url: 'CreateJointAcc',
+				type: 'post',
+				data: $('#form_acc').serialize()+ '&branchid=' + a + '&acctyp_11=' + acctyp +'&atype='+acttype,
+				success: function(data) {
+					alert('success');
+						// $('.accclassid').click();
+				}
+			});
+		}
 	}
 });
 $('.typeahead1').change(function(e){
