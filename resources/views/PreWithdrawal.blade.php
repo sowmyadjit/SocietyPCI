@@ -44,7 +44,7 @@
 						<div class="col-md-4">
 							<select class="form-control" id="intrtype" name="intrtype"> 
 								<option value="">--Select Type--</option>
-								<option>SB pre withdrawal</option>
+							<?php /*	<option>SB pre withdrawal</option> */?>
 								<option>RD pre withdrawal</option>
 								<option>Pigmi pre withdrawal</option>
 								<option>FD pre withdrawal</option>
