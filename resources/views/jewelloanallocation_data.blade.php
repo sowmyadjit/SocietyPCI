@@ -15,6 +15,7 @@
 									<th>Paid Principle Amt.</th>
 									@if($ret_data['loan_category'] == "JL")
 										<th>Jewel Description</th>
+										<th>Gross Weight</th>
 										<th>Net Weight</th>
 										<th>Edit</th>
 										<th></th>
@@ -47,6 +48,7 @@
 											<td>{{ $row['paid_principle_amt']}}</td>
 											@if($ret_data['loan_category'] == "JL")
 												<td>{{$row['jewel_description']}}</td>
+												<td>{{$row['gross_weight']}}</td>
 												<td><span id="net_wt_{{$row['loan_id']}}">{{$row['net_weight']}}</span></td>
 												<td>
 													<span class="glyphicon glyphicon-pencil btn btn-info btn-xs" data-toggle="modal" data-target="#myModal" onclick="edit_net_wt('{{$row['net_weight']}}', '{{$row['loan_id']}}','{{ $row['closed']}}');" >
@@ -71,6 +73,7 @@
 										<td></td>
 										<td></td>
 										<td><b>{{$total_rm_amt}}</b></td>
+										<td></td>
 										<td></td>
 										<td></td>
 										<td></td>

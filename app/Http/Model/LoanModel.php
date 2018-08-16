@@ -3778,7 +3778,8 @@
 									"{$table}.JewelLoan_Closed as closed",
 									"{$table}.auction_status as auction_status",
 									"{$table}.jewelloan_Description as jewel_description",
-									"{$table}.jewelloan_Net_weight as net_weight"
+									"{$table}.jewelloan_Net_weight as net_weight",
+									"{$table}.jewelloan_Gross_weight as gross_weight"
 								);
 			$account_list = DB::table($table)
 				->select($select_array)
@@ -3810,6 +3811,7 @@
 				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
 				$ret_data['loan_details'][$i]['jewel_description'] = $row->jewel_description;
 				$ret_data['loan_details'][$i]['net_weight'] = $row->net_weight;
+				$ret_data['loan_details'][$i]['gross_weight'] = $row->gross_weight;
 				if($row->auction_status == 1 || $row->auction_status == 2) {
 					$ret_data['loan_details'][$i]['closed'] = "Auctioned";
 				} else {
