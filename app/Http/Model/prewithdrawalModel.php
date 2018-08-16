@@ -466,7 +466,7 @@
 					if($agent!=0)
 					{
 						$payableamt=($amt-$interestamt)-25;
-						$intamt1=$interestamt-25;
+						$intamt1=$interestamt+25;
 					}
 					else
 					{
