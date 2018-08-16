@@ -5,9 +5,15 @@
 	use Illuminate\Database\Eloquent\Model;
 	use DB;
 	use Auth;
+	use App\Http\Model\SettingsModel;
+
 	class AuthorisedModel extends Model
 	{
 		
+		public function __construct()
+		{
+			$this->settings = new SettingsModel;
+		}
 		
 		//
 		protected $table='customer';
@@ -21,9 +27,12 @@
 			->leftJoin('branch', 'branch.Bid', '=' , 'customer.Bid')
 			->leftJoin('address', 'address.Aid', '=' , 'customer.Aid')
 			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')
-			->where('customer.AuthStatus','=',"UNAUTHORISED")
-			->where('user.Bid',$BID)
-			->get();
+			->where('customer.AuthStatus','=',"UNAUTHORISED");
+			// ->where('user.Bid',$BID);
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$id = $id->where('user.Bid',$BID);
+			}
+			$id= $id->get();
 			return $id;
 		}
 		public function GetcustrejAuthories()
@@ -134,6 +143,8 @@
 		
 		public function Getunauthaccount()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
 			$id = DB::table('createaccount')->select('Accid','AccNum','user.FirstName','user.MiddleName','user.LastName','BName','Acc_Type','MobileNo','PhoneNo')
 			->leftJoin('branch', 'branch.Bid', '=' , 'createaccount.Bid')
 			->leftJoin('accounttype', 'accounttype.AccTid', '=' , 'createaccount.AccTid')
@@ -141,14 +152,19 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('status','=',"UNAUTHORISED")
-			->where('createaccount.JointUid','=',"")
-			->get();
+			->where('createaccount.JointUid','=',"");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$id = $id->where('createaccount.Bid','=',$BID);
+			}
+			$id = $id->get();
 			
 			return $id;
 		}
 		
 		public function Getunauthaccount_joint()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
 			$id = DB::table('createaccount')->select('Accid','AccNum','user.FirstName as user1','user.FirstName as user2','BName','Acc_Type','MobileNo','PhoneNo','createaccount.JointUid')
 			->leftJoin('branch', 'branch.Bid', '=' , 'createaccount.Bid')
 			->leftJoin('accounttype', 'accounttype.AccTid', '=' , 'createaccount.AccTid')
@@ -156,8 +172,11 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('status','=',"UNAUTHORISED")
-			->where('createaccount.JointUid','!=',"")
-			->get();
+			->where('createaccount.JointUid','!=',"");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$id = $id->where('createaccount.Bid','=',$BID);
+			}
+			$id = $id->get();
 			
 			foreach($id as $key=>$row)
 			{
@@ -178,14 +197,19 @@
 		
 		public function rejectAccountview()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
 			$id = DB::table('createaccount')->select('Accid','AccNum','user.FirstName','user.MiddleName','user.LastName','BName','Acc_Type','MobileNo','PhoneNo')
 			->leftJoin('branch', 'branch.Bid', '=' , 'createaccount.Bid')
 			->leftJoin('accounttype', 'accounttype.AccTid', '=' , 'createaccount.AccTid')
 			->leftJoin('nominee', 'nominee.Nid', '=' , 'createaccount.nid')
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
-			->where('status','=',"rejected")
-			->get();
+			->where('status','=',"rejected");
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$id = $id->where('createaccount.Bid','=',$BID);
+			}
+			$id = $id->get();
 			
 			return $id;
 		}
@@ -260,9 +284,12 @@
 			->join('user','pigmiallocation.Uid','=','user.Uid')
 			->join('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
 			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','Interest','max_Interest','Max_Commission','LastName','MiddleName','Agentid')
-			->where('status','=','UNAUTHORISED')
-			->where('pigmiallocation.Bid',$BID)
-			->get();
+			->where('status','=','UNAUTHORISED');
+			// ->where('pigmiallocation.Bid',$BID)
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where('pigmiallocation.Bid',$BID);
+			}
+			$ret_data = $ret_data->get();
 
 			foreach($ret_data as $key_pg => $row_pg) {
 				$agent_row = DB::table("user")
