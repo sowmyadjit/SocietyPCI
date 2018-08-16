@@ -610,7 +610,8 @@
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 
 			$ret_data = DB::table('personalloan_allocation')
-			->select(DB::raw('PersLoanAllocID as id, PersLoan_Number as name'));
+			->select(DB::raw('PersLoanAllocID as id, PersLoan_Number as name'))
+			->where("personalloan_allocation.Closed", "NO");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("personalloan_allocation.Bid",$BID);
 			}
