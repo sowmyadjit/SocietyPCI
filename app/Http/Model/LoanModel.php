@@ -673,6 +673,12 @@
 				->update(['TotalAmt'=>$ResultAmt]);
 			}
 			
+			
+			DB::table('request_loan')
+			->where('PersLoanAllocID','=',$pid)
+			->update(['Request_LoanAllocated'=>"YES",'Request_LoanAllocted_Id'=>$perslid]);
+			
+			
 			return $id;
 		}
 		
@@ -1120,7 +1126,7 @@
 
 			$ret_data = DB::table('request_loan')
 			->join('members','members.Memid','=','request_loan.RL_MemId')
-			->select(DB::raw('Memid as id, CONCAT(`Memid`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
+			->select(DB::raw('Memid as id, CONCAT(`Memid`," - ",`FirstName`," ",`MiddleName`," ",`LastName`," - ", `AmountDecideBy_Board`) as name'))
 			->join('loan_type','loan_type.LoanType_ID','=','request_loan.LoanType_ID')
 			->where('Auth_Status','=',"AUTHORISED")
 			->where('Request_LoanAllocated','=',"NO")
@@ -1271,8 +1277,11 @@
 			
 			$ret_data = DB::table('request_loan')
 			
-			->select(DB::Raw('PersLoanAllocID as id, CONCAT(user.`Uid`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
+			->select(DB::Raw('PersLoanAllocID as id, CONCAT(user.`Uid`," - ",`FirstName`," ",`MiddleName`," ",`LastName`," - ",`AmountDecideBy_Board`) as name'))
 			->join('user','user.Uid','=','request_loan.Uid')
+			->join("loan_type","loan_type.LoanType_ID","=","request_loan.LoanType_ID")
+			->join("loancategory","loancategory.LoanCategoryId","=","loan_type.Loan_CategoryId")
+			->where('loancategory.LoanCategoryId','=',4)
 			->where('Request_LoanAllocated','=',"NO");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("request_loan.Bid",$BID);
