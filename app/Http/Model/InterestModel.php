@@ -650,6 +650,7 @@
 			$gettotmonth=$getdur*12;//get total month
 			$principleamt=$rdintrst->Total_Amount;
 			$rdtotal=$tot;
+			echo "rd total: {$rdtotal}<br />\n";
 			if($getdur>1)
 			{
 				$calcdur=$getdur-1;
@@ -677,7 +678,8 @@
 				
 				$monthcount=$gettotmonth-$trandatecount;
 			}
-			foreach($trandate as $trandatedue)
+
+			/* foreach($trandate as $trandatedue)
 			{
 				$tranday=$trandatedue->RDReport_TranDate;
 				$trandate2=date_create($tranday);
@@ -686,7 +688,22 @@
 				{
 					$duecount=$duecount+1;
 				}
+			} */
+			
+			$prev_month = -1;
+			foreach($trandate as $trandatedue)
+			{
+				$tranday=$trandatedue->RDReport_TranDate;
+				$trandate2=date_create($tranday);
+				$day2=$trandate2->format('d');
+				$this_month = $trandate2->format('m');
+				if($day2>$day && ($prev_month != $this_month))
+				{
+					$duecount=$duecount+1;
+				}
+				$prev_month = $this_month;
 			}
+
 			$duecount1=$duecount+$monthcount;
 			$interestcount=$this->getrdinterestcount($acno);
 			if($duecount1>0)
@@ -694,6 +711,7 @@
 				$getopbal=$this->getopngbal($acno,$sdate,$edate);
 				$opbal=$getopbal->opening_blance;
 				$due=($opbal*5)/1000;
+				echo "due count: {$duecount1}<br />\n	";
 				$dueamt=$due*$duecount1;
 				$dueamt=$this->roundamt->Roundall($dueamt);
 				$rdamt1=($interestamt-$dueamt);
@@ -861,6 +879,20 @@
 			->groupBy('rd_transaction.RD_Month')
 			->selectRaw('min(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')	//	CHANGE sum TO min
 			->lists('sum','rd_transaction.RD_Month');
+			
+			$rd_transaction_sum = DB::table('rd_transaction')
+			->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
+			->where('rd_transaction.Accid','=',$accid)
+			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$dte."'")
+			->groupBy('rd_transaction.RD_Month')
+			->selectRaw('max(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')	//	CHANGE sum TO min
+			->lists('sum','rd_transaction.RD_Month');
+
+			
+			// print_r($rd_transaction);//exit();
+			// print_r($rd_transaction_sum);//exit();
+
+
 /****edit***/
 			$temp = date("m",strtotime($sdate));
 			$start_month = (int)$temp;
@@ -877,13 +909,15 @@
 					if($j == 0) {
 						$j = 12;
 					}//echo "$rd_transaction[$j]<br>\n";
-					$rd_transaction[$i] = $rd_transaction[$j];
+					$rd_transaction[$i] = $rd_transaction_sum[$j];
+					$rd_transaction_sum[$i] = $rd_transaction_sum[$j];
 				}
 				if(++$i == 13){
 					$i = 1;
 				}
 			}
-//			print_r($rd_transaction);//exit();
+			print_r($rd_transaction);//exit();
+			// print_r($rd_transaction_sum);//exit();
 /****edit***/
 			return $rd_transaction;
 		}
