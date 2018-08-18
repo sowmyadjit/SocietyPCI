@@ -28,7 +28,7 @@
 		{
 			$Url="PayAmountIndex";
 			$PayAmount['module']=$this->Modules->GetAnyMid($Url);
-				$PayAmount['data']=$this->PayAmtMod->GetPigPayData();
+	/* 			$PayAmount['data']=$this->PayAmtMod->GetPigPayData();
 			$PayAmount['open']=$this->OP_model->openstate();
 			$PayAmount['close']=$this->OP_model->openclosestate();
 	   if(empty($PayAmount['open']))
@@ -46,9 +46,25 @@
 		else
 		{
 			$PayAmount['close']=1;
-		}
+		} */
        // return view('transation',compact('state'));
-			return view('PigmyPayAmountHome',compact('PayAmount'));
+			// return view('PigmyPayAmountHome',compact('PayAmount'));
+			$PayAmount['is_day_open']=$this->OP_model->is_day_open(date("Y-m-d"));
+			$PayAmount["from_date"] = date("Y-m-01");
+			$PayAmount["to_date"] = date("Y-m-d");
+			return view('PigmyPayAmountHome2',compact('PayAmount'));
+		}
+
+		public function PigmyPayAmount_data(Request $request)
+		{
+			$fn_data["from_date"] = $request->input("from_date");
+			$fn_data["to_date"] = $request->input("to_date");
+			$fn_data["account_id"] = $request->input("account_id");
+			$Url="PayAmountIndex";
+			$PayAmount['module']=$this->Modules->GetAnyMid($Url);
+			// $PayAmount['data']=$this->PayAmtMod->GetPigPayData();
+			$PayAmount['data']=$this->PayAmtMod->GetPigPayData2($fn_data);
+			return view('PigmyPayAmount_data',compact('PayAmount'));
 		}
 		
 		public function RDPayAmountIndex()

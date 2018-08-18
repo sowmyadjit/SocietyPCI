@@ -739,10 +739,32 @@
 			//->where('PayAmount_IntType','=','PREWITHDRAWAL')
 			->orderBy('PayId','desc')
 			//->where('PayAmount_ReceiptNum','=',"0")
-			->paginate(15);
-			//->get();
+			// ->paginate(15);
+			->get();
 			//print_r($id);
 			return $id;
+			
+		}
+
+		public function GetPigPayData2($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			
+			$ret_data = DB::table('pigmi_payamount')->select('PayId','PayAmountReport_PayDate','PayAmount_PigmiAccNum','FirstName','MiddleName','LastName','Pigmi_Type')
+				->leftJoin('pigmiallocation', 'pigmiallocation.PigmiAcc_No', '=' , 'pigmi_payamount.PayAmount_PigmiAccNum')
+				->leftJoin('pigmitype', 'pigmitype.PigmiTypeid', '=' , 'pigmiallocation.PigmiTypeid')
+				->leftJoin('user', 'user.Uid', '=' , 'pigmiallocation.Uid');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("pigmi_payamount.Bid",$BID);
+			}
+			if(!empty($data['account_id'])) {
+				$ret_data = $ret_data->where("PayId", $data["account_id"]);
+			} else {
+				$ret_data = $ret_data->whereBetween("PayAmountReport_PayDate", [ $data['from_date'],$data['to_date'] ]);
+			}
+			$ret_data = $ret_data->orderBy('PayId','desc')
+			->get();
+			return $ret_data;
 			
 		}
 		
@@ -849,11 +871,18 @@
 		
 		public function SearchPigmyPay($q)//M 20-4-16 For PigmyPayAmountHome.blade to search PigmyPay
 		{
-			return DB::table('pigmi_payamount')
-			->select(DB::raw('PayId as id, CONCAT(`FirstName`,"-",`MiddleName`,"-",`LastName`," , ",`PigmiAcc_No`,"  /  ",`old_pigmiaccno`," , ",`PayAmount_ReceiptNum`) as name'))
-			->leftJoin('pigmiallocation','pigmiallocation.PigmiAcc_No','=','pigmi_payamount.PayAmount_PigmiAccNum')
-			->leftJoin('user','user.Uid','=','pigmiallocation.Uid')
-			->get();
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+			$ret_data = DB::table('pigmi_payamount')
+			->select(DB::raw('PayId as id, CONCAT(`FirstName`," ",`MiddleName`," ",`LastName`,"  -  ",`PigmiAcc_No`," / ",`old_pigmiaccno`) as name'))
+			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','pigmi_payamount.PayAmount_PigmiAccNum')
+			->join('user','user.Uid','=','pigmiallocation.Uid');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("pigmi_payamount.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		
 		public function GetPigPaySearchData($id)//M 20-4-16 For PigmyPayAmountHome.blade to search PigmyPay

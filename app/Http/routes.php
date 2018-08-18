@@ -760,6 +760,7 @@
 				
 				//PayAmtController
 				Route::get('/PayAmountIndex','PayAmtController@PayAmountIndex');
+				Route::post('/PigmyPayAmount_data','PayAmtController@PigmyPayAmount_data');
 				Route::get('/PigmyPayAmountView','PayAmtController@PigmyPayAmountView');
 				Route::get('/RdPayAmountView','PayAmtController@RdPayAmountView');
 				Route::get('/FDPayAmountView','PayAmtController@FDPayAmountView');
