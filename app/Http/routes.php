@@ -183,6 +183,7 @@
 				Route::post('/maturity_amount_pay_form','DepositController@maturity_amount_pay_form');
 				Route::post('/maturity_amt_create','DepositController@maturity_amt_create');
 				Route::get('/compulsory_deposit_index','DepositController@compulsory_deposit_index');
+				Route::get('/security_deposit_index','DepositController@security_deposit_index');
 				Route::post('/cd_interest_calculation_index','DepositController@cd_interest_calculation_index');
 				Route::post('/cd_interest_calculatoin','DepositController@cd_interest_calculatoin');
 				

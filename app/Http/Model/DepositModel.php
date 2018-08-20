@@ -651,6 +651,9 @@ class DepositModel extends Model
 								$user_type = "EMPLOYEE";
 								break;
 					case 2:
+								$user_type = "AGENT";
+								break;
+					case 3:
 								$user_type = "CUSTOMER";
 								break;
 					default :
@@ -732,6 +735,116 @@ class DepositModel extends Model
 				->where($paid_field,PAID)
 				->sum($amount_field);
 				
+			return $credit_amount - $debit_amount;
+		}
+		
+		
+	//COMPUSLORY DEPOSIT
+		public function deposit_account_list_sd($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			if(strcasecmp($data["closed"],"YES") == 0) {
+				$data["closed"] = 1;
+			} else {
+				$data["closed"] = 0;
+			}
+			$ret_data['deposit_details'] = array();
+			$ret_data['deposit_category'] = $data["category"];
+			$ret_data['deposit_closed'] = $data["closed"];
+			$ret_data['day_open_status'] = $this->op->check_day_open(["date"=>date("Y-m-d")]);
+			$table = "security_deposit";
+			$deleted_field = "deleted";
+			$closed_field = "sd_closed";
+			$user_type_field = "user_type";
+			$branch_id_field = "{$table}.bid";
+			$user_id_field = "{$table}.uid";
+			$allocation_id_field = "{$table}.sd_id";
+			$select_array = array(
+									"{$table}.sd_id as allocation_id",
+									"{$table}.sd_acc_no as account_no",
+									"{$table}.sd_old_acc_no as old_account_no",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$table}.sd_closed as closed",
+									"{$table}.user_type as user_type"
+								);
+								
+			$deposit_account_list = DB::table($table)
+				->select($select_array)
+				->join("user","user.Uid","=","{$user_id_field}")
+				->where($deleted_field,"=",0);
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
+			if(!empty($data['allocation_id'])) {
+				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
+			} else {
+				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data["closed"]);
+				$deposit_account_list = $deposit_account_list->where($user_type_field,"=",$data["user_type"]);
+			}
+			$deposit_account_list = $deposit_account_list//->limit(1)
+										->get();
+				
+			if(empty($deposit_account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($deposit_account_list as $row) {
+				$ret_data['deposit_details'][++$i]['allocation_id'] = $row->allocation_id;
+				$ret_data['deposit_details'][$i]['account_no'] = $row->account_no;
+				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
+				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
+				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['deposit_details'][$i]['amount'] = $this->get_sd_amount(["allocation_id"=>$row->allocation_id]);//calc dynami
+				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
+				$ret_data['deposit_details'][$i]['account_type'] = $data["category"];
+				switch($row->user_type) {
+					case 1:
+								$user_type = "EMPLOYEE";
+								break;
+					case 2:
+								$user_type = "AGENT";
+								break;
+					case 3:
+								$user_type = "CUSTOMER";
+								break;
+					default :
+								$user_type = "";
+								break;
+				}
+				$ret_data['deposit_details'][$i]['user_type'] = $user_type;
+			}
+			//print_r($ret_data);exit();
+			return $ret_data;
+		}
+		
+		public function get_sd_amount($data)
+		{
+			$table = "sd_transaction";
+			$allocation_id_field = "sd_id";
+			$amount_field = "sd_amount";
+			$deleted_field = "deleted";
+			$transaction_type_field = "transaction_type";
+			$paid_field = "paid";
+			
+			$credit_amount = DB::table($table)
+				->where($allocation_id_field,$data["allocation_id"])
+				->where($deleted_field,NOT_DELETED)
+				->where($transaction_type_field,CREDIT)
+				->where($paid_field,PAID)
+				->sum($amount_field);
+			
+			$debit_amount = DB::table($table)
+				->where($allocation_id_field,$data["allocation_id"])
+				->where($deleted_field,NOT_DELETED)
+				->where($transaction_type_field,DEBIT)
+				->where($paid_field,PAID)
+				->sum($amount_field);
+				// print_r($credit_amount);
 			return $credit_amount - $debit_amount;
 		}
 		

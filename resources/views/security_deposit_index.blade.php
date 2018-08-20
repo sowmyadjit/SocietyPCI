@@ -26,7 +26,7 @@
 <div class="b_main">
 					<div id="deposit_details_box">
 						<div class="box-header well" data-original-title="">
-							<h2><i class="glyphicon glyphicon-user"></i>COMPULSORY DEPOSIT</h2>
+							<h2><i class="glyphicon glyphicon-user"></i>SECURITY DEPOSIT</h2>
 							
 							<div class="box-icon">
 								<a href="#" class="btn btn-setting btn-round btn-default"><i class="glyphicon glyphicon-cog"></i></a>
@@ -139,7 +139,7 @@
 		$.ajax({
 			url:"deposit_account_list",
 			type:"post",
-			data:"&category=CD&closed="+closed+"&user_type="+user_type+"&allocation_id="+allocation_id,
+			data:"&category=SD&closed="+closed+"&user_type="+user_type+"&allocation_id="+allocation_id,
 			success: function(data) {
 				console.log("done");
 				$("#back").show();
@@ -147,20 +147,6 @@
 			}
 		});
 	}
-	
-	$("#bt_interest_calculation").click(function() {
-		//console.log("jyhgviyflyi");
-		$.ajax({
-			url:"cd_interest_calculation_index",
-			type:"post",
-			data:"",
-			success: function(data) {
-				console.log("done");
-				$("#back").show();
-				$("#temp_box").html(data);
-			}
-		});
-	});
 	
 </script>
 

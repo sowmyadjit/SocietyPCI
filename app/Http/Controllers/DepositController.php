@@ -149,6 +149,9 @@
 				case "CD":	$ret_data = $this->creadepositmodel->deposit_account_list_cd($in_data);
 							return view("deposit_account_list_data_cd",compact("ret_data"));
 							break;
+				case "SD":	$ret_data = $this->creadepositmodel->deposit_account_list_sd($in_data);
+							return view("deposit_account_list_data_sd",compact("ret_data"));
+							break;
 			}
 		}
 	
@@ -222,5 +225,12 @@
 			$in_data["date"] = $request->input("date");
 			$this->creadepositmodel->cd_interest_calculatoin($in_data);
 			return "11";
+		}
+		
+//SECURITY DEPOSIT
+		public function security_deposit_index()
+		{
+			$data = [];
+			return view("security_deposit_index",compact('data'));
 		}
 	}
