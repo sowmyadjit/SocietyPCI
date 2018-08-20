@@ -38,7 +38,11 @@
 								</div>
 								<button class="refresh_data btn-sm glyphicon glyphicon-refresh"></button>
 								
-								<div class="col-md-5 pull-right">
+								<div class="col-md-2 pull-right">
+									<button id="pay_amt_print" class="btn btn-default glyphicon glyphicon-print" title="print"></button>
+									<button id="pay_amt_excel" class="btn btn-default glyphicon glyphicon-file" title="excel"></button>
+								</div>
+								<div class="col-md-3 pull-right">
 									<input class="SearchTypeahead form-control" id="SearchPigmyPay" type="text" name="SearchPigmyPay" placeholder="SEARCH PIGMY PAY">
 								</div>
 								
@@ -166,5 +170,24 @@
 <script>
 	$('.datepicker').datepicker().on('changeDate',function(e){
 		$(this).datepicker('hide');
+	});
+</script>
+
+<script>
+		$("#pay_amt_print").click(function() {
+			var divContents = $("#table_data").html();
+            var printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>Customer RECEIPT</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+			//$("#toprint").print();
+            printWindow.print(); 
+		});
+</script>
+<script>
+	$('#pay_amt_excel').click( function(e) {
+		$('#table_data').tableExport({type:'excel',escape:'false'});
 	});
 </script>

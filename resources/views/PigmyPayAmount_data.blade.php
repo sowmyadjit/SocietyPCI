@@ -2,18 +2,23 @@
 <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
 	<thead>
 		<tr>
+			<th>Sl. No.</th>
 			<th>Customer Name</th>
 			<th>Account Number</th>
 			<th>Pigmy Type</th>
-			<th>Payed Date</th>
+			<th>Paid Date</th>
 <?php /*	<th>RECEIPT</th> /*/?>
 		</tr>
 	</thead>
 	
 	<tbody>
+		<?php
+			$i = 0;
+		?>
 		@foreach ($PayAmount['data'] as $PAmt)
 			<tr>
-				<td class="hidden">{{ $PAmt->PayId }}</td>
+				<td>{{++$i}}</td>
+		<?php /*<td class="hidden">{{ $PAmt->PayId }}</td> */ ?>
 				<td>{{ $PAmt->FirstName}}.{{ $PAmt->MiddleName}}.{{ $PAmt->LastName}}</td>
 				<td>{{ $PAmt->PayAmount_PigmiAccNum }}</td>
 				<td>{{ $PAmt->Pigmi_Type }}</td>
