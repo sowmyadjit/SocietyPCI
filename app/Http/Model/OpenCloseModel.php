@@ -7,6 +7,9 @@
 	use Auth;
 	use App\Http\Model\RoundModel;
 	use App\Http\Controllers\LogController;
+	use App\Http\Model\CommonModel;
+	use App\Http\Model\CDModel;
+	use App\Http\Model\CDTranModel;
 	class OpenCloseModel extends Model
 	{
 		//
@@ -16,6 +19,9 @@
 		{
 			$this->roundamt=new RoundModel;
 			$this->log_ctr= new LogController;
+			$this->common= new CommonModel;
+			$this->cd= new CDModel;
+			$this->cd_tran= new CDTranModel;
 		}
 		
 		public function getbal()
@@ -3235,6 +3241,35 @@
 			return DB::table("user")
 				->where("Uid",$UID)
 				->value("Did");
+		}
+
+		public function cd_tran($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			unset($select_array_cd_tran);
+			$select_array_cd_tran = array(
+				"{$this->cd_tran->tbl}.{$this->cd_tran->pk}",
+				"{$this->cd_tran->tbl}.{$this->cd_tran->cd_id_field}",
+				"{$this->cd_tran->tbl}.{$this->cd_tran->date_field}",
+				"{$this->cd_tran->tbl}.{$this->cd_tran->transaction_type_field}",
+				"{$this->cd_tran->tbl}.{$this->cd_tran->payment_mode_field}",
+				"{$this->cd_tran->tbl}.{$this->cd_tran->cd_amount_field}",
+				"{$this->cd_tran->tbl}.{$this->cd_tran->particulars_field}",
+				"{$this->cd->tbl}.{$this->cd->cd_acc_no_field}",
+				DB::raw(" CONCAT(FirstName, ' ',MiddleName, ' ', LastName )  as 'name' "),
+				"user.Uid"
+			);
+			$ret_data = DB::table($this->cd_tran->tbl)
+				->select($select_array_cd_tran)
+				->join("{$this->cd->tbl}","{$this->cd->tbl}.{$this->cd->pk}","=","{$this->cd_tran->tbl}.{$this->cd_tran->cd_id_field}")
+				->join("user","user.Uid","=","{$this->cd->tbl}.{$this->cd->uid_field}")
+				->where("{$this->cd_tran->tbl}.{$this->cd_tran->date_field}", $date)
+				->where("{$this->cd_tran->tbl}.{$this->cd_tran->deleted_field}", 0)
+				->where("{$this->cd_tran->tbl}.{$this->cd_tran->bid_field}", $BID)
+				->get();
+
+			return $ret_data;
 		}
 		
 		

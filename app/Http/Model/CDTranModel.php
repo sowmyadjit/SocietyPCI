@@ -3,32 +3,41 @@
 namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Model\CommonModel;
 use DB;
 
-class CDModel extends Model
+class CDTranModel extends Model
 {
-	public $tbl = 'compulsory_deposit';
-	public $pk = 'cd_id';
-	public $cd_acc_no_field = 'cd_acc_no';
-	public $cd_old_acc_no_field = 'cd_old_acc_no';
-	public $uid_field = 'uid';
+	public $tbl = 'cd_transaction';
+	public $pk = 'cd_tran_id';
+	public $cd_id_field = 'cd_id';
+	public $date_field = 'date';
+	public $time_field = 'time';
 	public $bid_field = 'bid';
-	public $cd_start_date_field = 'cd_start_date';
-	public $cd_close_date_field = 'cd_close_date';
-	public $cd_closed_field = 'cd_closed';
+	public $transaction_type_field = 'transaction_type';
+	public $cd_amount_field = 'cd_amount';
+	public $paid_field = 'paid';
+	public $payment_mode_field = 'payment_mode';
+	public $particulars_field = 'particulars';
+	public $cheque_no_field = 'cheque_no';
+	public $cheque_date_field = 'cheque_date';
+	public $bank_id_field = 'bank_id';
 	public $subhead_id_field = 'subhead_id';
 	public $deleted_field = 'deleted';
 	
 	private $field_list = array(
+		"cd_tran_id",
 		"cd_id",
-		"cd_acc_no",
-		"cd_old_acc_no",
-		"uid",
+		"date",
+		"time",
 		"bid",
-		"cd_start_date",
-		"cd_close_date",
-		"cd_closed",
+		"transaction_type",
+		"cd_amount",
+		"paid",
+		"payment_mode",
+		"particulars",
+		"cheque_no",
+		"cheque_date",
+		"bank_id",
 		"subhead_id",
 		"deleted"
 	);
