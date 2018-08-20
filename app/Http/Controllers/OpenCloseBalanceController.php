@@ -230,6 +230,7 @@
 /********** salary extra ******/
 
 			$trandaily['mdpayamt']=$this->op->mdpayamt($dte);
+			$trandaily['cd_tran']=$this->op->cd_tran($dte);
 
 			
 			
@@ -604,6 +605,7 @@
 /********** salary extra ******/
 
 			$trandaily['mdpayamt']=$this->op->mdpayamt($dte);
+			$trandaily['cd_tran']=$this->op->cd_tran($dte);
 			
 			$trandaily['jewel_auction_account']=$this->op->jewel_auction_account($dte);
 			

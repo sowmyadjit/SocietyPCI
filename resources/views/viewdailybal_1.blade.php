@@ -988,7 +988,237 @@
 						$gt_adj_db += $adj_db_total;
 					?>
 				<!------------------ MD PAID AMOUNT END -------------------->
+
+
 					
+				<!------------------ CD PAID AMOUNT  -------------------->
+					<tr><td colspan="10"><h5><b><center>CD Transaction<center></b></h5></td></tr>
+						<?php
+							$cash_cr = 0;
+							$cash_db = 0;
+							$adj_cr = 0;
+							$adj_db = 0;
+							
+							$cash_cr_total = 0;
+							$cash_db_total = 0;
+							$adj_cr_total = 0;
+							$adj_db_total = 0;
+						?>
+						@foreach ($trandaily['cd_tran'] as $row)
+						<?php
+							if($row->payment_mode == 1) {				//CASH
+								if($row->transaction_type == 1)	{					//CASH CREDIT
+										$cash_cr = $row->cd_amount;
+										$cash_cr_total += $cash_cr;
+						?>
+									<tr>
+										<td>{{$row->date}}</td>
+										<td>{{$row->cd_acc_no}}</td>
+										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+										<td>{{$cash_cr}}</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+									</tr>
+						<?php
+								} else	{										//CASH DEBIT
+						?>
+									<?php
+										$cash_db = $row->cd_amount;
+										$cash_db_total += $cash_db;
+									?>
+									<tr>
+										<td>{{$row->date}}</td>
+										<td>{{$row->cd_acc_no}}</td>
+										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+										<td>-</td>
+										<td>{{$cash_db}}</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+									</tr>
+						<?php
+								}
+							} else	{										//ADJUSTMENT
+								if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
+										$adj_cr = $row->cd_amount;
+										$adj_cr_total += $adj_cr;
+						?>
+									<tr>
+										<td>{{$row->date}}</td>
+										<td>{{$row->cd_acc_no}}</td>
+										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+										<td>-</td>
+										<td>-</td>
+										<td>{{$adj_cr}}</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+									</tr>
+								<?php
+									} else {										//ADJUSTMENT DEBIT
+								?>
+									<?php
+										$adj_db = $row->cd_amount;
+										$adj_db_total += $adj_db;
+									?>
+									<tr>
+										<td>{{$row->date}}</td>
+										<td>{{$row->cd_acc_no}}</td>
+										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>{{$adj_db}}</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+									</tr>
+						<?php	
+								}
+							}
+						?>
+						@endforeach
+						<tr>
+							<th colspan=3>MD Amount Paid</th>
+							<td><?php echo $cash_cr_total; ?></td>
+							<td><?php echo $cash_db_total; ?></td>
+							<td><?php echo $adj_cr_total; ?></td>
+							<td><?php echo $adj_db_total; ?></td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+						<?php
+							$gt_cash_cr += $cash_cr_total;
+							$gt_cash_db += $cash_db_total;
+							$gt_adj_cr += $adj_cr_total;
+							$gt_adj_db += $adj_db_total;
+						?>
+					<!------------------ CD PAID AMOUNT  -------------------->
+					
+					<!------------------ CD PAID AMOUNT  -------------------->
+						<tr><td colspan="10"><h5><b><center>CD Transaction<center></b></h5></td></tr>
+							<?php
+								$cash_cr = 0;
+								$cash_db = 0;
+								$adj_cr = 0;
+								$adj_db = 0;
+								
+								$cash_cr_total = 0;
+								$cash_db_total = 0;
+								$adj_cr_total = 0;
+								$adj_db_total = 0;
+							?>
+							@foreach ($trandaily['cd_tran'] as $row)
+							<?php
+								if($row->payment_mode == 1) {				//CASH
+									if($row->transaction_type == 1)	{					//CASH CREDIT
+											$cash_cr = $row->cd_amount;
+											$cash_cr_total += $cash_cr;
+							?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>{{$cash_cr}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+							<?php
+									} else	{										//CASH DEBIT
+							?>
+										<?php
+											$cash_db = $row->cd_amount;
+											$cash_db_total += $cash_db;
+										?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>-</td>
+											<td>{{$cash_db}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+							<?php
+									}
+								} else	{										//ADJUSTMENT
+									if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
+											$adj_cr = $row->cd_amount;
+											$adj_cr_total += $adj_cr;
+							?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{$adj_cr}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+									<?php
+										} else {										//ADJUSTMENT DEBIT
+									?>
+										<?php
+											$adj_db = $row->cd_amount;
+											$adj_db_total += $adj_db;
+										?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{$adj_db}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+							<?php	
+									}
+								}
+							?>
+							@endforeach
+							<tr>
+								<th colspan=3>MD Amount Paid</th>
+								<td><?php echo $cash_cr_total; ?></td>
+								<td><?php echo $cash_db_total; ?></td>
+								<td><?php echo $adj_cr_total; ?></td>
+								<td><?php echo $adj_db_total; ?></td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+							<?php
+								$gt_cash_cr += $cash_cr_total;
+								$gt_cash_db += $cash_db_total;
+								$gt_adj_cr += $adj_cr_total;
+								$gt_adj_db += $adj_db_total;
+							?>
+					<!------------------ CD PAID AMOUNT  -------------------->
+
+
+
+
+
 					
 					<tr><td colspan="10"><h5><b><center>Share Allocated<center></b></h5></td></tr>
 					<?php
