@@ -9,6 +9,7 @@
 									<th>Loan Amount</th>
 									<th>Start Date</th>
 									<th>End Date</th>
+									<th>Duration</th>
 									<th>Pending Amount</th>
 									<th>Close</th>
 									<th>Interest Paid Till</th>
@@ -42,6 +43,7 @@
 											<td>{{ $row['loan_amount']}}</td>
 											<td>{{ $row['start_date']}}</td>
 											<td>{{ $row['end_date']}}</td>
+											<td>{{ $row['duration']}}</td>
 											<td>{{ $row['ramaining_amount']}}</td>
 											<td>{{ $row['closed']}}</td>
 											<td>{{ $row['interest_paid_upto']}}</td>
@@ -54,13 +56,14 @@
 													<span class="glyphicon glyphicon-pencil btn btn-info btn-xs" data-toggle="modal" data-target="#myModal" onclick="edit_net_wt('{{$row['net_weight']}}', '{{$row['loan_id']}}','{{ $row['closed']}}');" >
 													</span>
 												</td>
-												<td>
+							<?php /*			<td>
 													<div class="form-group">
 														<div class="col-sm-12">
 															<input type="button" value="Receipt" class="btn btn-info btn-sm edtbtn" href="jlloanrecepit/{{ $row['loan_id'] }}"/>
 														</div>
 													</div>
 												</td>
+							*/?>
 											@endif
 										</tr>
 									@endforeach
@@ -72,6 +75,7 @@
 										<td><b>{{$total_ln_amt}}</b></td>
 										<td></td>
 										<td></td>
+										<td></td>
 										<td><b>{{$total_rm_amt}}</b></td>
 										<td></td>
 										<td></td>
@@ -80,7 +84,7 @@
 										<td></td>
 										<td></td>
 										<td></td>
-										<td></td>
+						><?php /*		<td></td> */?>
 									</tr>
 								</tbody>
 							</table>

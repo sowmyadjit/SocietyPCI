@@ -3775,6 +3775,7 @@
 									"{$table}.JewelLoan_LoanAmount as loan_amount",
 									"{$table}.JewelLoan_StartDate as start_date",
 									"{$table}.JewelLoan_EndDate as end_date",
+									"{$table}.JewelLoan_LoanDuration as duration",
 									"{$table}.JewelLoan_Closed as closed",
 									"{$table}.auction_status as auction_status",
 									"{$table}.jewelloan_Description as jewel_description",
@@ -3809,6 +3810,7 @@
 				$ret_data['loan_details'][$i]['loan_amount'] = $row->loan_amount;
 				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
 				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
+				$ret_data['loan_details'][$i]['duration'] = $row->duration;
 				$ret_data['loan_details'][$i]['jewel_description'] = $row->jewel_description;
 				$ret_data['loan_details'][$i]['net_weight'] = $row->net_weight;
 				$ret_data['loan_details'][$i]['gross_weight'] = $row->gross_weight;
