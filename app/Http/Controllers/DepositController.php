@@ -104,12 +104,16 @@
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 
 			$force_reload_flag = false;
+			$dont_save_to_cache_flag = false;
 			$force_reload = $request->input("force_reload");
 			$in_data['category'] = $request->input("category");
 			$in_data['closed'] = $request->input("closed");
 			$in_data['agent_id'] = $request->input("agent_id");//USED IN PG
 			$in_data['user_type'] = $request->input("user_type");// USED IN CD
 			$in_data['allocation_id'] = $request->input("allocation_id");
+			if(!empty($in_data['allocation_id'])) {
+				$dont_save_to_cache_flag = true;
+			}
 			if(strcasecmp($force_reload,"YES") == 0) {
 				$force_reload_flag = true;
 			} elseif(!empty($in_data['allocation_id'])) {
@@ -125,8 +129,10 @@
 							} else {
 								// return 'cachekey was forgotten, so this is just random data';
 								$ret_data = $this->creadepositmodel->deposit_account_list_pg($in_data);
+								if(!$dont_save_to_cache_flag) { //FOR SEARCH RESULTS
 									$vw = (string)view("deposit_account_list_data",compact("ret_data"));
 									\Cache::forever($cache_ele_name, $vw);
+								}
 								return view("deposit_account_list_data",compact("ret_data"));
 							}
 							
