@@ -489,6 +489,7 @@
 				
 				var sd_box_no = sd_id.substr(1);
 				var sd_value = $('#er'+sd_box_no).val();
+				var sd_particulars = $('#ept'+sd_box_no).val();
 				if(isNaN(sd_value)) {
 					sd_value = 0;
 				}
@@ -500,7 +501,7 @@
 					
 					url: 'payagentcommision',
 					type: 'post',
-					data: $('#form_addbank').serialize() + '&aguid='+auid+'&sbAcNo='+AccNum+'&pmode='+pmode+'&loannum='+loannum+'&noloan='+noloan+'&charges='+charges+'&amount='+amount+'&loopid='+x+'&tds_value='+tds_value+'&sd_value='+sd_value+'&sal_extra_all='+sal_extra,
+					data: $('#form_addbank').serialize() + '&aguid='+auid+'&sbAcNo='+AccNum+'&pmode='+pmode+'&loannum='+loannum+'&noloan='+noloan+'&charges='+charges+'&amount='+amount+'&loopid='+x+'&tds_value='+tds_value+'&sd_value='+sd_value+'&sd_particulars='+sd_particulars+'&sal_extra_all='+sal_extra,
 					success: function(data) {
 						alert('success');
 						// $('.fdallocclassid').click();

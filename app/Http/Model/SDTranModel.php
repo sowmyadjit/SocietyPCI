@@ -57,15 +57,15 @@ class SDTranModel extends Model
 	public function set_row_data($data)
 	{
 		foreach($this->field_list as $value) {
-			if(in_array($value, $data)) {
-				$row_data[$value] = $data[$value];
+			if(isset($data[$value])) {
+				$this->row_data[$value] = $data[$value];
 			}
 		}
 	}
-
+	
 	public function insert_row()
 	{
-		return DB::table($this->tbl)
+		 return DB::table($this->tbl)
 			->insertGetId($this->row_data);
 	}
 
@@ -82,5 +82,31 @@ class SDTranModel extends Model
 		return DB::table($this->tbl)
 			->where("{$this->tbl}.{$this->pk}", $update_row_pk)
 			->update($this->row_data);
+	}
+
+	public function get_sd_amount($data)
+	{
+		$table = $this->tbl;
+		$allocation_id_field = $this->sd_id_field;
+		$amount_field = $this->sd_amount_field;
+		$deleted_field = $this->deleted_field;
+		$transaction_type_field = $this->transaction_type_field;
+		$paid_field = $this->paid_field;
+		
+		$credit_amount = DB::table($table)
+			->where($allocation_id_field,$data[$this->sd_id_field])
+			->where($deleted_field,NOT_DELETED)
+			->where($transaction_type_field,CREDIT)
+			->where($paid_field,PAID)
+			->sum($amount_field);
+		
+		$debit_amount = DB::table($table)
+			->where($allocation_id_field,$data[$this->sd_id_field])
+			->where($deleted_field,NOT_DELETED)
+			->where($transaction_type_field,DEBIT)
+			->where($paid_field,PAID)
+			->sum($amount_field);
+			// print_r($credit_amount);
+		return $credit_amount - $debit_amount;
 	}
 }

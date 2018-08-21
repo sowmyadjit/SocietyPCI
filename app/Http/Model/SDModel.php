@@ -10,6 +10,7 @@ class SDModel extends Model
 {
 	public $tbl = 'security_deposit';
 	public $pk = 'sd_id';
+	public $sd_ho_id_field = 'sd_ho_id';
 	public $sd_acc_no_field = 'sd_acc_no';
 	public $sd_old_acc_no_field = 'sd_old_acc_no';
 	public $uid_field = 'uid';
@@ -22,6 +23,7 @@ class SDModel extends Model
 	
 	private $field_list = array(
 		"sd_id",
+		"sd_ho_id",
 		"sd_acc_no",
 		"sd_old_acc_no",
 		"uid",
@@ -32,6 +34,8 @@ class SDModel extends Model
 		"subhead_id",
 		"deleted"
 	);
+
+	const SD_HO_AMOUNT_LIMIT = 100000;
 
 	private $row_data = array();
 
@@ -73,5 +77,35 @@ class SDModel extends Model
 		return DB::table($this->tbl)
 			->where("{$this->tbl}.{$this->pk}", $update_row_pk)
 			->update($this->row_data);
+	}
+
+	/* --------------------------------------------------------------------------------------------- */
+
+	public function get_sd_ho_id($sd_id)
+	{
+		if(!empty($sd_id)) {
+			$ret_data = DB::table($this->tbl)
+			->where("{$this->tbl}.{$this->pk}", $temp_sd_id)
+			->value($this->sd_hd_id_field);
+		} else {
+			$ret_data = 0;
+		}
+
+		return $ret_data;
+	}
+
+	public function get_row($data)
+	{
+		$row = DB::table($this->tbl);
+		if(isset($data[$this->pk])) {
+			$row = $row->where("{$this->tbl}.{$this->pk}", $data[$this->pk]);
+		} elseif(isset($data[$this->sd_acc_no_field])) {
+			$row = $row->where("{$this->tbl}.{$this->sd_acc_no_field}", $data[$this->sd_acc_no_field]);
+		} elseif(isset($data[$this->uid_field])) {
+			$row = $row->where("{$this->tbl}.{$this->uid_field}", $data[$this->uid_field]);
+		}
+		$row = $row->first();
+		
+		return $row;
 	}
 }
