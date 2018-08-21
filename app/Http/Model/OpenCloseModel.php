@@ -530,6 +530,7 @@
 			->where('pigmi_transaction.PgmPayment_Mode','=',"CASH")
 			//->where('pigmi_transaction.PgmPayment_Mode','<>',"CASH")
 			->where('pigmi_transaction.Particulars','<>',"Opening Balance")
+			->where("pigmi_transaction.tran_reversed", "NO")
 			->orderBy('PigReport_TranDate','desc')
 			->orderBy('PigmiTrans_ID','desc')
 			->get();
