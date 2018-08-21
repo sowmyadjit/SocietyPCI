@@ -10,6 +10,8 @@
 	use App\Http\Model\CommonModel;
 	use App\Http\Model\CDModel;
 	use App\Http\Model\CDTranModel;
+	use App\Http\Model\SDModel;
+	use App\Http\Model\SDTranModel;
 	class OpenCloseModel extends Model
 	{
 		//
@@ -22,6 +24,8 @@
 			$this->common= new CommonModel;
 			$this->cd= new CDModel;
 			$this->cd_tran= new CDTranModel;
+			$this->sd= new SDModel;
+			$this->sd_tran= new SDTranModel;
 		}
 		
 		public function getbal()
@@ -3267,6 +3271,35 @@
 				->where("{$this->cd_tran->tbl}.{$this->cd_tran->date_field}", $date)
 				->where("{$this->cd_tran->tbl}.{$this->cd_tran->deleted_field}", 0)
 				->where("{$this->cd_tran->tbl}.{$this->cd_tran->bid_field}", $BID)
+				->get();
+
+			return $ret_data;
+		}
+
+		public function sd_tran($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			unset($select_array_sd_tran);
+			$select_array_sd_tran = array(
+				"{$this->sd_tran->tbl}.{$this->sd_tran->pk}",
+				"{$this->sd_tran->tbl}.{$this->sd_tran->sd_id_field}",
+				"{$this->sd_tran->tbl}.{$this->sd_tran->date_field}",
+				"{$this->sd_tran->tbl}.{$this->sd_tran->transaction_type_field}",
+				"{$this->sd_tran->tbl}.{$this->sd_tran->payment_mode_field}",
+				"{$this->sd_tran->tbl}.{$this->sd_tran->sd_amount_field}",
+				"{$this->sd_tran->tbl}.{$this->sd_tran->particulars_field}",
+				"{$this->sd->tbl}.{$this->sd->sd_acc_no_field}",
+				DB::raw(" CONCAT(FirstName, ' ',MiddleName, ' ', LastName )  as 'name' "),
+				"user.Uid"
+			);
+			$ret_data = DB::table($this->sd_tran->tbl)
+				->select($select_array_sd_tran)
+				->join("{$this->sd->tbl}","{$this->sd->tbl}.{$this->sd->pk}","=","{$this->sd_tran->tbl}.{$this->sd_tran->sd_id_field}")
+				->join("user","user.Uid","=","{$this->sd->tbl}.{$this->sd->uid_field}")
+				->where("{$this->sd_tran->tbl}.{$this->sd_tran->date_field}", $date)
+				->where("{$this->sd_tran->tbl}.{$this->sd_tran->deleted_field}", 0)
+				->where("{$this->sd_tran->tbl}.{$this->sd_tran->bid_field}", $BID)
 				->get();
 
 			return $ret_data;

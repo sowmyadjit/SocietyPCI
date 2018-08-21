@@ -991,8 +991,8 @@
 
 
 					
-				<!------------------ CD PAID AMOUNT  -------------------->
-					<tr><td colspan="10"><h5><b><center>CD Transaction<center></b></h5></td></tr>
+				<!------------------ CD TRANSACTION  -------------------->
+					<tr><td colspan="10"><h5><b><center>CD<center></b></h5></td></tr>
 						<?php
 							$cash_cr = 0;
 							$cash_db = 0;
@@ -1086,7 +1086,7 @@
 						?>
 						@endforeach
 						<tr>
-							<th colspan=3>MD Amount Paid</th>
+							<th colspan=3>CD Total</th>
 							<td><?php echo $cash_cr_total; ?></td>
 							<td><?php echo $cash_db_total; ?></td>
 							<td><?php echo $adj_cr_total; ?></td>
@@ -1101,10 +1101,10 @@
 							$gt_adj_cr += $adj_cr_total;
 							$gt_adj_db += $adj_db_total;
 						?>
-					<!------------------ CD PAID AMOUNT  -------------------->
+				<!------------------ CD TRANSACTION  -------------------->
 					
-					<!------------------ CD PAID AMOUNT  -------------------->
-						<tr><td colspan="10"><h5><b><center>CD Transaction<center></b></h5></td></tr>
+				<!------------------ SD TRANSACTION  -------------------->
+						<tr><td colspan="10"><h5><b><center>SD<center></b></h5></td></tr>
 							<?php
 								$cash_cr = 0;
 								$cash_db = 0;
@@ -1116,16 +1116,16 @@
 								$adj_cr_total = 0;
 								$adj_db_total = 0;
 							?>
-							@foreach ($trandaily['cd_tran'] as $row)
+							@foreach ($trandaily['sd_tran'] as $row)
 							<?php
 								if($row->payment_mode == 1) {				//CASH
 									if($row->transaction_type == 1)	{					//CASH CREDIT
-											$cash_cr = $row->cd_amount;
+											$cash_cr = $row->sd_amount;
 											$cash_cr_total += $cash_cr;
 							?>
 										<tr>
 											<td>{{$row->date}}</td>
-											<td>{{$row->cd_acc_no}}</td>
+											<td>{{$row->sd_acc_no}}</td>
 											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 											<td>{{$cash_cr}}</td>
 											<td>-</td>
@@ -1139,12 +1139,12 @@
 									} else	{										//CASH DEBIT
 							?>
 										<?php
-											$cash_db = $row->cd_amount;
+											$cash_db = $row->sd_amount;
 											$cash_db_total += $cash_db;
 										?>
 										<tr>
 											<td>{{$row->date}}</td>
-											<td>{{$row->cd_acc_no}}</td>
+											<td>{{$row->sd_acc_no}}</td>
 											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 											<td>-</td>
 											<td>{{$cash_db}}</td>
@@ -1158,12 +1158,12 @@
 									}
 								} else	{										//ADJUSTMENT
 									if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
-											$adj_cr = $row->cd_amount;
+											$adj_cr = $row->sd_amount;
 											$adj_cr_total += $adj_cr;
 							?>
 										<tr>
 											<td>{{$row->date}}</td>
-											<td>{{$row->cd_acc_no}}</td>
+											<td>{{$row->sd_acc_no}}</td>
 											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 											<td>-</td>
 											<td>-</td>
@@ -1177,12 +1177,12 @@
 										} else {										//ADJUSTMENT DEBIT
 									?>
 										<?php
-											$adj_db = $row->cd_amount;
+											$adj_db = $row->sd_amount;
 											$adj_db_total += $adj_db;
 										?>
 										<tr>
 											<td>{{$row->date}}</td>
-											<td>{{$row->cd_acc_no}}</td>
+											<td>{{$row->sd_acc_no}}</td>
 											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 											<td>-</td>
 											<td>-</td>
@@ -1198,7 +1198,7 @@
 							?>
 							@endforeach
 							<tr>
-								<th colspan=3>MD Amount Paid</th>
+								<th colspan=3>SD Total</th>
 								<td><?php echo $cash_cr_total; ?></td>
 								<td><?php echo $cash_db_total; ?></td>
 								<td><?php echo $adj_cr_total; ?></td>
@@ -1213,7 +1213,7 @@
 								$gt_adj_cr += $adj_cr_total;
 								$gt_adj_db += $adj_db_total;
 							?>
-					<!------------------ CD PAID AMOUNT  -------------------->
+					<!------------------ SD TRANSACTION  -------------------->
 
 
 

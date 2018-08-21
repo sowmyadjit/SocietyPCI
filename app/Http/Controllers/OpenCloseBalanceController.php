@@ -231,6 +231,7 @@
 
 			$trandaily['mdpayamt']=$this->op->mdpayamt($dte);
 			$trandaily['cd_tran']=$this->op->cd_tran($dte);
+			$trandaily['sd_tran']=$this->op->sd_tran($dte);
 
 			
 			
@@ -606,6 +607,7 @@
 
 			$trandaily['mdpayamt']=$this->op->mdpayamt($dte);
 			$trandaily['cd_tran']=$this->op->cd_tran($dte);
+			$trandaily['sd_tran']=$this->op->sd_tran($dte);
 			
 			$trandaily['jewel_auction_account']=$this->op->jewel_auction_account($dte);
 			
