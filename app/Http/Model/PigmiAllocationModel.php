@@ -488,7 +488,7 @@
 			->select(DB::raw('PigmiAllocID as id,CONCAT(`PigmiAcc_No`,"-",`old_pigmiaccno`,"  ",`FirstName` ," ",`MiddleName`," ",`LastName`) as name'))
 			->leftJoin('user','user.Uid','=','pigmiallocation.Uid')
 			
-			->where('pigmiallocation.Bid','=',$BranchId)
+			->where('user.Bid','=',$BranchId)
 			->where('pigmiallocation.Closed','=',"NO")
 			//->where('EndDate','<',$dte)
 			->get();
