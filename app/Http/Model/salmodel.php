@@ -483,13 +483,19 @@
 				$sd_ho_amt = $this->sd_tran->get_sd_amount(["{$this->sd_tran->sd_id_field}"=>$temp_sd_ho_id]);
 				var_dump($sd_ho_amt);
 
-				$ho_remaining_transferable_amount = SDModel::SD_HO_AMOUNT_LIMIT - $sd_ho_amt;
+			/* 	$ho_remaining_transferable_amount = SDModel::SD_HO_AMOUNT_LIMIT - $sd_ho_amt;
 				
 
 				if($sd_amt < $ho_remaining_transferable_amount) {
 					$transfer_amount = $sd_amt;
 				} else {
 					$transfer_amount = $ho_remaining_transferable_amount;
+				} */
+
+				if($sd_ho_amt < SDModel::SD_HO_AMOUNT_LIMIT) {
+					$transfer_amount = $sd_amt;
+				} else {
+					$transfer_amount = 0;
 				}
 
 				if($sd_row->{$this->sd_tran->bid_field} != 6 && $transfer_amount > 0) {

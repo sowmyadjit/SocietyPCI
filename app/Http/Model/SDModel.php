@@ -5,6 +5,7 @@ namespace App\Http\Model;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Model\CommonModel;
 use DB;
+use Auth;
 
 class SDModel extends Model
 {
@@ -13,6 +14,7 @@ class SDModel extends Model
 	public $sd_ho_id_field = 'sd_ho_id';
 	public $sd_acc_no_field = 'sd_acc_no';
 	public $sd_old_acc_no_field = 'sd_old_acc_no';
+	public $user_type_field = 'user_type';
 	public $uid_field = 'uid';
 	public $bid_field = 'bid';
 	public $sd_start_date_field = 'sd_start_date';
@@ -26,6 +28,7 @@ class SDModel extends Model
 		"sd_ho_id",
 		"sd_acc_no",
 		"sd_old_acc_no",
+		"user_type",
 		"uid",
 		"bid",
 		"sd_start_date",
@@ -49,11 +52,16 @@ class SDModel extends Model
 		$this->row_data = array();
 	}
 
+	public function print_row_data()
+	{
+		print_r($this->row_data);
+	}
+
 	public function set_row_data($data)
 	{
 		foreach($this->field_list as $value) {
-			if(in_array($value, $data)) {
-				$row_data[$value] = $data[$value];
+			if(isset($data[$value])) {
+				$this->row_data[$value] = $data[$value];
 			}
 		}
 	}
@@ -66,7 +74,7 @@ class SDModel extends Model
 
 	public function update_row()
 	{
-		$this->common->required($this->row_data,$this->tbl->pk);
+		$this->common->required($this->row_data,$this->pk);
 		$update_row_pk = $this->row_data[$this->pk];
 		unset($this->row_data[$this->pk]);
 
@@ -108,4 +116,73 @@ class SDModel extends Model
 		
 		return $row;
 	}
+	
+	public function get_next_sd_account_no($data)
+	{
+		$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+		if(!empty($data["bid"])) {
+			$BID = $data["bid"];
+		}
+
+		$sd_no_list = DB::table($this->tbl)
+			->select("{$this->sd_acc_no_field}")
+			->where($this->bid_field, $BID)
+			->get();
+		$number_list = [];
+		$i = -1;
+		foreach($sd_no_list as $key => $row) {
+			$sd_no = $row->{$this->sd_acc_no_field};
+			$number = (int)preg_replace('/[^0-9]/', '', $sd_no);
+			$number_list[++$i] = $number;
+		}
+
+		if(!empty($number_list)) {
+			$max_number = max($number_list);
+		} else {
+			$max_number = 0;
+		}
+		$new_number = $max_number + 1;
+
+		switch($BID) {
+			case 1:
+					$branch_code = "KUL";
+					break;
+			case 2:
+					$branch_code = "TOK";
+					break;
+			case 3:
+					$branch_code = "KRI";
+					break;
+			case 4:
+					$branch_code = "JOK";
+					break;
+			case 5:
+					$branch_code = "TAL";
+					break;
+			case 6:
+					$branch_code = "HO";
+					break;
+			default:
+					$branch_code = "";
+		}
+		$new_sd_acc_no = "PCISSD{$branch_code}{$new_number}";
+		return $new_sd_acc_no;
+	}
+
+/* 	public function is_sd_no_exists($sd_acc_no)
+	{
+		$sd_row = DB::table($this->tbl)
+			->where($sd_acc_no_field, $sd_acc_no)
+			->where($deleted_field, NOT_DELETED)
+			->frist();
+		
+		if(!empty($sd_row)) {
+			$ret_data = true;
+		} else {
+			$ret_data = false;
+		}
+
+		return $ret_data;
+	} */
 }

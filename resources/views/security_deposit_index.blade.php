@@ -39,12 +39,6 @@
 						<div class="box-content">
 							<div class="alert alert-info" style="height:60px;">
 								<div>
-									<input type="button" value="Export to Excel" class="btn btn-info btn-sm" id="excel">
-									<input type="button" value="Print" class="btn btn-info btn-sm print" id="print">
-									<input type="button" value="Interest Calculation" class="btn btn-info btn-sm print" id="bt_interest_calculation">
-								<?php /*	<div class="col-md-5 pull-right">
-										<input class="SearchTypeahead form-control" id="search_box" type="text" name="SearchFd" placeholder="SEARCH MATURITY ACCOUNT">
-									</div>*/?>
 									<div class="col-md-3" style="height:38px;">
 										ACCOUNT TYPE:
 										<select id="closed_status" style="height:38px;">
@@ -61,6 +55,8 @@
 										</select>
 										<button class="refresh_data btn-sm glyphicon glyphicon-refresh"></button>
 									</div>
+									
+									<button id="create_sd" class="btn btn-default">Create SD</button>
 								</div>
 							</div>
 									
@@ -69,7 +65,8 @@
 						</div>
 
 					</div>
-					<?php /* BOX MAIN END */?>
+				</div>
+				<?php /* BOX MAIN END */?>
 
 
 					<?php /* BOX SUB 1 START */?>
@@ -85,7 +82,7 @@
 
 					
 					<div class="b_back">
-						<center><button class="btn-sm btn-info ">back</button></center>
+						<center><button id="back_sd" class="btn-sm btn-info">back</button></center>
 					</div>
 					<div id="temp_loading_img" class="hide">
 						<div>
@@ -153,5 +150,31 @@
 <script>
 	$(".refresh_data").click(function() {
 		deposit_account_list("");
+	});
+</script>
+
+<script>
+	$("#create_sd").click(function(e) {
+		e.preventDefault();
+		
+		$.ajax({
+			url:"create_sd_index",
+			type:"post",
+			data:"",
+			success: function(data) {
+				console.log("done");
+				$(".b_main").hide();
+				$(".b_sub_1").html(data);
+				$(".b_sub_1").show();
+
+			}
+		});
+	});
+</script>
+
+<script>
+	$("#back_sd").click(function() {
+		$(".b_sub_1").html("");
+		$(".b_main").show();
 	});
 </script>

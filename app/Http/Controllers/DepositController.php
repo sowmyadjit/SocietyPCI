@@ -8,6 +8,7 @@
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\DepositModel;
 	use App\Http\Model\OpenCloseModel;
+	use App\Http\Model\SDModel;
 	use Auth;
 	
 	class depositController extends Controller
@@ -20,6 +21,7 @@
 			$this->creadepositmodel = new DepositModel;
 			$this->Modules= new ModulesModel;
 			$this->op= new OpenCloseModel;
+			$this->sd= new SDModel;
 		}
 		
 		public function show_deposit()
@@ -233,4 +235,80 @@
 			$data = [];
 			return view("security_deposit_index",compact('data'));
 		}
+
+		public function create_sd_index()
+		{
+			$data = [];
+			return view("create_sd_index",compact("data"));
+		}
+
+		public function create_sd(Request $request)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			$user_id = $request->input("user_id");
+			$user_type = $request->input("user_type");
+			$old_acc_no = $request->input("old_acc_no");
+			$start_date = $request->input("start_date");
+
+			//CREATE ACCOUNT IN BRANCH
+			unset($fn_data);
+			$fn_data["bid"] = $BID;
+			$sd_account_no = $this->sd->get_next_sd_account_no($fn_data);
+
+			unset($fn_data);
+			$fn_data["sd_ho_id"] = 0;
+			$fn_data["sd_acc_no"] = $sd_account_no;
+			$fn_data["sd_old_acc_no"] = $old_acc_no;
+			$fn_data["user_type"] = $user_type;
+			$fn_data["uid"] = $user_id;
+			$fn_data["bid"] = $BID;
+			$fn_data["sd_start_date"] = $start_date;
+			// $fn_data["sd_close_date"] = ;
+			$fn_data["sd_closed"] = NOT_CLOSED;
+			// $fn_data["subhead_id"] = ;
+			$fn_data["deleted"] = NOT_DELETED;
+
+			$this->sd->clear_row_data();
+			$this->sd->set_row_data($fn_data);
+			$sd_branch_id = $this->sd->insert_row();
+
+			if($BID != 6) {
+				//CREATE AN ACCOUNT IN HO
+				unset($fn_data);
+				$fn_data["bid"] = 6; // HEAD OFFICE
+				$sd_account_no = $this->sd->get_next_sd_account_no($fn_data);
+
+				unset($fn_data);
+				$fn_data["sd_ho_id"] = 0;
+				$fn_data["sd_acc_no"] = $sd_account_no;
+				$fn_data["sd_old_acc_no"] = $old_acc_no;
+				$fn_data["user_type"] = $user_type;
+				$fn_data["uid"] = $user_id;
+				$fn_data["bid"] = 6;	//HEAD OFFICE
+				$fn_data["sd_start_date"] = $start_date;
+				// $fn_data["sd_close_date"] = ;
+				$fn_data["sd_closed"] = NOT_CLOSED;
+				// $fn_data["subhead_id"] = ;
+				$fn_data["deleted"] = NOT_DELETED;
+
+				$this->sd->clear_row_data();
+				$this->sd->set_row_data($fn_data);
+				$sd_ho_id = $this->sd->insert_row();
+
+				//UPDATE BRANCH ACCOUNT'S "sd_ho_id" FIELD
+				unset($fn_data);
+				$fn_data[$this->sd->pk] = $sd_branch_id;
+				$fn_data[$this->sd->sd_ho_id_field] = $sd_ho_id;
+				$this->sd->clear_row_data();
+				$this->sd->set_row_data($fn_data);
+				// $this->sd->print_row_data($fn_data);
+				$this->sd->update_row();
+
+			}
+			return "done";
+		}
+
+
+
 	}

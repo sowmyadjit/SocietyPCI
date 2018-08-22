@@ -71,7 +71,7 @@ class SDTranModel extends Model
 
 	public function update_row()
 	{
-		$this->common->required($this->row_data,$this->tbl->pk);
+		$this->common->required($this->row_data,$this->pk);
 		$update_row_pk = $this->row_data[$this->pk];
 		unset($this->row_data[$this->pk]);
 
