@@ -30,6 +30,7 @@
 	use App\Http\Model\RequestLoanModel;
 	use App\Http\Model\ShareModel;
 	use App\Http\Model\ReportModel;
+	use App\Http\Model\SDModel;
 	
 	class SearchController extends Controller
 	{
@@ -78,6 +79,7 @@
 			$this->Loan=new LoanModel;
 			$this->Getsharemodel=new ShareModel;
 			$this->rep_mdl=new ReportModel;
+			$this->sd=new SDModel;
 		}
 		
 		public function GetBranch(Request $request)
@@ -602,5 +604,11 @@
 		{
 			return ($this->rep_mdl->search_agent($request->search));
 		}
+		
+		public function search_sd_acc_no(Request $request)//M 20-4-16 Search For pigmiallocation
+		{
+			return ($this->sd->search_sd_acc_no($request->search));
+		}
+
 	}
 	

@@ -9,6 +9,7 @@
 	use App\Http\Model\DepositModel;
 	use App\Http\Model\OpenCloseModel;
 	use App\Http\Model\SDModel;
+	use App\Http\Model\SDTranModel;
 	use Auth;
 	
 	class depositController extends Controller
@@ -22,6 +23,7 @@
 			$this->Modules= new ModulesModel;
 			$this->op= new OpenCloseModel;
 			$this->sd= new SDModel;
+			$this->sd_tran= new SDTranModel;
 		}
 		
 		public function show_deposit()
@@ -306,6 +308,41 @@
 				$this->sd->update_row();
 
 			}
+			return "done";
+		}
+
+		public function sd_transaction_index()
+		{
+			$data = [];
+			return view("sd_transaction_index",compact("data"));
+		}
+
+		public function create_sd_transaction(Request $request)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			$post_data = $request->input("post_data");
+			$in_data = (array)json_decode($post_data);
+			// print_r($in_data);return;
+			unset($fn_data);
+			$fn_data[$this->sd_tran->sd_id_field] = $in_data["sd_id"];
+			$fn_data[$this->sd_tran->date_field] = $in_data["sd_tran_date"];
+			$fn_data[$this->sd_tran->time_field] = date("H:i:s");
+			$fn_data[$this->sd_tran->bid_field] = $BID;
+			$fn_data[$this->sd_tran->transaction_type_field] = $in_data["sd_transaction_type"];
+			$fn_data[$this->sd_tran->sd_amount_field] = $in_data["sd_amount"];
+			$fn_data[$this->sd_tran->paid_field] = PAID;
+			$fn_data[$this->sd_tran->payment_mode_field] = $in_data["sd_payment_mode"];
+			$fn_data[$this->sd_tran->particulars_field] = $in_data["sd_perticulars"];
+			// $fn_data[$this->sd_tran->cheque_no_field] = "";
+			// $fn_data[$this->sd_tran->cheque_date_field] = "";
+			// $fn_data[$this->sd_tran->bank_id_field] = "";
+			// $fn_data[$this->sd_tran->subhead_id_field] = "";
+			$fn_data[$this->sd_tran->deleted_field] = "";
+		
+			$this->sd_tran->clear_row_data();
+			$this->sd_tran->set_row_data($fn_data);
+			$sd_tran_id = $this->sd_tran->insert_row();
 			return "done";
 		}
 

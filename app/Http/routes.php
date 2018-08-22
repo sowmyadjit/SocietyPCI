@@ -185,6 +185,8 @@
 				Route::get('/compulsory_deposit_index','DepositController@compulsory_deposit_index');
 				Route::get('/security_deposit_index','DepositController@security_deposit_index');
 				Route::post('/create_sd_index','DepositController@create_sd_index');
+				Route::post('/sd_transaction_index','DepositController@sd_transaction_index');
+				Route::post('/create_sd_transaction','DepositController@create_sd_transaction');
 				Route::post('/create_sd','DepositController@create_sd');
 				Route::post('/cd_interest_calculation_index','DepositController@cd_interest_calculation_index');
 				Route::post('/cd_interest_calculatoin','DepositController@cd_interest_calculatoin');
@@ -660,6 +662,7 @@
 				Route::get('/getuser_forloan','SearchController@getuser_forloan');
 				Route::get('/FdClosedAcc_Unpaid','SearchController@FdClosedAcc_Unpaid');
 				Route::get('/search_agent','SearchController@search_agent');
+				Route::get('/search_sd_acc_no','SearchController@search_sd_acc_no');
 				
 				//SharesContoller
 				Route::get('/shares','ShareController@Show_Shares');

@@ -42,15 +42,6 @@
 							<input  class="form-control datepicker" id="start_date" data-date-format="yyyy-mm-dd" name="start_date" placeholder="SELECT START DATE">
 						</div>
 					</div>
-					<div class="form-group col-md-12">
-						<label class="control-label col-sm-4">CLOSED?:</label>
-						<div class="col-md-4">
-							<select  class="form-control" id="user_type" name="user_type" placeholder="SELECT USER TYPE">
-								<option value="0">NO</option>
-								<option value="1">YES</option>
-							</select>
-						</div>
-					</div>
 				</div>
 						
 			</div>

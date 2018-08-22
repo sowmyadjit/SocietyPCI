@@ -57,6 +57,7 @@
 									</div>
 									
 									<button id="create_sd" class="btn btn-default">Create SD</button>
+									<button id="sd_transaction" class="btn btn-default">SD Transaction</button>
 								</div>
 							</div>
 									
@@ -166,7 +167,24 @@
 				$(".b_main").hide();
 				$(".b_sub_1").html(data);
 				$(".b_sub_1").show();
+			}
+		});
+	});
+</script>
 
+<script>
+	$("#sd_transaction").click(function(e) {
+		e.preventDefault();
+		
+		$.ajax({
+			url:"sd_transaction_index",
+			type:"post",
+			data:"",
+			success: function(data) {
+				console.log("done");
+				$(".b_main").hide();
+				$(".b_sub_1").html(data);
+				$(".b_sub_1").show();
 			}
 		});
 	});

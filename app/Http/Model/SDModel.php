@@ -4,6 +4,7 @@ namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Model\CommonModel;
+use App\Http\Model\SettingsModel;
 use DB;
 use Auth;
 
@@ -45,6 +46,7 @@ class SDModel extends Model
 	public function __construct()
 	{
 		$this->common = new CommonModel;
+		$this->settings = new SettingsModel;
 	}
 
 	public function clear_row_data()
@@ -185,4 +187,28 @@ class SDModel extends Model
 
 		return $ret_data;
 	} */
+
+	public function search_sd_acc_no($query_string)
+	{
+		$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+		$select_array_sd = array(
+			"{$this->pk} as id",
+			"{$this->sd_acc_no_field} as name"
+		);
+
+		$ret_data = DB::table($this->tbl)
+			->select($select_array_sd)
+			->where("{$this->tbl}.{$this->deleted_field}", NOT_DELETED);
+		if($this->settings->get_value("allow_inter_branch") == 0) {
+			$ret_data = $ret_data->where($this->bid_field, $BID);
+		}
+		$ret_data = $ret_data->where(function($query) use ($query_string) {
+			$query->where($this->sd_acc_no_field, "like", "%{$query_string}%");
+				// ->orWhere();
+		})
+			->get();
+
+		return $ret_data;
+	}
 }
