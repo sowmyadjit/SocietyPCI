@@ -10,6 +10,7 @@
 	use App\Http\Model\OpenCloseModel;
 	use App\Http\Model\SDModel;
 	use App\Http\Model\SDTranModel;
+	use App\Http\Model\CDSDModel;
 	use Auth;
 	
 	class depositController extends Controller
@@ -343,6 +344,99 @@
 			$this->sd_tran->clear_row_data();
 			$this->sd_tran->set_row_data($fn_data);
 			$sd_tran_id = $this->sd_tran->insert_row();
+			return "done";
+		}
+
+//CDSD DEPOSIT
+		public function cd_index()
+		{
+			$data["cdsd_type"] = CDSDModel::CD;
+			return view("cdsd_index",compact('data'));
+		}
+
+		public function sd_index()
+		{
+			$data["cdsd_type"] = CDSDModel::SD;
+			return view("cdsd_index",compact('data'));
+		}
+
+		public function create_cdsd_index(Request $request)
+		{
+			$data["cdsd_type"] = $request->input("cdsd_type");
+			return view("create_cdsd_index",compact("data"));
+		}
+
+		public function create_cdsd(Request $request)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			$post_data = $request->input("post_data");
+			$in_data = (array)json_decode($post_data);
+			$cdsd_type = $in_data["cdsd_type"];
+			$user_id = $in_data["cr_user_type"];
+			$user_type = $in_data["cr_user_id"];
+			$old_acc_no = $in_data["cr_old_acc_no"];
+			$start_date = $in_data["cr_start_date"];
+
+			//CREATE ACCOUNT IN BRANCH
+			unset($fn_data);
+			$fn_data["bid"] = $BID;
+			$fn_data["cdsd_type"] = $cdsd_type;
+			$account_no = $this->sd->get_next_acc_no($fn_data);
+
+			unset($fn_data);
+			$fn_data["cdsd_type"] = $cdsd_type;
+			$fn_data["sd_ho_id"] = 0;
+			$fn_data["cdsd_acc_no"] = $account_no;
+			$fn_data["cdsd_oldacc_no"] = $old_acc_no;
+			$fn_data["user_type"] = $user_type;
+			$fn_data["uid"] = $user_id;
+			$fn_data["bid"] = $BID;
+			$fn_data["cdsd_start_date"] = $start_date;
+			// $fn_data["cdsd_close_date"] = ;
+			$fn_data["cdsd_closed"] = NOT_CLOSED;
+			// $fn_data["subhead_id"] = ;
+			$fn_data["deleted"] = NOT_DELETED;
+
+			$this->cdsd->clear_row_data();
+			$this->cdsd->set_row_data($fn_data);
+			$cdsd_branch_id = $this->cdsd->insert_row();
+
+			if($cdsd_type == CDSDModel::SD && $BID != 6) {
+				//CREATE AN ACCOUNT IN HO
+				unset($fn_data);
+				$fn_data["bid"] = 6; // HEAD OFFICE
+				$fn_data["cdsd_type"] = $cdsd_type;
+				$sd_account_no = $this->sd->get_next_acc_no($fn_data);
+
+				unset($fn_data);
+				$fn_data["cdsd_type"] = $cdsd_type;
+				$fn_data["sd_ho_id"] = 0;
+				$fn_data["cdsd_acc_no"] = $sd_account_no;
+				$fn_data["cdsd_oldacc_no"] = $old_acc_no;
+				$fn_data["user_type"] = $user_type;
+				$fn_data["uid"] = $user_id;
+				$fn_data["bid"] = 6;	//HEAD OFFICE
+				$fn_data["cdsd_start_date"] = $start_date;
+				// $fn_data["sd_close_date"] = ;
+				$fn_data["cdsd_closed"] = NOT_CLOSED;
+				// $fn_data["subhead_id"] = ;
+				$fn_data["deleted"] = NOT_DELETED;
+
+				$this->cdsd->clear_row_data();
+				$this->cdsd->set_row_data($fn_data);
+				$sd_ho_id = $this->cdsd->insert_row();
+
+				//UPDATE BRANCH ACCOUNT'S "sd_ho_id" FIELD
+				unset($fn_data);
+				$fn_data[$this->cdsd->pk] = $cdsd_branch_id;
+				$fn_data[$this->cdsd->sd_ho_id_field] = $sd_ho_id;
+				$this->cdsd->clear_row_data();
+				$this->cdsd->set_row_data($fn_data);
+				// $this->sd->print_row_data($fn_data);
+				$this->cdsd->update_row();
+
+			}
 			return "done";
 		}
 

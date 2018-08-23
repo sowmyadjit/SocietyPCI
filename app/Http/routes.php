@@ -183,8 +183,11 @@
 				Route::post('/maturity_amount_pay_form','DepositController@maturity_amount_pay_form');
 				Route::post('/maturity_amt_create','DepositController@maturity_amt_create');
 				Route::get('/compulsory_deposit_index','DepositController@compulsory_deposit_index');
-				Route::get('/security_deposit_index','DepositController@security_deposit_index');
-				Route::post('/create_sd_index','DepositController@create_sd_index');
+				// Route::get('/security_deposit_index','DepositController@security_deposit_index');
+				Route::get('/security_deposit_index','DepositController@sd_index');
+				// Route::post('/create_sd_index','DepositController@create_sd_index');
+				Route::post('/create_cdsd_index','DepositController@create_cdsd_index');
+				Route::post('/create_cdsd','DepositController@create_cdsd');
 				Route::post('/sd_transaction_index','DepositController@sd_transaction_index');
 				Route::post('/create_sd_transaction','DepositController@create_sd_transaction');
 				Route::post('/create_sd','DepositController@create_sd');
@@ -662,7 +665,11 @@
 				Route::get('/getuser_forloan','SearchController@getuser_forloan');
 				Route::get('/FdClosedAcc_Unpaid','SearchController@FdClosedAcc_Unpaid');
 				Route::get('/search_agent','SearchController@search_agent');
-				Route::get('/search_sd_acc_no','SearchController@search_sd_acc_no');
+				// Route::get('/search_sd_acc_no','SearchController@search_sd_acc_no');
+				Route::get('/search_cdsd_acc_no','SearchController@search_cdsd_acc_no');
+				Route::get('/search_employee_for_cdsd','SearchController@search_employee_for_cdsd');
+				Route::get('/search_agent_for_cdsd','SearchController@search_agent_for_cdsd');
+				Route::get('/search_customer_for_cdsd','SearchController@search_customer_for_cdsd');
 				
 				//SharesContoller
 				Route::get('/shares','ShareController@Show_Shares');

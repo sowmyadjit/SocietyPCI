@@ -31,6 +31,7 @@
 	use App\Http\Model\ShareModel;
 	use App\Http\Model\ReportModel;
 	use App\Http\Model\SDModel;
+	use App\Http\Model\CDSDModel;
 	
 	class SearchController extends Controller
 	{
@@ -80,6 +81,7 @@
 			$this->Getsharemodel=new ShareModel;
 			$this->rep_mdl=new ReportModel;
 			$this->sd=new SDModel;
+			$this->cdsd=new CDSDModel;
 		}
 		
 		public function GetBranch(Request $request)
@@ -605,9 +607,24 @@
 			return ($this->rep_mdl->search_agent($request->search));
 		}
 		
-		public function search_sd_acc_no(Request $request)//M 20-4-16 Search For pigmiallocation
+		/* public function search_sd_acc_no(Request $request)//M 20-4-16 Search For pigmiallocation
 		{
 			return ($this->sd->search_sd_acc_no($request->search));
+		} */
+		
+		public function search_employee_for_cdsd(Request $request)//M 20-4-16 Search For pigmiallocation
+		{
+			return ($this->cdsd->search_employee_for_cdsd($request->search));
+		}
+		
+		public function search_agent_for_cdsd(Request $request)//M 20-4-16 Search For pigmiallocation
+		{
+			return ($this->cdsd->search_agent_for_cdsd($request->search));
+		}
+		
+		public function search_customer_for_cdsd(Request $request)//M 20-4-16 Search For pigmiallocation
+		{
+			return ($this->cdsd->search_customer_for_cdsd($request->search));
 		}
 
 	}
