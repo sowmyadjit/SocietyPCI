@@ -79,11 +79,11 @@
 										<button class="refresh_data btn-sm glyphicon glyphicon-refresh"></button>
 									</div>
 								@if($cdsd_type == 1)
-									<button id="create_cd" class="btn btn-default">Create CD</button>
-									<button id="cd_transaction" class="btn btn-default">CD Transaction</button>
+									<button id="create_cdsd" class="btn btn-default">Create CD</button>
+									<button id="cdsd_transaction" class="btn btn-default">CD Transaction</button>
 								@else
-									<button id="create_sd" class="btn btn-default">Create SD</button>
-									<button id="sd_transaction" class="btn btn-default">SD Transaction</button>
+									<button id="create_cdsd" class="btn btn-default">Create SD</button>
+									<button id="cdsd_transaction" class="btn btn-default">SD Transaction</button>
 								@endif
 								</div>
 							</div>
@@ -166,7 +166,7 @@
 		$.ajax({
 			url:"deposit_account_list",
 			type:"post",
-			data:"&category={{$category}}&closed="+closed+"&user_type="+user_type+"&allocation_id="+allocation_id,
+			data:"&category={{$category}}&cdsd_type={{$cdsd_type}}&closed="+closed+"&user_type="+user_type+"&allocation_id="+allocation_id,
 			success: function(data) {
 				console.log("done");
 				$("#back_cdsd").show();
@@ -189,9 +189,10 @@
 		$(".b_main").show();
 	});
 </script>
-<!-- -------------------------------------------------------------------------------------------------------------------------- -->
+
+
 <script>
-	$("#create_sd").click(function(e) {
+	$("#create_cdsd").click(function(e) {
 		e.preventDefault();
 		
 		$.ajax({
@@ -208,14 +209,18 @@
 	});
 </script>
 
+<!-- -------------------------------------------------------------------------------------------------------------------------- -->
+
+
+
 <script>
-	$("#sd_transaction").click(function(e) {
+	$("#cdsd_transaction").click(function(e) {
 		e.preventDefault();
 		
 		$.ajax({
-			url:"sd_transaction_index",
+			url:"cdsd_transaction_index",
 			type:"post",
-			data:"",
+			data:"&cdsd_type={{$cdsd_type}}",
 			success: function(data) {
 				console.log("done");
 				$(".b_main").hide();

@@ -13,6 +13,7 @@ use App\Http\Model\OpenCloseModel;
 use App\Http\Model\ReceiptVoucherModel;
 use App\Http\Controllers\ReceiptVoucherController;
 use App\Http\Model\SettingsModel;
+use App\Http\Model\CDSDsModel;
 
 class DepositModel extends Model
 {
@@ -22,6 +23,7 @@ class DepositModel extends Model
 		$this->op = new OpenCloseModel;
 		$this->rv_no = new ReceiptVoucherController;
 		$this->settings = new SettingsModel;
+		$this->cdsd = new CDSDModel;
 	}
 	
 	public function insert($id)
@@ -846,6 +848,95 @@ class DepositModel extends Model
 				->sum($amount_field);
 				// print_r($credit_amount);
 			return $credit_amount - $debit_amount;
+		}
+		
+		
+	//CDSD
+		public function deposit_account_list_cdsd($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			if(strcasecmp($data["closed"],"YES") == 0) {
+				$data["closed"] = 1;
+			} else {
+				$data["closed"] = 0;
+			}
+			$ret_data["cdsd_type"] = $data["cdsd_type"];
+			$ret_data['deposit_details'] = array();
+			$ret_data['deposit_category'] = $data["category"];
+			$ret_data['deposit_closed'] = $data["closed"];
+			$ret_data['day_open_status'] = $this->op->check_day_open(["date"=>date("Y-m-d")]);
+			$table = $this->cdsd->tbl;
+			$deleted_field = $this->cdsd->deleted_field;
+			$closed_field = $this->cdsd->cdsd_closed_field;
+			$user_type_field = $this->cdsd->user_type_field;
+			$branch_id_field = "{$this->cdsd->tbl}.{$this->cdsd->bid_field}";
+			$user_id_field = "{$this->cdsd->tbl}.{$this->cdsd->uid_field}";
+			$allocation_id_field = "{$this->cdsd->tbl}.{$this->cdsd->pk}";
+			$select_array = array(
+									"{$this->cdsd->tbl}.{$this->cdsd->pk} as allocation_id",
+									"{$this->cdsd->tbl}.{$this->cdsd->cdsd_acc_no_field} as account_no",
+									"{$this->cdsd->tbl}.{$this->cdsd->cdsd_oldacc_no_field} as old_account_no",
+									"user.Uid as user_id",
+									"user.FirstName as first_name",
+									"user.MiddleName as middle_name",
+									"user.LastName as last_name",
+									"{$this->cdsd->tbl}.{$this->cdsd->cdsd_closed_field} as closed",
+									"{$this->cdsd->tbl}.{$this->cdsd->user_type_field} as user_type",
+									"{$this->cdsd->tbl}.{$this->cdsd->cdsd_start_date_field} as start_date",
+									"{$this->cdsd->tbl}.{$this->cdsd->cdsd_close_date_field} as close_date"
+								);
+								
+			$deposit_account_list = DB::table($this->cdsd->tbl)
+				->select($select_array)
+				->join("user","user.Uid","=","{$user_id_field}")
+				->where($deleted_field,"=",0);
+				if($this->settings->get_value("allow_inter_branch") == 0) {
+					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
+				}
+			if(!empty($data['allocation_id'])) {
+				$deposit_account_list = $deposit_account_list->where($allocation_id_field,'=',$data['allocation_id']);
+			} else {
+				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data["closed"]);
+				$deposit_account_list = $deposit_account_list->where($user_type_field,"=",$data["user_type"]);
+			}
+			$deposit_account_list = $deposit_account_list//->limit(1)
+										->get();
+				
+			if(empty($deposit_account_list)) {
+				return $ret_data;
+			}
+			
+			$i = -1;
+			foreach($deposit_account_list as $row) {
+				$ret_data['deposit_details'][++$i]['allocation_id'] = $row->allocation_id;
+				$ret_data['deposit_details'][$i]['account_no'] = $row->account_no;
+				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
+				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
+				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['deposit_details'][$i]['amount'] = $this->get_sd_amount(["allocation_id"=>$row->allocation_id]);//calc dynami
+				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
+				$ret_data['deposit_details'][$i]['account_type'] = $data["category"];
+				$ret_data['deposit_details'][$i]['start_date'] = $row->start_date;
+				$ret_data['deposit_details'][$i]['close_date'] = $row->close_date;
+				switch($row->user_type) {
+					case 1:
+								$user_type = "EMPLOYEE";
+								break;
+					case 2:
+								$user_type = "AGENT";
+								break;
+					case 3:
+								$user_type = "CUSTOMER";
+								break;
+					default :
+								$user_type = "";
+								break;
+				}
+				$ret_data['deposit_details'][$i]['user_type'] = $user_type;
+			}
+			// print_r($ret_data);exit();
+			return $ret_data;
 		}
 		
 	}

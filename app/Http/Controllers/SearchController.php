@@ -611,6 +611,14 @@
 		{
 			return ($this->sd->search_sd_acc_no($request->search));
 		} */
+
+		public function search_cdsd_acc_no(Request $request)//M 20-4-16 Search For pigmiallocation
+		{
+			$fn_data["query_string"] = $request->input("query");
+			$fn_data["cdsd_type"] = $request->input("cdsd_type");
+			// print_r($fn_data);
+			return $this->cdsd->search_cdsd_acc_no($fn_data);
+		}
 		
 		public function search_employee_for_cdsd(Request $request)//M 20-4-16 Search For pigmiallocation
 		{

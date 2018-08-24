@@ -70,24 +70,3 @@
 						</div>
 							
 		
-<script>
-	$(".btn_pay").click(function() {
-		var allocation_id = $(this).attr("data");
-		var day_open_status = {{$day_open_status}};
-		if(day_open_status == {{DAY_IS_NOT_OPEN}}) {
-			alert("DAY IS NOT OPEN!");
-		} else if(day_open_status == {{DAY_IS_CLOSED}}) {
-			alert("DAY IS CLOSED!");
-			} else {
-				$.ajax({
-					url:"maturity_amount_pay_form",
-					type:"post",
-					data:"&allocation_id="+allocation_id,
-					success:function(data) {
-						$("#deposit_details_box").hide();
-						$("#temp_box").html(data);
-					}
-				});
-		}
-	});
-</script>

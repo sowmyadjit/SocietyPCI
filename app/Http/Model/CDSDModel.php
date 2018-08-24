@@ -113,8 +113,8 @@ class CDSDModel extends Model
 		$row = DB::table($this->tbl);
 		if(isset($data[$this->pk])) {
 			$row = $row->where("{$this->tbl}.{$this->pk}", $data[$this->pk]);
-		} elseif(isset($data[$this->sd_acc_no_field])) {
-			$row = $row->where("{$this->tbl}.{$this->sd_acc_no_field}", $data[$this->sd_acc_no_field]);
+		} elseif(isset($data[$this->cdsd_acc_no_field])) {
+			$row = $row->where("{$this->tbl}.{$this->cdsd_acc_no_field}", $data[$this->cdsd_acc_no_field]);
 		} elseif(isset($data[$this->uid_field])) {
 			$row = $row->where("{$this->tbl}.{$this->uid_field}", $data[$this->uid_field]);
 		}
@@ -139,15 +139,15 @@ class CDSDModel extends Model
         }
 
 		$acc_no_list = DB::table($this->tbl)
-			->select("{$this->sd_acc_no_field}")
+			->select("{$this->cdsd_acc_no_field}")
 			->where($this->cdsd_type_field, $cdsd_type)
 			->where($this->bid_field, $BID)
 			->get();
 		$number_list = [];
 		$i = -1;
-		foreach($sd_no_list as $key => $row) {
-			$sd_no = $row->{$this->acc_no_list};
-			$number = (int)preg_replace('/[^0-9]/', '', $sd_no);
+		foreach($acc_no_list as $key => $row) {
+			$cdsd_no = $row->{$this->cdsd_acc_no_field};
+			$number = (int)preg_replace('/[^0-9]/', '', $cdsd_no);
 			$number_list[++$i] = $number;
 		}
 
@@ -194,7 +194,7 @@ class CDSDModel extends Model
 		return $new_acc_no;
 	}
 
-	public function search_acc_no($data)
+	public function search_cdsd_acc_no($data)
 	{
 		$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
 
@@ -202,11 +202,11 @@ class CDSDModel extends Model
         if(!empty($data["cdsd_type"])) {
             $cdsd_type = $data["cdsd_type"];
         } else {
-            echo "data['cdsd_type'] is empty...";
+            echo "data['cdsd_type'] is empty...(in CDSDModel::search_cdsd_acc_no)";
             return "error";
         }
 
-        $query_string = $dtaa["query_string"];
+        $query_string = $data["query_string"];
 
         unset($select_array_cdsd);
 		$select_array_cdsd = array(
@@ -221,7 +221,7 @@ class CDSDModel extends Model
 			$ret_data = $ret_data->where($this->bid_field, $BID);
 		}
 		$ret_data = $ret_data->where(function($query) use ($query_string) {
-			$query->where($this->sd_acc_no_field, "like", "%{$query_string}%");
+			$query->where($this->cdsd_acc_no_field, "like", "%{$query_string}%");
 				// ->orWhere();
 		})
 			->get();

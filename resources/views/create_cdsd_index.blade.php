@@ -108,23 +108,22 @@
 <script>
 	function reset()
 	{
-		sd_submit_count = 0;
+		cdsd_submit_count = 0;
 		// $("#cr_user_type").val("");
 		$("#cr_user_employee").attr("data-value","");
 		$("#cr_user_agent").attr("data-value","");
 		$("#cr_user_customer").attr("data-value","");
-		$("#cr_user_employee").val();
-		$("#cr_user_agent").val();
-		$("#cr_user_customer").val();
+		$("#cr_user_employee").val("");
+		$("#cr_user_agent").val("");
+		$("#cr_user_customer").val("");
 		$("#cr_old_acc_no").val("");
 		$("#cr_start_date").val("");
-
 	}
 </script>
 
 <script>
-	var sd_submit_count = 0;
-	$("#submit_sd").click(function() {
+	var cdsd_submit_count = 0;
+	$("#cr_submit").click(function() {
 		console.log("submit");
 		var error_flag = false;
 
@@ -172,12 +171,12 @@
 				"cr_start_date" : cr_start_date
 			};
 
-			if(sd_submit_count == 0) {
-				sd_submit_count++;
+			if(cdsd_submit_count == 0) {
+				cdsd_submit_count++;
 				$.ajax({
 					type:"post",
 					url:"create_cdsd",
-					data: "&post_data="+JSON.encode(post_data),
+					data: "&post_data="+JSON.stringify(post_data),
 					success: function(data) {
 						console.log("created");
 						alert("success");

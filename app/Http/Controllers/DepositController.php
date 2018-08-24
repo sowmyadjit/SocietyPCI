@@ -11,6 +11,7 @@
 	use App\Http\Model\SDModel;
 	use App\Http\Model\SDTranModel;
 	use App\Http\Model\CDSDModel;
+	use App\Http\Model\CDSDTranModel;
 	use Auth;
 	
 	class depositController extends Controller
@@ -25,6 +26,8 @@
 			$this->op= new OpenCloseModel;
 			$this->sd= new SDModel;
 			$this->sd_tran= new SDTranModel;
+			$this->cdsd= new CDSDModel;
+			$this->cdsd_tran= new CDSDTranModel;
 		}
 		
 		public function show_deposit()
@@ -151,11 +154,16 @@
 				case "MD":	$ret_data = $this->creadepositmodel->deposit_account_list_md($in_data);
 							return view("deposit_account_list_data_md",compact("ret_data"));
 							break;
-				case "CD":	$ret_data = $this->creadepositmodel->deposit_account_list_cd($in_data);
+				/* case "CD":	$ret_data = $this->creadepositmodel->deposit_account_list_cd($in_data);
 							return view("deposit_account_list_data_cd",compact("ret_data"));
-							break;
-				case "SD":	$ret_data = $this->creadepositmodel->deposit_account_list_sd($in_data);
+							break; */
+				/* case "SD":	$ret_data = $this->creadepositmodel->deposit_account_list_sd($in_data);
 							return view("deposit_account_list_data_sd",compact("ret_data"));
+							break; */
+				case "SD":	
+							$in_data["cdsd_type"] = $request->input("cdsd_type");
+							$data = $this->creadepositmodel->deposit_account_list_cdsd($in_data);
+							return view("deposit_account_list_data_cdsd",compact("data"));
 							break;
 			}
 		}
@@ -318,7 +326,14 @@
 			return view("sd_transaction_index",compact("data"));
 		}
 
-		public function create_sd_transaction(Request $request)
+		public function cdsd_transaction_index(Request $request)
+		{
+			$data = [];
+			$data["cdsd_type"] = $request->input("cdsd_type");
+			return view("cdsd_transaction_index",compact("data"));
+		}
+
+	/* 	public function create_sd_transaction(Request $request)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 
@@ -344,6 +359,54 @@
 			$this->sd_tran->clear_row_data();
 			$this->sd_tran->set_row_data($fn_data);
 			$sd_tran_id = $this->sd_tran->insert_row();
+			return "done";
+		} */
+
+		public function create_cdsd_transaction(Request $request)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			$post_data = $request->input("post_data");
+			$in_data = (array)json_decode($post_data);
+			// print_r($in_data);return;
+
+			$account_info = $this->cdsd->get_row(["{$this->cdsd->pk}"=>$in_data["cdsd_id"]]);
+			$user_type = $account_info->{$this->cdsd->user_type_field};
+
+			switch($user_type) {
+				case 1:
+						$temp_subhead_id = 156;
+						break;
+				case 2:
+						$temp_subhead_id = 283;
+						break;
+				case 3:
+						$temp_subhead_id = "";
+						break;
+				default:
+						$temp_subhead_id = "";
+			}
+
+			unset($fn_data);
+			$fn_data[$this->cdsd_tran->cdsd_id_field] = $in_data["cdsd_id"];
+			$fn_data[$this->cdsd_tran->cdsd_type_field] = $in_data["cdsd_type"];
+			$fn_data[$this->cdsd_tran->date_field] = $in_data["cdsd_tran_date"];
+			$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
+			$fn_data[$this->cdsd_tran->bid_field] = $BID;
+			$fn_data[$this->cdsd_tran->transaction_type_field] = $in_data["cdsd_transaction_type"];
+			$fn_data[$this->cdsd_tran->amount_field] = $in_data["cdsd_amount"];
+			$fn_data[$this->cdsd_tran->paid_field] = PAID;
+			$fn_data[$this->cdsd_tran->payment_mode_field] = $in_data["cdsd_payment_mode"];
+			$fn_data[$this->cdsd_tran->particulars_field] = $in_data["cdsd_perticulars"];
+			// $fn_data[$this->cdsd_tran->cheque_no_field] = "";
+			// $fn_data[$this->cdsd_tran->cheque_date_field] = "";
+			// $fn_data[$this->cdsd_tran->bank_id_field] = "";
+			$fn_data[$this->cdsd_tran->subhead_id_field] = $temp_subhead_id;
+			$fn_data[$this->cdsd_tran->deleted_field] = "";
+		
+			$this->cdsd_tran->clear_row_data();
+			$this->cdsd_tran->set_row_data($fn_data);
+			$sd_tran_id = $this->cdsd_tran->insert_row();
 			return "done";
 		}
 
@@ -373,8 +436,8 @@
 			$post_data = $request->input("post_data");
 			$in_data = (array)json_decode($post_data);
 			$cdsd_type = $in_data["cdsd_type"];
-			$user_id = $in_data["cr_user_type"];
-			$user_type = $in_data["cr_user_id"];
+			$user_type = $in_data["cr_user_type"];
+			$user_id = $in_data["cr_user_id"];
 			$old_acc_no = $in_data["cr_old_acc_no"];
 			$start_date = $in_data["cr_start_date"];
 
@@ -382,7 +445,7 @@
 			unset($fn_data);
 			$fn_data["bid"] = $BID;
 			$fn_data["cdsd_type"] = $cdsd_type;
-			$account_no = $this->sd->get_next_acc_no($fn_data);
+			$account_no = $this->cdsd->get_next_acc_no($fn_data);
 
 			unset($fn_data);
 			$fn_data["cdsd_type"] = $cdsd_type;
@@ -407,13 +470,13 @@
 				unset($fn_data);
 				$fn_data["bid"] = 6; // HEAD OFFICE
 				$fn_data["cdsd_type"] = $cdsd_type;
-				$sd_account_no = $this->sd->get_next_acc_no($fn_data);
+				$sd_account_no = $this->cdsd->get_next_acc_no($fn_data);
 
 				unset($fn_data);
 				$fn_data["cdsd_type"] = $cdsd_type;
 				$fn_data["sd_ho_id"] = 0;
 				$fn_data["cdsd_acc_no"] = $sd_account_no;
-				$fn_data["cdsd_oldacc_no"] = $old_acc_no;
+				$fn_data["cdsd_oldacc_no"] = 0;
 				$fn_data["user_type"] = $user_type;
 				$fn_data["uid"] = $user_id;
 				$fn_data["bid"] = 6;	//HEAD OFFICE

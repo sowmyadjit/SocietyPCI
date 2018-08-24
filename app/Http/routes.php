@@ -189,7 +189,9 @@
 				Route::post('/create_cdsd_index','DepositController@create_cdsd_index');
 				Route::post('/create_cdsd','DepositController@create_cdsd');
 				Route::post('/sd_transaction_index','DepositController@sd_transaction_index');
-				Route::post('/create_sd_transaction','DepositController@create_sd_transaction');
+				Route::post('/cdsd_transaction_index','DepositController@cdsd_transaction_index');
+				// Route::post('/create_sd_transaction','DepositController@create_sd_transaction');
+				Route::post('/create_cdsd_transaction','DepositController@create_cdsd_transaction');
 				Route::post('/create_sd','DepositController@create_sd');
 				Route::post('/cd_interest_calculation_index','DepositController@cd_interest_calculation_index');
 				Route::post('/cd_interest_calculatoin','DepositController@cd_interest_calculatoin');
