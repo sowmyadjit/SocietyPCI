@@ -370,14 +370,16 @@
 			$acid=$rdintrst->Accid;
 			$actid=$rdintrst->AccTid;
 			$startdate=$rdintrst->Created_on;
-			$sdate=date("Y-d-m",strtotime($startdate));
+			// $sdate=date("Y-d-m",strtotime($startdate));
+			$sdate=date("Y-m-d",strtotime($startdate));
 			
 			
 			$date2=date_create($sdate);
 			$day=$date2->format('d');
 			
 			
-			$enddate1=date("Y-d-m",strtotime($dte));
+			// $enddate1=date("Y-d-m",strtotime($dte));
+			$enddate1=date("Y-m-d",strtotime($dte));
 			$enddate=date_create($dte);
 			
 			
