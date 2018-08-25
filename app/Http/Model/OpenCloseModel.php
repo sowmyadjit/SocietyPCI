@@ -297,7 +297,7 @@
 			
 			//$dtoday=date('Y-m-d');
 			$dtoday=$dte;
-			$id = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum','receipt_voucher_no as RD_resp_No','RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			$id1 = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum','receipt_voucher_no as RD_resp_No','RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'rd_transaction.Accid')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","rd_transaction.RD_TransID")
 			->join("user","user.Uid","=","createaccount.Uid")
@@ -310,6 +310,20 @@
 			//->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->get();
+
+			$id2 = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum',DB::raw(" '' as RD_resp_No "),'RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'rd_transaction.Accid')
+			->join("user","user.Uid","=","createaccount.Uid")
+			->where("createaccount.Status","AUTHORISED")
+			->where('RDReport_TranDate',$dtoday)
+			->where('rd_transaction.Bid','=',$BranchId)
+			->where('RDPayment_Mode','=',"CASH")
+			->where('RD_Particulars','!=',"RD INTEREST CAL")
+			//->orderBy('RDReport_TranDate','desc')
+			->orderBy('RD_TransID','desc')
+			->get();
+
+			$id = array_merge($id1,$id2);
 			return $id;
 			
 		}
