@@ -326,13 +326,6 @@
 			return view("sd_transaction_index",compact("data"));
 		}
 
-		public function cdsd_transaction_index(Request $request)
-		{
-			$data = [];
-			$data["cdsd_type"] = $request->input("cdsd_type");
-			return view("cdsd_transaction_index",compact("data"));
-		}
-
 	/* 	public function create_sd_transaction(Request $request)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
@@ -362,54 +355,6 @@
 			return "done";
 		} */
 
-		public function create_cdsd_transaction(Request $request)
-		{
-			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
-
-			$post_data = $request->input("post_data");
-			$in_data = (array)json_decode($post_data);
-			// print_r($in_data);return;
-
-			$account_info = $this->cdsd->get_row(["{$this->cdsd->pk}"=>$in_data["cdsd_id"]]);
-			$user_type = $account_info->{$this->cdsd->user_type_field};
-
-			switch($user_type) {
-				case 1:
-						$temp_subhead_id = 156;
-						break;
-				case 2:
-						$temp_subhead_id = 283;
-						break;
-				case 3:
-						$temp_subhead_id = "";
-						break;
-				default:
-						$temp_subhead_id = "";
-			}
-
-			unset($fn_data);
-			$fn_data[$this->cdsd_tran->cdsd_id_field] = $in_data["cdsd_id"];
-			$fn_data[$this->cdsd_tran->cdsd_type_field] = $in_data["cdsd_type"];
-			$fn_data[$this->cdsd_tran->date_field] = $in_data["cdsd_tran_date"];
-			$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
-			$fn_data[$this->cdsd_tran->bid_field] = $BID;
-			$fn_data[$this->cdsd_tran->transaction_type_field] = $in_data["cdsd_transaction_type"];
-			$fn_data[$this->cdsd_tran->amount_field] = $in_data["cdsd_amount"];
-			$fn_data[$this->cdsd_tran->paid_field] = PAID;
-			$fn_data[$this->cdsd_tran->payment_mode_field] = $in_data["cdsd_payment_mode"];
-			$fn_data[$this->cdsd_tran->particulars_field] = $in_data["cdsd_perticulars"];
-			// $fn_data[$this->cdsd_tran->cheque_no_field] = "";
-			// $fn_data[$this->cdsd_tran->cheque_date_field] = "";
-			// $fn_data[$this->cdsd_tran->bank_id_field] = "";
-			$fn_data[$this->cdsd_tran->subhead_id_field] = $temp_subhead_id;
-			$fn_data[$this->cdsd_tran->deleted_field] = "";
-		
-			$this->cdsd_tran->clear_row_data();
-			$this->cdsd_tran->set_row_data($fn_data);
-			$sd_tran_id = $this->cdsd_tran->insert_row();
-			return "done";
-		}
-
 //CDSD DEPOSIT
 		public function cd_index()
 		{
@@ -417,6 +362,7 @@
 			return view("cdsd_index",compact('data'));
 		}
 
+		///////////////////////////////////////////////////////////
 		public function sd_index()
 		{
 			$data["cdsd_type"] = CDSDModel::SD;
@@ -427,6 +373,13 @@
 		{
 			$data["cdsd_type"] = $request->input("cdsd_type");
 			return view("create_cdsd_index",compact("data"));
+		}
+
+		public function cdsd_transaction_index(Request $request)
+		{
+			$data = [];
+			$data["cdsd_type"] = $request->input("cdsd_type");
+			return view("cdsd_transaction_index",compact("data"));
 		}
 
 		public function create_cdsd(Request $request)
@@ -503,6 +456,70 @@
 			return "done";
 		}
 
+		public function create_cdsd_transaction(Request $request)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 
+			$post_data = $request->input("post_data");
+			$in_data = (array)json_decode($post_data);
+			// print_r($in_data);return;
+
+			$account_info = $this->cdsd->get_row(["{$this->cdsd->pk}"=>$in_data["cdsd_id"]]);
+			$user_type = $account_info->{$this->cdsd->user_type_field};
+
+			switch($user_type) {
+				case 1:
+						$temp_subhead_id = 156;
+						break;
+				case 2:
+						$temp_subhead_id = 283;
+						break;
+				case 3:
+						$temp_subhead_id = "";
+						break;
+				default:
+						$temp_subhead_id = "";
+			}
+
+			unset($fn_data);
+			$fn_data[$this->cdsd_tran->cdsd_id_field] = $in_data["cdsd_id"];
+			$fn_data[$this->cdsd_tran->cdsd_type_field] = $in_data["cdsd_type"];
+			$fn_data[$this->cdsd_tran->date_field] = $in_data["cdsd_tran_date"];
+			$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
+			$fn_data[$this->cdsd_tran->bid_field] = $BID;
+			$fn_data[$this->cdsd_tran->transaction_type_field] = $in_data["cdsd_transaction_type"];
+			$fn_data[$this->cdsd_tran->amount_field] = $in_data["cdsd_amount"];
+			$fn_data[$this->cdsd_tran->paid_field] = PAID;
+			$fn_data[$this->cdsd_tran->payment_mode_field] = $in_data["cdsd_payment_mode"];
+			$fn_data[$this->cdsd_tran->particulars_field] = $in_data["cdsd_perticulars"];
+			// $fn_data[$this->cdsd_tran->interest_tran_field] = $in_data["interest_tran"];
+			// $fn_data[$this->cdsd_tran->cheque_no_field] = "";
+			// $fn_data[$this->cdsd_tran->cheque_date_field] = "";
+			// $fn_data[$this->cdsd_tran->bank_id_field] = "";
+			$fn_data[$this->cdsd_tran->subhead_id_field] = $temp_subhead_id;
+			$fn_data[$this->cdsd_tran->deleted_field] = "";
+		
+			$this->cdsd_tran->clear_row_data();
+			$this->cdsd_tran->set_row_data($fn_data);
+			$sd_tran_id = $this->cdsd_tran->insert_row();
+			return "done";
+		}
+
+		public function view_cdsd_tran(Request $request)
+		{
+			$post_data = $request->input("post_data");
+			$in_data = (array)json_decode($post_data);
+			$cdsd_type = $in_data["cdsd_type"];
+			$data["cdsd_type"] = $cdsd_type;
+
+			$fn_data["cdsd_type"] = $cdsd_type;
+			$fn_data["{$this->cdsd_tran->cdsd_id_field}"] = $in_data["cdsd_id"];
+			$data["cdsd_tran"] = $this->cdsd_tran->get_cdsd_tran($fn_data);
+			$cdsd_acc_info = $this->cdsd->get_row(["{$this->cdsd->pk}"=>$in_data["cdsd_id"]]);
+			$data["cdsd_acc_info"]["name"] = "";
+			$data["cdsd_acc_info"]["cdsd_acc_no"] = $cdsd_acc_info->cdsd_acc_no;
+			$data["cdsd_acc_info"]["cdsd_oldacc_no"] = $cdsd_acc_info->cdsd_oldacc_no;
+			return view("view_cdsd_tran", compact("data"));
+		}
 
 	}

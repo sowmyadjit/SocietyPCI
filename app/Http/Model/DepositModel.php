@@ -13,7 +13,8 @@ use App\Http\Model\OpenCloseModel;
 use App\Http\Model\ReceiptVoucherModel;
 use App\Http\Controllers\ReceiptVoucherController;
 use App\Http\Model\SettingsModel;
-use App\Http\Model\CDSDsModel;
+use App\Http\Model\CDSDModel;
+use App\Http\Model\CDSDTranModel;
 
 class DepositModel extends Model
 {
@@ -24,6 +25,7 @@ class DepositModel extends Model
 		$this->rv_no = new ReceiptVoucherController;
 		$this->settings = new SettingsModel;
 		$this->cdsd = new CDSDModel;
+		$this->cdsd_tran = new CDSDTranModel;
 	}
 	
 	public function insert($id)
@@ -901,6 +903,7 @@ class DepositModel extends Model
 				$deposit_account_list = $deposit_account_list->where($user_type_field,"=",$data["user_type"]);
 			}
 			$deposit_account_list = $deposit_account_list//->limit(1)
+										// ->orderBy("{$this->cdsd->cdsd_oldacc_no_field}","asc")
 										->get();
 				
 			if(empty($deposit_account_list)) {
@@ -914,7 +917,7 @@ class DepositModel extends Model
 				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
 				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
 				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
-				$ret_data['deposit_details'][$i]['amount'] = $this->get_sd_amount(["allocation_id"=>$row->allocation_id]);//calc dynami
+				$ret_data['deposit_details'][$i]['amount'] = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>$data["cdsd_type"], "{$this->cdsd_tran->cdsd_id_field}"=>$row->allocation_id]);//calc dynami
 				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
 				$ret_data['deposit_details'][$i]['account_type'] = $data["category"];
 				$ret_data['deposit_details'][$i]['start_date'] = $row->start_date;

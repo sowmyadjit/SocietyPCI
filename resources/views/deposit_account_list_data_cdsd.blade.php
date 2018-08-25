@@ -28,6 +28,14 @@
 		height: 1px;
 		overflow: scroll;
 	}
+    .cdsd_amount {
+        color:rgba(0,10,200,1);
+    }
+    .cdsd_amount:hover {
+        cursor:pointer;
+        color:rgba(0,0,0,01);
+        font-weight:bold;
+    }
 </style>
 
 
@@ -55,7 +63,7 @@
                     <td>{{ $row['name'] }}</td>	
                     <td>{{ $row['user_type'] }}</td>	
                     <td>{{$row['account_no'] }} / {{$row['old_account_no'] }}</td>
-                    <td>{{ $row['amount']}}</td>
+                    <td><span class="cdsd_amount" data="{{$row['allocation_id']}}">{{ $row['amount']}}</span></span></td>
                     <td>{{ $row['start_date']}}</td>
                     <td>{{ $row['close_date']}}</td>
                 </tr>
@@ -68,5 +76,26 @@
         
     <div id="toprint_data" class="hide_it">
     </div>
-							
+
+    <script>
+        $(".cdsd_amount").click(function() {
+            console.log("vw tran");
+            var cdsd_id = $(this).attr("data");
+            var post_data = {
+                "cdsd_type":{{$cdsd_type}},
+                "cdsd_id":cdsd_id
+            };
+            $.ajax({
+                type: "post",
+                url: "view_cdsd_tran",
+                data: "&post_data="+JSON.stringify(post_data),
+                success: function(data) {
+                    console.log("done");
+                    $(".b_main").hide();
+                    $(".b_sub_1").html(data);
+                    $(".b_sub_1").show();
+                }
+            });
+        });
+    </script>
 		

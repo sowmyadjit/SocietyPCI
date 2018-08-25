@@ -19,6 +19,7 @@ class CDSDTranModel extends Model
 	public $paid_field = 'paid';
 	public $payment_mode_field = 'payment_mode';
 	public $particulars_field = 'particulars';
+	public $interest_tran_field = 'interest_tran';
 	public $cheque_no_field = 'cheque_no';
 	public $cheque_date_field = 'cheque_date';
 	public $bank_id_field = 'bank_id';
@@ -37,6 +38,7 @@ class CDSDTranModel extends Model
 		"paid",
 		"payment_mode",
 		"particulars",
+		"interest_tran",
 		"cheque_no",
 		"cheque_date",
 		"bank_id",
@@ -102,8 +104,10 @@ class CDSDTranModel extends Model
 			->where($transaction_type_field,CREDIT)
 			->where($paid_field,PAID)
 			->where($paid_field,PAID)
-			->where($cdsd_type_field,$data["cdsd_type"])
+			->where($cdsd_type_field,$data["cdsd_type"])//->get();
 			->sum($amount_field);
+
+			// print_r($credit_amount);//return 0;
 		
 		$debit_amount = DB::table($table)
 			->where($allocation_id_field,$data[$this->cdsd_id_field])
@@ -113,5 +117,16 @@ class CDSDTranModel extends Model
 			->sum($amount_field);
 			// print_r($credit_amount);
 		return $credit_amount - $debit_amount;
+	}
+
+	public function get_cdsd_tran($data)
+	{
+		$cdsd_type = $data["cdsd_type"];
+
+		$ret_data = DB::table($this->tbl)
+			->where("{$this->tbl}.{$this->cdsd_id_field}", $data[$this->cdsd_id_field])
+			->where("{$this->tbl}.{$this->cdsd_type_field}", $cdsd_type)
+			->get();
+		return $ret_data;
 	}
 }
