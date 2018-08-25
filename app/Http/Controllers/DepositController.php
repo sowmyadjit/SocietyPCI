@@ -382,6 +382,13 @@
 			return view("cdsd_transaction_index",compact("data"));
 		}
 
+		public function cdsd_interest_index(Request $request)
+		{
+			$data = [];
+			$data["cdsd_type"] = $request->input("cdsd_type");
+			return view("cdsd_interest_index",compact("data"));
+		}
+
 		public function create_cdsd(Request $request)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
@@ -492,7 +499,7 @@
 			$fn_data[$this->cdsd_tran->paid_field] = PAID;
 			$fn_data[$this->cdsd_tran->payment_mode_field] = $in_data["cdsd_payment_mode"];
 			$fn_data[$this->cdsd_tran->particulars_field] = $in_data["cdsd_perticulars"];
-			// $fn_data[$this->cdsd_tran->interest_tran_field] = $in_data["interest_tran"];
+			$fn_data[$this->cdsd_tran->interest_tran_field] = $in_data["is_interest_tran"];
 			// $fn_data[$this->cdsd_tran->cheque_no_field] = "";
 			// $fn_data[$this->cdsd_tran->cheque_date_field] = "";
 			// $fn_data[$this->cdsd_tran->bank_id_field] = "";
@@ -520,6 +527,16 @@
 			$data["cdsd_acc_info"]["cdsd_acc_no"] = $cdsd_acc_info->cdsd_acc_no;
 			$data["cdsd_acc_info"]["cdsd_oldacc_no"] = $cdsd_acc_info->cdsd_oldacc_no;
 			return view("view_cdsd_tran", compact("data"));
+		}
+
+		public function cdsd_int_calc(Request $request)
+		{
+			$post_data = $request->input("post_data");
+			$in_data = (array)json_decode($post_data);
+			$cdsd_type = $in_data["cdsd_type"];
+			$fn_data["cdsd_type"] = $cdsd_type;
+			$this->creadepositmodel->cdsd_int_calc($fn_data);
+			return "done";
 		}
 
 	}

@@ -93,6 +93,12 @@
 								<input  class="form-control" id="cdsd_perticulars" placeholder="PARTICULARS">
 							</div>
 						</div>
+						<div class="form-group col-md-12">
+							<label class="control-label col-sm-4">IS INTEREST TRAN.?</label>
+							<div class="col-md-4">
+								<input type="checkbox"  id="is_interest_tran">
+							</div>
+						</div>
 				</div>
 						
 			</div>
@@ -149,6 +155,11 @@
 		var cdsd_payment_mode = $("#cdsd_payment_mode").val();
 		var cdsd_amount = $("#cdsd_amount").val();
 		var cdsd_perticulars = $("#cdsd_perticulars").val();
+		if($("#is_interest_tran").is(":checked")) {
+			var is_interest_tran = 1;
+		} else {
+			var is_interest_tran = 0;
+		}
 
 		if(cdsd_tran_date == "") {
 			error_flag = true;
@@ -179,6 +190,7 @@
 			"cdsd_payment_mode" : cdsd_payment_mode,
 			"cdsd_amount" : cdsd_amount,
 			"cdsd_perticulars" : cdsd_perticulars,
+			"is_interest_tran" : is_interest_tran
 		}
 
 		// console.log(JSON.stringify(post_data));

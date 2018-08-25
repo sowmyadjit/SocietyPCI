@@ -903,7 +903,7 @@ class DepositModel extends Model
 				$deposit_account_list = $deposit_account_list->where($user_type_field,"=",$data["user_type"]);
 			}
 			$deposit_account_list = $deposit_account_list//->limit(1)
-										// ->orderBy("{$this->cdsd->cdsd_oldacc_no_field}","asc")
+										->orderByRaw(" CAST(cdsd_oldacc_no AS DECIMAL(10,2)) ASC ")
 										->get();
 				
 			if(empty($deposit_account_list)) {
@@ -916,7 +916,7 @@ class DepositModel extends Model
 				$ret_data['deposit_details'][$i]['account_no'] = $row->account_no;
 				$ret_data['deposit_details'][$i]['old_account_no'] = $row->old_account_no;
 				$ret_data['deposit_details'][$i]['user_id'] = $row->user_id;
-				$ret_data['deposit_details'][$i]['name'] = "{$row->first_name} {$row->middle_name} {$row->last_name}";
+				$ret_data['deposit_details'][$i]['name'] = strtoupper("{$row->first_name} {$row->middle_name} {$row->last_name}");
 				$ret_data['deposit_details'][$i]['amount'] = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>$data["cdsd_type"], "{$this->cdsd_tran->cdsd_id_field}"=>$row->allocation_id]);//calc dynami
 				$ret_data['deposit_details'][$i]['closed'] = $row->closed;
 				$ret_data['deposit_details'][$i]['account_type'] = $data["category"];
@@ -940,6 +940,13 @@ class DepositModel extends Model
 			}
 			// print_r($ret_data);exit();
 			return $ret_data;
+		}
+
+		public function cdsd_int_calc($data)
+		{
+			$cdsd_type = $data["cdsd_type"];
+			//CALCULATE CDSD INTEREST
+			return;
 		}
 		
 	}

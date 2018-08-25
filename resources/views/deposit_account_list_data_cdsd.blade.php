@@ -63,7 +63,7 @@
                     <td>{{ $row['name'] }}</td>	
                     <td>{{ $row['user_type'] }}</td>	
                     <td>{{$row['account_no'] }} / {{$row['old_account_no'] }}</td>
-                    <td><span class="cdsd_amount" data="{{$row['allocation_id']}}">{{ $row['amount']}}</span></span></td>
+                    <td><span class="cdsd_amount" data="{{$row['allocation_id']}}" title="VIEW TRANSACTIONS">{{ $row['amount']}}</span></span></td>
                     <td>{{ $row['start_date']}}</td>
                     <td>{{ $row['close_date']}}</td>
                 </tr>

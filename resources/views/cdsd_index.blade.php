@@ -81,9 +81,11 @@
 								@if($cdsd_type == 1)
 									<button id="create_cdsd" class="btn btn-default">Create CD</button>
 									<button id="cdsd_transaction" class="btn btn-default">CD Transaction</button>
+									<button id="cdsd_interest" class="btn btn-default">CD INTEREST</button>
 								@else
 									<button id="create_cdsd" class="btn btn-default">Create SD</button>
 									<button id="cdsd_transaction" class="btn btn-default">SD Transaction</button>
+									<button id="cdsd_interest" class="btn btn-default">SD INTEREST</button>
 								@endif
 								</div>
 							</div>
@@ -209,10 +211,6 @@
 	});
 </script>
 
-<!-- -------------------------------------------------------------------------------------------------------------------------- -->
-
-
-
 <script>
 	$("#cdsd_transaction").click(function(e) {
 		e.preventDefault();
@@ -230,3 +228,23 @@
 		});
 	});
 </script>
+
+<script>
+	$("#cdsd_interest").click(function(e) {
+		e.preventDefault();
+		
+		$.ajax({
+			url:"cdsd_interest_index",
+			type:"post",
+			data:"&cdsd_type={{$cdsd_type}}",
+			success: function(data) {
+				console.log("done");
+				$(".b_main").hide();
+				$(".b_sub_1").html(data);
+				$(".b_sub_1").show();
+			}
+		});
+	});
+</script>
+
+<!-- -------------------------------------------------------------------------------------------------------------------------- -->
