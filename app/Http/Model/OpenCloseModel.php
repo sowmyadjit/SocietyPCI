@@ -318,7 +318,8 @@
 			->where('RDReport_TranDate',$dtoday)
 			->where('rd_transaction.Bid','=',$BranchId)
 			->where('RDPayment_Mode','=',"CASH")
-			->where('RD_Particulars','!=',"RD INTEREST CAL")
+			->where('rd_transaction.RD_Particulars','!=',"RD INTEREST CAL")
+			->where("RD_Particulars","RD PREWITHDRAWA")
 			//->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->get();
