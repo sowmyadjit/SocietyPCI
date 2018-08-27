@@ -78,8 +78,8 @@
                     <center>
                         <div class="form-group">
                             <div class="col-sm-12">
-                                <input type="button" id="cdsd_close_submit" value="PREVIEW INTEREST" class="btn btn-success btn-sm" style="margin-bottom:10px;"/>
-                                <input type="button" id="cdsd_close_submit" value="CLOSE ACCOUNT" class="btn btn-danger btn-sm" style="margin-bottom:10px;"/>
+                                <input type="button" id="cdsd_preview_btn" value="PREVIEW INTEREST" class="btn btn-success btn-sm" style="margin-bottom:10px;"/>
+                                <input type="button" id="cdsd_close_btn" value="CLOSE ACCOUNT" class="btn btn-danger btn-sm" style="margin-bottom:10px;"/>
                             </div>
                         </div>
                     </center>
@@ -128,7 +128,7 @@
             data: "&post_data="+JSON.stringify(post_data),
             success: function(data) {
                 console.log("calculated");
-                alert("SUCCESS");
+                alert("INTEREST: \n\n"+data);
             }
         });
     }
@@ -138,6 +138,7 @@
         cdsd_close_submit();
     });
     $("#cdsd_preview_btn").click(function() {
+        console.log("click");
         preview = "YES";
         cdsd_close_submit();
     });

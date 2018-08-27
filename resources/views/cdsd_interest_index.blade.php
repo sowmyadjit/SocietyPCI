@@ -76,6 +76,9 @@
 
 	</div>
 
+	<div id="calculated_int">
+	</div>
+
 <script>
 	$('.datepicker').datepicker().on('changeDate',function(e){
 		$(this).datepicker('hide');
@@ -94,7 +97,7 @@
         };
         $.ajax({
             type: "post",
-            url: "cdsd_int_calc",
+            url: "cdsd_int_calc_all_acc",
             data: "&post_data="+JSON.stringify(post_data),
             success: function(data) {
                 console.log("calculated");
@@ -102,4 +105,22 @@
             }
         });
     });
+</script>
+
+<script>
+	$("document").ready(function() {
+		console.log("int_prev");
+		var post_data = {
+			cdsd_type: {{$cdsd_type}}
+		};
+		$.ajax({
+            type: "post",
+            url: "cdsd_int_prev_data",
+            data: "&post_data="+JSON.stringify(post_data),
+            success: function(data) {
+                console.log("done");
+				$("#calculated_int").html(data);
+            }
+		});
+	});
 </script>

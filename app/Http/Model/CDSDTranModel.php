@@ -119,7 +119,7 @@ class CDSDTranModel extends Model
 			} else {//ONLY DATE IS GIVEN
 				$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
 			} */
-			$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
+			$credit_amount = $credit_amount->where($this->date_field,"<",$data["till_date"]);
 		}
 		$credit_amount = $credit_amount->sum($amount_field);
 
@@ -132,16 +132,16 @@ class CDSDTranModel extends Model
 			->where($cdsd_type_field,$data["cdsd_type"]);
 			if(isset($data["till_date"])) {
 			/* 	if(isset($data["till_time"])) {//IF TIME IS GIVEN
-					// $credit_amount = $credit_amount->where($this->time_field,"<",$data["till_time"]);
-					$credit_amount = $credit_amount->where(function($query) {
+					// $debit_amount = $debit_amount->where($this->time_field,"<",$data["till_time"]);
+					$debit_amount = $debit_amount->where(function($query) {
 						$query = $query->where($this->date_field,"<=",$data["till_date"])
 							->where($this->time_field,"<=",$data["till_time"])
 							->orWhere("");
 					});
 				} else {//ONLY DATE IS GIVEN
-					$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
+					$debit_amount = $debit_amount->where($this->date_field,"<=",$data["till_date"]);
 				} */
-				$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
+				$debit_amount = $debit_amount->where($this->date_field,"<",$data["till_date"]);
 			}
 		$debit_amount = $debit_amount->sum($amount_field);
 			// print_r($credit_amount);

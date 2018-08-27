@@ -946,14 +946,17 @@ class DepositModel extends Model
 		{
 			$cdsd_type = $data["cdsd_type"];
 			//CALCULATE CDSD INTEREST
-			print_r($data);
-			$int_till_date = $data[""];
-			$int_rate = $data[""];
-			$cdsd_acc_list = get_live_cdsd_acc();//GET ALL CDSD LIVE ACCOUNTS FOR INTEREST CALCULATION
+			// print_r($data);
+			$int_till_date = $data["cdsd_int_calc_date"];
+			$int_rate = $data["cdsd_int_rate"];
+			$cdsd_acc_list = $this->get_live_cdsd_acc();//GET ALL CDSD LIVE ACCOUNTS FOR INTEREST CALCULATION
 			foreach($cdsd_acc_list as $row_acc) {
 				//CALCULATE INTEREST FOR EACH ACCOUNT
 				unset($fn_data);
-				$fn_data = [];
+				$fn_data["cdsd_type"] = $data["cdsd_type"];
+				$fn_data["cdsd_int_calc_date"] = $data["cdsd_int_calc_date"];
+				$fn_data["cdsd_id"] = $row_acc->cdsd_id;
+				$fn_data["cdsd_int_rate"] = $data["cdsd_int_rate"];
 				$interest_amt = $this->cdsd_int_calc($fn_data);
 			}
 			return;
@@ -961,24 +964,54 @@ class DepositModel extends Model
 
 		public function get_live_cdsd_acc()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
 			$ret_data = [];
-			//filter branch vice
-			print_r($ret_data);exit();
+			$ret_data = DB::table("cdsd_account")
+				->where("deleted",0)
+				->where("bid",  $BID)
+				->where("cdsd_closed", 0)
+				->get();
+			// print_r($ret_data);exit();
 			return $ret_data;
 		}
 
 		public function cdsd_int_calc($data)
 		{
-			$last_int_calc_date_time = $this->get_last_int_calc_date_time(["{$cdsd_tran->cdsd_acc_id_field}"]);//GET DATE OF LAST INTEREST CALCULATION FOR THIS ACCOUNT
+			$cdsd_type = $data["cdsd_type"];
+			$last_int_calc_date_time = $this->get_last_int_calc_date_time([ "cdsd_type"=>$cdsd_type, "{$this->cdsd_tran->cdsd_id_field}"=>$data[$this->cdsd_tran->cdsd_id_field] ]);//GET DATE OF LAST INTEREST CALCULATION FOR THIS ACCOUNT
 			$last_int_calc_date = $last_int_calc_date_time["last_int_calc_date"];
 			$last_int_calc_time = $last_int_calc_date_time["last_int_calc_time"];
-			$int_days = dateDiff(["first"=>$last_int_calc_date, "second"=>$int_till_date]);
-			$amt_on_last_int_calc_date_time = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>$cdsd_type, "{$this->cdsd_tran->cdsd_id_field}"=>$data[$this->cdsd_tran->cdsd_id_field], "till_date"=>$last_int_calc_date, "till_time"=>$last_int_calc_time]);
-			$cdsd_tran_after_last_int_calc_date = $this->get_cdsd_tran_after_last_int_calc_date(["last_tran_date"=>$last_int_calc_date, "last_tran_time"=>$last_int_calc_time]);
+			$int_till_date = $data["cdsd_int_calc_date"];
+			// echo "<br />\n";
+			// echo "last_int_calc_date  = {$last_int_calc_date}";
+			// echo "<br />\n";
+			// echo "last_int_calc_time  = {$int_till_date}";
+			$int_days_from_last_int_calc = $this->dateDiff(["first"=>$last_int_calc_date, "second"=>$int_till_date]);
+			// echo "int_days  = {$int_days}";
+			$amt_till_last_int_calc_date_time = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>$cdsd_type, "{$this->cdsd_tran->cdsd_id_field}"=>$data[$this->cdsd_tran->cdsd_id_field], "till_date"=>$last_int_calc_date, "till_time"=>$last_int_calc_time]);
+			// echo "amt_till_last_int_calc_date_time  = {$amt_till_last_int_calc_date_time}";
+			$cdsd_tran_after_last_int_calc_date = $this->get_cdsd_tran_after_last_int_calc_date(["cdsd_type"=>$cdsd_type,"{$this->cdsd_tran->cdsd_id_field}"=>$data[$this->cdsd_tran->cdsd_id_field],"last_tran_date"=>$last_int_calc_date, "last_tran_time"=>$last_int_calc_time]);
+			
+			//INTEREST CACULATION
+			$total_int = 0;
+			$int_for_amt_till_last_int_calc = ($amt_till_last_int_calc_date_time)*($int_days_from_last_int_calc/365)*($data["cdsd_int_rate"]/100);
+			echo "{$amt_till_last_int_calc_date_time}*({$int_days_from_last_int_calc}/365)*({$data["cdsd_int_rate"]}/100)<br />\n";
 			foreach($cdsd_tran_after_last_int_calc_date as $row_tran) {
+				$int_days = $this->dateDiff(["first"=>$row_tran->{$this->cdsd_tran->date_field}, "second"=>$int_till_date]);
 				$tran_amt = $row_tran->{$this->cdsd_tran->amount_field};
 				$int_amt = ($tran_amt)*($int_days/365)*($data["cdsd_int_rate"]/100);
+				echo "{$tran_amt}*({$int_days}/365)*({$data["cdsd_int_rate"]}/100)<br />\n";
+				$total_int += (float)$int_amt;
 			}
+			$total_int += $int_for_amt_till_last_int_calc;
+			$total_int = round($total_int,2);
+
+			DB::table($this->cdsd->tbl)
+				->where("cdsd_id", $data["cdsd_id"])
+				->update(["int_prev"=>$total_int]);
+			// print_r($total_int);
+			return $total_int;
 		}
 
 		public function get_last_int_calc_date_time($data)
@@ -986,25 +1019,25 @@ class DepositModel extends Model
 			$ret_data = [];
 
 			$last_int_tran = DB::table($this->cdsd_tran->tbl)
-				->where($cdsd_type_field,$data["cdsd_type"])
-				->where($cdsd_tran->cdsd_id_field, $data[$this->cdsd_tran->cdsd_id_field])
+				->where($this->cdsd_tran->cdsd_type_field,$data["cdsd_type"])
+				->where($this->cdsd_tran->cdsd_id_field, $data[$this->cdsd_tran->cdsd_id_field])
 				->where($this->cdsd_tran->interest_tran_field, 1)
 				->orderBy($this->cdsd_tran->date_field, "desc")
 				->orderBy($this->cdsd_tran->time_field, "desc")
 				->first();
 
 			if(empty($last_int_tran)) {
-				$cdsd_acc_info = $this->cdsd->get_row([ "{$this->cdsd->pk}",$data[$this->cdsd_tran->cdsd_id_field] ]);
-				$temp_date = $cdsd_acc_info->cdsd_start_date_field;
+				$cdsd_acc_info = $this->cdsd->get_row([ "{$this->cdsd->pk}"=>$data[$this->cdsd->pk] ]);
+				$temp_date = $cdsd_acc_info->{$this->cdsd->cdsd_start_date_field};
 				$temp_time = "00:00:00";
 			} else {
-				$temp_date = DB;
+				$temp_date = $last_int_tran->{$this->cdsd_tran->date_field};
 				$temp_time = "00:00:00";
 			}
 
 			$ret_data["last_int_calc_date"] = $temp_date;
 			$ret_data["last_int_calc_time"] = $temp_time;
-			print_r($ret_data);exit();
+			// print_r($ret_data);exit();
 			return $ret_data;
 		}
 		
@@ -1018,20 +1051,60 @@ class DepositModel extends Model
 			$diff_days = $diff->format('%a');
 			$days = (int)$diff_days;
 			
-			print_r($days);exit();
+			// print_r($days);exit();
 			return $days;
 		}
 		
 		public function get_cdsd_tran_after_last_int_calc_date($data)
 		{
 			$ret_data = DB::table($this->cdsd_tran->tbl)
-				->where($this->cdsd_id_field,$data[$this->cdsd_tran->cdsd_id_field])
-				->where($this->cssd_tran->date_field,">",$data["last_tran_date"])
+				->where($this->cdsd_tran->cdsd_id_field, $data[$this->cdsd_tran->cdsd_id_field])
+				->where($this->cdsd_tran->date_field,">=",$data["last_tran_date"])
 				->where($this->cdsd_tran->deleted_field, NOT_DELETED)
 				->get();
 			if(empty($ret_data)) {
 				$ret_data = [];
 			}
+			// print_r($ret_data);
+			return $ret_data;
+		}
+		
+		public function cdsd_close($data)
+		{
+
+			DB::table("cdsd_account")
+				->where("cdsd_id", $data["cdsd_id"])
+				->update(["cdsd_closed"=>1,"cdsd_close_date"=>date("Y-m-d")]);
+			
+		}
+		
+		public function cdsd_create_int_tran($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			if($data["cdsd_type"] == 1) {
+				$category = "CD";
+			} else {
+				$category = "SD";
+			}
+			
+			$cdsd_acc_info = $this->cdsd->get_row(["cdsd_id"=>$data["cdsd_id"]]);
+
+			DB::table("cdsd_transaction")
+				->insertGetId(["cdsd_type"=>$cdsd_acc_info->cdsd_type, "cdsd_id"=>$cdsd_acc_info->cdsd_id, "date"=>date("Y-m-d"), "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>1, "amount"=>$cdsd_acc_info->int_prev, "paid"=>1, "payment_mode"=>2, "particulars"=>"{$category} INTEREST", "interest_tran"=>1 ]);
+		}
+		
+		public function calculated_interest($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$ret_data =  DB::table("cdsd_account")
+				->join("user", "user.Uid", "=", "cdsd_account.uid")
+				->where("deleted", 0)
+				// ->where("cdsd_closed", 0)
+				->where("cdsd_type", $data["cdsd_type"])
+				->where("cdsd_account.bid", $BID)
+				->where("int_prev", ">", 0)
+				->get();
+			// print_r($ret_data);
 			return $ret_data;
 		}
 		
