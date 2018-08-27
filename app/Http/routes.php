@@ -195,10 +195,12 @@
 				Route::post('/create_cdsd_index','DepositController@create_cdsd_index');
 				Route::post('/cdsd_transaction_index','DepositController@cdsd_transaction_index');
 				Route::post('/cdsd_interest_index','DepositController@cdsd_interest_index');
+				Route::post('/cdsd_close_index','DepositController@cdsd_close_index');
 				Route::post('/create_cdsd','DepositController@create_cdsd');
 				Route::post('/create_cdsd_transaction','DepositController@create_cdsd_transaction');
 				Route::post('/view_cdsd_tran','DepositController@view_cdsd_tran');
 				Route::post('/cdsd_int_calc','DepositController@cdsd_int_calc');// CALCULATE INTEREST
+				Route::post('/cdsd_close','DepositController@cdsd_close');// CALCULATE INTEREST AND CLOSE
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');

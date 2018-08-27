@@ -82,10 +82,12 @@
 									<button id="create_cdsd" class="btn btn-default">Create CD</button>
 									<button id="cdsd_transaction" class="btn btn-default">CD Transaction</button>
 									<button id="cdsd_interest" class="btn btn-default">CD INTEREST</button>
+									<button id="cdsd_close" class="btn btn-default">CD CLOSE</button>
 								@else
 									<button id="create_cdsd" class="btn btn-default">Create SD</button>
 									<button id="cdsd_transaction" class="btn btn-default">SD Transaction</button>
 									<button id="cdsd_interest" class="btn btn-default">SD INTEREST</button>
+									<button id="cdsd_close" class="btn btn-default">SD CLOSE</button>
 								@endif
 								</div>
 							</div>
@@ -235,6 +237,24 @@
 		
 		$.ajax({
 			url:"cdsd_interest_index",
+			type:"post",
+			data:"&cdsd_type={{$cdsd_type}}",
+			success: function(data) {
+				console.log("done");
+				$(".b_main").hide();
+				$(".b_sub_1").html(data);
+				$(".b_sub_1").show();
+			}
+		});
+	});
+</script>
+
+<script>
+	$("#cdsd_close").click(function(e) {
+		e.preventDefault();
+		
+		$.ajax({
+			url:"cdsd_close_index",
 			type:"post",
 			data:"&cdsd_type={{$cdsd_type}}",
 			success: function(data) {

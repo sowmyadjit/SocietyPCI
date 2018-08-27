@@ -90,6 +90,9 @@ class CDSDTranModel extends Model
 
 	public function get_cdsd_amount($data)
 	{
+		/*
+			$data["till_date"] is optional
+		*/
 		$table = $this->tbl;
 		$allocation_id_field = $this->cdsd_id_field;
 		$amount_field = $this->amount_field;
@@ -104,8 +107,21 @@ class CDSDTranModel extends Model
 			->where($transaction_type_field,CREDIT)
 			->where($paid_field,PAID)
 			->where($paid_field,PAID)
-			->where($cdsd_type_field,$data["cdsd_type"])//->get();
-			->sum($amount_field);
+			->where($cdsd_type_field,$data["cdsd_type"]);
+		if(isset($data["till_date"])) {
+		/* 	if(isset($data["till_time"])) {//IF TIME IS GIVEN
+				// $credit_amount = $credit_amount->where($this->time_field,"<",$data["till_time"]);
+				$credit_amount = $credit_amount->where(function($query) {
+					$query = $query->where($this->date_field,"<=",$data["till_date"])
+						->where($this->time_field,"<=",$data["till_time"])
+						->orWhere("");
+				});
+			} else {//ONLY DATE IS GIVEN
+				$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
+			} */
+			$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
+		}
+		$credit_amount = $credit_amount->sum($amount_field);
 
 			// print_r($credit_amount);//return 0;
 		
@@ -113,8 +129,21 @@ class CDSDTranModel extends Model
 			->where($allocation_id_field,$data[$this->cdsd_id_field])
 			->where($deleted_field,NOT_DELETED)
 			->where($transaction_type_field,DEBIT)
-			->where($cdsd_type_field,$data["cdsd_type"])
-			->sum($amount_field);
+			->where($cdsd_type_field,$data["cdsd_type"]);
+			if(isset($data["till_date"])) {
+			/* 	if(isset($data["till_time"])) {//IF TIME IS GIVEN
+					// $credit_amount = $credit_amount->where($this->time_field,"<",$data["till_time"]);
+					$credit_amount = $credit_amount->where(function($query) {
+						$query = $query->where($this->date_field,"<=",$data["till_date"])
+							->where($this->time_field,"<=",$data["till_time"])
+							->orWhere("");
+					});
+				} else {//ONLY DATE IS GIVEN
+					$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
+				} */
+				$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
+			}
+		$debit_amount = $debit_amount->sum($amount_field);
 			// print_r($credit_amount);
 		return $credit_amount - $debit_amount;
 	}
@@ -129,4 +158,5 @@ class CDSDTranModel extends Model
 			->get();
 		return $ret_data;
 	}
+
 }

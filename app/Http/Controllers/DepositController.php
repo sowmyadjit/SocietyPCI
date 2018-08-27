@@ -389,6 +389,13 @@
 			return view("cdsd_interest_index",compact("data"));
 		}
 
+		public function cdsd_close_index(Request $request)
+		{
+			$data = [];
+			$data["cdsd_type"] = $request->input("cdsd_type");
+			return view("cdsd_close_index",compact("data"));
+		}
+
 		public function create_cdsd(Request $request)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
@@ -529,13 +536,34 @@
 			return view("view_cdsd_tran", compact("data"));
 		}
 
-		public function cdsd_int_calc(Request $request)
+		public function cdsd_int_calc_all_acc(Request $request)
 		{
 			$post_data = $request->input("post_data");
 			$in_data = (array)json_decode($post_data);
+
 			$cdsd_type = $in_data["cdsd_type"];
+
 			$fn_data["cdsd_type"] = $cdsd_type;
-			$this->creadepositmodel->cdsd_int_calc($fn_data);
+			$fn_data["cdsd_int_calc_date"] = $in_data["cdsd_int_calc_date"];
+			$fn_data["cdsd_int_rate"] = $in_data["cdsd_int_rate"];
+			$this->creadepositmodel->cdsd_int_calc_all_acc($fn_data);
+			return "done";
+		}
+
+		public function cdsd_close(Request $request)
+		{
+			$post_data = $request->input("post_data");
+			$in_data = (array)json_decode($post_data);
+
+			$cdsd_type = $in_data["cdsd_type"];
+
+			$fn_data["cdsd_type"] = $cdsd_type;
+			$fn_data["preview"] = $in_data["preview"];
+			$fn_data["cdsd_int_calc_date"] = $in_data["cdsd_int_calc_date"];
+			$fn_data["cdsd_int_rate"] = $in_data["cdsd_int_rate"];
+			$fn_data["cdsd_acc_id"] = $in_data["cdsd_acc_id"];
+			$cdsd_interest = $this->creadepositmodel->cdsd_int_calc($fn_data);
+			$this->creadepositmodel->cdsd_close($fn_data);
 			return "done";
 		}
 

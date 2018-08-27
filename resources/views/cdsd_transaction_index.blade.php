@@ -44,16 +44,16 @@
                         </div>
                         @if($cdsd_type == 1)
                             <div class="form-group col-md-12">
-                                <label class="control-label col-sm-4">SD ACCOUNT:</label>
+                                <label class="control-label col-sm-4">CD ACCOUNT:</label>
                                 <div class="col-md-4">
-                                    <input  class="form-control cdsd_acc_no_typeahead" id="cdsd_acc_no" placeholder="SELECT SD ACCOUNT NO.">
+                                    <input  class="form-control cdsd_acc_no_typeahead" id="cdsd_acc_no" placeholder="SELECT CD ACCOUNT NO.">
                                 </div>
                             </div>
                         @elseif($cdsd_type == 2)
                             <div class="form-group col-md-12">
-                                <label class="control-label col-sm-4">CD ACCOUNT:</label>
+                                <label class="control-label col-sm-4">SD ACCOUNT:</label>
                                 <div class="col-md-4">
-                                    <input  class="form-control cdsd_acc_no_typeahead" id="cdsd_acc_no" placeholder="SELECT CD ACCOUNT NO.">
+                                    <input  class="form-control cdsd_acc_no_typeahead" id="cdsd_acc_no" placeholder="SELECT SD ACCOUNT NO.">
                                 </div>
                             </div>
                         @endif
