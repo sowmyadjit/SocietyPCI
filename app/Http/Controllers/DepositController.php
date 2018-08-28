@@ -587,4 +587,52 @@
 			return $cdsd_interest;
 		}
 
+		public function cdsd_int_create(Request $request)
+		{
+			$pd = $request->input("post_data");
+			$id = (array)json_decode($pd);
+			$cdsd_type = $id["cdsd_type"];
+			$id_list = (array)$id["id_list"];
+			foreach($id_list as $val) {
+				$this->creadepositmodel->cdsd_create_int_tran(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$val]);
+			}
+			return "done";
+		}
+
+		public function cdsd_int_remove(Request $request)
+		{
+			$pd = $request->input("post_data");
+			$id = (array)json_decode($pd);
+			$cdsd_type = $id["cdsd_type"];
+			$id_list = (array)$id["id_list"];
+			foreach($id_list as $val) {
+				$this->creadepositmodel->cdsd_int_remove(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$val]);
+			}
+			return "done";
+		}
+
+		public function int_emp_agt(Request $request)
+		{
+			$pd = $request->input("post_data");
+			$id = (array)json_decode($pd);
+			$data["cdsd_type"] = $id["cdsd_type"];
+			if($id["int_emp_agt_type"] == 1) {
+				return view("cdsd_interest_index_employee", compact("data"));
+			} else {
+				return view("cdsd_interest_index_agent", compact("data"));
+			}
+		}
+
+		public function close_emp_agt(Request $request)
+		{
+			$pd = $request->input("post_data");
+			$id = (array)json_decode($pd);
+			$data["cdsd_type"] = $id["cdsd_type"];
+			if($id["close_emp_agt_type"] == 1) {
+				return view("cdsd_close_index_employee", compact("data"));
+			} else {
+				return view("cdsd_close_index_agent", compact("data"));
+			}
+		}
+
 	}

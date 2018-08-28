@@ -109,17 +109,15 @@ class CDSDTranModel extends Model
 			->where($paid_field,PAID)
 			->where($cdsd_type_field,$data["cdsd_type"]);
 		if(isset($data["till_date"])) {
-		/* 	if(isset($data["till_time"])) {//IF TIME IS GIVEN
-				// $credit_amount = $credit_amount->where($this->time_field,"<",$data["till_time"]);
-				$credit_amount = $credit_amount->where(function($query) {
-					$query = $query->where($this->date_field,"<=",$data["till_date"])
+			if(isset($data["till_time"])) {//IF TIME IS GIVEN
+				$credit_amount = $credit_amount->where(function($query) use($data) {
+					$query = $query->where($this->date_field,"=",$data["till_date"])
 						->where($this->time_field,"<=",$data["till_time"])
-						->orWhere("");
+						->orWhere($this->date_field,"<",$data["till_date"]);
 				});
 			} else {//ONLY DATE IS GIVEN
 				$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);
-			} */
-			$credit_amount = $credit_amount->where($this->date_field,"<",$data["till_date"]);
+			}
 		}
 		$credit_amount = $credit_amount->sum($amount_field);
 
@@ -130,21 +128,19 @@ class CDSDTranModel extends Model
 			->where($deleted_field,NOT_DELETED)
 			->where($transaction_type_field,DEBIT)
 			->where($cdsd_type_field,$data["cdsd_type"]);
-			if(isset($data["till_date"])) {
-			/* 	if(isset($data["till_time"])) {//IF TIME IS GIVEN
-					// $debit_amount = $debit_amount->where($this->time_field,"<",$data["till_time"]);
-					$debit_amount = $debit_amount->where(function($query) {
-						$query = $query->where($this->date_field,"<=",$data["till_date"])
-							->where($this->time_field,"<=",$data["till_time"])
-							->orWhere("");
-					});
-				} else {//ONLY DATE IS GIVEN
-					$debit_amount = $debit_amount->where($this->date_field,"<=",$data["till_date"]);
-				} */
-				$debit_amount = $debit_amount->where($this->date_field,"<",$data["till_date"]);
+		if(isset($data["till_date"])) {
+			if(isset($data["till_time"])) {//IF TIME IS GIVEN
+				$debit_amount = $debit_amount->where(function($query) use($data) {
+					$query = $query->where($this->date_field,"=",$data["till_date"])
+						->where($this->time_field,"<=",$data["till_time"])
+						->orWhere($this->date_field,"<",$data["till_date"]);
+				});
+			} else {//ONLY DATE IS GIVEN
+				$debit_amount = $debit_amount->where($this->date_field,"<=",$data["till_date"]);
 			}
+		}
 		$debit_amount = $debit_amount->sum($amount_field);
-			// print_r($credit_amount);
+			// print_r($debit_amount);
 		return $credit_amount - $debit_amount;
 	}
 

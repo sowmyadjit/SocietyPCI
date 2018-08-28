@@ -202,6 +202,9 @@
 				Route::post('/cdsd_int_calc_all_acc','DepositController@cdsd_int_calc_all_acc');// CALCULATE INTEREST
 				Route::post('/cdsd_close','DepositController@cdsd_close');// CALCULATE INTEREST AND CLOSE
 				Route::post('/cdsd_int_prev_data','DepositController@cdsd_int_prev_data');// CALCULATE INTEREST AND CLOSE
+				Route::post('/cdsd_int_create','DepositController@cdsd_int_create');
+				Route::post('/cdsd_int_remove','DepositController@cdsd_int_remove');
+				Route::post('/int_emp_agt','DepositController@int_emp_agt');
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');

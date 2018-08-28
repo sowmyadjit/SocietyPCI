@@ -22,8 +22,6 @@
     $today_date = date("Y-m-d");
 
 ?>
-		<script src="js/bootstrap-typeahead.js"></script>
-		<script src="js/bootstrap-datepicker.js"/>
 		<div id="deposit_details_box">
 			<div class="box-header well" data-original-title="">
 				<h2><i class="glyphicon glyphicon-user"></i>{{$page_title}}</h2>
@@ -41,33 +39,16 @@
 					<div class="form-group col-md-12">
                         <div class="alert alert-info" style="height:80px;">
                             <div class="col-md-12">
+								<select id="int_emp_agt_type">
+									<option value="1">EMPLOYEE</option>
+									<option value="2">AGENT</option>
+								</select>
                             </div>
                         </div>
 					</div>
 
-                    
-                    <div class="form-group col-md-12">
-                        <label class="control-label col-sm-4">DATE:</label>
-                        <div class="col-md-4">
-                            <input  class="form-control datepicker" id="cdsd_int_calc_date" data-date-format="yyyy-mm-dd" value="{{$today_date}}" placeholder="yyyy-mm-dd">
-                        </div>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label class="control-label col-sm-4">INTEREST RATE:</label>
-                        <div class="col-md-4">
-                            <input  class="form-control" id="cdsd_int_rate"  value="9" placeholder="INTEREST RATE">
-                        </div>
-                    </div>
-
-                    
-                    <center>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <input type="button" id="cdsd_int_calc" value="CALCULATE" class="btn btn-success btn-sm" style="margin-bottom:10px;"/>
-                            </div>
-                        </div>
-                    </center>
-
+                <div id="int_emp_agt"></div>
+                 
 
 				</div>
 						
@@ -76,51 +57,30 @@
 
 	</div>
 
-	<div id="calculated_int">
-	</div>
-
 <script>
-	$('.datepicker').datepicker().on('changeDate',function(e){
-		$(this).datepicker('hide');
-	});
-</script>
-
-<script>
-    $("#cdsd_int_calc").click(function() {
-        console.log("interest calculate");
-		var cdsd_int_calc_date = $("#cdsd_int_calc_date").val();
-		var cdsd_int_rate = $("#cdsd_int_rate").val();
-        var post_data = {
-            "cdsd_type": {{$cdsd_type}},
-            "cdsd_int_calc_date": cdsd_int_calc_date,
-            "cdsd_int_rate": cdsd_int_rate
-        };
-        $.ajax({
-            type: "post",
-            url: "cdsd_int_calc_all_acc",
-            data: "&post_data="+JSON.stringify(post_data),
-            success: function(data) {
-                console.log("calculated");
-                alert("SUCCESS");
-            }
-        });
-    });
-</script>
-
-<script>
-	$("document").ready(function() {
-		console.log("int_prev");
-		var post_data = {
-			cdsd_type: {{$cdsd_type}}
-		};
+	function load_emp_agt() {
+		show_loading_img("#int_emp_agt");
+		var temp_post_data = {
+			"cdsd_type": {{$cdsd_type}},
+			"int_emp_agt_type": $("#int_emp_agt_type").val()
+		}
+		var post_data = JSON.stringify(temp_post_data);
 		$.ajax({
-            type: "post",
-            url: "cdsd_int_prev_data",
-            data: "&post_data="+JSON.stringify(post_data),
-            success: function(data) {
-                console.log("done");
-				$("#calculated_int").html(data);
-            }
+			type:"post",
+			url: "int_emp_agt",
+			data: "&post_data="+post_data,
+			success: function(data) {
+				console.log("done");
+				$("#int_emp_agt").html(data);
+			}
 		});
+	}
+	$("#int_emp_agt_type").change(function() {
+		// console.log("sgfksghdfks");
+		load_emp_agt();
+	});
+
+	$("document").ready(function() {
+		load_emp_agt();
 	});
 </script>

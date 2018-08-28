@@ -1005,7 +1005,14 @@ class DepositModel extends Model
 				$total_int += (float)$int_amt;
 			}
 			$total_int += $int_for_amt_till_last_int_calc;
-			$total_int = round($total_int,2);
+			$wn = (int)$total_int;
+			$fn = $total_int - $wn;
+			//	0 - 50 paise round to 0 paise
+			//	51 - 99 paise round to 1 rupee
+			if($fn == 0.5){
+				$total_int -= 0.5;
+			}
+			$total_int = round($total_int,0);
 
 			DB::table($this->cdsd->tbl)
 				->where("cdsd_id", $data["cdsd_id"])
@@ -1025,14 +1032,34 @@ class DepositModel extends Model
 				->orderBy($this->cdsd_tran->date_field, "desc")
 				->orderBy($this->cdsd_tran->time_field, "desc")
 				->first();
+			$bal_cf_tran = DB::table($this->cdsd_tran->tbl)
+				->where($this->cdsd_tran->cdsd_type_field,$data["cdsd_type"])
+				->where($this->cdsd_tran->cdsd_id_field, $data[$this->cdsd_tran->cdsd_id_field])
+				->where($this->cdsd_tran->interest_tran_field, 1)
+				->where("bal_cf", 1)
+				->orderBy($this->cdsd_tran->date_field, "asc")
+				->orderBy($this->cdsd_tran->time_field, "asc")
+				->first();
 
-			if(empty($last_int_tran)) {
-				$cdsd_acc_info = $this->cdsd->get_row([ "{$this->cdsd->pk}"=>$data[$this->cdsd->pk] ]);
+			$cdsd_acc_info = $this->cdsd->get_row([ "{$this->cdsd->pk}"=>$data[$this->cdsd->pk] ]);
+
+			if(empty($last_int_tran) && empty($bal_cf_tran)) {
 				$temp_date = $cdsd_acc_info->{$this->cdsd->cdsd_start_date_field};
 				$temp_time = "00:00:00";
-			} else {
-				$temp_date = $last_int_tran->{$this->cdsd_tran->date_field};
-				$temp_time = "00:00:00";
+			} elseif(empty($last_int_tran) && !empty($bal_cf_tran)) {
+				$temp_date = $bal_cf_tran->date;
+				$temp_time = $bal_cf_tran->time;
+			} elseif(!empty($last_int_tran) && empty($bal_cf_tran)) {
+				$temp_date = $last_int_tran->date;
+				$temp_time = $last_int_tran->time;
+			} elseif(!empty($last_int_tran) && !empty($bal_cf_tran)) {
+				if($last_int_tran->date > $bal_cf_tran->date) {
+					$temp_date = $last_int_tran->date;
+					$temp_time = $last_int_tran->time;
+				} else {
+					$temp_date = $bal_cf_tran->date;
+					$temp_time = $bal_cf_tran->time;
+				}
 			}
 
 			$ret_data["last_int_calc_date"] = $temp_date;
@@ -1059,7 +1086,12 @@ class DepositModel extends Model
 		{
 			$ret_data = DB::table($this->cdsd_tran->tbl)
 				->where($this->cdsd_tran->cdsd_id_field, $data[$this->cdsd_tran->cdsd_id_field])
-				->where($this->cdsd_tran->date_field,">=",$data["last_tran_date"])
+				->where(function($query) use($data) {
+					$query = $query->where($this->cdsd_tran->date_field,"=",$data["last_tran_date"])
+						->where($this->cdsd_tran->time_field,">",$data["last_tran_time"])
+						->orWhere($this->cdsd_tran->date_field,">",$data["last_tran_date"]);
+				})
+				// ->where($this->cdsd_tran->date_field,">=",$data["last_tran_date"])
 				->where($this->cdsd_tran->deleted_field, NOT_DELETED)
 				->get();
 			if(empty($ret_data)) {
@@ -1091,6 +1123,21 @@ class DepositModel extends Model
 
 			DB::table("cdsd_transaction")
 				->insertGetId(["cdsd_type"=>$cdsd_acc_info->cdsd_type, "cdsd_id"=>$cdsd_acc_info->cdsd_id, "date"=>date("Y-m-d"), "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>1, "amount"=>$cdsd_acc_info->int_prev, "paid"=>1, "payment_mode"=>2, "particulars"=>"{$category} INTEREST", "interest_tran"=>1 ]);
+
+			DB::table("cdsd_account")
+				->where("cdsd_id",$cdsd_acc_info->cdsd_id)
+				->update(["int_prev"=>0]);
+		}
+		
+		public function cdsd_int_remove($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$cdsd_acc_info = $this->cdsd->get_row(["cdsd_id"=>$data["cdsd_id"]]);
+
+			DB::table("cdsd_account")
+				->where("cdsd_id",$cdsd_acc_info->cdsd_id)
+				->update(["int_prev"=>0]);
 		}
 		
 		public function calculated_interest($data)
