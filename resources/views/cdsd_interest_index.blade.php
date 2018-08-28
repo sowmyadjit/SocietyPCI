@@ -56,13 +56,12 @@
 
 
 	</div>
-
 <script>
 	function load_emp_agt() {
 		show_loading_img("#int_emp_agt");
 		var temp_post_data = {
 			"cdsd_type": {{$cdsd_type}},
-			"int_emp_agt_type": $("#int_emp_agt_type").val()
+			"user_type": $("#int_emp_agt_type").val()
 		}
 		var post_data = JSON.stringify(temp_post_data);
 		$.ajax({
@@ -79,8 +78,10 @@
 		// console.log("sgfksghdfks");
 		load_emp_agt();
 	});
-
+</script>
+<script>
 	$("document").ready(function() {
+		console.log("rdy");
 		load_emp_agt();
 	});
 </script>

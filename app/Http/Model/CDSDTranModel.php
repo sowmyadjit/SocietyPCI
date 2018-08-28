@@ -92,6 +92,8 @@ class CDSDTranModel extends Model
 	{
 		/*
 			$data["till_date"] is optional
+			$data["till_time"] is optional
+			$data["include_tran_at_till_time"] is optional
 		*/
 		$table = $this->tbl;
 		$allocation_id_field = $this->cdsd_id_field;
@@ -111,9 +113,17 @@ class CDSDTranModel extends Model
 		if(isset($data["till_date"])) {
 			if(isset($data["till_time"])) {//IF TIME IS GIVEN
 				$credit_amount = $credit_amount->where(function($query) use($data) {
-					$query = $query->where($this->date_field,"=",$data["till_date"])
-						->where($this->time_field,"<=",$data["till_time"])
-						->orWhere($this->date_field,"<",$data["till_date"]);
+					$query = $query->where($this->date_field,"=",$data["till_date"]);
+						if(isset($data["include_tran_at_till_time"])) {
+							if($data["include_tran_at_till_time"]) {
+								$query = $query->where($this->time_field,"<=",$data["till_time"]);// INCLUDE TRANSACTION AT $data["till_time"]
+							} else {
+								$query = $query->where($this->time_field,"<",$data["till_time"]);//DO NOT INCLUDE TRANSACTION AT $data["till_time"]
+							}
+						} else {
+							$query = $query->where($this->time_field,"<=",$data["till_time"]);// INCLUDE TRANSACTION AT $data["till_time"] IF NOT MENTIONED
+						}
+						$query = $query->orWhere($this->date_field,"<",$data["till_date"]);
 				});
 			} else {//ONLY DATE IS GIVEN
 				$credit_amount = $credit_amount->where($this->date_field,"<=",$data["till_date"]);

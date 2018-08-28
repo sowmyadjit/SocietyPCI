@@ -945,15 +945,18 @@ class DepositModel extends Model
 		public function cdsd_int_calc_all_acc($data)
 		{
 			$cdsd_type = $data["cdsd_type"];
+			$user_type = $data["user_type"];
+			$fn_data["user_type"] = $data["user_type"];
 			//CALCULATE CDSD INTEREST
 			// print_r($data);
 			$int_till_date = $data["cdsd_int_calc_date"];
 			$int_rate = $data["cdsd_int_rate"];
-			$cdsd_acc_list = $this->get_live_cdsd_acc();//GET ALL CDSD LIVE ACCOUNTS FOR INTEREST CALCULATION
+			$cdsd_acc_list = $this->get_live_cdsd_acc(["user_type"=>$user_type]);//GET ALL CDSD LIVE ACCOUNTS FOR INTEREST CALCULATION
 			foreach($cdsd_acc_list as $row_acc) {
 				//CALCULATE INTEREST FOR EACH ACCOUNT
 				unset($fn_data);
 				$fn_data["cdsd_type"] = $data["cdsd_type"];
+				$fn_data["user_type"] = $user_type;
 				$fn_data["cdsd_int_calc_date"] = $data["cdsd_int_calc_date"];
 				$fn_data["cdsd_id"] = $row_acc->cdsd_id;
 				$fn_data["cdsd_int_rate"] = $data["cdsd_int_rate"];
@@ -962,7 +965,7 @@ class DepositModel extends Model
 			return;
 		}
 
-		public function get_live_cdsd_acc()
+		public function get_live_cdsd_acc($data)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
@@ -970,6 +973,7 @@ class DepositModel extends Model
 			$ret_data = DB::table("cdsd_account")
 				->where("deleted",0)
 				->where("bid",  $BID)
+				->where("user_type",  $data["user_type"])
 				->where("cdsd_closed", 0)
 				->get();
 			// print_r($ret_data);exit();
@@ -979,6 +983,7 @@ class DepositModel extends Model
 		public function cdsd_int_calc($data)
 		{
 			$cdsd_type = $data["cdsd_type"];
+			$user_type = $data["user_type"];
 			$last_int_calc_date_time = $this->get_last_int_calc_date_time([ "cdsd_type"=>$cdsd_type, "{$this->cdsd_tran->cdsd_id_field}"=>$data[$this->cdsd_tran->cdsd_id_field] ]);//GET DATE OF LAST INTEREST CALCULATION FOR THIS ACCOUNT
 			$last_int_calc_date = $last_int_calc_date_time["last_int_calc_date"];
 			$last_int_calc_time = $last_int_calc_date_time["last_int_calc_time"];
@@ -989,7 +994,12 @@ class DepositModel extends Model
 			// echo "last_int_calc_time  = {$int_till_date}";
 			$int_days_from_last_int_calc = $this->dateDiff(["first"=>$last_int_calc_date, "second"=>$int_till_date]);
 			// echo "int_days  = {$int_days}";
-			$amt_till_last_int_calc_date_time = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>$cdsd_type, "{$this->cdsd_tran->cdsd_id_field}"=>$data[$this->cdsd_tran->cdsd_id_field], "till_date"=>$last_int_calc_date, "till_time"=>$last_int_calc_time]);
+			if($user_type == 1) {
+				$include_tran_at_till_time  = true;
+			} elseif($user_type == 2) {
+				$include_tran_at_till_time = false;
+			}
+			$amt_till_last_int_calc_date_time = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>$cdsd_type, "{$this->cdsd_tran->cdsd_id_field}"=>$data[$this->cdsd_tran->cdsd_id_field], "till_date"=>$last_int_calc_date, "till_time"=>$last_int_calc_time, "include_tran_at_till_time"=>$include_tran_at_till_time]);
 			// echo "amt_till_last_int_calc_date_time  = {$amt_till_last_int_calc_date_time}";
 			$cdsd_tran_after_last_int_calc_date = $this->get_cdsd_tran_after_last_int_calc_date(["cdsd_type"=>$cdsd_type,"{$this->cdsd_tran->cdsd_id_field}"=>$data[$this->cdsd_tran->cdsd_id_field],"last_tran_date"=>$last_int_calc_date, "last_tran_time"=>$last_int_calc_time]);
 			
@@ -1092,6 +1102,8 @@ class DepositModel extends Model
 						->orWhere($this->cdsd_tran->date_field,">",$data["last_tran_date"]);
 				})
 				// ->where($this->cdsd_tran->date_field,">=",$data["last_tran_date"])
+				->where("transaction_type", 1)
+				->where("interest_tran", 0)
 				->where($this->cdsd_tran->deleted_field, NOT_DELETED)
 				->get();
 			if(empty($ret_data)) {
@@ -1148,11 +1160,84 @@ class DepositModel extends Model
 				->where("deleted", 0)
 				// ->where("cdsd_closed", 0)
 				->where("cdsd_type", $data["cdsd_type"])
+				->where("user_type", $data["user_type"])
 				->where("cdsd_account.bid", $BID)
 				->where("int_prev", ">", 0)
 				->get();
+
+			foreach($ret_data as $key=>$row) {
+				switch($row->user_type) {
+					case 1:
+							$ret_data[$key]->user_type = "EMP";
+							break;
+					case 2:
+							$ret_data[$key]->user_type = "AGENT";
+							break;
+					case 3:
+							$ret_data[$key]->user_type = "CUSTOMER";
+							break;
+					default:
+							$ret_data[$key]->user_type = "";
+				}
+			}
 			// print_r($ret_data);
 			return $ret_data;
 		}
 		
+		public function cdsd_pay($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			// print_r($data);
+			$cdsd_type = $data["cdsd_type"];
+			if($cdsd_type == 1) {
+				$category = "CD";
+			} else {
+				$category = "SD";
+			}
+			$acc_info = $this->cdsd->get_row(["cdsd_id"=>$data["cdsd_id"] ]);
+			$balnce_amt = $this->cdsd_tran->get_cdsd_amount(["cdsd_id"=>$data["cdsd_id"], "cdsd_type"=>$cdsd_type ]);
+			if(strcasecmp($data["pay_mode"], "CASH") == 0) {
+				$temp_payment_mode = 1;
+			} else {
+				$temp_payment_mode = 2;
+			}
+			if($data["pay_amt"] > $balnce_amt) {
+				return "amt is more than balance";
+			} else {
+				// $rem_amt = $balnce_amt - $data["pay_amt"];
+			}
+
+			DB::table("cdsd_transaction")
+				->insertGetId(["cdsd_type"=>$data["cdsd_type"], "cdsd_id"=>$data["cdsd_id"], "date"=>$data["pay_date"], "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>2, "amount"=>$data["pay_amt"], "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} PAY", "interest_tran"=>0, "bal_cf"=>0, "bank_id"=>$data["bank"], "cheque_no"=>$data["cheque_no"], "cheque_date"=>$data["cheque_date"]  ]);
+
+			if(strcasecmp($data["pay_mode"], "SB") == 0) {
+				$insert_array_sb = array(
+					"Accid"=>$data["sb_acc_id"],
+					"AccTid"=>1,
+					"TransactionType"=>"CREDIT",
+					"particulars"=>"SD PAY AMT",
+					"Amount"=>$data["pay_amt"],
+					"SBReport_TranDate"=>$data["pay_date"],
+					"Time"=>date("Y-m-d H:i:s"),
+					"Month"=>date("m",strtotime($data["pay_date"])),
+					"Year"=>date("Y",strtotime($data["pay_date"])),
+					"Bid"=>$BID,
+					"Payment_Mode"=>"ADJUSTMENT",
+					"CreatedBy"=>$UID,
+					"tran_reversed"=>"NO"
+				);
+				DB::table("sb_transaction")
+					->insertGetId($insert_array_sb);
+			}
+			return;
+		}
+
+		public function get_cdsd_acc_info($data)
+		{
+			$ret_data = DB::table("cdsd_account")
+				->join("user", "user.Uid","=","cdsd_account.uid")
+				->where("cdsd_id", $data["cdsd_id"])
+				->first();
+			return $ret_data;
+		}
 	}

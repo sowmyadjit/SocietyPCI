@@ -1,6 +1,7 @@
 <?php
 	if(!empty($data["cdsd_type"])){
 		$cdsd_type = $data["cdsd_type"];
+		$user_type = $data["user_type"];
 	} else {
 		echo "<script>console.log(\"data['cdsd_type'] is empty!\");</script>";
 		return;
@@ -22,7 +23,7 @@
     $today_date = date("Y-m-d");
 
 ?>
-<!-- cdsd_close_index_employee -->
+<!-- cdsd_close_index_user -->
                     <script src="js/bootstrap-typeahead.js"></script>
                     <script src="js/bootstrap-datepicker.js"/>
 		
@@ -75,7 +76,7 @@
 </script>
 <script>
 		$('.cdsd_acc_no_typeahead').typeahead({
-			ajax: '/search_cdsd_acc_no?cdsd_type={{$cdsd_type}}'
+			ajax: '/search_cdsd_acc_no?cdsd_type={{$cdsd_type}}&user_type={{$user_type}}&cdsd_closed=0'
 			// source:search_cdsd_acc_no
 		});
 		
@@ -92,6 +93,7 @@
         var cdsd_acc_id = $("#cdsd_acc_no").attr("data-value");
         var post_data = {
             "cdsd_type": {{$cdsd_type}},
+            "user_type": {{$user_type}},
             "cdsd_int_calc_date": cdsd_int_calc_date,
             "preview": preview,
             "cdsd_int_rate": cdsd_int_rate,

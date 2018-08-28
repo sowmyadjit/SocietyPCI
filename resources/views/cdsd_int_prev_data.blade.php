@@ -29,6 +29,7 @@
 			<th>Sl. No.</th>
 			<th>Customer ID</th>
 			<th>Customer Name</th>
+			<th>User Type</th>
 			<th>Account Number</th>
 			<th>Interest Amount</th>
 		</tr>
@@ -41,7 +42,8 @@
 				<td><input type="checkbox" id="select_{{$row->cdsd_id}}" class="select_cdsd_int" data="{{$row->cdsd_id}}" ></td>
 				<td>{{++$i}}</td>
 				<td>{{ $row->uid }}</td>
-				<td></td>	
+				<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+				<td>{{$row->user_type}}</td>
 				<td>{{$row->cdsd_acc_no}} / {{$row->cdsd_oldacc_no}}</td>
 				<td>{{$row->int_prev}}</td>
 			</tr>

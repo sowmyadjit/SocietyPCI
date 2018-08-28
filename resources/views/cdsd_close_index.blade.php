@@ -63,6 +63,7 @@
 		show_loading_img("#close_emp_agt");
 		var temp_post_data = {
 			"cdsd_type": {{$cdsd_type}},
+			"user_type": $("#close_emp_agt_type").val(),
 			"close_emp_agt_type": $("#close_emp_agt_type").val()
 		}
 		var post_data = JSON.stringify(temp_post_data);
@@ -76,12 +77,13 @@
 			}
 		});
 	}
-	$("#close_emp_agt").change(function() {
+	$("#close_emp_agt_type").change(function() {
 		// console.log("sgfksghdfks");
 		load_emp_agt();
 	});
 
 	$("document").ready(function() {
+        console.log("ready");
 		load_emp_agt();
 	});
 </script>

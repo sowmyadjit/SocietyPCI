@@ -205,6 +205,10 @@
 				Route::post('/cdsd_int_create','DepositController@cdsd_int_create');
 				Route::post('/cdsd_int_remove','DepositController@cdsd_int_remove');
 				Route::post('/int_emp_agt','DepositController@int_emp_agt');
+				Route::post('/close_emp_agt','DepositController@close_emp_agt');
+				Route::post('/cdsd_pay_index','DepositController@cdsd_pay_index');
+				Route::post('/cdsd_pay','DepositController@cdsd_pay');
+				Route::post('/cdsd_acc_details','DepositController@cdsd_acc_details');
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');

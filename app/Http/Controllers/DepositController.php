@@ -396,9 +396,10 @@
 			$post_data = $request->input("post_data");
 			$in_data = (array)json_decode($post_data);
 			$data["cdsd_type"] = $in_data["cdsd_type"];
+			$data["user_type"] = $in_data["user_type"];
 
 			$data["cdsd_type"] = $data["cdsd_type"];
-			$data["calculated_int"] = $this->creadepositmodel->calculated_interest(["cdsd_type"=>$data["cdsd_type"]]);
+			$data["calculated_int"] = $this->creadepositmodel->calculated_interest(["cdsd_type"=>$data["cdsd_type"], "user_type"=>$data["user_type"]]);
 			return view("cdsd_int_prev_data",compact("data"));
 		}
 
@@ -555,8 +556,10 @@
 			$in_data = (array)json_decode($post_data);
 
 			$cdsd_type = $in_data["cdsd_type"];
+			$user_type = $in_data["user_type"];
 
 			$fn_data["cdsd_type"] = $cdsd_type;
+			$fn_data["user_type"] = $user_type;
 			$fn_data["cdsd_int_calc_date"] = $in_data["cdsd_int_calc_date"];
 			$fn_data["cdsd_int_rate"] = $in_data["cdsd_int_rate"];
 			$this->creadepositmodel->cdsd_int_calc_all_acc($fn_data);
@@ -571,8 +574,10 @@
 			$in_data = (array)json_decode($post_data);
 
 			$cdsd_type = $in_data["cdsd_type"];
+			$user_type =  $in_data["user_type"];
 
 			$fn_data["cdsd_type"] = $cdsd_type;
+			$fn_data["user_type"] = $user_type;
 			$fn_data["preview"] = $in_data["preview"];
 			$fn_data["cdsd_int_calc_date"] = $in_data["cdsd_int_calc_date"];
 			$fn_data["cdsd_int_rate"] = $in_data["cdsd_int_rate"];
@@ -616,11 +621,12 @@
 			$pd = $request->input("post_data");
 			$id = (array)json_decode($pd);
 			$data["cdsd_type"] = $id["cdsd_type"];
-			if($id["int_emp_agt_type"] == 1) {
-				return view("cdsd_interest_index_employee", compact("data"));
-			} else {
-				return view("cdsd_interest_index_agent", compact("data"));
-			}
+			$data["user_type"] = $id["user_type"];
+			// if($id["user_type"] == 1) {
+				return view("cdsd_interest_index_user", compact("data"));
+			// } else {
+			// 	return view("cdsd_interest_index_agent", compact("data"));
+			// }
 		}
 
 		public function close_emp_agt(Request $request)
@@ -628,11 +634,49 @@
 			$pd = $request->input("post_data");
 			$id = (array)json_decode($pd);
 			$data["cdsd_type"] = $id["cdsd_type"];
-			if($id["close_emp_agt_type"] == 1) {
-				return view("cdsd_close_index_employee", compact("data"));
-			} else {
-				return view("cdsd_close_index_agent", compact("data"));
-			}
+			$data["user_type"] = $id["user_type"];
+			// if($id["close_emp_agt_type"] == 1) {
+				return view("cdsd_close_index_user", compact("data"));
+			// } else {
+			// 	return view("cdsd_close_index_agent", compact("data"));
+			// }
+		}
+
+		public function cdsd_pay_index(Request $request)
+		{
+			$data = [];
+			$data["cdsd_type"] = $request->input("cdsd_type");
+			return view("cdsd_pay_index",compact("data"));
+		}
+
+		public function cdsd_pay(Request $request)
+		{
+			$pd = $request->input("post_data");
+			$id = (array)json_decode($pd);
+			$fd["cdsd_type"] = $id["cdsd_type"];
+			$fd["cdsd_id"] = $id["cdsd_id"];
+			$fd["pay_date"] = $id["pay_date"];
+			$fd["pay_mode"] = $id["pay_mode"];
+			$fd["sb_acc_id"] = $id["sb_acc_id"];
+			$fd["bank"] = $id["bank"];
+			$fd["cheque_no"] = $id["cheque_no"];
+			$fd["cheque_date"] = $id["cheque_date"];
+			$fd["pay_amt"] = $id["pay_amt"];
+			$this->creadepositmodel->cdsd_pay($fd);
+			return "done";
+		}
+
+		public function cdsd_acc_details(Request $request)
+		{
+			$pd = $request->input("pd");
+			$id = (array)json_decode($pd);
+			$fd["cdsd_type"] = $id["cdsd_type"];
+			$fd["cdsd_id"] = $id["cdsd_id"];
+
+			$ret_data["bal_amt"] = $this->cdsd_tran->get_cdsd_amount($fd);
+			$ret_data["acc_info"] = $this->creadepositmodel->get_cdsd_acc_info($fd);
+			
+			return $ret_data;
 		}
 
 	}

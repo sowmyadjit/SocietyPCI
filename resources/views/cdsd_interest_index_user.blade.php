@@ -1,6 +1,7 @@
 <?php
 	if(!empty($data["cdsd_type"])){
 		$cdsd_type = $data["cdsd_type"];
+		$user_type = $data["user_type"];
 	} else {
 		echo "<script>console.log(\"data['cdsd_type'] is empty!\");</script>";
 		return;
@@ -66,6 +67,7 @@
 		var cdsd_int_rate = $("#cdsd_int_rate").val();
         var post_data = {
             "cdsd_type": {{$cdsd_type}},
+            "user_type": {{$user_type}},
             "cdsd_int_calc_date": cdsd_int_calc_date,
             "cdsd_int_rate": cdsd_int_rate
         };
@@ -88,7 +90,8 @@
 		show_loading_img("#calculated_int");
 		console.log("int_prev");
 		var post_data = {
-			cdsd_type: {{$cdsd_type}}
+			cdsd_type: {{$cdsd_type}},
+			user_type: {{$user_type}}
 		};
 		$.ajax({
             type: "post",

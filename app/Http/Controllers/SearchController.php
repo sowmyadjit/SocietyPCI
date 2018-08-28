@@ -616,6 +616,8 @@
 		{
 			$fn_data["query_string"] = $request->input("query");
 			$fn_data["cdsd_type"] = $request->input("cdsd_type");
+			$fn_data["user_type"] = $request->input("user_type");
+			$fn_data["cdsd_closed"] = $request->input("cdsd_closed");
 			// print_r($fn_data);
 			return $this->cdsd->search_cdsd_acc_no($fn_data);
 		}

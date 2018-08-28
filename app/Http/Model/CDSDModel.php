@@ -223,8 +223,14 @@ class CDSDModel extends Model
 		$ret_data = $ret_data->where(function($query) use ($query_string) {
 			$query->where($this->cdsd_acc_no_field, "like", "%{$query_string}%");
 				// ->orWhere();
-		})
-			->get();
+		});
+		if(isset($data["user_type"])) {
+			$ret_data = $ret_data->where("user_type", $data["user_type"]);
+		}
+		if(isset($data["cdsd_closed"])) {
+			$ret_data = $ret_data->where("cdsd_closed", $data["cdsd_closed"]);
+		}
+		$ret_data = $ret_data->get();
 
 		return $ret_data;
     }
