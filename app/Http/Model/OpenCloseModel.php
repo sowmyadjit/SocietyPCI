@@ -1537,7 +1537,7 @@
 			$BranchId=$uname->Bid;
 			
 			$id1=DB::table('branch_to_branch')
-				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as receipt_no',DB::raw(" '' as 'adj_no' "))
+				->select('Branch_Id','BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as receipt_no',DB::raw(" '' as 'adj_no' "))
 				->join('branch','branch.Bid','=','Branch_Branch1_Id')
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
 				->where("receipt_voucher.transaction_category",4)
@@ -1546,6 +1546,14 @@
 				->where('Branch_Branch2_Id',$BranchId)
 				->get();
 
+			$i = -1;
+			foreach($id1 as $row) {
+				$id_arr[++$i] = $row->Branch_Id;
+			}
+			if(empty($id_arr)) {
+				$id_arr = [];
+			}
+
 			/******* ADJUSTMENT CREDIT *****/
 			$id2 = DB::table('branch_to_branch')
 				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' "))
@@ -1553,7 +1561,9 @@
 				->where('Branch_Tran_Date',$dte)
 				->where('Branch_Branch2_Id',$BranchId)
 				->where("branch_to_branch.Branch_payment_Mode", "!=", "INHAND")
+				->whereNotIn('Branch_Id',$id_arr)
 				->get();
+			// $id2 = [];
 			/******* ADJUSTMENT CREDIT *****/
 			$id = array_merge($id1,$id2);
 			/******* END *****/
@@ -3312,6 +3322,7 @@
 				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->amount_field}",
 				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->particulars_field}",
 				"{$this->cdsd->tbl}.{$this->cdsd->cdsd_acc_no_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->interest_tran_field}",
 				DB::raw(" CONCAT(FirstName, ' ',MiddleName, ' ', LastName )  as 'name' "),
 				"user.Uid"
 			);

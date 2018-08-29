@@ -12,6 +12,8 @@
 	use App\Http\Model\SDTranModel;
 	use App\Http\Model\CDSDModel;
 	use App\Http\Model\CDSDTranModel;
+	use App\Http\Model\ReceiptVoucherModel;
+	use App\Http\Controllers\ReceiptVoucherController;
 	use Auth;
 	
 	class depositController extends Controller
@@ -28,6 +30,7 @@
 			$this->sd_tran= new SDTranModel;
 			$this->cdsd= new CDSDModel;
 			$this->cdsd_tran= new CDSDTranModel;
+			$this->rv_no = new ReceiptVoucherController;
 		}
 		
 		public function show_deposit()
@@ -428,9 +431,14 @@
 			$fn_data["cdsd_type"] = $cdsd_type;
 			$account_no = $this->cdsd->get_next_acc_no($fn_data);
 
+			$user_ho_acc_id = $this->creadepositmodel->get_ho_acc_id(["uid"=>$user_id]);
+			if(empty($user_ho_acc_id)) {
+				$user_ho_acc_id = 0;
+			}
+
 			unset($fn_data);
 			$fn_data["cdsd_type"] = $cdsd_type;
-			$fn_data["sd_ho_id"] = 0;
+			$fn_data["sd_ho_id"] = $user_ho_acc_id;
 			$fn_data["cdsd_acc_no"] = $account_no;
 			$fn_data["cdsd_oldacc_no"] = $old_acc_no;
 			$fn_data["user_type"] = $user_type;
@@ -446,7 +454,7 @@
 			$this->cdsd->set_row_data($fn_data);
 			$cdsd_branch_id = $this->cdsd->insert_row();
 
-			if($cdsd_type == CDSDModel::SD && $BID != 6) {
+			/* if($cdsd_type == CDSDModel::SD && $BID != 6) {
 				//CREATE AN ACCOUNT IN HO
 				unset($fn_data);
 				$fn_data["bid"] = 6; // HEAD OFFICE
@@ -480,7 +488,7 @@
 				// $this->sd->print_row_data($fn_data);
 				$this->cdsd->update_row();
 
-			}
+			} */
 			return "done";
 		}
 
@@ -509,12 +517,14 @@
 						$temp_subhead_id = "";
 			}
 
+			$cdsd_acc_info = $this->cdsd->get_row(["cdsd_id"=>$in_data["cdsd_id"]]);
+
 			unset($fn_data);
 			$fn_data[$this->cdsd_tran->cdsd_id_field] = $in_data["cdsd_id"];
 			$fn_data[$this->cdsd_tran->cdsd_type_field] = $in_data["cdsd_type"];
 			$fn_data[$this->cdsd_tran->date_field] = $in_data["cdsd_tran_date"];
 			$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
-			$fn_data[$this->cdsd_tran->bid_field] = $BID;
+			$fn_data[$this->cdsd_tran->bid_field] = $cdsd_acc_info->bid;
 			$fn_data[$this->cdsd_tran->transaction_type_field] = $in_data["cdsd_transaction_type"];
 			$fn_data[$this->cdsd_tran->amount_field] = $in_data["cdsd_amount"];
 			$fn_data[$this->cdsd_tran->paid_field] = PAID;
@@ -530,6 +540,27 @@
 			$this->cdsd_tran->clear_row_data();
 			$this->cdsd_tran->set_row_data($fn_data);
 			$sd_tran_id = $this->cdsd_tran->insert_row();
+			/****** RV SD TRAN *****/
+			if($in_data["cdsd_transaction_type"] == 1) {
+				$rv_transaction_type = "CREDIT";
+			} else {
+				$rv_transaction_type = "DEBIT";
+			}
+			if($in_data["cdsd_payment_mode"] == 1) {
+				$rv_payment_mode = "CASH";
+			} else {
+				$rv_payment_mode = "ADJUSTMENT";
+			}
+			unset($fn_data);
+			$fn_data["rv_payment_mode"] = $rv_payment_mode;
+			$fn_data["rv_transaction_id"] = $sd_tran_id;
+			$fn_data["rv_transaction_type"] = $rv_transaction_type;
+			$fn_data["rv_transaction_category"] = ReceiptVoucherModel::CDSD_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+			$fn_data["rv_date"] = $in_data["cdsd_tran_date"];
+			$fn_data["rv_bid"] = $cdsd_acc_info->bid;
+			$this->rv_no->save_rv_no($fn_data);
+			unset($fn_data);
+			/***********/
 			return "done";
 		}
 
@@ -570,6 +601,7 @@
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 
+			$date = date("Y-m-d");
 			$post_data = $request->input("post_data");
 			$in_data = (array)json_decode($post_data);
 
@@ -586,6 +618,7 @@
 
 			if(strcasecmp($in_data["preview"],"NO") == 0) {
 				$this->creadepositmodel->cdsd_close($fn_data);
+				$this->creadepositmodel->cdsd_close_interest(["cdsd_type"=>$cdsd_type, "user_type"=>$user_type, "cdsd_id"=>$in_data["cdsd_acc_id"], "date"=>$date]);
 			} else {
 				// $this->creadepositmodel->cdsd_create_int_tran(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$in_data["cdsd_acc_id"]]);
 			}

@@ -218,6 +218,7 @@
                 success: function(data) {
                     console.log(data);
                     $("#balance_amt").val(data["bal_amt"]);
+                    $("#pay_amt").val(data["bal_amt"]);
                     var name = data["acc_info"].FirstName + " " + data["acc_info"].MiddleName + " " + data["acc_info"].LastName;
                     $("#name").val(name);
                     

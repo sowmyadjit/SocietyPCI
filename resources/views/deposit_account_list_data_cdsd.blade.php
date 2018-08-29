@@ -59,7 +59,7 @@
         <tr>
             @foreach ($data['deposit_details'] as $row)
                 <tr>
-                    <td>{{++$i}}</td>
+                    <td><span title="acc id: {{$row['allocation_id']}}">{{++$i}}</span></td>
                     <td>{{ $row['user_id'] }}</td>
                     <td>{{ $row['name'] }}</td>
                     <td>{{ $row['user_type'] }}</td>

@@ -254,6 +254,7 @@
 			$agentsal['commdis']=$request->input('commdis');
 			$agentsal['tdsval']=$request->input('tdsval');//tds_value
 			$agentsal['sdpo']=$request->input('sdpo');//sd_value
+			$agentsal['sd_particulars']= "SD AMOUNT";//$request->input('sd_particulars');
 			$agentsal['sbAcNo']=$request->input('sbAcNo');
 			$agentsal['pmode']=$request->input('pmode');
 			$agentsal['SBAvailhidn']=$request->input('SBAvailhidn');

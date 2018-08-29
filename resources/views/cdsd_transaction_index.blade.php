@@ -118,7 +118,7 @@
 		
 <script>
 		$('.cdsd_acc_no_typeahead').typeahead({
-			ajax: '/search_cdsd_acc_no?cdsd_type={{$cdsd_type}}'
+			ajax: '/search_cdsd_acc_no?cdsd_type={{$cdsd_type}}&cdsd_closed=0'
 			// source:search_cdsd_acc_no
 		});
 		
