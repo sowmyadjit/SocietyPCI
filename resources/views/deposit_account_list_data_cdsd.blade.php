@@ -48,6 +48,7 @@
                 <th>Customer Name</th>
                 <th>User Type</th>
                 <th>Account Number</th>
+                <th>SB ACC NO</th>
                 <th>Security Deposit Amount</th>
                 <th>Start Date</th>
                 <th>Closed Date</th>
@@ -60,9 +61,10 @@
                 <tr>
                     <td>{{++$i}}</td>
                     <td>{{ $row['user_id'] }}</td>
-                    <td>{{ $row['name'] }}</td>	
-                    <td>{{ $row['user_type'] }}</td>	
+                    <td>{{ $row['name'] }}</td>
+                    <td>{{ $row['user_type'] }}</td>
                     <td>{{$row['account_no'] }} / {{$row['old_account_no'] }}</td>
+                    <td>{{ $row['sb_acc_no'] }}</td>
                     <td><span class="cdsd_amount" data="{{$row['allocation_id']}}" title="VIEW TRANSACTIONS">{{ $row['amount']}}</span></span></td>
                     <td>{{ $row['start_date']}}</td>
                     <td>{{ $row['close_date']}}</td>

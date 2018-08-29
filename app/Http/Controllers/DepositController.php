@@ -594,12 +594,14 @@
 
 		public function cdsd_int_create(Request $request)
 		{
+			$date = date("Y-m-d");
 			$pd = $request->input("post_data");
 			$id = (array)json_decode($pd);
 			$cdsd_type = $id["cdsd_type"];
+			$user_type = $id["user_type"];
 			$id_list = (array)$id["id_list"];
 			foreach($id_list as $val) {
-				$this->creadepositmodel->cdsd_create_int_tran(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$val]);
+				$this->creadepositmodel->cdsd_create_int_tran(["cdsd_type"=>$cdsd_type, "user_type"=>$user_type, "cdsd_id"=>$val, "date"=>$date]);
 			}
 			return "done";
 		}

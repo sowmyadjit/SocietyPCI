@@ -8,10 +8,12 @@
 	use App\Http\Model\RoundModel;
 	use App\Http\Controllers\LogController;
 	use App\Http\Model\CommonModel;
-	use App\Http\Model\CDModel;
-	use App\Http\Model\CDTranModel;
-	use App\Http\Model\SDModel;
-	use App\Http\Model\SDTranModel;
+	// use App\Http\Model\CDModel;
+	// use App\Http\Model\CDTranModel;
+	// use App\Http\Model\SDModel;
+	// use App\Http\Model\SDTranModel;
+	use App\Http\Model\CDSDModel;
+	use App\Http\Model\CDSDTranModel;
 	class OpenCloseModel extends Model
 	{
 		//
@@ -21,11 +23,13 @@
 		{
 			$this->roundamt=new RoundModel;
 			$this->log_ctr= new LogController;
-			$this->common= new CommonModel;
-			$this->cd= new CDModel;
-			$this->cd_tran= new CDTranModel;
-			$this->sd= new SDModel;
-			$this->sd_tran= new SDTranModel;
+			// $this->common= new CommonModel;
+			// $this->cd= new CDModel;
+			// $this->cd_tran= new CDTranModel;
+			// $this->sd= new SDModel;
+			// $this->sd_tran= new SDTranModel;
+			$this->cdsd= new CDSDModel;
+			$this->cdsd_tran= new CDSDTranModel;
 		}
 		
 		public function getbal()
@@ -3269,24 +3273,26 @@
 
 			unset($select_array_cd_tran);
 			$select_array_cd_tran = array(
-				"{$this->cd_tran->tbl}.{$this->cd_tran->pk}",
-				"{$this->cd_tran->tbl}.{$this->cd_tran->cd_id_field}",
-				"{$this->cd_tran->tbl}.{$this->cd_tran->date_field}",
-				"{$this->cd_tran->tbl}.{$this->cd_tran->transaction_type_field}",
-				"{$this->cd_tran->tbl}.{$this->cd_tran->payment_mode_field}",
-				"{$this->cd_tran->tbl}.{$this->cd_tran->cd_amount_field}",
-				"{$this->cd_tran->tbl}.{$this->cd_tran->particulars_field}",
-				"{$this->cd->tbl}.{$this->cd->cd_acc_no_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->pk}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->cdsd_type_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->cdsd_id_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->date_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->transaction_type_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->payment_mode_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->amount_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->particulars_field}",
+				"{$this->cdsd->tbl}.{$this->cdsd->cdsd_acc_no_field}",
 				DB::raw(" CONCAT(FirstName, ' ',MiddleName, ' ', LastName )  as 'name' "),
 				"user.Uid"
 			);
-			$ret_data = DB::table($this->cd_tran->tbl)
+			$ret_data = DB::table($this->cdsd_tran->tbl)
 				->select($select_array_cd_tran)
-				->join("{$this->cd->tbl}","{$this->cd->tbl}.{$this->cd->pk}","=","{$this->cd_tran->tbl}.{$this->cd_tran->cd_id_field}")
-				->join("user","user.Uid","=","{$this->cd->tbl}.{$this->cd->uid_field}")
-				->where("{$this->cd_tran->tbl}.{$this->cd_tran->date_field}", $date)
-				->where("{$this->cd_tran->tbl}.{$this->cd_tran->deleted_field}", 0)
-				->where("{$this->cd_tran->tbl}.{$this->cd_tran->bid_field}", $BID)
+				->join("{$this->cdsd->tbl}","{$this->cdsd->tbl}.{$this->cdsd->pk}","=","{$this->cdsd_tran->tbl}.{$this->cdsd_tran->cdsd_id_field}")
+				->join("user","user.Uid","=","{$this->cdsd->tbl}.{$this->cdsd->uid_field}")
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->date_field}", $date)
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->deleted_field}", 0)
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->bid_field}", $BID)
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->cdsd_type_field}", 1)
 				->get();
 
 			return $ret_data;
@@ -3294,31 +3300,33 @@
 
 		public function sd_tran($date)
 		{
-			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+		 	$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 
 			unset($select_array_sd_tran);
 			$select_array_sd_tran = array(
-				"{$this->sd_tran->tbl}.{$this->sd_tran->pk}",
-				"{$this->sd_tran->tbl}.{$this->sd_tran->sd_id_field}",
-				"{$this->sd_tran->tbl}.{$this->sd_tran->date_field}",
-				"{$this->sd_tran->tbl}.{$this->sd_tran->transaction_type_field}",
-				"{$this->sd_tran->tbl}.{$this->sd_tran->payment_mode_field}",
-				"{$this->sd_tran->tbl}.{$this->sd_tran->sd_amount_field}",
-				"{$this->sd_tran->tbl}.{$this->sd_tran->particulars_field}",
-				"{$this->sd->tbl}.{$this->sd->sd_acc_no_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->pk}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->cdsd_id_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->date_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->transaction_type_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->payment_mode_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->amount_field}",
+				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->particulars_field}",
+				"{$this->cdsd->tbl}.{$this->cdsd->cdsd_acc_no_field}",
 				DB::raw(" CONCAT(FirstName, ' ',MiddleName, ' ', LastName )  as 'name' "),
 				"user.Uid"
 			);
-			$ret_data = DB::table($this->sd_tran->tbl)
+			$ret_data = DB::table($this->cdsd_tran->tbl)
 				->select($select_array_sd_tran)
-				->join("{$this->sd->tbl}","{$this->sd->tbl}.{$this->sd->pk}","=","{$this->sd_tran->tbl}.{$this->sd_tran->sd_id_field}")
-				->join("user","user.Uid","=","{$this->sd->tbl}.{$this->sd->uid_field}")
-				->where("{$this->sd_tran->tbl}.{$this->sd_tran->date_field}", $date)
-				->where("{$this->sd_tran->tbl}.{$this->sd_tran->deleted_field}", 0)
-				->where("{$this->sd_tran->tbl}.{$this->sd_tran->bid_field}", $BID)
+				->join("{$this->cdsd->tbl}","{$this->cdsd->tbl}.{$this->cdsd->pk}","=","{$this->cdsd_tran->tbl}.{$this->cdsd_tran->cdsd_id_field}")
+				->join("user","user.Uid","=","{$this->cdsd->tbl}.{$this->cdsd->uid_field}")
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->date_field}", $date)
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->deleted_field}", 0)
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->bid_field}", $BID)
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->cdsd_type_field}", 2)
 				->get();
 
 			return $ret_data;
+			return [];
 		}
 		
 		

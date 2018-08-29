@@ -1008,12 +1008,12 @@
 						<?php
 							if($row->payment_mode == 1) {				//CASH
 								if($row->transaction_type == 1)	{					//CASH CREDIT
-										$cash_cr = $row->cd_amount;
+										$cash_cr = $row->amount;
 										$cash_cr_total += $cash_cr;
 						?>
 									<tr>
 										<td>{{$row->date}}</td>
-										<td>{{$row->cd_acc_no}}</td>
+										<td>{{$row->cdsd_acc_no}}</td>
 										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 										<td>{{$cash_cr}}</td>
 										<td>-</td>
@@ -1027,12 +1027,12 @@
 								} else	{										//CASH DEBIT
 						?>
 									<?php
-										$cash_db = $row->cd_amount;
+										$cash_db = $row->amount;
 										$cash_db_total += $cash_db;
 									?>
 									<tr>
 										<td>{{$row->date}}</td>
-										<td>{{$row->cd_acc_no}}</td>
+										<td>{{$row->cdsd_acc_no}}</td>
 										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 										<td>-</td>
 										<td>{{$cash_db}}</td>
@@ -1046,12 +1046,12 @@
 								}
 							} else	{										//ADJUSTMENT
 								if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
-										$adj_cr = $row->cd_amount;
+										$adj_cr = $row->amount;
 										$adj_cr_total += $adj_cr;
 						?>
 									<tr>
 										<td>{{$row->date}}</td>
-										<td>{{$row->cd_acc_no}}</td>
+										<td>{{$row->cdsd_acc_no}}</td>
 										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 										<td>-</td>
 										<td>-</td>
@@ -1070,7 +1070,7 @@
 									?>
 									<tr>
 										<td>{{$row->date}}</td>
-										<td>{{$row->cd_acc_no}}</td>
+										<td>{{$row->cdsd_acc_no}}</td>
 										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 										<td>-</td>
 										<td>-</td>
@@ -1120,12 +1120,12 @@
 							<?php
 								if($row->payment_mode == 1) {				//CASH
 									if($row->transaction_type == 1)	{					//CASH CREDIT
-											$cash_cr = $row->sd_amount;
+											$cash_cr = $row->amount;
 											$cash_cr_total += $cash_cr;
 							?>
 										<tr>
 											<td>{{$row->date}}</td>
-											<td>{{$row->sd_acc_no}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
 											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 											<td>{{$cash_cr}}</td>
 											<td>-</td>
@@ -1139,12 +1139,12 @@
 									} else	{										//CASH DEBIT
 							?>
 										<?php
-											$cash_db = $row->sd_amount;
+											$cash_db = $row->amount;
 											$cash_db_total += $cash_db;
 										?>
 										<tr>
 											<td>{{$row->date}}</td>
-											<td>{{$row->sd_acc_no}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
 											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 											<td>-</td>
 											<td>{{$cash_db}}</td>
@@ -1158,12 +1158,12 @@
 									}
 								} else	{										//ADJUSTMENT
 									if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
-											$adj_cr = $row->sd_amount;
+											$adj_cr = $row->amount;
 											$adj_cr_total += $adj_cr;
 							?>
 										<tr>
 											<td>{{$row->date}}</td>
-											<td>{{$row->sd_acc_no}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
 											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 											<td>-</td>
 											<td>-</td>
@@ -1177,12 +1177,12 @@
 										} else {										//ADJUSTMENT DEBIT
 									?>
 										<?php
-											$adj_db = $row->sd_amount;
+											$adj_db = $row->amount;
 											$adj_db_total += $adj_db;
 										?>
 										<tr>
 											<td>{{$row->date}}</td>
-											<td>{{$row->sd_acc_no}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
 											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
 											<td>-</td>
 											<td>-</td>

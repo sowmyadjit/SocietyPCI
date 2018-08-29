@@ -151,7 +151,7 @@ class CDSDTranModel extends Model
 		}
 		$debit_amount = $debit_amount->sum($amount_field);
 			// print_r($debit_amount);
-		return $credit_amount - $debit_amount;
+		return round($credit_amount - $debit_amount,2);
 	}
 
 	public function get_cdsd_tran($data)

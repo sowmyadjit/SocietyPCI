@@ -53,6 +53,7 @@
 		const JL_AUCTION_EXTRA_AMOUNT_PAY = 26;//auction_amount_transaction table
 		const AGENT_COMMISSION_PAYMENT = 27;
 		const CUSTOMER_FEE = 28;
+		const CDSD_TRAN = 29;
 
 		
 		const DELETED = 1;

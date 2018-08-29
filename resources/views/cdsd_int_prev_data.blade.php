@@ -1,6 +1,7 @@
 <?php
 	if(!empty($data["cdsd_type"])){
 		$cdsd_type = $data["cdsd_type"];
+		$user_type = $data["user_type"];
 	} else {
 		echo "<script>console.log(\"data['cdsd_type'] is empty!\");</script>";
 		return;
@@ -82,6 +83,7 @@
 
 		temp_post_data = {
 			"cdsd_type": {{$cdsd_type}},
+			"user_type": {{$user_type}},
 			"id_list": cdsd_id_arr
 		};
 		var post_data = JSON.stringify(temp_post_data);
