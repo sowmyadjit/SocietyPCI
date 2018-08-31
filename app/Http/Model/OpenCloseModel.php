@@ -2721,6 +2721,8 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$bid=$uname->Bid;
+
+			$excluede_arr = array(11);
 			
 			$agent_sal_extra=DB::table('salary_extra_pay')
 				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','paymentmode',DB::raw(" '' as 'receipt_no' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
@@ -2732,6 +2734,7 @@
 				// ->where("receipt_voucher.transaction_category",24)
 				->where('salary_extra_pay.date','=',$date)
 				->where('salary_extra_pay.bid','=',$bid)
+				->whereNotIn('salary_extra_pay.sal_extra_id',$excluede_arr)
 				->get();
 			//print_r($agent_sal_extra);
 			return $agent_sal_extra;

@@ -92,9 +92,10 @@
 						<label class="control-label col-sm-4">Commission</label>
 						<div class="col-sm-2">
 							<input class="form-control"  type="text" id="com_val" name="com_val" placeholder="Commission Rs." >  Rs.
+							<input class="form-control hidden"  type="text" id="com_total_val" name="com_total_val" readonly >
 						</div>
 						<div class="col-sm-2">
-							<input class="form-control"  type="text" id="com_per" name="com_per" onchange="calc_com();" placeholder="Commission %">  %
+							<input class="form-control"  type="text" id="com_per" name="com_per" onchange="calc_com(); update_total_commission();" placeholder="Commission %">  %
 						</div>
 					</div>
 					
@@ -997,3 +998,9 @@
 	}
 </script>
 
+<script>
+	function update_total_commission()
+	{
+		$("#com_total_val").val($("#com_val").val());
+	}
+</script>

@@ -237,6 +237,7 @@
 			$agentsal['charges']=$request->input('charges');  
 			$agentsal['amount']=$request->input('amount');  
 			$agentsal['loopid']=$request->input('loopid');
+			$agentsal['com_total_val']=$request->input('com_total_val');
 			
 /*************edit**************/
 			$agentsal['sal_extra_all']=$request->input('sal_extra_all');
@@ -267,6 +268,7 @@
 			$agentsal['charges']=$request->input('charges');  
 			$agentsal['amount']=$request->input('amount');  
 			$agentsal['loopid']=$request->input('loopid');
+			$agentsal['com_total_val']=$request->input('totalamt') - $request->input("ot");
 			
 /*************edit**************/
 			$agentsal['sal_extra_all']=$request->input('sal_extra_all');

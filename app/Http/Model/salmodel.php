@@ -440,7 +440,7 @@
 				$tranid=DB::table('sb_transaction')->insertGetId(['Accid'=>$id['sbAcNo'],'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"AGENT COMMISION",'Amount'=>$id['pay'],'CurrentBalance'=>$avilablebal,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$total,'Bid'=>$BID,'Payment_Mode'=>"SALARY",'CreatedBy'=>$UID]);
 				DB::table('createaccount')->where('Accid','=',$accid)->update(['Total_Amount'=>$total]);
 			}
-			$agt_cmm_id = DB::table('agent_commission_payment')->insertGetId(['Agent_Commission_Uid'=>$id['aguid'],'Agent_Commission_Bid'=>$BID,'Agent_Commission_PaidDate'=>$dte,'Agent_Commission_PaidforAmt'=>$id['totalamt'],'Agent_Commission_PaidAmount'=>$id['pay'],'Agent_Commission_PaidStatus'=>"PAID",'Agent_Commission_PaidBY'=>$UID,'Agent_Commission_Persent'=>$id['cp'],'securityDeposit'=>$id['sdpo'],'Tds'=>$id['tdsval'],'paymentmode'=>$pmode,'sbtranid'=>$tranid,'total_commission'=>$id['commdis']]);
+			$agt_cmm_id = DB::table('agent_commission_payment')->insertGetId(['Agent_Commission_Uid'=>$id['aguid'],'Agent_Commission_Bid'=>$BID,'Agent_Commission_PaidDate'=>$dte,'Agent_Commission_PaidforAmt'=>$id['totalamt'],'Agent_Commission_PaidAmount'=>$id['pay'],'Agent_Commission_PaidStatus'=>"PAID",'Agent_Commission_PaidBY'=>$UID,'Agent_Commission_Persent'=>$id['cp'],'securityDeposit'=>$id['sdpo'],'Tds'=>$id['tdsval'],'paymentmode'=>$pmode,'sbtranid'=>$tranid,'total_commission'=>$id["com_total_val"]/*$id['commdis']*/]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $pmode;
@@ -461,117 +461,18 @@
 					->where("Uid",$agent_uid)
 					->value("cdsd_id");
 				// var_dump($temp_sd_id);
-				$cdsd_row = $this->cdsd->get_row(["{$this->cdsd->pk}"=>$temp_sd_id]);
-				// print_r($cdsd_row);
+				if(!empty($temp_sd_id)) {
+					$cdsd_row = $this->cdsd->get_row(["{$this->cdsd->pk}"=>$temp_sd_id]);
+					print_r($cdsd_row);
 
-				unset($fn_data);
-				$fn_data[$this->cdsd_tran->cdsd_type_field] = 2;
-				$fn_data[$this->cdsd_tran->cdsd_id_field] = $temp_sd_id;
-				$fn_data[$this->cdsd_tran->date_field] = date("Y-m-d");
-				$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
-				$fn_data[$this->cdsd_tran->bid_field] = $BID;
-				$fn_data[$this->cdsd_tran->transaction_type_field] = CREDIT;
-				$fn_data[$this->cdsd_tran->amount_field] = $sd_amt;
-				$fn_data[$this->cdsd_tran->paid_field] = PAID;
-				$fn_data[$this->cdsd_tran->payment_mode_field] = 2;// ADJUSTMENT
-				$fn_data[$this->cdsd_tran->particulars_field] = $id['sd_particulars'];
-				// $fn_data[$this->cdsd_tran->cheque_no_field] = 
-				// $fn_data[$this->cdsd_tran->cheque_date_field] = 
-				// $fn_data[$this->cdsd_tran->bank_id_field] = 
-				$fn_data[$this->cdsd_tran->subhead_id_field] = $subhead_id_agent_sd;
-				$fn_data[$this->cdsd_tran->deleted_field] = NOT_DELETED;
-				$this->cdsd_tran->clear_row_data($fn_data);
-				$this->cdsd_tran->set_row_data($fn_data);
-				unset($fn_data);
-				$this->cdsd_tran->insert_row();
-				$temp_sd_ho_id = $cdsd_row->{$this->cdsd->sd_ho_id_field};
-				// var_dump($temp_sd_ho_id);
-
-				$sd_ho_amt = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>2, "{$this->cdsd_tran->cdsd_id_field}"=>$temp_sd_ho_id]);
-				var_dump($sd_ho_amt);
-
-				$ho_remaining_transferable_amount = SDModel::SD_HO_AMOUNT_LIMIT - $sd_ho_amt;
-				
-
-				if($sd_amt < $ho_remaining_transferable_amount) {
-					$transfer_amount = $sd_amt;
-				} else {
-					$transfer_amount = $ho_remaining_transferable_amount;
-				}
-
-				if($sd_ho_amt < SDModel::SD_HO_AMOUNT_LIMIT) {
-					$transfer_amount = $sd_amt;
-				} else {
-					$transfer_amount = 0;
-				}
-				var_dump($transfer_amount);
-
-				if($cdsd_row->{$this->cdsd_tran->bid_field} != 6 && $transfer_amount > 0) {
-					//transaction from branch to ho
-
-					//B2B
-					unset($insert_array);
-					$insert_array["Branch_Branch1_Id"] = 6;
-					$insert_array["Branch_Branch2_Id"] = $BID;
-					$insert_array["Branch_Tran_Date"] = date("Y-m-d");
-					$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
-					$insert_array["LedgerHeadId"] = $head_id_agent_sd;
-					$insert_array["SubLedgerId"] = $subhead_id_agent_sd;
-					$insert_array["Branch_Amount"] = $id['sdpo'];
-					$insert_array["Branch_per"] = "SD Amount";
-					$branch_to_branch_id = DB::table("branch_to_branch")
-						->insertGetId($insert_array);
-						/****** ADJ NO FOR BRANCH *****/
-						unset($fn_data);
-						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
-						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
-						$fn_data["rv_transaction_type"] = "DEBIT";
-						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
-						$fn_data["rv_date"] = date("Y-m-d");
-						$fn_data["rv_bid"] = 6;
-						$this->rv_no->save_rv_no($fn_data);
-						/***********/
-						/****** ADJ NO FOR HO *****/
-						unset($fn_data);
-						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
-						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
-						$fn_data["rv_transaction_type"] = "CREDIT";
-						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
-						$fn_data["rv_date"] = date("Y-m-d");
-						$fn_data["rv_date"] = $BID;
-						$this->rv_no->save_rv_no($fn_data);
-						/***********/
-
-					//BRNCH - SD DEB
 					unset($fn_data);
 					$fn_data[$this->cdsd_tran->cdsd_type_field] = 2;
 					$fn_data[$this->cdsd_tran->cdsd_id_field] = $temp_sd_id;
 					$fn_data[$this->cdsd_tran->date_field] = date("Y-m-d");
 					$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
 					$fn_data[$this->cdsd_tran->bid_field] = $BID;
-					$fn_data[$this->cdsd_tran->transaction_type_field] = DEBIT;
-					$fn_data[$this->cdsd_tran->amount_field] = $id['sdpo'];
-					$fn_data[$this->cdsd_tran->paid_field] = PAID;
-					$fn_data[$this->cdsd_tran->payment_mode_field] = 2;// ADJUSTMENT
-					$fn_data[$this->cdsd_tran->particulars_field] = $id['sd_particulars'];
-					// $fn_data[$this->cdsd_tran->cheque_no_field] = 
-					// $fn_data[$this->cdsd_tran->cheque_date_field] = 
-					// $fn_data[$this->cdsd_tran->bank_id_field] = 
-					$fn_data[$this->cdsd_tran->subhead_id_field] = $subhead_id_agent_sd;
-					$fn_data[$this->cdsd_tran->deleted_field] = NOT_DELETED;
-					$this->cdsd_tran->set_row_data($fn_data);
-					unset($fn_data);
-					$this->cdsd_tran->insert_row();
-					
-					//HO - SD CREDIT
-					unset($fn_data);
-					$fn_data[$this->cdsd_tran->cdsd_type_field] = 2;
-					$fn_data[$this->cdsd_tran->cdsd_id_field] = $temp_sd_ho_id;
-					$fn_data[$this->cdsd_tran->date_field] = date("Y-m-d");
-					$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
-					$fn_data[$this->cdsd_tran->bid_field] = 6;
 					$fn_data[$this->cdsd_tran->transaction_type_field] = CREDIT;
-					$fn_data[$this->cdsd_tran->amount_field] = $id['sdpo'];
+					$fn_data[$this->cdsd_tran->amount_field] = $sd_amt;
 					$fn_data[$this->cdsd_tran->paid_field] = PAID;
 					$fn_data[$this->cdsd_tran->payment_mode_field] = 2;// ADJUSTMENT
 					$fn_data[$this->cdsd_tran->particulars_field] = $id['sd_particulars'];
@@ -580,10 +481,111 @@
 					// $fn_data[$this->cdsd_tran->bank_id_field] = 
 					$fn_data[$this->cdsd_tran->subhead_id_field] = $subhead_id_agent_sd;
 					$fn_data[$this->cdsd_tran->deleted_field] = NOT_DELETED;
+					$this->cdsd_tran->clear_row_data($fn_data);
 					$this->cdsd_tran->set_row_data($fn_data);
 					unset($fn_data);
 					$this->cdsd_tran->insert_row();
+					$temp_sd_ho_id = $cdsd_row->{$this->cdsd->sd_ho_id_field};
+					var_dump($temp_sd_ho_id);
+
+					$sd_ho_amt = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>2, "{$this->cdsd_tran->cdsd_id_field}"=>$temp_sd_ho_id]);
+					var_dump($sd_ho_amt);
+
+					$ho_remaining_transferable_amount = SDModel::SD_HO_AMOUNT_LIMIT - $sd_ho_amt;
 					
+
+					if($sd_amt < $ho_remaining_transferable_amount) {
+						$transfer_amount = $sd_amt;
+					} else {
+						$transfer_amount = $ho_remaining_transferable_amount;
+					}
+
+					if($sd_ho_amt < SDModel::SD_HO_AMOUNT_LIMIT) {
+						$transfer_amount = $sd_amt;
+					} else {
+						$transfer_amount = 0;
+					}
+					var_dump($transfer_amount);
+
+					if($cdsd_row->{$this->cdsd_tran->bid_field} != 6 && $transfer_amount > 0) {
+						//transaction from branch to ho
+
+						//B2B
+						unset($insert_array);
+						$insert_array["Branch_Branch1_Id"] = 6;
+						$insert_array["Branch_Branch2_Id"] = $BID;
+						$insert_array["Branch_Tran_Date"] = date("Y-m-d");
+						$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+						$insert_array["LedgerHeadId"] = $head_id_agent_sd;
+						$insert_array["SubLedgerId"] = $subhead_id_agent_sd;
+						$insert_array["Branch_Amount"] = $id['sdpo'];
+						$insert_array["Branch_per"] = "SD Amount";
+						$branch_to_branch_id = DB::table("branch_to_branch")
+							->insertGetId($insert_array);
+							/****** ADJ NO FOR BRANCH *****/
+							unset($fn_data);
+							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+							$fn_data["rv_transaction_type"] = "CREDIT"; // DEBIT
+							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+							$fn_data["rv_date"] = date("Y-m-d");
+							$fn_data["rv_bid"] = $BID;
+							$this->rv_no->save_rv_no($fn_data);
+							/***********/
+							/****** ADJ NO FOR HO *****/
+							unset($fn_data);
+							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+							$fn_data["rv_transaction_type"] = "DEBIT"; //CREDIT
+							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+							$fn_data["rv_date"] = date("Y-m-d");
+							$fn_data["rv_bid"] = 6;
+							$this->rv_no->save_rv_no($fn_data);
+							/***********/
+
+						//BRNCH - SD DEB
+						unset($fn_data);
+						$fn_data[$this->cdsd_tran->cdsd_type_field] = 2;
+						$fn_data[$this->cdsd_tran->cdsd_id_field] = $temp_sd_id;
+						$fn_data[$this->cdsd_tran->date_field] = date("Y-m-d");
+						$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
+						$fn_data[$this->cdsd_tran->bid_field] = $BID;
+						$fn_data[$this->cdsd_tran->transaction_type_field] = DEBIT;
+						$fn_data[$this->cdsd_tran->amount_field] = $id['sdpo'];
+						$fn_data[$this->cdsd_tran->paid_field] = PAID;
+						$fn_data[$this->cdsd_tran->payment_mode_field] = 2;// ADJUSTMENT
+						$fn_data[$this->cdsd_tran->particulars_field] = $id['sd_particulars'];
+						// $fn_data[$this->cdsd_tran->cheque_no_field] = 
+						// $fn_data[$this->cdsd_tran->cheque_date_field] = 
+						// $fn_data[$this->cdsd_tran->bank_id_field] = 
+						$fn_data[$this->cdsd_tran->subhead_id_field] = $subhead_id_agent_sd;
+						$fn_data[$this->cdsd_tran->deleted_field] = NOT_DELETED;
+						$this->cdsd_tran->set_row_data($fn_data);
+						unset($fn_data);
+						$this->cdsd_tran->insert_row();
+						
+						//HO - SD CREDIT
+						unset($fn_data);
+						$fn_data[$this->cdsd_tran->cdsd_type_field] = 2;
+						$fn_data[$this->cdsd_tran->cdsd_id_field] = $temp_sd_ho_id;
+						$fn_data[$this->cdsd_tran->date_field] = date("Y-m-d");
+						$fn_data[$this->cdsd_tran->time_field] = date("H:i:s");
+						$fn_data[$this->cdsd_tran->bid_field] = 6;
+						$fn_data[$this->cdsd_tran->transaction_type_field] = CREDIT;
+						$fn_data[$this->cdsd_tran->amount_field] = $id['sdpo'];
+						$fn_data[$this->cdsd_tran->paid_field] = PAID;
+						$fn_data[$this->cdsd_tran->payment_mode_field] = 2;// ADJUSTMENT
+						$fn_data[$this->cdsd_tran->particulars_field] = $id['sd_particulars'];
+						// $fn_data[$this->cdsd_tran->cheque_no_field] = 
+						// $fn_data[$this->cdsd_tran->cheque_date_field] = 
+						// $fn_data[$this->cdsd_tran->bank_id_field] = 
+						$fn_data[$this->cdsd_tran->subhead_id_field] = $subhead_id_agent_sd;
+						$fn_data[$this->cdsd_tran->deleted_field] = NOT_DELETED;
+						$this->cdsd_tran->set_row_data($fn_data);
+						unset($fn_data);
+						$this->cdsd_tran->insert_row();
+						
+					}
 				}
 				/**************SD TRAN***************/
 
