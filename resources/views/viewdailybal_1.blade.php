@@ -1233,6 +1233,28 @@
 							<?php
 								if($row->interest_tran ==  1) {
 							?>
+								<?php
+									if($row->payment_mode == 1) {//	CASH DEBIT
+								?>
+										<?php
+											$cash_db = $row->amount;
+											$cash_db_total += $cash_db;
+										?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>-</td>
+											<td>{{$cash_db}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+								<?php
+									} else {
+								?>
 									<?php
 										$adj_db = $row->amount;
 										$adj_db_total += $adj_db;
@@ -1249,6 +1271,10 @@
 										<td>-</td>
 										<td>-</td>
 									</tr>
+								<?php
+									}
+								?>
+
 							<?php 
 								}
 							?>

@@ -168,6 +168,11 @@
 							$data = $this->creadepositmodel->deposit_account_list_cdsd($in_data);
 							return view("deposit_account_list_data_cdsd",compact("data"));
 							break;
+				case "CD":	
+							$in_data["cdsd_type"] = $request->input("cdsd_type");
+							$data = $this->creadepositmodel->deposit_account_list_cdsd($in_data);
+							return view("deposit_account_list_data_cdsd",compact("data"));
+							break;
 			}
 		}
 	
@@ -359,11 +364,11 @@
 		} */
 
 //CDSD DEPOSIT
-		public function cd_index()
+		/* public function cd_index()
 		{
 			$data["cdsd_type"] = CDSDModel::CD;
 			return view("cdsd_index",compact('data'));
-		}
+		} */
 
 		///////////////////////////////////////////////////////////
 		public function sd_index()
@@ -431,8 +436,12 @@
 			$fn_data["cdsd_type"] = $cdsd_type;
 			$account_no = $this->cdsd->get_next_acc_no($fn_data);
 
-			$user_ho_acc_id = $this->creadepositmodel->get_ho_acc_id(["uid"=>$user_id]);
-			if(empty($user_ho_acc_id)) {
+			if($cdsd_type == 2) {
+				$user_ho_acc_id = $this->creadepositmodel->get_ho_acc_id(["uid"=>$user_id]);
+				if(empty($user_ho_acc_id)) {
+					$user_ho_acc_id = 0;
+				}
+			} else {
 				$user_ho_acc_id = 0;
 			}
 
@@ -618,7 +627,7 @@
 
 			if(strcasecmp($in_data["preview"],"NO") == 0) {
 				$this->creadepositmodel->cdsd_close($fn_data);
-				$this->creadepositmodel->cdsd_close_interest(["cdsd_type"=>$cdsd_type, "user_type"=>$user_type, "cdsd_id"=>$in_data["cdsd_acc_id"], "date"=>$date]);
+				// $this->creadepositmodel->cdsd_close_interest(["cdsd_type"=>$cdsd_type, "user_type"=>$user_type, "cdsd_id"=>$in_data["cdsd_acc_id"], "date"=>$date]);
 			} else {
 				// $this->creadepositmodel->cdsd_create_int_tran(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$in_data["cdsd_acc_id"]]);
 			}
@@ -688,6 +697,23 @@
 		{
 			$pd = $request->input("post_data");
 			$id = (array)json_decode($pd);
+
+			if(strcasecmp($id["pay_mode"], "CASH") == 0) {
+				$temp_pay_mode = 1;
+			} else {
+				$temp_pay_mode = 2;
+			}
+
+			unset($fd);
+			$fd["cdsd_type"] = $id["cdsd_type"];
+			$fd["user_type"] = 0;
+			$fd["payment_mode"] = $temp_pay_mode;
+			$fd["closing_interest"] = "YES";
+			$fd["cdsd_id"] = $id["cdsd_id"];
+			$fd["date"] = date("Y-m-d");;
+			$this->creadepositmodel->cdsd_create_int_tran($fd);
+
+			unset($fd);
 			$fd["cdsd_type"] = $id["cdsd_type"];
 			$fd["cdsd_id"] = $id["cdsd_id"];
 			$fd["pay_date"] = $id["pay_date"];
@@ -712,6 +738,14 @@
 			$ret_data["acc_info"] = $this->creadepositmodel->get_cdsd_acc_info($fd);
 			
 			return $ret_data;
+		}
+
+//CD
+		
+		public function cd_index()
+		{
+			$data["cdsd_type"] = CDSDModel::CD;
+			return view("cdsd_index",compact('data'));
 		}
 
 	}

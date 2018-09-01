@@ -3337,6 +3337,7 @@
 				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->deleted_field}", 0)
 				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->bid_field}", $BID)
 				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->cdsd_type_field}", 2)
+				->where("{$this->cdsd_tran->tbl}.{$this->cdsd_tran->amount_field}",">",0)
 				->get();
 
 			return $ret_data;

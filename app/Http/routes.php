@@ -182,7 +182,7 @@
 				Route::get('/maturity_deposit_index','DepositController@maturity_deposit_index');
 				Route::post('/maturity_amount_pay_form','DepositController@maturity_amount_pay_form');
 				Route::post('/maturity_amt_create','DepositController@maturity_amt_create');
-				Route::get('/compulsory_deposit_index','DepositController@compulsory_deposit_index');
+				// Route::get('/compulsory_deposit_index','DepositController@compulsory_deposit_index');
 				// Route::get('/security_deposit_index','DepositController@security_deposit_index');
 				// Route::post('/create_sd_index','DepositController@create_sd_index');
 				Route::post('/sd_transaction_index','DepositController@sd_transaction_index');
@@ -209,6 +209,8 @@
 				Route::post('/cdsd_pay_index','DepositController@cdsd_pay_index');
 				Route::post('/cdsd_pay','DepositController@cdsd_pay');
 				Route::post('/cdsd_acc_details','DepositController@cdsd_acc_details');
+				/////////////CD
+				Route::get('/compulsory_deposit_index','DepositController@cd_index');
 				
 				//DocController
 				Route::get('/Doctype','DocController@show_doctype');

@@ -43,15 +43,19 @@
     <table class="table table-striped table-bordered bootstrap-datatable datatable responsive" >
         <thead>
             <tr>
-                <th>Sl. No.</th>
-                <th>Customer ID</th>
-                <th>Customer Name</th>
-                <th>User Type</th>
-                <th>Account Number</th>
+                <th>SL. NoO.</th>
+                <th>CUSTOMER ID</th>
+                <th>CUSTOMER NAME</th>
+                <th>USER TYPE</th>
+                <th>ACCOUNT NUMBER</th>
                 <th>SB ACC NO</th>
-                <th>Security Deposit Amount</th>
-                <th>Start Date</th>
-                <th>Closed Date</th>
+                @if($cdsd_type == 1)
+                    <th>COMPUSORY DEPOSIT AMOUNT</th>
+                @else
+                    <th>SECURITY DEPOSIT AMOUNT</th>
+                @endif
+                <th>START DATE</th>
+                <th>CLOSED DATE</th>
             </tr>
         </thead>
     <tbody>

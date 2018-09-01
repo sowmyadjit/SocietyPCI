@@ -894,6 +894,7 @@ class DepositModel extends Model
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
 				->leftJoin("createaccount","createaccount.Accid","=","cdsd_account.sb_acc_id")
+				->where("cdsd_type","=",$data["cdsd_type"])
 				->where($deleted_field,"=",0);
 				if($this->settings->get_value("allow_inter_branch") == 0) {
 					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
@@ -1133,11 +1134,23 @@ class DepositModel extends Model
 			} else {
 				$category = "SD";
 			}
+
+			if(isset($data["payment_mode"])) {
+				$temp_payment_mode = $data["payment_mode"];
+			} else {
+				$temp_payment_mode = 2;
+			}
+
+			if(isset($data["closing_interest"])) {
+				$closing_interest = $data["closing_interest"];
+			} else {
+				$closing_interest = "NO";
+			}
 			
 			$cdsd_acc_info = $this->cdsd->get_row(["cdsd_id"=>$data["cdsd_id"]]);
 
 			$sd_cr_id = DB::table("cdsd_transaction")
-				->insertGetId(["cdsd_type"=>$cdsd_acc_info->cdsd_type, "cdsd_id"=>$cdsd_acc_info->cdsd_id, "date"=>date("Y-m-d"), "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>1, "amount"=>$cdsd_acc_info->int_prev, "paid"=>1, "payment_mode"=>2, "particulars"=>"{$category} INTEREST", "interest_tran"=>1, "subhead_id"=>249 ]);
+				->insertGetId(["cdsd_type"=>$cdsd_acc_info->cdsd_type, "cdsd_id"=>$cdsd_acc_info->cdsd_id, "date"=>date("Y-m-d"), "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>1, "amount"=>$cdsd_acc_info->int_prev, "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} INTEREST", "interest_tran"=>1, "subhead_id"=>249 ]);
 
 				/****** RV SD CREDIT *****/
 				unset($fn_data);
@@ -1152,7 +1165,7 @@ class DepositModel extends Model
 				/***********/
 
 
-			if($data["user_type"] == 2 && $cdsd_acc_info->sb_acc_id > 0) {
+			if($data["user_type"] == 2 && $cdsd_acc_info->sb_acc_id > 0 && (strcasecmp($closing_interest, "YES") == 0)) {
 				//DEBITI ENTRY FOR SD ACCOUNT
 				unset($fd);
 				$fd["cdsd_id"] = $data["cdsd_id"];

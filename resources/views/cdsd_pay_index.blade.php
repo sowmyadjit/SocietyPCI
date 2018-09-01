@@ -88,6 +88,13 @@
                     </div>
 
                     <div class="form-group col-md-12">
+                        <label class="control-label col-sm-4">INTEREST AMOUNT:</label>
+                        <div class="col-md-4">
+                            <input id="interest_amt"  class="form-control" placeholder="" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12">
                         <label class="control-label col-sm-4">PAYMENT MODE:</label>
                         <div class="col-md-4">
                             <select id="pay_mode" class="form-control">
@@ -131,7 +138,7 @@
                     <div class="form-group col-md-12">
                         <label class="control-label col-sm-4">PAY AMOUNT:</label>
                         <div class="col-md-4">
-                            <input id="pay_amt"  class="form-control" placeholder="">
+                            <input id="pay_amt"  class="form-control" placeholder="" readonly>
                         </div>
                     </div>
                     
@@ -168,6 +175,7 @@
 </script>
 
 <script>
+    var submit_count = 0;
     $("#cdsd_pay_btn").click(function() {
         var cdsd_type = {{$cdsd_type}};
         var cdsd_id = $("#cdsd_pay_acc_no").attr("data-value");
@@ -190,15 +198,18 @@
             "pay_amt": pay_amt
         };
         var post_data = JSON.stringify(temp_post_data, function(k, v) { if (v === undefined) { return 0; } return v;});
-        $.ajax({
-            type:"post",
-            url: "cdsd_pay",
-            data: "&post_data="+post_data,
-            success: function(data) {
-                console.log("done");
-                alert("success");
-            }
-        });
+        if(submit_count == 0) {
+            submit_count++;
+            $.ajax({
+                type:"post",
+                url: "cdsd_pay",
+                data: "&post_data="+post_data,
+                success: function(data) {
+                    console.log("done");
+                    alert("success");
+                }
+            });
+        }
     });
 </script>
 
@@ -218,7 +229,9 @@
                 success: function(data) {
                     console.log(data);
                     $("#balance_amt").val(data["bal_amt"]);
-                    $("#pay_amt").val(data["bal_amt"]);
+                    $("#interest_amt").val(data["acc_info"].int_prev);
+                    var pay_amt = parseFloat(data["bal_amt"]) + parseFloat(data["acc_info"].int_prev);
+                    $("#pay_amt").val(pay_amt);
                     var name = data["acc_info"].FirstName + " " + data["acc_info"].MiddleName + " " + data["acc_info"].LastName;
                     $("#name").val(name);
                     
