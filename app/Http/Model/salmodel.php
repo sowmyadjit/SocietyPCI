@@ -163,9 +163,81 @@
 			$accbal1=DB::table('createaccount')->select('Total_Amount')->where('Accid',$accid)->first();
 			$accbal=$accbal1->Total_Amount;
 			$totbal=$accbal+$netpay;
+
 			
-			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => $netpay,'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$id['bid'],'CreatedBy'=>$UID]);
+			/****************** */
+			$sb_acc_info = DB::table("createaccount")
+			->where("Accid", $accid)
+			->first();
+			if(!empty($sb_acc_info)) {
+				$temp_bid = $sb_acc_info->Bid;
+			} else {
+				$temp_bid = 0;
+			}
+			/****************** */
+			
+			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => $netpay,'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID]);
 			DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>$totbal]);
+
+			/************ HO SALARY - TRANSFER SB AMOUNT TO BRANCH(KULAI) **********/
+			if($BID == 6) {// ONLY FOR HO SALARY
+				
+				if(!empty($sb_acc_info)) {
+					switch($sb_acc_info->Bid) {
+						case 1:
+								$temp_subhead_id = 297;
+								break;
+						case 2:
+								$temp_subhead_id = 298;
+								break;
+						case 3:
+								$temp_subhead_id = 299;
+								break;
+						case 4:
+								$temp_subhead_id = 300;
+								break;
+						case 5:
+								$temp_subhead_id = 301;
+								break;
+						default:
+								$temp_subhead_id = 0;
+					}
+
+					$insert_array["Branch_Branch1_Id"] = $sb_acc_info->Bid;
+					$insert_array["Branch_Branch2_Id"] = 6;
+					$insert_array["Branch_Tran_Date"] = date("Y-m-d");
+					$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+					$insert_array["LedgerHeadId"] = 296;
+					$insert_array["SubLedgerId"] = $temp_subhead_id;
+					$insert_array["Branch_Amount"] = $netpay;
+					$insert_array["Branch_per"] = "SALARY AMOUNT FROM HO";
+	
+					$branch_to_branch_id = DB::table("branch_to_branch")
+						->insertGetId($insert_array);
+					/****** GENERATE ADJ NO. - HO CREDIT *****/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+					$fn_data["rv_transaction_type"] = "CREDIT";//DEBIT
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = date("Y-m-d");
+					$fn_data["rv_bid"] = 6;
+					$adj_no = $this->rv_no->save_rv_no($fn_data);
+					/***********/
+					/****** GENERATE ADJ NO. *****/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";//CREDIT
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = date("Y-m-d");
+					$fn_data["rv_bid"] = $sb_acc_info->Bid;
+					$adj_no = $this->rv_no->save_rv_no($fn_data);
+					/***********/
+				}
+			}
+			/********************* */
+
 			return $iid;
 		}
 		
