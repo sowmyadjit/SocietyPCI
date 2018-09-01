@@ -209,6 +209,7 @@
 			->where('Payment_Mode','=',"CASH")
 			->where('tran_reversed','=',"NO")
 			->where('Uncleared_Bal','=',"0")
+			->where('sb_transaction.deleted','=',0)
 			->orderBy('SBReport_TranDate','desc')
 			->orderBy('Tranid','desc')
 			->get();
@@ -258,6 +259,7 @@
 			->where('Payment_Mode','<>',"CASH")
 			->where('tran_reversed','=',"NO")
 			->where('Uncleared_Bal','=','0')
+			->where('sb_transaction.deleted','=','0')
 			->orderBy('SBReport_TranDate','desc')
 			->orderBy('Tranid','desc')
 			->get();
@@ -311,9 +313,18 @@
 			->where('rd_transaction.Bid','=',$BranchId)
 			->where('RDPayment_Mode','=',"CASH")
 			->where('RD_Particulars','!=',"RD INTEREST CAL")
+			->where('rd_transaction.deleted',0)
 			//->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->get();
+
+			$i = -1;
+			foreach($id1 as $row) {
+				$id_arr[++$i] = $row->RD_TransID;
+			}
+			if(empty($id_arr)) {
+				$id_arr = [];
+			}//print_r($id1);
 
 			$id2 = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum',DB::raw(" '' as RD_resp_No "),'RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'rd_transaction.Accid')
@@ -324,6 +335,8 @@
 			->where('RDPayment_Mode','=',"CASH")
 			->where('rd_transaction.RD_Particulars','!=',"RD INTEREST CAL")
 			->where("RD_Particulars","RD PREWITHDRAWA")
+			->whereNotIn('RD_TransID',$id_arr)
+			->where('rd_transaction.deleted',0)
 			//->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->get();
@@ -367,12 +380,14 @@
 			$id = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum','receipt_voucher_no as RD_resp_No','RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'receipt_voucher_no as adj_no')
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'rd_transaction.Accid')
 			->join("user","user.Uid","=","createaccount.Uid")
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","rd_transaction.RD_TransID")
+			->join("receipt_voucher","receipt_voucher.transaction_id","=","rd_transaction.RD_TransID")
+			->where("receipt_voucher.bid",$BranchId)
 			->where("createaccount.Status","AUTHORISED")
 			->where('RDReport_TranDate',$dtoday)
 			->where('rd_transaction.Bid','=',$BranchId)
 			->where('RDPayment_Mode','<>',"CASH")
 			->where('RD_Particulars','!=',"RD INTEREST CAL")
+			->where('rd_transaction.deleted',0)
 			//->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->get();
@@ -550,6 +565,7 @@
 			//->where('pigmi_transaction.PgmPayment_Mode','<>',"CASH")
 			->where('pigmi_transaction.Particulars','<>',"Opening Balance")
 			->where("pigmi_transaction.tran_reversed", "NO")
+			->where("pigmi_transaction.deleted", 0)
 			->orderBy('PigReport_TranDate','desc')
 			->orderBy('PigmiTrans_ID','desc')
 			->get();
@@ -1270,6 +1286,7 @@
 			->where('DLRepay_Date',$dte)
 			->where('DLRepay_PayMode','=',"CASH")
 			->where('DLRepay_Bid',$BranchId)
+			->where('depositeloan_repay.deleted',0)
 			->get();
 			
 			return $id;
@@ -1301,6 +1318,7 @@
 			->where('DLRepay_Date',$dte)
 			->where('DLRepay_PayMode','<>',"CASH")
 			->where('DLRepay_Bid',$BranchId)
+			->where('depositeloan_repay.deleted',0)
 			->get();
 			
 			return $id;
@@ -1349,6 +1367,7 @@
 			->where('PLRepay_PayMode','=',"CASH")
 			->where('PLRepay_Date',$dte)
 			->where('PLRepay_Bid',$BranchId)
+			->where('personalloan_repay.deleted',0)
 			->get();
 			
 			return $id;
@@ -1370,6 +1389,7 @@
 			->where('PLRepay_PayMode','<>',"CASH")
 			->where('PLRepay_Date',$dte)
 			->where('PLRepay_Bid',$BranchId)
+			->where('personalloan_repay.deleted',0)
 			->get();
 			
 			return $id;
@@ -1403,6 +1423,7 @@
 			->where("receipt_voucher.transaction_category",23)
 			->where('JLRepay_Date',$dte)
 			->where('JLRepay_Bid',$BranchId)
+			->where('jewelloan_repay.deleted',0)
 			->get();
 			
 			return $id;
@@ -1437,6 +1458,7 @@
 			->where('SLRepay_Date',$dte)
 			->where('SLRepay_Bid',$BranchId)
 			->where('staffloan_repay.SLRepay_PayMode', "=", "CASH")
+			->where('staffloan_repay.deleted', "=", 0)
 			->get();
 			
 			$id2 = DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' ") )
@@ -1445,6 +1467,7 @@
 			->where('SLRepay_Date',$dte)
 			->where('SLRepay_Bid',$BranchId)
 			->where('staffloan_repay.SLRepay_PayMode', "!=", "CASH")
+			->where('staffloan_repay.deleted', "=", 0)
 			->get();
 
 			$id = array_merge($id1, $id2);
@@ -1467,6 +1490,7 @@
 			->where("receipt_voucher.transaction_category",24)
 			->where('SLRepay_Date',$dte)
 			->where('SLRepay_Bid',$BranchId)
+			->where('staffloan_repay.deleted', "=", 0)
 			->get();
 			
 			$id2 = DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date', 'SLRepay_Interest', 'SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' ") )
@@ -1475,6 +1499,7 @@
 			->where('SLRepay_Date',$dte)
 			->where('SLRepay_Bid',$BranchId)
 			->where('staffloan_repay.SLRepay_PayMode', "!=", "CASH")
+			->where('staffloan_repay.deleted', "=", 0)
 			->get();
 
 			$id = array_merge($id1, $id2);
@@ -1511,6 +1536,7 @@
 			->where("receipt_voucher.bid",$BranchId)
 			->where('Branch_Tran_Date',$dte)
 			->where('Branch_Branch1_Id',$BranchId)
+			->where('branch_to_branch.deleted',0)
 			->get();
 			
 			return $id;
@@ -1544,6 +1570,7 @@
 				->where("receipt_voucher.bid",$BranchId)
 				->where('Branch_Tran_Date',$dte)
 				->where('Branch_Branch2_Id',$BranchId)
+				->where('branch_to_branch.deleted',0)
 				->get();
 
 			$i = -1;
@@ -1562,6 +1589,7 @@
 				->where('Branch_Branch2_Id',$BranchId)
 				->where("branch_to_branch.Branch_payment_Mode", "!=", "INHAND")
 				->whereNotIn('Branch_Id',$id_arr)
+				->where('branch_to_branch.deleted',0)
 				->get();
 			// $id2 = [];
 			/******* ADJUSTMENT CREDIT *****/
@@ -1758,6 +1786,7 @@
 			->where("receipt_voucher.bid",$BranchId)
 			->where('e_date',$dte)
 			->where('expense.Bid',$BranchId)
+			->where('expense.deleted',0)
 			->get();
 			
 			return $id;
@@ -1778,6 +1807,7 @@
 				->where("receipt_voucher.bid",$BranchId)
 				->where('Income_date',$dte)
 				->where('income.Bid',$BranchId)
+				->where('income.deleted',0)
 				->get();
 
 			/******* ADJUSTMENT CREDIT *****/
@@ -1787,6 +1817,7 @@
 					->where('Income_date',$dte)
 					->where('income.Bid',$BranchId)
 					->where('income.Income_pay_mode',"!=","INHAND")
+					->where('income.deleted',0)
 					->get();
 			/******* ADJUSTMENT CREDIT *****/
 			$id = array_merge($id1,$id2);
@@ -2663,6 +2694,7 @@
 				->join('user','user.Uid','=','salary.Uid')
 				->where('date','=',$date)
 				->where('salary.bid','=',$bid)
+				->where('salary.deleted','=',0)
 				->get();
 
 			foreach($emp_sal as $key=>$row)
@@ -2690,6 +2722,7 @@
 				->join('user','user.Uid','=','agent_commission_payment.Agent_Commission_Uid')
 				->where('Agent_Commission_PaidDate','=',$date)
 				->where('user.Bid','=',$bid)
+				->where('agent_commission_payment.deleted','=',0)
 				->get();
 			return $emp_sal;
 		}
@@ -2710,6 +2743,7 @@
 				->join('legder','legder.lid','=','salary_extra.sub_head')
 				->where('salary_extra_pay.date','=',$date)
 				->where('salary_extra_pay.bid','=',$bid)
+				->where('salary_extra_pay.deleted','=',0)
 				->get();
 			//print_r($emp_sal_extra);
 			return $emp_sal_extra;
@@ -2735,6 +2769,7 @@
 				->where('salary_extra_pay.date','=',$date)
 				->where('salary_extra_pay.bid','=',$bid)
 				->whereNotIn('salary_extra_pay.sal_extra_id',$excluede_arr)
+				->where('salary_extra_pay.deleted','=',0)
 				->get();
 			//print_r($agent_sal_extra);
 			return $agent_sal_extra;
@@ -2783,6 +2818,7 @@
 				->join('legder','legder.lid','=','chareges.subhead')
 				->where('charg_tran_date','=',$date)
 				->where('bid','=',$bid)
+				->where('charges_tran.deleted','=',0)
 				->get();
 				
 			foreach($loan_charge as $key=>$row){
