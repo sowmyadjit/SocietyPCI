@@ -10,13 +10,16 @@
 		case 1:
 				$page_title = "CD CLOSE";
 				$category = "CD";
+                $int_rate  = 4;
 				break;
 		case 2:
 				$page_title = "SD CLOSSE";
+                $int_rate  = 9;
 				$category = "SD";
 				break;
 		default:
 				$page_title = "";
+                $int_rate  = 0;
 				$category = "";
 	}
 
@@ -38,7 +41,7 @@
                     <div class="form-group col-md-12">
                         <label class="control-label col-sm-4">INTEREST RATE:</label>
                         <div class="col-md-4">
-                            <input  class="form-control" id="cdsd_int_rate"  value="9" placeholder="INTEREST RATE">
+                            <input  class="form-control" id="cdsd_int_rate"  value="{{$int_rate}}" placeholder="INTEREST RATE">
                         </div>
                     </div>
                     @if($cdsd_type == 1)

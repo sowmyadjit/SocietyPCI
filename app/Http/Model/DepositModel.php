@@ -956,6 +956,7 @@ class DepositModel extends Model
 			$int_till_date = $data["cdsd_int_calc_date"];
 			$int_rate = $data["cdsd_int_rate"];
 			$cdsd_acc_list = $this->get_live_cdsd_acc(["user_type"=>$user_type]);//GET ALL CDSD LIVE ACCOUNTS FOR INTEREST CALCULATION
+			print_r($cdsd_acc_list);
 			foreach($cdsd_acc_list as $row_acc) {
 				//CALCULATE INTEREST FOR EACH ACCOUNT
 				unset($fn_data);
@@ -1033,6 +1034,49 @@ class DepositModel extends Model
 				->update(["int_prev"=>$total_int]);
 			// print_r($total_int);
 			return $total_int;
+		}
+
+		public function cd_int_calc($data)
+		{
+			$cdsd_type = $data["cdsd_type"];
+			$user_type = $data["user_type"];
+
+			$int_flag = true;
+			
+			unset($fd);
+			$fd["cdsd_type"] = $cdsd_type;
+			$fd["cdsd_id"] = $data["cdsd_id"];
+			$amount = $this->cdsd_tran->get_cdsd_amount($fd);
+			// var_dump($amount);
+
+			$acc_info = $this->cdsd->get_row(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$data["cdsd_id"] ]);
+			// print_r($acc_info);
+
+			$start_date = $acc_info->cdsd_start_date;
+			$int_calc_date = $data["cdsd_int_calc_date"];
+			if($data["user_type"] == 3) {	// for custoemrs 0 interest for 1st 6 years
+				$y1 = date("Y",strtotime($start_date));
+				$md1 = date("-m-d",strtotime($start_date));
+				// var_dump($y1);
+				$y2 = $y1 + 6;
+				$date1 = $start_date;
+				$date2 = "{$y2}{$md1}";
+				// var_dump($date2);
+
+				if($int_calc_date < $date2) {
+					$int_flag = false;
+				}
+				$start_date = $date2;	// start date for interest calc is from 6th year
+			}
+			if($int_flag) {
+				$days = $this->dateDiff(["first"=>$start_date, "second"=>$int_calc_date]);
+				$int_rate = $data["cdsd_int_rate"];
+				$int = ($amount)*($days/365)*($int_rate/100);
+				echo "<br />\n{$amount}*({$days}/365)*({$int_rate}/100)<br />\n";
+			} else {
+				$int = 0;
+			}
+			return round($int,2);
 		}
 
 		public function get_last_int_calc_date_time($data)

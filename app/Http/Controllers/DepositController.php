@@ -623,7 +623,11 @@
 			$fn_data["cdsd_int_calc_date"] = $in_data["cdsd_int_calc_date"];
 			$fn_data["cdsd_int_rate"] = $in_data["cdsd_int_rate"];
 			$fn_data[$this->cdsd_tran->cdsd_id_field] = $in_data["cdsd_acc_id"];
-			$cdsd_interest = $this->creadepositmodel->cdsd_int_calc($fn_data);
+			if($cdsd_type == 2) {
+				$cdsd_interest = $this->creadepositmodel->cdsd_int_calc($fn_data);	//sd
+			} else {
+				$cdsd_interest = $this->creadepositmodel->cd_int_calc($fn_data);	//cd
+			}
 
 			if(strcasecmp($in_data["preview"],"NO") == 0) {
 				$this->creadepositmodel->cdsd_close($fn_data);
