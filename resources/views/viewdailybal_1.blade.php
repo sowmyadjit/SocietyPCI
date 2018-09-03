@@ -1118,7 +1118,7 @@
 							?>
 							@foreach ($trandaily['sd_tran'] as $row)
 							<?php
-								// if($row->interest_tran !=  1) {
+								if($row->interest_tran !=  2) {
 									if($row->payment_mode == 1) {				//CASH
 										if($row->transaction_type == 1)	{					//CASH CREDIT
 												$cash_cr = $row->amount;
@@ -1196,7 +1196,7 @@
 								<?php	
 										}
 									}
-								// }
+								}
 							?>
 							@endforeach
 							<tr>
@@ -1231,7 +1231,7 @@
 							?>
 							@foreach ($trandaily['sd_tran'] as $row)
 							<?php
-								if($row->interest_tran ==  1) {
+								if($row->interest_tran ==  1 || $row->interest_tran ==  2) {
 							?>
 								<?php
 									if($row->payment_mode == 1) {//	CASH DEBIT
@@ -1253,7 +1253,7 @@
 											<td>-</td>
 										</tr>
 								<?php
-									} else {
+									} else {	// ADJ DEBIT
 								?>
 									<?php
 										$adj_db = $row->amount;

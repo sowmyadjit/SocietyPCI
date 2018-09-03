@@ -715,7 +715,8 @@
 			$fd["closing_interest"] = "YES";
 			$fd["cdsd_id"] = $id["cdsd_id"];
 			$fd["date"] = date("Y-m-d");;
-			$this->creadepositmodel->cdsd_create_int_tran($fd);
+			// $this->creadepositmodel->cdsd_create_int_tran($fd);
+			$this->creadepositmodel->cdsd_pay_closing_int($fd);
 
 			unset($fd);
 			$fd["cdsd_type"] = $id["cdsd_type"];
@@ -728,6 +729,26 @@
 			$fd["cheque_date"] = $id["cheque_date"];
 			$fd["pay_amt"] = $id["pay_amt"];
 			$this->creadepositmodel->cdsd_pay($fd);
+
+			switch($id["pay_mode"]) {
+				case "CHEQUE":
+					unset($fd);
+					$fd["cdsd_type"] = $id["cdsd_type"];
+					$fd["cdsd_id"] = $id["cdsd_id"];
+					$fd["pay_mode"] = $id["pay_mode"];
+					$fd["bank"] = $id["bank"];
+					$fd["cheque_no"] = $id["cheque_no"];
+					$fd["cheque_date"] = $id["cheque_date"];
+					$fd["pay_amt"] = $id["pay_amt"];
+					$this->creadepositmodel->cdsd_pay_cheque_entry($fd);
+					break;
+				case "SB":
+					unset($fd);
+					$fd["pay_amt"] = $id["pay_amt"];
+					$fd["sb_acc_id"] = $id["sb_acc_id"];
+					$this->creadepositmodel->cdsd_pay_sb_entry($fd);
+					break;
+			}
 			return "done";
 		}
 

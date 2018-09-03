@@ -109,7 +109,8 @@ class CDSDTranModel extends Model
 			->where($transaction_type_field,CREDIT)
 			->where($paid_field,PAID)
 			->where($paid_field,PAID)
-			->where($cdsd_type_field,$data["cdsd_type"]);
+			->where($cdsd_type_field,$data["cdsd_type"])
+			->where("interest_tran","!=", 2);// 2 - cloising interest
 		if(isset($data["till_date"])) {
 			if(isset($data["till_time"])) {//IF TIME IS GIVEN
 				$credit_amount = $credit_amount->where(function($query) use($data) {
@@ -161,6 +162,7 @@ class CDSDTranModel extends Model
 		$ret_data = DB::table($this->tbl)
 			->where("{$this->tbl}.{$this->cdsd_id_field}", $data[$this->cdsd_id_field])
 			->where("{$this->tbl}.{$this->cdsd_type_field}", $cdsd_type)
+			->where("deleted", 0)
 			->get();
 		return $ret_data;
 	}

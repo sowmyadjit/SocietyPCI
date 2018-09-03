@@ -1606,7 +1606,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id1=DB::table('deposit')->select('deposit.date','BankName','amount','reason','pay_mode','Deposit_type','receipt_voucher_no as receipt_no','receipt_voucher_no as voucher_no','receipt_voucher_no as adj_no')
+			$id1=DB::table('deposit')->select('d_id','deposit.date','BankName','amount','reason','pay_mode','Deposit_type','receipt_voucher_no as receipt_no','receipt_voucher_no as voucher_no','receipt_voucher_no as adj_no')
 			->leftJoin('addbank','addbank.Bankid','=','deposit.depo_bank_id')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","deposit.d_id")
 			->where("receipt_voucher.transaction_category", ReceiptVoucherModel::DEPOSIT)
@@ -1616,13 +1616,22 @@
 			->where('deposit.date',$dte)
 			->get();
 
+			$i = -1;
+			foreach($id1 as $row) {
+				$id_arr[++$i] = $row->d_id;
+			}
+			if(empty($id_arr)) {
+				$id_arr = [];
+			}//print_r($id1);
+
 			/******* ADJUSTMENT CREDIT *****/
-			$id2=DB::table('deposit')->select('deposit.date','BankName','amount','reason','pay_mode','Deposit_type',DB::raw("'' as receipt_no"),DB::raw("'' as voucher_no"),DB::raw("'' as adj_no"))
+			$id2=DB::table('deposit')->select('d_id','deposit.date','BankName','amount','reason','pay_mode','Deposit_type',DB::raw("'' as receipt_no"),DB::raw("'' as voucher_no"),DB::raw("'' as adj_no"))
 			->leftJoin('addbank','addbank.Bankid','=','deposit.depo_bank_id')
 			->where('deposit.Bid',$BranchId)
 			->where('deposit.date',$dte)
 			->where('deposit.Deposit_type',"WITHDRAWL")
 			->where('deposit.pay_mode',"!=","INHAND")
+			->whereNotIn('d_id',$id_arr)
 			->get();
 			/******* ADJUSTMENT CREDIT *****/
 			$id = array_merge($id1,$id2);
