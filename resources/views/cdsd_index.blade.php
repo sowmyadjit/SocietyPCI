@@ -18,6 +18,8 @@
 				$page_title = "";
 				$category = "";
 	}
+	// var_dump($data);
+	// $is_day_open = "";
 
 ?>
 
@@ -147,6 +149,7 @@
 </script>
 	
 <script>
+	var is_day_open = "{{$data['is_day_open']}}";
 	$(document).ready(function() {
 		$("#back_cdsd").hide();
 		setTimeout(() => {
@@ -200,18 +203,21 @@
 <script>
 	$("#create_cdsd").click(function(e) {
 		e.preventDefault();
-		
-		$.ajax({
-			url:"create_cdsd_index",
-			type:"post",
-			data:"cdsd_type="+{{$data["cdsd_type"]}},
-			success: function(data) {
-				console.log("done");
-				$(".b_main").hide();
-				$(".b_sub_1").html(data);
-				$(".b_sub_1").show();
-			}
-		});
+		if(is_day_open == "yes") {
+			$.ajax({
+				url:"create_cdsd_index",
+				type:"post",
+				data:"cdsd_type="+{{$data["cdsd_type"]}},
+				success: function(data) {
+					console.log("done");
+					$(".b_main").hide();
+					$(".b_sub_1").html(data);
+					$(".b_sub_1").show();
+				}
+			});
+		} else {
+			alert("DAY IS NOT OPEN");
+		}
 	});
 </script>
 
@@ -219,17 +225,21 @@
 	$("#cdsd_transaction").click(function(e) {
 		e.preventDefault();
 		
-		$.ajax({
-			url:"cdsd_transaction_index",
-			type:"post",
-			data:"&cdsd_type={{$cdsd_type}}",
-			success: function(data) {
-				console.log("done");
-				$(".b_main").hide();
-				$(".b_sub_1").html(data);
-				$(".b_sub_1").show();
-			}
-		});
+		if(is_day_open == "yes") {
+			$.ajax({
+				url:"cdsd_transaction_index",
+				type:"post",
+				data:"&cdsd_type={{$cdsd_type}}",
+				success: function(data) {
+					console.log("done");
+					$(".b_main").hide();
+					$(".b_sub_1").html(data);
+					$(".b_sub_1").show();
+				}
+			});
+		} else {
+			alert("DAY IS NOT OPEN");
+		}
 	});
 </script>
 
@@ -237,17 +247,21 @@
 	$("#cdsd_interest").click(function(e) {
 		e.preventDefault();
 		
-		$.ajax({
-			url:"cdsd_interest_index",
-			type:"post",
-			data:"&cdsd_type={{$cdsd_type}}",
-			success: function(data) {
-				console.log("done");
-				$(".b_main").hide();
-				$(".b_sub_1").html(data);
-				$(".b_sub_1").show();
-			}
-		});
+		if(is_day_open == "yes") {
+			$.ajax({
+				url:"cdsd_interest_index",
+				type:"post",
+				data:"&cdsd_type={{$cdsd_type}}",
+				success: function(data) {
+					console.log("done");
+					$(".b_main").hide();
+					$(".b_sub_1").html(data);
+					$(".b_sub_1").show();
+				}
+			});
+		} else {
+			alert("DAY IS NOT OPEN");
+		}
 	});
 </script>
 
@@ -255,17 +269,21 @@
 	$("#cdsd_close").click(function(e) {
 		e.preventDefault();
 		
-		$.ajax({
-			url:"cdsd_close_index",
-			type:"post",
-			data:"&cdsd_type={{$cdsd_type}}",
-			success: function(data) {
-				console.log("done");
-				$(".b_main").hide();
-				$(".b_sub_1").html(data);
-				$(".b_sub_1").show();
-			}
-		});
+		if(is_day_open == "yes") {
+			$.ajax({
+				url:"cdsd_close_index",
+				type:"post",
+				data:"&cdsd_type={{$cdsd_type}}",
+				success: function(data) {
+					console.log("done");
+					$(".b_main").hide();
+					$(".b_sub_1").html(data);
+					$(".b_sub_1").show();
+				}
+			});
+		} else {
+			alert("DAY IS NOT OPEN");
+		}
 	});
 </script>
 
@@ -273,17 +291,21 @@
 	$("#cdsd_pay").click(function(e) {
 		e.preventDefault();
 		
-		$.ajax({
-			url:"cdsd_pay_index",
-			type:"post",
-			data:"&cdsd_type={{$cdsd_type}}",
-			success: function(data) {
-				console.log("done");
-				$(".b_main").hide();
-				$(".b_sub_1").html(data);
-				$(".b_sub_1").show();
-			}
-		});
+		if(is_day_open == "yes") {
+			$.ajax({
+				url:"cdsd_pay_index",
+				type:"post",
+				data:"&cdsd_type={{$cdsd_type}}",
+				success: function(data) {
+					console.log("done");
+					$(".b_main").hide();
+					$(".b_sub_1").html(data);
+					$(".b_sub_1").show();
+				}
+			});
+		} else {
+			alert("DAY IS NOT OPEN");
+		}
 	});
 </script>
 

@@ -319,5 +319,14 @@ class CDSDModel extends Model
             ->get();
             
         return $ret_data;
-    }
+	}
+	
+	public function get_user_info($data)
+	{
+		return DB::table("cdsd_account")
+			->join("user","user.Uid","=","cdsd_account.uid")
+			->where("cdsd_id",$data["cdsd_id"])
+			->first();
+	}
+	
 }

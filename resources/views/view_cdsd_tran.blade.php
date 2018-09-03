@@ -39,11 +39,11 @@
 					<div class="form-group col-md-12">
                         <div class="alert alert-info" style="height:80px;">
                             <div class="col-md-12">
-                                <label class="control-label col-sm-4">NAME: </label>
+                                <label class="control-label col-sm-2">NAME: </label>
                                 <label class="control-label col-sm-4">{{$data["cdsd_acc_info"]["name"]}}</label>
                             </div>
                             <div class="col-md-12">
-                                <label class="control-label col-sm-4">Account No: </label>
+                                <label class="control-label col-sm-2">ACCOUNT NO.:</label>
                                 <label class="control-label col-sm-4">{{$data["cdsd_acc_info"]["cdsd_acc_no"]}} / {{$data["cdsd_acc_info"]["cdsd_oldacc_no"]}}</label>
                             </div>
                         </div>
@@ -105,12 +105,12 @@
                                 ?>
                                 <tr>
                                     <td colspan="4"></td>
-                                    <td>{{$sum_cr}}</td>
-                                    <td>{{$sum_db}}</td>
+                                    <td><b>{{$sum_cr}}</b></td>
+                                    <td><b>{{$sum_db}}</b></td>
                                 </tr>
                                 <tr>
                                     <td colspan="4"></td>
-                                    <td colspan=2><b></b>{{$total}}</b></td>
+                                    <td colspan=2><b>{{$total}}</b></td>
                                 </tr>
                             </tbody>
                     </table>

@@ -5,10 +5,14 @@
 		echo "<script>console.log(\"data['cdsd_type'] is empty!\");</script>";
 		return;
 	}
+	$user_type_1_disabled = "";
+	$user_type_2_disabled = "";
+	$user_type_3_disabled = "";
 	switch($cdsd_type) {
 		case 1:
 				$page_title = "CD INTEREST";
 				$category = "CD";
+				$user_type_2_disabled = "disabled";
 				break;
 		case 2:
 				$page_title = "SD INTEREST";
@@ -38,10 +42,13 @@
 				<div class="form-group">
 					<div class="form-group col-md-12">
                         <div class="alert alert-info" style="height:80px;">
-                            <div class="col-md-12">
-								<select id="int_emp_agt_type">
+                            <div class="col-md-4">
+                       			<label class="control-label col-sm-">USER TYPE:</label>
+							</div>
+                            <div class="col-md-4">
+								<select id="int_emp_agt_type" class="form-control">
 									<option value="1">EMPLOYEE</option>
-									<option value="2">AGENT</option>
+									<option value="2" {{$user_type_2_disabled}}>AGENT</option>
 								</select>
                             </div>
                         </div>

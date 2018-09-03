@@ -1065,7 +1065,7 @@
 									} else {										//ADJUSTMENT DEBIT
 								?>
 									<?php
-										$adj_db = $row->cd_amount;
+										$adj_db = $row->amount;
 										$adj_db_total += $adj_db;
 									?>
 									<tr>
@@ -1102,6 +1102,87 @@
 							$gt_adj_db += $adj_db_total;
 						?>
 				<!------------------ CD TRANSACTION  -------------------->
+				<!------------------ CD INTEREST  -------------------->
+				<tr><td colspan="10"><h5><b><center>CD INTEREST<center></b></h5></td></tr>
+						<?php
+							$cash_cr = 0;
+							$cash_db = 0;
+							$adj_cr = 0;
+							$adj_db = 0;
+							
+							$cash_cr_total = 0;
+							$cash_db_total = 0;
+							$adj_cr_total = 0;
+							$adj_db_total = 0;
+						?>
+						@foreach ($trandaily['cd_tran'] as $row)
+						<?php
+							if($row->interest_tran ==  1 || $row->interest_tran ==  2) {
+						?>
+							<?php
+								if($row->payment_mode == 1) {//	CASH DEBIT
+							?>
+									<?php
+										$cash_db = $row->amount;
+										$cash_db_total += $cash_db;
+									?>
+									<tr>
+										<td>{{$row->date}}</td>
+										<td>{{$row->cdsd_acc_no}}</td>
+										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+										<td>-</td>
+										<td>{{$cash_db}}</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+									</tr>
+							<?php
+								} else {	// ADJ DEBIT
+							?>
+								<?php
+									$adj_db = $row->amount;
+									$adj_db_total += $adj_db;
+								?>
+								<tr>
+									<td>{{$row->date}}</td>
+									<td>{{$row->cdsd_acc_no}}</td>
+									<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+									<td>-</td>
+									<td>-</td>
+									<td>-</td>
+									<td>{{$adj_db}}</td>
+									<td>-</td>
+									<td>-</td>
+									<td>-</td>
+								</tr>
+							<?php
+								}
+							?>
+
+						<?php 
+							}
+						?>
+						@endforeach
+						<tr>
+							<th colspan=3>CD Interest Total</th>
+							<td><?php echo $cash_cr_total; ?></td>
+							<td><?php echo $cash_db_total; ?></td>
+							<td><?php echo $adj_cr_total; ?></td>
+							<td><?php echo $adj_db_total; ?></td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+						<?php
+							$gt_cash_cr += $cash_cr_total;
+							$gt_cash_db += $cash_db_total;
+							$gt_adj_cr += $adj_cr_total;
+							$gt_adj_db += $adj_db_total;
+						?>
+				<!------------------ CD INTEREST  -------------------->
+
 					
 				<!------------------ SD TRANSACTION  -------------------->
 						<tr><td colspan="10"><h5><b><center>SD<center></b></h5></td></tr>
@@ -1216,7 +1297,7 @@
 								$gt_adj_db += $adj_db_total;
 							?>
 					<!------------------ SD TRANSACTION  -------------------->
-					<!------------------ SD TRANSACTION  -------------------->
+					<!------------------ SD INTEREST  -------------------->
 					<tr><td colspan="10"><h5><b><center>SD INTEREST<center></b></h5></td></tr>
 							<?php
 								$cash_cr = 0;
@@ -1280,7 +1361,7 @@
 							?>
 							@endforeach
 							<tr>
-								<th colspan=3>SD Total</th>
+								<th colspan=3>SD Interest Total</th>
 								<td><?php echo $cash_cr_total; ?></td>
 								<td><?php echo $cash_db_total; ?></td>
 								<td><?php echo $adj_cr_total; ?></td>
@@ -1295,7 +1376,7 @@
 								$gt_adj_cr += $adj_cr_total;
 								$gt_adj_db += $adj_db_total;
 							?>
-					<!------------------ SD TRANSACTION  -------------------->
+					<!------------------ SD INTEREST  -------------------->
 
 
 

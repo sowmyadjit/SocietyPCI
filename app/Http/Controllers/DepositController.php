@@ -584,7 +584,8 @@
 			$fn_data["{$this->cdsd_tran->cdsd_id_field}"] = $in_data["cdsd_id"];
 			$data["cdsd_tran"] = $this->cdsd_tran->get_cdsd_tran($fn_data);
 			$cdsd_acc_info = $this->cdsd->get_row(["{$this->cdsd->pk}"=>$in_data["cdsd_id"]]);
-			$data["cdsd_acc_info"]["name"] = "";
+			$cdsd_user_info = $this->cdsd->get_user_info(["cdsd_id"=>$in_data["cdsd_id"] ]);
+			$data["cdsd_acc_info"]["name"] = "{$cdsd_user_info->FirstName} {$cdsd_user_info->MiddleName} {$cdsd_user_info->LastName}";
 			$data["cdsd_acc_info"]["cdsd_acc_no"] = $cdsd_acc_info->cdsd_acc_no;
 			$data["cdsd_acc_info"]["cdsd_oldacc_no"] = $cdsd_acc_info->cdsd_oldacc_no;
 			return view("view_cdsd_tran", compact("data"));
@@ -597,6 +598,10 @@
 
 			$cdsd_type = $in_data["cdsd_type"];
 			$user_type = $in_data["user_type"];
+
+			if($cdsd_type==1 && $user_type!=1) {
+				return "YEARLY INTEREST IS GIVEN ONLY FOR EMPLOYEES";
+			}
 
 			$fn_data["cdsd_type"] = $cdsd_type;
 			$fn_data["user_type"] = $user_type;
@@ -744,6 +749,8 @@
 					break;
 				case "SB":
 					unset($fd);
+					$fd["cdsd_type"] = $id["cdsd_type"];
+					$fd["cdsd_id"] = $id["cdsd_id"];
 					$fd["pay_amt"] = $id["pay_amt"];
 					$fd["sb_acc_id"] = $id["sb_acc_id"];
 					$this->creadepositmodel->cdsd_pay_sb_entry($fd);
@@ -770,6 +777,7 @@
 		public function cd_index()
 		{
 			$data["cdsd_type"] = CDSDModel::CD;
+			$data["is_day_open"] = $this->op->is_day_open(date("Y-m-d"));
 			return view("cdsd_index",compact('data'));
 		}
 

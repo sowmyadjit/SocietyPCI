@@ -965,7 +965,11 @@ class DepositModel extends Model
 				$fn_data["cdsd_int_calc_date"] = $data["cdsd_int_calc_date"];
 				$fn_data["cdsd_id"] = $row_acc->cdsd_id;
 				$fn_data["cdsd_int_rate"] = $data["cdsd_int_rate"];
-				$interest_amt = $this->cdsd_int_calc($fn_data);
+				if($cdsd_type == 2) {
+					$interest_amt = $this->cdsd_int_calc($fn_data);
+				} else {
+					$interest_amt = $this->cd_int_calc($fn_data);
+				}
 			}
 			return;
 		}
@@ -1076,7 +1080,21 @@ class DepositModel extends Model
 			} else {
 				$int = 0;
 			}
-			return round($int,2);
+
+			$wn = (int)$int;
+			$fn = $int - $wn;
+			//	0 - 50 paise round to 0 paise
+			//	51 - 99 paise round to 1 rupee
+			if($fn == 0.5){
+				$int -= 0.5;
+			}
+			$int = round($int);
+
+			DB::table($this->cdsd->tbl)
+				->where("cdsd_id", $data["cdsd_id"])
+				->update(["int_prev"=>$int]);
+			// print_r($total_int);
+			return $int;
 		}
 
 		public function get_last_int_calc_date_time($data)
@@ -1175,8 +1193,10 @@ class DepositModel extends Model
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			if($data["cdsd_type"] == 1) {
 				$category = "CD";
+				$temp_subhead_id = 105; //CD INTEREST
 			} else {
 				$category = "SD";
+				$temp_subhead_id = 249; // SD INT
 			}
 
 			if(isset($data["payment_mode"])) {
@@ -1194,7 +1214,7 @@ class DepositModel extends Model
 			$cdsd_acc_info = $this->cdsd->get_row(["cdsd_id"=>$data["cdsd_id"]]);
 
 			$sd_cr_id = DB::table("cdsd_transaction")
-				->insertGetId(["cdsd_type"=>$cdsd_acc_info->cdsd_type, "cdsd_id"=>$cdsd_acc_info->cdsd_id, "date"=>date("Y-m-d"), "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>1, "amount"=>$cdsd_acc_info->int_prev, "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} INTEREST", "interest_tran"=>1, "subhead_id"=>249 ]);
+				->insertGetId(["cdsd_type"=>$cdsd_acc_info->cdsd_type, "cdsd_id"=>$cdsd_acc_info->cdsd_id, "date"=>date("Y-m-d"), "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>1, "amount"=>$cdsd_acc_info->int_prev, "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} INTEREST", "interest_tran"=>1, "subhead_id"=>$temp_subhead_id ]);
 
 				/****** RV SD CREDIT *****/
 				unset($fn_data);
@@ -1209,107 +1229,109 @@ class DepositModel extends Model
 				/***********/
 
 
-			if($data["user_type"] == 2 && $cdsd_acc_info->sb_acc_id > 0 /*&& (strcasecmp($closing_interest, "YES") == 0)*/) {
-				//DEBITI ENTRY FOR SD ACCOUNT
-				unset($fd);
-				$fd["cdsd_id"] = $data["cdsd_id"];
-				$fd["cdsd_type"] = $data["cdsd_type"];
-				$fd["date"] = $data["date"];
-				$fd["time"] = date("H:i:s");
-				$fd["bid"] = $cdsd_acc_info->bid;
-				$fd["transaction_type"] = 2;
-				$fd["amount"] = $cdsd_acc_info->int_prev;
-				$fd["paid"] = 1;
-				$fd["payment_mode"] = 2;
-				$fd["particulars"] = "TO ADJ SB";
-				$fd["interest_tran"] = 0;
-				// $fd["cheque_no"] = 
-				// $fd["cheque_date"] = 
-				// $fd["bank_id"] = 
-				$fd["subhead_id"] = 249;
-				$fd["deleted"] = 0;
-				$this->cdsd_tran->clear_row_data();
-				$this->cdsd_tran->set_row_data($fd);
-				$cdsd_db_id = $this->cdsd_tran->insert_row();
-				/****** SD DEBIT *****/
-				unset($fn_data);
-				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
-				$fn_data["rv_transaction_id"] = $cdsd_db_id;
-				$fn_data["rv_transaction_type"] = "DEBIT";
-				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::CDSD_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
-				$fn_data["rv_date"] = $data['date'];
-				$fn_data["rv_bid"] = $cdsd_acc_info->bid;
-				$this->rv_no->save_rv_no($fn_data);
-				unset($fn_data);
-				/***********/
+			if(($data["cdsd_type"] == 2 && $data["user_type"] == 2) || ($data["cdsd_type"] == 1 && $data["user_type"] == 1)) {/*&& (strcasecmp($closing_interest, "YES") == 0)*/
+				if($cdsd_acc_info->sb_acc_id > 0) {	//DEBITI ENTRY FOR SD ACCOUNT
+					unset($fd);
+					$fd["cdsd_id"] = $data["cdsd_id"];
+					$fd["cdsd_type"] = $data["cdsd_type"];
+					$fd["date"] = $data["date"];
+					$fd["time"] = date("H:i:s");
+					$fd["bid"] = $cdsd_acc_info->bid;
+					$fd["transaction_type"] = 2;
+					$fd["amount"] = $cdsd_acc_info->int_prev;
+					$fd["paid"] = 1;
+					$fd["payment_mode"] = 2;
+					$fd["particulars"] = "TO ADJ SB";
+					$fd["interest_tran"] = 0;
+					// $fd["cheque_no"] = 
+					// $fd["cheque_date"] = 
+					// $fd["bank_id"] = 
+					$fd["subhead_id"] = 249;
+					$fd["deleted"] = 0;
+					$this->cdsd_tran->clear_row_data();
+					$this->cdsd_tran->set_row_data($fd);
+					$cdsd_db_id = $this->cdsd_tran->insert_row();
+					/****** SD DEBIT *****/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $cdsd_db_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::CDSD_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $data['date'];
+					$fn_data["rv_bid"] = $cdsd_acc_info->bid;
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
 
 
-				//sb acc info 
-				$sb_acc_info = DB::table("createaccount")
-					->where("Accid",$cdsd_acc_info->sb_acc_id)
-					->first();
+					//sb acc info 
+					$sb_acc_info = DB::table("createaccount")
+						->where("Accid",$cdsd_acc_info->sb_acc_id)
+						->first();
 
-				//IF CURRENT BRANCH IS HO,  THEN ADD B2B TRAN  FROM HO TO BRANCH
-				if($cdsd_acc_info->bid == 6) {
-					unset($insert_array);
-					$insert_array["Branch_Branch1_Id"] = $sb_acc_info->Bid;
-					$insert_array["Branch_Branch2_Id"] = $cdsd_acc_info->bid;
-					$insert_array["Branch_Tran_Date"] = $data["date"];
-					$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
-					$insert_array["LedgerHeadId"] = 71;
-					$insert_array["SubLedgerId"] = 249;
-					$insert_array["Branch_Amount"] = $cdsd_acc_info->int_prev;
-					$insert_array["Branch_per"] = "TO ADJ SB";
+					//IF CURRENT BRANCH IS HO,  THEN ADD B2B TRAN  FROM HO TO BRANCH
+					if($cdsd_acc_info->bid == 6) {
+						unset($insert_array);
+						$insert_array["Branch_Branch1_Id"] = $sb_acc_info->Bid;
+						$insert_array["Branch_Branch2_Id"] = $cdsd_acc_info->bid;
+						$insert_array["Branch_Tran_Date"] = $data["date"];
+						$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+						$insert_array["LedgerHeadId"] = 71;
+						$insert_array["SubLedgerId"] = 249;
+						$insert_array["Branch_Amount"] = $cdsd_acc_info->int_prev;
+						$insert_array["Branch_per"] = "TO ADJ SB";
 
-					$branch_to_branch_id = DB::table("branch_to_branch")
-						->insertGetId($insert_array);
-					//GENERATE ADJ NO. FOR H.O.
-						/***********/
-						unset($fn_data);
-						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
-						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
-						$fn_data["rv_transaction_type"] = "DEBIT";
-						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
-						$fn_data["rv_date"] = $data["date"];
-						$fn_data["rv_bid"] = $sb_acc_info->Bid;
-						$adj_no = $this->rv_no->save_rv_no($fn_data);
-						// echo " adj no: {$adj_no}";
-						/***********/
+						$branch_to_branch_id = DB::table("branch_to_branch")
+							->insertGetId($insert_array);
+						//GENERATE ADJ NO. FOR H.O.
+							/***********/
+							unset($fn_data);
+							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+							$fn_data["rv_transaction_type"] = "DEBIT";
+							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+							$fn_data["rv_date"] = $data["date"];
+							$fn_data["rv_bid"] = $sb_acc_info->Bid;
+							$adj_no = $this->rv_no->save_rv_no($fn_data);
+							// echo " adj no: {$adj_no}";
+							/***********/
+					}
+
+
+					//CREDIT ENTRY FOR SB ACOUNT
+
+					$ia_sb = array(
+						"Accid"=>$cdsd_acc_info->sb_acc_id,
+						"AccTid"=>1,
+						"TransactionType"=>"CREDIT",
+						"particulars"=>"TO ADJ SB",
+						"Amount"=>$cdsd_acc_info->int_prev,
+						"tran_Date"=>$data["date"],
+						"SBReport_TranDate"=>$data["date"],
+						"Time"=>date("Y-m-d H:i:s"),
+						"Month"=>date("m",strtotime($data["date"])),
+						"Year"=>date("Y",strtotime($data["date"])),
+						"Bid"=>$sb_acc_info->Bid,
+						"Payment_Mode"=>"ADJUSTMENT",
+						"CreatedBy"=>$UID,
+						"tran_reversed"=>"NO"
+					);
+					$sb_tran_id = DB::table("sb_transaction")
+						->insertGetId($ia_sb);
+					
+					/****** SB CREDIT *****/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $sb_tran_id;
+					$fn_data["rv_transaction_type"] = "CREDIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $data['date'];
+					$fn_data["rv_bid"] = $sb_acc_info->Bid;
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
 				}
-
-
-				//CREDIT ENTRY FOR SB ACOUNT
-
-				$ia_sb = array(
-					"Accid"=>$cdsd_acc_info->sb_acc_id,
-					"AccTid"=>1,
-					"TransactionType"=>"CREDIT",
-					"particulars"=>"TO ADJ SB",
-					"Amount"=>$cdsd_acc_info->int_prev,
-					"tran_Date"=>$data["date"],
-					"SBReport_TranDate"=>$data["date"],
-					"Time"=>date("Y-m-d H:i:s"),
-					"Month"=>date("m",strtotime($data["date"])),
-					"Year"=>date("Y",strtotime($data["date"])),
-					"Bid"=>$sb_acc_info->Bid,
-					"Payment_Mode"=>"ADJUSTMENT",
-					"CreatedBy"=>$UID,
-					"tran_reversed"=>"NO"
-				);
-				$sb_tran_id = DB::table("sb_transaction")
-					->insertGetId($ia_sb);
 				
-				/****** SB CREDIT *****/
-				unset($fn_data);
-				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
-				$fn_data["rv_transaction_id"] = $sb_tran_id;
-				$fn_data["rv_transaction_type"] = "CREDIT";
-				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
-				$fn_data["rv_date"] = $data['date'];
-				$fn_data["rv_bid"] = $sb_acc_info->Bid;
-				$this->rv_no->save_rv_no($fn_data);
-				unset($fn_data);
-				/***********/
 			}
 
 			//RESTE INT PREV AMT
@@ -1380,6 +1402,10 @@ class DepositModel extends Model
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+			
+			DB::table("cdsd_account")
+				->where("cdsd_id", $data["cdsd_id"])
+				->update(["int_prev"=>0]);
 		
 		}
 		
@@ -1458,7 +1484,7 @@ class DepositModel extends Model
 			DB::table("cdsd_transaction")
 				->insertGetId(["cdsd_type"=>$data["cdsd_type"], "cdsd_id"=>$data["cdsd_id"], "date"=>$data["pay_date"], "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>2, "amount"=>$amt/*$data["pay_amt"]*/, "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} PAY", "interest_tran"=>0, "bal_cf"=>0, "bank_id"=>$data["bank"], "cheque_no"=>$data["cheque_no"], "cheque_date"=>$data["cheque_date"]  ]);
 
-			if(strcasecmp($data["pay_mode"], "SB") == 0) {
+			/* if(strcasecmp($data["pay_mode"], "SB") == 0) {
 				$insert_array_sb = array(
 					"Accid"=>$data["sb_acc_id"],
 					"AccTid"=>1,
@@ -1476,7 +1502,7 @@ class DepositModel extends Model
 				);
 				DB::table("sb_transaction")
 					->insertGetId($insert_array_sb);
-			}
+			} */
 			return;
 		}
 
@@ -1580,5 +1606,61 @@ class DepositModel extends Model
 			$this->rv_no->save_rv_no($fn_data);
 			unset($fn_data);
 			/***********/
+
+			if($BID != $sb_acc_info->Bid) { // SB account in different branch
+				
+				switch($sb_acc_info->Bid) {
+					case 1:
+							$temp_subhead_id = 297;
+							break;
+					case 2:
+							$temp_subhead_id = 298;
+							break;
+					case 3:
+							$temp_subhead_id = 299;
+							break;
+					case 4:
+							$temp_subhead_id = 300;
+							break;
+					case 5:
+							$temp_subhead_id = 301;
+							break;
+					default:
+							$temp_subhead_id = 0;
+				}
+				unset($insert_array);
+				$insert_array["Branch_Branch1_Id"] = $sb_acc_info->Bid;
+				$insert_array["Branch_Branch2_Id"] = $BID;
+				$insert_array["Branch_Tran_Date"] = date("Y-m-d");
+				$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+				$insert_array["LedgerHeadId"] = 296;
+				$insert_array["SubLedgerId"] = $temp_subhead_id;
+				$insert_array["Branch_Amount"] = $data["pay_amt"];
+				$insert_array["Branch_per"] = "{$category} PAY AMOUNT";
+
+				$branch_to_branch_id = DB::table("branch_to_branch")
+					->insertGetId($insert_array);
+				//GENERATE ADJ NO.
+					/***** for branch ******/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = date("Y-m-d");
+					$fn_data["rv_bid"] = $sb_acc_info->Bid;
+					$adj_no = $this->rv_no->save_rv_no($fn_data);
+					/***********/
+					/***** for HO ******/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+					$fn_data["rv_transaction_type"] = "CREDIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = date("Y-m-d");
+					$fn_data["rv_bid"] = $BID;
+					$adj_no = $this->rv_no->save_rv_no($fn_data);
+					/***********/
+			}
 		}
 	}

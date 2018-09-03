@@ -1614,6 +1614,7 @@
 			->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 			->where('deposit.Bid',$BranchId)
 			->where('deposit.date',$dte)
+			->where('deposit.deleted',0)
 			->get();
 
 			$i = -1;
@@ -1632,6 +1633,7 @@
 			->where('deposit.Deposit_type',"WITHDRAWL")
 			->where('deposit.pay_mode',"!=","INHAND")
 			->whereNotIn('d_id',$id_arr)
+			->where('deposit.deleted',0)
 			->get();
 			/******* ADJUSTMENT CREDIT *****/
 			$id = array_merge($id1,$id2);
@@ -3340,6 +3342,7 @@
 				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->amount_field}",
 				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->particulars_field}",
 				"{$this->cdsd->tbl}.{$this->cdsd->cdsd_acc_no_field}",
+				"interest_tran",
 				DB::raw(" CONCAT(FirstName, ' ',MiddleName, ' ', LastName )  as 'name' "),
 				"user.Uid"
 			);
