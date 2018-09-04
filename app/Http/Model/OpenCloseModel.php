@@ -1114,9 +1114,11 @@
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
 			->join("user","user.Uid","=","fdallocation.Uid")
 			->where("receipt_voucher.transaction_category",16)
+			->where("receipt_voucher.bid",$BranchId)
 			->where('fdallocation.Bid',$BranchId)
 			->where('FDPayAmt_PaymentMode','=',"CASH")
 			->where('FDPayAmtReport_PayDate',$dte)
+			->where('fd_payamount.deleted',0)
 			->get();
 			return $id;
 		}
@@ -1152,6 +1154,7 @@
 			->where('fdallocation.Bid',$BranchId)
 			->where('FDPayAmt_PaymentMode','<>',"CASH")
 			->where('FDPayAmtReport_PayDate',$dte)
+			->where('fd_payamount.deleted',0)
 			->get();
 			return $id;
 		}
