@@ -304,6 +304,7 @@
 			->select('user.FirstName','user.MiddleName','user.LastName','PendPigmy_AgentUid','PpId','PendPigmy_PendingAmount','PendPigmy_Bid','PendPigmy_CollectionDate','PendPigmy_Status','BName','MobileNo')
 			->where('PendPigmy_Status','=',"PENDING")
 			->where('PendPigmy_Bid','=',$BranchId)
+			->where('pending_pigmy.deleted','=',0)
 			->paginate(10);
 		}
 		

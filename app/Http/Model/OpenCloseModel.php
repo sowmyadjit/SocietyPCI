@@ -1683,6 +1683,7 @@
 			->where("receipt_voucher.bid",$BranchId)
 			->where('PendPigmy_ReceivedDate',$dte)
 			->where('PendPigmy_Bid',$BranchId)
+			->where('pending_pigmy.deleted',0)
 			->get();
 			
 			return $id;
