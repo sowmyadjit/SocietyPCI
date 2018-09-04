@@ -363,6 +363,8 @@
 		
 		public function RejectCheque($id)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
 			$dte=date('d-m-Y');
 			$trid=$id['tid'];
 			$chqchrge=$id['cheqchrge'];
@@ -393,9 +395,91 @@
 			
 			$bankamt1=DB::table('addbank')->select('TotalAmt')->where('Bankid',$CreditBankId)->first();
 			$bankamt=$bankamt1->TotalAmt;
-			$bankupdateamt=$bankamt-$actualbankamt;
+			$bankupdateamt=$bankamt-$chqchrge;//$actualbankamt;
 			
 			DB::table('addbank')->where('Bankid',$CreditBankId)->update(['TotalAmt'=>$bankupdateamt]);
+
+			/**************** bank entrty *****************/
+				$sb_tran_info = DB::table("sb_transaction")
+					->where("Tranid", $trid)
+					->first();
+
+				$date= date("Y-m-d");
+				$bank_id = $CreditBankId;
+				$cheque_no = "";
+				$cheque_date = "";
+				$amount = $chqchrge;
+				$reason = "CHEQUE RETURN";
+				$Deposit_type = "WITHDRAWL";
+				
+				$addbank = DB::table('addbank')
+					->where('Bankid','=',$bank_id)
+					->first();
+
+				$insert_array["Bid"] = $BID;
+				$insert_array["d_date"] = date("d-m-Y",strtotime($date));
+				$insert_array["date"] = date("Y-m-d",strtotime($date));
+				$insert_array["Branch"] = $addbank->Branch;
+				$insert_array["depo_bank"] = $addbank->BankName;
+				$insert_array["depo_bank_id"] = $addbank->Bankid;
+				$insert_array["pay_mode"] = "ADJUSTMENT";
+				$insert_array["cheque_no"] = $cheque_no;
+				$insert_array["cheque_date"] = $cheque_date;
+				$insert_array["bank_name"] = "";
+				$insert_array["amount"] = $amount;
+				$insert_array["paid"] = "yes";
+				$insert_array["reason"] = $reason;
+				// $insert_array["cd"] = "";
+				$insert_array["Deposit_type"] = $Deposit_type;
+
+				$insert_id = DB::table("deposit")
+					->insertGetId($insert_array);
+				/**************** bank entrty *****************/
+					//GENERATE ADJ NO.
+						/***********/
+						unset($fn_data);
+						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+						$fn_data["rv_transaction_id"] = $insert_id;
+						$fn_data["rv_transaction_type"] = "CREDIT";
+						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+						$fn_data["rv_date"] = $date;
+						$fn_data["rv_bid"] = $BID;
+						$adj_no = $this->rv_no->save_rv_no($fn_data);
+						/***********/
+
+				/**************** sb tran entrty *****************/
+					$ia_sb = array(
+						"Accid"=>$sb_tran_info->Accid,
+						"AccTid"=>1,
+						"TransactionType"=>"DEBIT",
+						"particulars"=>"CHEQUE RETURN CHARGE - {$sb_tran_info->Cheque_Number}",
+						"Amount"=>$chqchrge,
+						"tran_Date"=>$date,
+						"SBReport_TranDate"=>$date,
+						"Time"=>date("Y-m-d H:i:s"),
+						"Month"=>date("m",strtotime($date)),
+						"Year"=>date("Y",strtotime($date)),
+						"Bid"=>$BID,
+						"Payment_Mode"=>"ADJUSTMENT",
+						"CreatedBy"=>$UID,
+						"tran_reversed"=>"NO"
+					);
+					$sb_tran_id = DB::table("sb_transaction")
+						->insertGetId($ia_sb);
+					
+					/****** SB CREDIT *****/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $sb_tran_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $date;
+					$fn_data["rv_bid"] = $BID;
+					$this->rv_no->save_rv_no($fn_data);
+					/***********/
+				/**************** sb tran entrty *****************/
+
+
 			return $id;	
 		}
 		
