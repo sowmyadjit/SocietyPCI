@@ -1017,11 +1017,19 @@ class DepositModel extends Model
 			$int_for_amt_till_last_int_calc = ($amt_till_last_int_calc_date_time)*($int_days_from_last_int_calc/365)*($data["cdsd_int_rate"]/100);
 			echo "{$amt_till_last_int_calc_date_time}*({$int_days_from_last_int_calc}/365)*({$data["cdsd_int_rate"]}/100)<br />\n";
 			foreach($cdsd_tran_after_last_int_calc_date as $row_tran) {
-				$int_days = $this->dateDiff(["first"=>$row_tran->{$this->cdsd_tran->date_field}, "second"=>$int_till_date]);
-				$tran_amt = $row_tran->{$this->cdsd_tran->amount_field};
-				$int_amt = ($tran_amt)*($int_days/365)*($data["cdsd_int_rate"]/100);
-				echo "{$tran_amt}*({$int_days}/365)*({$data["cdsd_int_rate"]}/100)<br />\n";
-				$total_int += (float)$int_amt;
+				if($row_tran->transaction_type == 1) {
+					$int_days = $this->dateDiff(["first"=>$row_tran->{$this->cdsd_tran->date_field}, "second"=>$int_till_date]);
+					$tran_amt = $row_tran->{$this->cdsd_tran->amount_field};
+					$int_amt = ($tran_amt)*($int_days/365)*($data["cdsd_int_rate"]/100);
+					echo "{$tran_amt}*({$int_days}/365)*({$data["cdsd_int_rate"]}/100)<br />\n";
+					$total_int += (float)$int_amt;
+				} elseif($row_tran->transaction_type == 2) {
+					$int_days = $this->dateDiff(["first"=>$row_tran->{$this->cdsd_tran->date_field}, "second"=>$int_till_date]);
+					$tran_amt = $row_tran->{$this->cdsd_tran->amount_field};
+					$int_amt = ($tran_amt)*($int_days/365)*($data["cdsd_int_rate"]/100);
+					echo "-{$tran_amt}*({$int_days}/365)*({$data["cdsd_int_rate"]}/100)<br />\n";
+					$total_int -= (float)$int_amt;
+				}
 			}
 			$total_int += $int_for_amt_till_last_int_calc;
 			$wn = (int)$total_int;
@@ -1058,6 +1066,8 @@ class DepositModel extends Model
 
 			$start_date = $acc_info->cdsd_start_date;
 			$int_calc_date = $data["cdsd_int_calc_date"];
+			$last_int_tran = $this->get_last_int_calc_date_time(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$data["cdsd_id"]]);//
+			$last_int_date = $last_int_tran["last_int_calc_date"];
 			if($data["user_type"] == 3) {	// for custoemrs 0 interest for 1st 6 years
 				$y1 = date("Y",strtotime($start_date));
 				$md1 = date("-m-d",strtotime($start_date));
@@ -1070,10 +1080,11 @@ class DepositModel extends Model
 				if($int_calc_date < $date2) {
 					$int_flag = false;
 				}
-				$start_date = $date2;	// start date for interest calc is from 6th year
+				// $start_date = $date2;	// start date for interest calc is from 6th year
+				$last_int_date = $date2;
 			}
 			if($int_flag) {
-				$days = $this->dateDiff(["first"=>$start_date, "second"=>$int_calc_date]);
+				$days = $this->dateDiff(["first"=>$last_int_date, "second"=>$int_calc_date]);
 				$int_rate = $data["cdsd_int_rate"];
 				$int = ($amount)*($days/365)*($int_rate/100);
 				echo "<br />\n{$amount}*({$days}/365)*({$int_rate}/100)<br />\n";
@@ -1164,12 +1175,12 @@ class DepositModel extends Model
 				->where($this->cdsd_tran->cdsd_id_field, $data[$this->cdsd_tran->cdsd_id_field])
 				->where(function($query) use($data) {
 					$query = $query->where($this->cdsd_tran->date_field,"=",$data["last_tran_date"])
-						->where($this->cdsd_tran->time_field,">",$data["last_tran_time"])
+						->where($this->cdsd_tran->time_field,">=",$data["last_tran_time"])
 						->orWhere($this->cdsd_tran->date_field,">",$data["last_tran_date"]);
 				})
 				// ->where($this->cdsd_tran->date_field,">=",$data["last_tran_date"])
-				->where("transaction_type", 1)
-				->where("interest_tran", 0)
+				// ->where("transaction_type", 1)
+				// ->where("interest_tran", 0)
 				->where($this->cdsd_tran->deleted_field, NOT_DELETED)
 				->get();
 			if(empty($ret_data)) {
@@ -1242,7 +1253,7 @@ class DepositModel extends Model
 					$fd["paid"] = 1;
 					$fd["payment_mode"] = 2;
 					$fd["particulars"] = "TO ADJ SB";
-					$fd["interest_tran"] = 0;
+					$fd["interest_tran"] = 3; //3 - TRANSFERING INTEREST
 					// $fd["cheque_no"] = 
 					// $fd["cheque_date"] = 
 					// $fd["bank_id"] = 

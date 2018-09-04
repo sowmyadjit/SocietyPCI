@@ -20,6 +20,11 @@
 	}
 
     $today_date = date("Y-m-d");
+    if($data["BID"] == 6) {
+        $allow_inter_branch = 1;
+    } else {
+        $allow_inter_branch = 0;
+    }
 
 ?>
 
@@ -169,7 +174,8 @@
 			// source:GetBank
 		});
 		$('.typeahead_sb').typeahead({
-			ajax: '/Getaccnum'
+			// ajax: '/Getaccnum?allow_inter_branch={{$allow_inter_branch}}'
+			ajax: '/search_sb_for_cdsd?allow_inter_branch={{$allow_inter_branch}}'
 			// source:Getaccnum
 		});
 </script>

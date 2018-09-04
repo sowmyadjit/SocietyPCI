@@ -374,6 +374,7 @@
 		public function sd_index()
 		{
 			$data["cdsd_type"] = CDSDModel::SD;
+			$data["is_day_open"] = $this->op->is_day_open(date("Y-m-d"));
 			return view("cdsd_index",compact('data'));
 		}
 
@@ -697,8 +698,11 @@
 
 		public function cdsd_pay_index(Request $request)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
 			$data = [];
 			$data["cdsd_type"] = $request->input("cdsd_type");
+			$data["BID"] = $BID;
 			return view("cdsd_pay_index",compact("data"));
 		}
 

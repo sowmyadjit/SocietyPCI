@@ -329,4 +329,36 @@ class CDSDModel extends Model
 			->first();
 	}
 	
+	public function search_sb_for_cdsd($data)
+	{
+		$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+
+
+        $query_string = $data["query_string"];
+
+        unset($select_array_cdsd);
+		$select_array_cdsd = array(
+			"Accid as id",
+			"AccNum as name"
+		);
+
+		$ret_data = DB::table("createaccount")
+			->select($select_array_cdsd)
+			->where('AccNum','like','%SB%')
+			->where('Status','=',"AUTHORISED");
+		/* if($this->settings->get_value("allow_inter_branch") == 0) {
+			$ret_data = $ret_data->where("Bid", $BID);
+		} */
+		if($data["allow_inter_branch"] == 0) {
+			$ret_data = $ret_data->where("Bid", $BID);
+		}
+		$ret_data = $ret_data->where(function($query) use ($query_string) {
+			$query->where("AccNum", "like", "%{$query_string}%");
+				// ->orWhere();
+		});
+		$ret_data = $ret_data->get();
+
+		return $ret_data;
+    }
+	
 }

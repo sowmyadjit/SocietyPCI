@@ -3375,7 +3375,8 @@
 				"{$this->cdsd->tbl}.{$this->cdsd->cdsd_acc_no_field}",
 				"{$this->cdsd_tran->tbl}.{$this->cdsd_tran->interest_tran_field}",
 				DB::raw(" CONCAT(FirstName, ' ',MiddleName, ' ', LastName )  as 'name' "),
-				"user.Uid"
+				"user.Uid",
+				"cdsd_account.user_type"
 			);
 			$ret_data = DB::table($this->cdsd_tran->tbl)
 				->select($select_array_sd_tran)

@@ -636,6 +636,13 @@
 		{
 			return ($this->cdsd->search_customer_for_cdsd($request->search));
 		}
+		
+		public function search_sb_for_cdsd(Request $request)
+		{
+			$fn_data["query_string"] = $request->input("query");
+			$fn_data["allow_inter_branch"] = $request->input("allow_inter_branch");
+			return ($this->cdsd->search_sb_for_cdsd($fn_data));
+		}
 
 	}
 	

@@ -209,6 +209,7 @@
 				Route::post('/cdsd_pay_index','DepositController@cdsd_pay_index');
 				Route::post('/cdsd_pay','DepositController@cdsd_pay');
 				Route::post('/cdsd_acc_details','DepositController@cdsd_acc_details');
+				Route::get('/search_sb_for_cdsd','SearchController@search_sb_for_cdsd');
 				/////////////CD
 				Route::get('/compulsory_deposit_index','DepositController@cd_index');
 				

@@ -1006,81 +1006,83 @@
 						?>
 						@foreach ($trandaily['cd_tran'] as $row)
 						<?php
-							if($row->payment_mode == 1) {				//CASH
-								if($row->transaction_type == 1)	{					//CASH CREDIT
-										$cash_cr = $row->amount;
-										$cash_cr_total += $cash_cr;
-						?>
-									<tr>
-										<td>{{$row->date}}</td>
-										<td>{{$row->cdsd_acc_no}}</td>
-										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
-										<td>{{$cash_cr}}</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-									</tr>
-						<?php
-								} else	{										//CASH DEBIT
-						?>
+							if($row->interest_tran !=  2) {
+								if($row->payment_mode == 1) {				//CASH
+									if($row->transaction_type == 1)	{					//CASH CREDIT
+											$cash_cr = $row->amount;
+											$cash_cr_total += $cash_cr;
+							?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>{{$cash_cr}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+							<?php
+									} else	{										//CASH DEBIT
+							?>
+										<?php
+											$cash_db = $row->amount;
+											$cash_db_total += $cash_db;
+										?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>-</td>
+											<td>{{$cash_db}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+							<?php
+									}
+								} else	{										//ADJUSTMENT
+									if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
+											$adj_cr = $row->amount;
+											$adj_cr_total += $adj_cr;
+							?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{$adj_cr}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
 									<?php
-										$cash_db = $row->amount;
-										$cash_db_total += $cash_db;
+										} else {										//ADJUSTMENT DEBIT
 									?>
-									<tr>
-										<td>{{$row->date}}</td>
-										<td>{{$row->cdsd_acc_no}}</td>
-										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
-										<td>-</td>
-										<td>{{$cash_db}}</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-									</tr>
-						<?php
-								}
-							} else	{										//ADJUSTMENT
-								if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
-										$adj_cr = $row->amount;
-										$adj_cr_total += $adj_cr;
-						?>
-									<tr>
-										<td>{{$row->date}}</td>
-										<td>{{$row->cdsd_acc_no}}</td>
-										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
-										<td>-</td>
-										<td>-</td>
-										<td>{{$adj_cr}}</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-									</tr>
-								<?php
-									} else {										//ADJUSTMENT DEBIT
-								?>
-									<?php
-										$adj_db = $row->amount;
-										$adj_db_total += $adj_db;
-									?>
-									<tr>
-										<td>{{$row->date}}</td>
-										<td>{{$row->cdsd_acc_no}}</td>
-										<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-										<td>{{$adj_db}}</td>
-										<td>-</td>
-										<td>-</td>
-										<td>-</td>
-									</tr>
-						<?php	
+										<?php
+											$adj_db = $row->amount;
+											$adj_db_total += $adj_db;
+										?>
+										<tr>
+											<td>{{$row->date}}</td>
+											<td>{{$row->cdsd_acc_no}}</td>
+											<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{$adj_db}}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+							<?php	
+									}
 								}
 							}
 						?>
@@ -1163,6 +1165,7 @@
 
 						<?php 
 							}
+						
 						?>
 						@endforeach
 						<tr>
@@ -1200,81 +1203,83 @@
 							@foreach ($trandaily['sd_tran'] as $row)
 							<?php
 								if($row->interest_tran !=  2) {
-									if($row->payment_mode == 1) {				//CASH
-										if($row->transaction_type == 1)	{					//CASH CREDIT
-												$cash_cr = $row->amount;
-												$cash_cr_total += $cash_cr;
-								?>
-											<tr>
-												<td>{{$row->date}}</td>
-												<td>{{$row->cdsd_acc_no}}</td>
-												<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
-												<td>{{$cash_cr}}</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-											</tr>
-								<?php
-										} else	{										//CASH DEBIT
-								?>
+									if(!($row->user_type == 2 && ($row->interest_tran ==1 || $row->interest_tran ==3) )) {//dont show agent yearly interest
+										if($row->payment_mode == 1) {				//CASH
+											if($row->transaction_type == 1)	{					//CASH CREDIT
+													$cash_cr = $row->amount;
+													$cash_cr_total += $cash_cr;
+									?>
+												<tr>
+													<td>{{$row->date}}</td>
+													<td>{{$row->cdsd_acc_no}}</td>
+													<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+													<td>{{$cash_cr}}</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+												</tr>
+									<?php
+											} else	{										//CASH DEBIT
+									?>
+												<?php
+													$cash_db = $row->amount;
+													$cash_db_total += $cash_db;
+												?>
+												<tr>
+													<td>{{$row->date}}</td>
+													<td>{{$row->cdsd_acc_no}}</td>
+													<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+													<td>-</td>
+													<td>{{$cash_db}}</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+												</tr>
+									<?php
+											}
+										} else	{										//ADJUSTMENT
+											if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
+													$adj_cr = $row->amount;
+													$adj_cr_total += $adj_cr;
+									?>
+												<tr>
+													<td>{{$row->date}}</td>
+													<td>{{$row->cdsd_acc_no}}</td>
+													<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+													<td>-</td>
+													<td>-</td>
+													<td>{{$adj_cr}}</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+												</tr>
 											<?php
-												$cash_db = $row->amount;
-												$cash_db_total += $cash_db;
+												} else {										//ADJUSTMENT DEBIT
 											?>
-											<tr>
-												<td>{{$row->date}}</td>
-												<td>{{$row->cdsd_acc_no}}</td>
-												<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
-												<td>-</td>
-												<td>{{$cash_db}}</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-											</tr>
-								<?php
-										}
-									} else	{										//ADJUSTMENT
-										if($row->transaction_type == 1) {						//ADJUSTMENT CREDIT
-												$adj_cr = $row->amount;
-												$adj_cr_total += $adj_cr;
-								?>
-											<tr>
-												<td>{{$row->date}}</td>
-												<td>{{$row->cdsd_acc_no}}</td>
-												<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
-												<td>-</td>
-												<td>-</td>
-												<td>{{$adj_cr}}</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-											</tr>
-										<?php
-											} else {										//ADJUSTMENT DEBIT
-										?>
-											<?php
-												$adj_db = $row->amount;
-												$adj_db_total += $adj_db;
-											?>
-											<tr>
-												<td>{{$row->date}}</td>
-												<td>{{$row->cdsd_acc_no}}</td>
-												<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-												<td>{{$adj_db}}</td>
-												<td>-</td>
-												<td>-</td>
-												<td>-</td>
-											</tr>
-								<?php	
+												<?php
+													$adj_db = $row->amount;
+													$adj_db_total += $adj_db;
+												?>
+												<tr>
+													<td>{{$row->date}}</td>
+													<td>{{$row->cdsd_acc_no}}</td>
+													<td>{{$row->particulars}} - {{ $row->name }}({{ $row->Uid }})</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+													<td>{{$adj_db}}</td>
+													<td>-</td>
+													<td>-</td>
+													<td>-</td>
+												</tr>
+									<?php	
+											}
 										}
 									}
 								}
