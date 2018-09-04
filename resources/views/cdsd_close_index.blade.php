@@ -12,7 +12,7 @@
 		case 1:
 				$page_title = "CD CLOSE";
 				$category = "CD";
-				$user_type_2_disabled = "disabled";
+				// $user_type_2_disabled = "disabled";
 				break;
 		case 2:
 				$page_title = "SD CLOSSE";

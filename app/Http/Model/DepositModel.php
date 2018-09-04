@@ -1068,7 +1068,7 @@ class DepositModel extends Model
 			$int_calc_date = $data["cdsd_int_calc_date"];
 			$last_int_tran = $this->get_last_int_calc_date_time(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$data["cdsd_id"]]);//
 			$last_int_date = $last_int_tran["last_int_calc_date"];
-			if($data["user_type"] == 3) {	// for custoemrs 0 interest for 1st 6 years
+			if($data["user_type"] == 3 || $data["user_type"] == 2) {	// for custoemrs & agents 0 interest for 1st 6 years
 				$y1 = date("Y",strtotime($start_date));
 				$md1 = date("-m-d",strtotime($start_date));
 				// var_dump($y1);
