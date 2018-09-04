@@ -15,7 +15,7 @@
 				// $user_type_2_disabled = "disabled";
 				break;
 		case 2:
-				$page_title = "SD CLOSSE";
+				$page_title = "SD CLOSE";
 				$category = "SD";
 				break;
 		default:
