@@ -1349,6 +1349,7 @@
 //				->where("Uncleared_Bal","=",0)
 //				->where("sb_transaction.SBReport_TranDate","<",$start)
 //				->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '0000-00-00' AND '".$start."'")
+				->where("sb_transaction.deleted","=",0)
 				->orderBy('SBReport_TranDate','asc')
 				->orderBy('Tranid','asc')
 				->get();

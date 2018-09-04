@@ -1161,6 +1161,7 @@
 				//	->where('sb_transaction.Bid','=',$BranchId)
 				->where("tran_reversed","=","NO")
 				->where("Amount","!=","0")
+				->where("sb_transaction.deleted",0)
 				->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
 				->orderBy('SBReport_TranDate','asc')
 				->orderBy('Tranid','asc')
@@ -1171,6 +1172,7 @@
 				->where("tran_reversed","=","NO")
 				->where("Uncleared_Bal","=",0)
 				//->where('sb_transaction.Bid','=',$BranchId)
+				->where("sb_transaction.deleted",0)
 				->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
 				->min('Tranid');
 				
@@ -1197,6 +1199,7 @@
 				->whereIn('sb_transaction.Tranid',$id["sb_id_set"])
 				->where("tran_reversed","=","NO")
 				->where("Uncleared_Bal","=",0)
+				->where("sb_transaction.deleted",0)
 				->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
 				->orderBy('SBReport_TranDate','asc')
 				->orderBy('Tranid','asc')
