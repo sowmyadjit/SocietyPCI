@@ -223,7 +223,7 @@
 						
 						<div class="form-group">
 							<div class="col-sm-12">
-								<input type="button" value="CREATE" class="btn btn-success btn-sm PigPaySbmBtn"/>
+								<input type="button" value="CREATE" class="btn btn-success btn-sm PigPaySbmBtn" />
 								<input type="button" value="CANCEL" class="btn btn-danger btn-sm cnclbtn"/>
 								<input type="reset" value="CLEAR" class="btn btn-info btn-sm resetbtn"/>
 								
@@ -579,7 +579,7 @@
 
 <script>
 	//Pigmi Submit button
-	
+	var submit_count = 0;
 	$('.PigPaySbmBtn').click( function(e) {
 		pmode=$('#PigPayMode').val();
 		if(pmode=="CASH")
@@ -631,15 +631,19 @@
 			Bnkid=$('.BankNameTypeAhead').data('value');
 			//PigmyAN=$('.PigmyAccNumTypeAhead').val();
 			e.preventDefault();
-			$.ajax({
-				url: 'PigmyPayAmount',
-				type: 'post',
-				data: $('#FormPayAmount').serialize()+'&BankId='+Bnkid,
-				success: function(data) {
-					alert('success');
-					// $('.tranclassid').click();
-				}
-			});
+			if(submit_count == 0) {
+				submit_count++;
+				$.ajax({
+					url: 'PigmyPayAmount',
+					type: 'post',
+					data: $('#FormPayAmount').serialize()+'&BankId='+Bnkid,
+					success: function(data) {
+						alert('success');
+						// $('.tranclassid').click();
+					}
+				});
+			}
+			
 		}
 		
 	});
