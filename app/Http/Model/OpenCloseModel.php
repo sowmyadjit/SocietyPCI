@@ -615,6 +615,7 @@
 			
 			
 			->where('PayAmount_IntType','=',"INTEREST")
+			->where('pigmi_payamount.deleted',0)
 			->get();
 			return $id;
 		}
@@ -653,6 +654,7 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"INTEREST")
+			->where('pigmi_payamount.deleted',0)
 			->get();
 /**************************** pigmi paid amount single entry ***************************/
 			$pre_row = NULL;
@@ -712,6 +714,7 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where('pigmi_payamount.deleted',0)
 			->get();
 			return $id;
 		}
@@ -751,6 +754,7 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where('pigmi_payamount.deleted',0)
 			->get();
 			
 			
@@ -833,6 +837,7 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','=',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where('pigmi_payamount.deleted',0)
 			->get();
 			return $id;
 		}
@@ -890,6 +895,7 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where('pigmi_payamount.deleted',0)
 			->get();
 			
 			
