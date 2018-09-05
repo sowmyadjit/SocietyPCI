@@ -1,5 +1,6 @@
 <?php
 	$today = date("Y-m-d");
+	$BID = $Teller["BID"];
 ?>
 
 <script src="js/jquery.validate.min.js"></script>
@@ -104,7 +105,7 @@
 					<div class="form-group">
 						<label class="control-label col-sm-4">Branch Name:</label>
 						<div class="col-md-4">
-							<input class="typeahead3 form-control"  id="branchnme" type="text" name="branchnme" placeholder="SELECT BRANCH">  
+							<input class="typeahead3 form-control"  id="branchnme" type="text" name="branchnme" value="{{$Teller["BNAME"]}}" placeholder="SELECT BRANCH" data-value="{{$BID}}" />  
 						</div>
 					</div>
 					
@@ -341,7 +342,7 @@
 					<div class="form-group">
 						<label class="control-label col-sm-4">Branch Name:</label>
 						<div class="col-md-4">
-							<input class="typeahead5 form-control"  id="pgmbranchnme" type="text" name="pgmbranchnme" placeholder="SELECT BRANCH">  
+							<input class="typeahead5 form-control"  id="pgmbranchnme" type="text" name="pgmbranchnme" placeholder="SELECT BRANCH" value="{{$Teller["BNAME"]}}" data-value="{{$BID}}}" />  
 						</div>
 					</div>
 					
@@ -557,7 +558,7 @@
 					<div class="form-group">
 						<label class="control-label col-sm-4">Branch Name:</label>
 						<div class="col-md-4">
-							<input class="typeahead4 form-control"  id="rdbranchnme" type="text" name="rdbranchnme" placeholder="SELECT BRANCH">  
+							<input class="typeahead4 form-control"  id="rdbranchnme" type="text" name="rdbranchnme" placeholder="SELECT BRANCH" value="{{$Teller["BNAME"]}}" data-value="{{$BID}}}">  
 						</div>
 					</div>
 					

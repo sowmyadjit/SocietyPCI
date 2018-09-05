@@ -15,6 +15,8 @@
 	use App\Http\Model\TransactionModel;
 	use App\Http\Model\ledgermodel;
 	use App\Http\Model\DepositModel;
+	use Auth;
+	use DB;
 	
 	
 	class TransactionController extends Controller
@@ -154,6 +156,7 @@
 		
 		public function teller_data()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
 			$Url="AccTransaction";
 			$Teller['module']=$this->Modules->GetAnyMid($Url);
@@ -176,6 +179,8 @@
 				$Teller['close']=1;
 			}
 			$Teller['ledger']=$this->ledger->GetSubHeads();
+			$Teller["BID"] = $BID;
+			$Teller["BNAME"] = DB::table("branch")->where("Bid", $BID)->value("BName");
 			//print_r($Teller);
 			return view('transation',compact('Teller'));
 		}
