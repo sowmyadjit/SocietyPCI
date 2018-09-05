@@ -447,8 +447,34 @@
 						$adj_no = $this->rv_no->save_rv_no($fn_data);
 						/***********/
 
+					
+				/**************** expense entrty *****************/
+				unset($ia);
+				$ia["Head_lid"] = 111;
+				$ia["SubHead_lid"] = 112;
+				$ia["e_date"] = date("Y-m-d");
+				$ia["Bid"] = $BID;
+				$ia["pay_mode"] = "ADJUSTMENT";
+				$ia["amount"] = $chqchrge;
+				$ia["Particulars"] = "CHEQUE RETURN CHARGE";
+				$ia["ExpenseBy"] = $UID;
+				$insert_id = DB::table("expense")
+					->insertGetId($ia);
+					//GENERATE ADJ NO.
+					/***********/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $insert_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::EXPENSE;//constant EXPENSE is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = date("Y-m-d");
+					$fn_data["rv_bid"] = $BID;
+					$adj_no = $this->rv_no->save_rv_no($fn_data);
+					/***********/
+				/**************** expense entrty *****************/
+
 				/**************** sb tran entrty *****************/
-					$ia_sb = array(
+					/* $ia_sb = array(
 						"Accid"=>$sb_tran_info->Accid,
 						"AccTid"=>1,
 						"TransactionType"=>"DEBIT",
@@ -465,17 +491,17 @@
 						"tran_reversed"=>"NO"
 					);
 					$sb_tran_id = DB::table("sb_transaction")
-						->insertGetId($ia_sb);
+						->insertGetId($ia_sb); */
 					
 					/****** SB CREDIT *****/
-					unset($fn_data);
+					/* unset($fn_data);
 					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
 					$fn_data["rv_transaction_id"] = $sb_tran_id;
 					$fn_data["rv_transaction_type"] = "DEBIT";
 					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SB_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
 					$fn_data["rv_date"] = $date;
 					$fn_data["rv_bid"] = $BID;
-					$this->rv_no->save_rv_no($fn_data);
+					$this->rv_no->save_rv_no($fn_data); */
 					/***********/
 				/**************** sb tran entrty *****************/
 
