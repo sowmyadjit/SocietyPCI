@@ -1,4 +1,6 @@
-
+<?php
+	$is_day_open = $data["is_day_open"];
+?>
 
 <div id="content<?php echo $uc->Mid; ?>" class="col-lg-10 col-sm-10">
 	<!-- content starts -->
@@ -150,10 +152,17 @@
 
 
 <script>
+		var is_day_open = "{{$data["is_day_open"]}}";
 		$(".popup_submit").click(function() {
 			var type = $(this).attr("data");
 			console.log("-"+type+"-");
-			
+
+			if(is_day_open == "yes" ) {
+
+			} else {
+				alert("DAY IS NOT OPEN");
+				return;
+			}
 			switch(type) {
 				case "sb_accept": console.log("sb_accept");
 									var id = $("#id").val();console.log("id="+id);

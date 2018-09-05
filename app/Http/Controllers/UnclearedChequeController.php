@@ -8,6 +8,7 @@
 	use App\Http\Controllers\Controller;
 	use App\Http\Model\UnclearedChequeModel;
 	use App\Http\Model\ModulesModel;
+	use App\Http\Model\OpenCloseModel;
 	
 	class UnclearedChequeController extends Controller
 	{
@@ -21,6 +22,7 @@
 		{
 			$this->unclrcheque = new UnclearedChequeModel;
 			$this->Modules= new ModulesModel;
+			$this->op= new OpenCloseModel;
 		}
 		public function show_detail()
 		{
@@ -37,7 +39,8 @@
 			$uc=$this->Modules->GetAnyMid($Url);
 			//$uc['data']=$this->unclrcheque->GetModuleData();
 			// return view('UnclearedCheque',compact('uc'));
-			return view('UnclearedCheque2',compact('uc'));
+			$data["is_day_open"] = $this->op->is_day_open(date("Y-m-d"));
+			return view('UnclearedCheque2',compact('uc','data'));
 		}
 
 		public function cheque_clear(Request $request)
