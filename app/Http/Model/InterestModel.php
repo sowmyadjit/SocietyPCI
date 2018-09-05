@@ -1115,7 +1115,7 @@
 				->where('createaccount.AccTid','=',$data["acctype"])
 				->where('Closed','=',"NO")
 				->where('Bid','=',$BID)
-//				->where('Accid','=',"4095")
+				// ->where('Accid','=',"849")
 				->where('last_interest_calculated_till','<',$interest_calculation_date)
 //				->limit(5)
 				->get();
@@ -1138,10 +1138,12 @@
 					
 				if($balance >= 250)
 				{
-					echo "accid={$ac->Accid}<br>";
+					echo "accid={$ac->Accid} ({$ac->AccNum})<br>";
 					$acno=$ac->AccNum;
 					$Accid=$ac->Accid;
 					
+					$fn_data["int_year"] = $int_year;
+					$fn_data["int_month"] = $int_month;
 					$monthly_min = $this->get_month_min_bal($fn_data);
 //					print_r($monthly_min);continue;
 					
@@ -1155,7 +1157,7 @@
 						}
 						$temp_date = date("Y-m",strtotime("+1 month",strtotime($temp_date)));
 					}
-//					echo "monthly_min_sum=$monthly_min_sum<br>";//exit();
+					echo "monthly_min_sum=$monthly_min_sum<br>";//exit();
 					
 					if(in_array($Accid,$acc_with_fd)) {
 						$interest_rate = $interest_rate_with_fdacc;
@@ -1169,7 +1171,7 @@
 					DB::table("createaccount")
 						->where("Accid","=",$Accid)
 						->update(["last_interest_calculated_till"=>$interest_calculated_till]);
-				}
+				}//return;
 			}
 		}
 		
@@ -1182,7 +1184,8 @@
 		
 		public function get_month_min_bal($data)
 		{
-			
+			$int_year = $data["int_year"];
+			$int_month = $data["int_month"];
 			$today = date("Y-m");
 			$monthly_min = array();
 			
@@ -1193,6 +1196,7 @@
 				
 			if(!empty($mar_31_entry)) {
 				$temp_date = date("Y-m",strtotime("2017-03-31"));
+				// $temp_date = date("Y-m",strtotime("{$int_year}-03-31"));
 				$first_bal = $mar_31_entry->Amount;
 			} else {
 				$created_date = DB::table("createaccount")
@@ -1247,6 +1251,11 @@
 //				echo "cur_bal = $cur_bal<br>";//continue;
 				$temp_date = date("Y-m",strtotime('+1 month',strtotime("{$temp_date}-01")));
 				
+			}
+			foreach($monthly_min as $key => $val){
+				if($key < "{$int_year}-{$int_month}") {
+					unset($monthly_min[$key]);
+				}
 			}
 			print_r($monthly_min);//exit();
 			return $monthly_min;
