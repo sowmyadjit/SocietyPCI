@@ -975,6 +975,7 @@
 			->where("receipt_voucher.transaction_category",15)
 			->where('createaccount.Bid',$BranchId)
 			->where('RDPayAmtReport_PayDate',$dte)
+			->where('rd_payamount.deleted',0)
 			->get();
 			return $id;
 		}
