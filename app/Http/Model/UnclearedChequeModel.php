@@ -451,7 +451,7 @@
 				/**************** expense entrty *****************/
 				unset($ia);
 				$ia["Head_lid"] = 111;
-				$ia["SubHead_lid"] = 112;
+				$ia["SubHead_lid"] = 194;
 				$ia["e_date"] = date("Y-m-d");
 				$ia["Bid"] = $BID;
 				$ia["pay_mode"] = "ADJUSTMENT";

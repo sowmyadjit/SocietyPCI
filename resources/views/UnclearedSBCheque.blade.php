@@ -202,9 +202,9 @@
 		var popup_data =
 			 `
 				 <div  style="display:inline-block;">
-					<label class="control-label col-sm-6">Cheque Reject Amount:</label>
+					<label class="control-label col-sm-6">Cheque Reject Charge:</label>
 					<div class="col-md-6">
-						<input type="text" class="form-control" id="chqrjct" name="chqrjct" placeholder="CHEQUE REJECT AMOUNT">
+						<input type="text" class="form-control" id="chqrjct" name="chqrjct" placeholder="CHEQUE REJECT CHARGE">
 					</div>
 				</div>
 				<div  style="display:inline-block;">
