@@ -412,6 +412,54 @@
 				$amt=$tt-$amount1_cheq;
 				DB::table('addbank')->where('Bankid','=',$bankID)
 				->update(['TotalAmt'=>$amt]);
+
+				/********** add an bank entry if hid=111 & shid=116 (BANK CHARGES) **********/
+				$head_id = $id['exphead'];
+				$subhead_id = $id['expsubhead'];
+				if($head_id == 111 && $subhead_id == 116) {
+					$date= date("Y-m-d");
+					$bank_id = $bankID;
+					$cheque_no = "";
+					$cheque_date = "";
+					$amount = $id['ta'];
+					$reason = $id['parti'];
+					$Deposit_type = "WITHDRAWL";
+					
+					$addbank = DB::table('addbank')
+						->where('Bankid','=',$bank_id)
+						->first();
+
+					$insert_array["Bid"] = $BID;
+					$insert_array["d_date"] = date("d-m-Y",strtotime($date));
+					$insert_array["date"] = date("Y-m-d",strtotime($date));
+					$insert_array["Branch"] = $addbank->Branch;
+					$insert_array["depo_bank"] = $addbank->BankName;
+					$insert_array["depo_bank_id"] = $addbank->Bankid;
+					$insert_array["pay_mode"] = "ADJUSTMENT";
+					$insert_array["cheque_no"] = $cheque_no;
+					$insert_array["cheque_date"] = $cheque_date;
+					$insert_array["bank_name"] = "";
+					$insert_array["amount"] = $amount;
+					$insert_array["paid"] = "yes";
+					$insert_array["reason"] = $reason;
+					// $insert_array["cd"] = "";
+					$insert_array["Deposit_type"] = $Deposit_type;
+
+					$insert_id = DB::table("deposit")
+						->insertGetId($insert_array);
+					//GENERATE ADJ NO.
+						/***********/
+						unset($fn_data);
+						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+						$fn_data["rv_transaction_id"] = $insert_id;
+						$fn_data["rv_transaction_type"] = "CREDIT";
+						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DEPOSIT;//constant DEPOSIT is declared in ReceiptVoucherModel
+						$fn_data["rv_date"] = $date;
+						$fn_data["rv_bid"] = $BID;
+						$adj_no = $this->rv_no->save_rv_no($fn_data);
+						/***********/
+				}
+				/********** add an bank entry if hid=111 & shid=194 (BANK CHARGES) **********/
 			}
 
 				/***********/
