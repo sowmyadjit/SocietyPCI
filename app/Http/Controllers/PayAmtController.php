@@ -52,7 +52,8 @@
 			$PayAmount['is_day_open']=$this->OP_model->is_day_open(date("Y-m-d"));
 			$PayAmount["from_date"] = date("Y-m-01");
 			$PayAmount["to_date"] = date("Y-m-d");
-			return view('PigmyPayAmountHome2',compact('PayAmount'));
+			$data["is_day_open"]  = $this->OP_model->is_day_open(date("Y-m-d"));
+			return view('PigmyPayAmountHome2',compact('PayAmount','data'));
 		}
 
 		public function PigmyPayAmount_data(Request $request)

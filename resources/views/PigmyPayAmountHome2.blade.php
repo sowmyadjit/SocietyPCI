@@ -97,6 +97,7 @@
 </script>
 
 <script>
+	var is_day_open = "{{$data['is_day_open']}}";
 	$("document").ready(function() {
 		setTimeout(() => {
 			load_data("");
@@ -128,8 +129,12 @@
 <script>
 	$(".PayAmountLink<?php echo $PayAmount['module']->Mid; ?>").click(function(e) {
 		e.preventDefault();
-		var url = $(this).attr('href');
-		load_url(url);
+		if(is_day_open == "yes") {
+			var url = $(this).attr('href');
+			load_url(url);
+		} else {
+			alert("DAY IS NOT OPEN");
+		}
 	});
 
 	var is_day_open = "{{$PayAmount['is_day_open']}}"; // "yes" or "no"

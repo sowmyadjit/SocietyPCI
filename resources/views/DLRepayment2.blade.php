@@ -70,6 +70,7 @@
 
 
 <script>
+	var is_day_open = "{{$data['is_day_open']}}";
 	$("document").ready(function() {
 		setTimeout(() => {
 			load_data();
@@ -77,6 +78,10 @@
 	});
 
 	function load_data() {
+		if(is_day_open) {
+			alert("DAY IS NOT OPEN");
+			return;
+		}
 		var loading_img = $("#temp_loading_img").html();
 		$("#table_data").html(loading_img);
 		$.ajax({

@@ -93,7 +93,7 @@
 
 
 <script>
-	  
+	var is_day_open = "{{$data['is_day_open']}}";
 	$('.clickme').click(function(e)
 	{
 		$('.Reqploanclassid').click();
@@ -102,6 +102,10 @@
 	$('.salcrt').click(function(e)
 	{
 		e.preventDefault();
+		if(is_day_open != "yes") {
+			alert("DAY IS NOT OPEN");
+			return;
+		}
 		$('.box-inner').load($(this).attr('href'));
 	});
 	

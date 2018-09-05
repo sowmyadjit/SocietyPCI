@@ -12,6 +12,7 @@
 	use App\Http\Model\CompanyModel;
 	use App\Http\Model\LoanModel;
 	use App\Http\Model\AccountModel;
+	use App\Http\Model\OpenCloseModel;
 	use Auth;
 	
 	class DLRepaymentController extends Controller
@@ -25,6 +26,7 @@
 				$this->Modules= new ModulesModel;
 				$this->loan = new LoanModel;
 				$this->acc = new AccountModel;
+				$this->op=new OpenCloseModel;
 		}
 		
 		public function pigmiDLPigmy()
@@ -33,7 +35,8 @@
 			//$chargeslist['module']=$this->Modules->GetAnyMid($Url);
 			$chargeslist=$this->pigmtDLrepay->chargeslist();
 			// return view('DLRepayment',compact('chargeslist'));
-			return view('DLRepayment2',compact('chargeslist'));
+			$data["is_day_open"] = $this->op->is_day_open(date("Y-m-d"));
+			return view('DLRepayment2',compact('chargeslist','data'));
 		}
 		
 		public function pigmiDLPigmy_data()

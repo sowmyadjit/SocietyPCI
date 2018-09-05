@@ -9,6 +9,7 @@
 	use App\Http\Model\LoanModel;
 	use App\Http\Model\PayAmtModel;
 	use App\Http\Model\RequestLoanModel;
+	use App\Http\Model\OpenCloseModel;
 	
 	class RequestLoanController extends Controller
 	{
@@ -19,11 +20,16 @@
 			$this->loan=new LoanModel;
 			$this->PayAmtMod=new PayAmtModel;
 			$this->Req_Loan=new RequestLoanModel;
+			$this->op=new OpenCloseModel;
 		}
+
 		public function RequestLoan()
-		{	$rl=$this->Req_Loan->GetRequestLoanData();
-        return view('RequestLoan',compact('rl'));
-			}
+		{
+			$rl=$this->Req_Loan->GetRequestLoanData();
+			$data["is_day_open"] = $this->op->is_day_open(date("Y-m-d"));
+      		return view('RequestLoan',compact('rl','data'));
+		}
+
 		public function RequestPersLoan()
 		{
 			//$PersLoanCatCharge=$this->loantype->GetPerLoanCategory();
