@@ -9,6 +9,8 @@
 	use App\Http\Model\ExpenceModel;
 	use App\Http\Model\ReportModel;
 	use App\Http\Model\OpenCloseModel;
+	use Auth;
+	use DB;
 	
 	class ExpenceController extends Controller
 	{
@@ -25,10 +27,15 @@
 		}
 		public function display_exp()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
 			$Url="expence";
 			$led['module']=$this->Modules->GetAnyMid($Url);
 			$led['expense']=$this->creadexpencemodel->getExpensedata();
-			return view('createexp',compact('led'));
+
+			$data["BID"] = $BID;
+			$data["BNAME"] = DB::table("branch")->where("Bid", $BID)->value("BName");
+			return view('createexp',compact('led','data'));
 		}
 		public function show_expence()
 		{
