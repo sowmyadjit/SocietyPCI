@@ -12,6 +12,7 @@
 	use App\Http\Model\CompanyModel;
 	use App\Http\Model\LoanModel;
 	use App\Http\Model\AccountModel;
+	use Auth;
 	
 	class DLRepaymentController extends Controller
 	{
@@ -37,11 +38,14 @@
 		
 		public function pigmiDLPigmy_data()
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			$Url="pigmiDLPigmy";	
 			//$chargeslist['module']=$this->Modules->GetAnyMid($Url);
 			$chargeslist=$this->pigmtDLrepay->chargeslist();
 			// return view('DLRepayment',compact('chargeslist'));
-			return view('DLRepayment_data',compact('chargeslist'));
+			$data["BID"] = $BID;
+			$data["BNAME"] = DB::table("branch")->where("Bid", $BID)->value("BName");
+			return view('DLRepayment_data',compact('chargeslist','data'));
 		}
 
 		public function Receipt(){

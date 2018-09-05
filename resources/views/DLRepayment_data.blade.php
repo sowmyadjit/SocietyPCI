@@ -53,7 +53,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Branch Name :</label>
 							<div id="the-basics" class="col-sm-4">
-								<input class="BranchTypeAheadPG form-control"  type="text" placeholder="SELECT BRANCH" id="PgBranch">  
+								<input class="BranchTypeAheadPG form-control"  type="text" placeholder="SELECT BRANCH" id="PgBranch" value="{{$data["BNAME"]}}" data-value="{{$data["BID"]}}" />  
 							</div>
 						</div>
 						
@@ -257,7 +257,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Branch Name :</label>
 							<div id="the-basics" class="col-sm-4">
-								<input class="BranchTypeAheadRD form-control"  type="text" placeholder="SELECT BRANCH" id="PgBranch" data-value="">  
+								<input class="BranchTypeAheadRD form-control"  type="text" placeholder="SELECT BRANCH" id="PgBranch" value="{{$data["BNAME"]}}" data-value="{{$data["BID"]}}" />  
 							</div>
 						</div>
 						
@@ -465,7 +465,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Branch Name :</label>
 							<div id="the-basics" class="col-sm-4">
-								<input class="BranchTypeAheadFD form-control"  type="text" placeholder="SELECT BRANCH" id="PgBranch">  
+								<input class="BranchTypeAheadFD form-control"  type="text" placeholder="SELECT BRANCH" id="PgBranch" value="{{$data["BNAME"]}}" data-value="{{$data["BID"]}}" />  
 							</div>
 						</div>
 						
@@ -670,7 +670,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Branch Name :</label>
 							<div id="the-basics" class="col-sm-4">
-								<input class="BranchTypeAheadPL form-control"  type="text" placeholder="SELECT BRANCH" id="plBranch">  
+								<input class="BranchTypeAheadPL form-control"  type="text" placeholder="SELECT BRANCH" id="plBranch" value="{{$data["BNAME"]}}" data-value="{{$data["BID"]}}" /">  
 							</div>
 						</div>
 						
@@ -919,7 +919,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Branch Name :</label>
 							<div id="the-basics" class="col-sm-4">
-								<input class="BranchTypeAheadJL form-control"  type="text" placeholder="SELECT BRANCH" id="jlBranch">  
+								<input class="BranchTypeAheadJL form-control"  type="text" placeholder="SELECT BRANCH" id="jlBranch" value="{{$data["BNAME"]}}" data-value="{{$data["BID"]}}" />  
 							</div>
 						</div>
 						
@@ -1120,7 +1120,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-4" for="first_name">Branch Name :</label>
 							<div id="the-basics" class="col-sm-4">
-								<input class="BranchTypeAheadSL form-control"  type="text" placeholder="SELECT BRANCH" id="slBranch">  
+								<input class="BranchTypeAheadSL form-control"  type="text" placeholder="SELECT BRANCH" id="slBranch"  value="{{$data["BNAME"]}}" data-value="{{$data["BID"]}}" />  
 							</div>
 						</div>
 						
