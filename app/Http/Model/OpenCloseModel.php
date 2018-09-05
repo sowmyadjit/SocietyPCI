@@ -2811,16 +2811,17 @@
 				->join("user","user.Uid","=","fdallocation.Uid")
 				->where('FD_Date','=',$date)
 				->where('fd_monthly_interest.Bid','=',$bid)
+				->where('fd_monthly_interest.id','=',0)
 				->get();
 				
-			if(empty($fd_int)) {
+		/* 	if(empty($fd_int)) {
 			$fd_int = DB::table("sb_transaction")
 				->select(DB::raw('`tran_Date` as `FD_Date`,`Amount` as `amount`, `fake_value` as `fdnum` '))
 				->where("tran_Date","=",$date)
 				->where("particulars","LIKE","%FD Interest%")
 				->where('Bid','=',$bid)
 				->get();
-			}
+			} */
 			return $fd_int;
 		}
 		
