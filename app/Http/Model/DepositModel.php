@@ -1081,7 +1081,7 @@ class DepositModel extends Model
 					$int_flag = false;
 				}
 				// $start_date = $date2;	// start date for interest calc is from 6th year
-				$last_int_date = $date2;
+				// $last_int_date = $date2;
 			}
 			if($int_flag) {
 				$days = $this->dateDiff(["first"=>$last_int_date, "second"=>$int_calc_date]);
