@@ -34,7 +34,8 @@
 		{
 			//$PersLoanCatCharge=$this->loantype->GetPerLoanCategory();
 			$LoanCat=$this->loantype->GetLoanCategoryDropD();
-			return view('RequestPersonalLoan',compact('LoanCat'));
+			$data = $this->op->select_branch();
+			return view('RequestPersonalLoan',compact('LoanCat','data'));
 		}
 		
 		/*public function GetMemSBDetailView(Request $request)

@@ -3407,10 +3407,7 @@
 
 		public function tds($date)
 		{
-			$uname='';
-			if(Auth::user())
-			$uname= Auth::user();
-			$bid=$uname->Bid;
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
 			
 			$agent_sal_extra=DB::table('salary_extra_pay')
 				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','paymentmode',DB::raw(" '' as 'receipt_no' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
@@ -3419,12 +3416,21 @@
 				->join('salary_extra','salary_extra.sal_extra_id','=','salary_extra_pay.sal_extra_id')
 				->join('legder','legder.lid','=','salary_extra.sub_head')
 				->where('salary_extra_pay.date','=',$date)
-				->where('salary_extra_pay.bid','=',$bid)
+				->where('salary_extra_pay.bid','=',$BID)
 				->where('salary_extra_pay.sal_extra_id',9)
 				->where('salary_extra_pay.deleted','=',0)
 				->get();
 			// print_r($agent_sal_extra);exit;
 			return $agent_sal_extra;
+		}
+
+
+		public function select_branch()
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$data["BID"] = $BID;
+			$data["BNAME"] = DB::table("branch")->where("Bid",$BID)->value("BName");
+			return $data;
 		}
 		
 		

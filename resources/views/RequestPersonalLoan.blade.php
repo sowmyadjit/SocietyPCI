@@ -38,7 +38,7 @@
 					<div class="form-group branch">
 						<label class="control-label col-md-2 col-md-offset-3">Branch Name:</label>
 						<div id="the-basics" class="col-md-3">
-							<input class="ReqPersBranchTypeAhead form-control"  type="text" placeholder="SELECT BRANCH NAME" id="ReqPersLoanBranch" Required>  
+							<input class="ReqPersBranchTypeAhead form-control"  type="text" placeholder="SELECT BRANCH NAME" id="ReqPersLoanBranch" value="{{$data['BNAME']}}" data-value="{{$data['BID']}}" Required>  
 						</div>
 					</div>
 					
