@@ -1115,7 +1115,7 @@
 				->where('createaccount.AccTid','=',$data["acctype"])
 				->where('Closed','=',"NO")
 				->where('Bid','=',$BID)
-				// ->where('Accid','=',"849")
+				// ->where('Accid','=',"39")
 				->where('last_interest_calculated_till','<',$interest_calculation_date)
 //				->limit(5)
 				->get();
@@ -1229,6 +1229,7 @@
 					->where('sb_transaction.Accid',$data["acc_id"])
 					->where("tran_reversed","=","NO")
 					->where("SBReport_TranDate","like","%{$temp_date}%")
+					->where("sb_transaction.deleted","=",0)
 					->orderBy('SBReport_TranDate','asc')
 					->orderBy('Tranid','asc')
 					->get();
