@@ -891,6 +891,38 @@
 
 			return $ret_data;
 		}
+
+		public function agent_other_income($data)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$UID = $uname->Uid;
+			$BID=$uname->Bid;
+
+			$ia["Income_Head_lid"] = 85;
+			$ia["Income_SubHead_lid"] = 88;
+			$ia["Income_date"] = date("Y-m-d");
+			$ia["Bid"] = $BID;
+			$ia["Income_pay_mode"] = "ADJUSTMENT";
+			$ia["Income_amount"] = $data["amt"];
+			$ia["Income_Particulars"] = $data["particulars"];
+			$ia["Income_ExpenseBy"] = $UID;
+			$income_id = DB::table("income")
+				->insertGetId($ia);
+				
+			//GENERATE ADJ NO.
+			/***********/
+			unset($fn_data);
+			$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+			$fn_data["rv_transaction_id"] = $income_id;
+			$fn_data["rv_transaction_type"] = "CREDIT";
+			$fn_data["rv_transaction_category"] = ReceiptVoucherModel::INCOME;//constant INCOME is declared in ReceiptVoucherModel
+			$fn_data["rv_date"] = date("Y-m-d");
+			$fn_data["rv_bid"] = $BID;
+			$this->rv_no->save_rv_no($fn_data);
+			/***********/
+		}
 		
 	}
 

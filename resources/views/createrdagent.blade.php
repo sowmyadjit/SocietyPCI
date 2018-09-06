@@ -343,7 +343,7 @@ loannum=$('.PLAccNumTypeAhead').data('value');
 				
 				url: 'payagentcommision2',
 				type: 'post',
-				data: $('#form_addbank').serialize() + '&aguid='+auid+'&sbAcNo='+AccNum+'&pmode='+pmode+'&loannum='+loannum+'&noloan='+noloan,
+				data: $('#form_addbank').serialize() + '&aguid='+auid+'&sbAcNo='+AccNum+'&pmode='+pmode+'&loannum='+loannum+'&noloan='+noloan+'&agent_type=RD',
 				success: function(data) {
 					alert('success');
 					// $('.fdallocclassid').click();

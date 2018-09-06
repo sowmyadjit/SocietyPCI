@@ -247,7 +247,7 @@
 			
 			
 		}
-		public function payagentcommision2(Request $request)
+		public function payagentcommision2(Request $request) //SARAFARA COMMISSION
 		{
 			$agentsal['aguid']=$request->input('aguid');
 			$agentsal['cp']=$request->input('cp');//com_per
@@ -268,7 +268,12 @@
 			$agentsal['charges']=$request->input('charges');  
 			$agentsal['amount']=$request->input('amount');  
 			$agentsal['loopid']=$request->input('loopid');
-			$agentsal['com_total_val']=$request->input('totalamt') - $request->input("ot");
+			$agent_type = $request->input('agent_type',true);
+			if($agent_type == "APPRAISER") {
+				$agentsal['com_total_val'] = $request->input('totalamt');// - $request->input("ot");
+			} elseif($agent_type == "RD") {
+				$agentsal['com_total_val'] = $request->input('commdis') + $request->input('sdpo') + $request->input('tdsval');
+			}
 			
 /*************edit**************/
 			$agentsal['sal_extra_all']=$request->input('sal_extra_all');
@@ -276,6 +281,13 @@
 /*************edit end**************/
 
 			$get=$this->salary->payagentcommision($agentsal);
+
+			if($agent_type == "APPRAISER") {
+				unset($fd);
+				$fd["amt"] = $request->input("ot");
+				$fd["particulars"] = "APPRAISER COMMISSION";
+				$this->salary->agent_other_income($fd);
+			}
 			
 			
 		}
