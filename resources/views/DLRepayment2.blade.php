@@ -78,7 +78,7 @@
 	});
 
 	function load_data() {
-		if(is_day_open) {
+		if(is_day_open != "yes") {
 			alert("DAY IS NOT OPEN");
 			return;
 		}
@@ -107,8 +107,6 @@
 		var url = $(this).attr('href');
 		load_url(url);
 	});
-
-	var is_day_open = "{{}}"; // "yes" or "no"
 
 	// console.log("is_day_open:", is_day_open);
 

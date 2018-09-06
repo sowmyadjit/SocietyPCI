@@ -2778,7 +2778,7 @@
 			$uname= Auth::user();
 			$bid=$uname->Bid;
 
-			$excluede_arr = array(11);
+			$excluede_arr = array(11,9);
 			
 			$agent_sal_extra=DB::table('salary_extra_pay')
 				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','paymentmode',DB::raw(" '' as 'receipt_no' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
@@ -3403,6 +3403,28 @@
 
 			return $ret_data;
 			return [];
+		}
+
+		public function tds($date)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$bid=$uname->Bid;
+			
+			$agent_sal_extra=DB::table('salary_extra_pay')
+				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','paymentmode',DB::raw(" '' as 'receipt_no' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+				->leftjoin('agent_commission_payment','agent_commission_payment.Agent_Commission_Id','=','salary_extra_pay.sal_id')
+				->join('user','user.Uid','=','agent_commission_payment.Agent_Commission_Uid')
+				->join('salary_extra','salary_extra.sal_extra_id','=','salary_extra_pay.sal_extra_id')
+				->join('legder','legder.lid','=','salary_extra.sub_head')
+				->where('salary_extra_pay.date','=',$date)
+				->where('salary_extra_pay.bid','=',$bid)
+				->where('salary_extra_pay.sal_extra_id',9)
+				->where('salary_extra_pay.deleted','=',0)
+				->get();
+			// print_r($agent_sal_extra);exit;
+			return $agent_sal_extra;
 		}
 		
 		
