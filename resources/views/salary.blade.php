@@ -832,10 +832,14 @@ console.log(sal_extra);
 	var pf_percent = {{ $sal['data']->pf }};
 	var esi_percent = {{ $sal['data']->esi }};
 	var society_pf_percent = {{ $sal['data']->spf }};
-	var society_esi_percent = {{ $sal['data']->sesi }};x
+	var society_esi_percent = {{ $sal['data']->sesi }};
 	
 	var pf_value = Math.round((bpay+da1)*(parseFloat(pf_percent)/100));
-	var esi_value = Math.ceil((bpay+da1)*(parseFloat(esi_percent)/100));
+	// var esi_value = Math.ceil((bpay+da1)*(parseFloat(esi_percent)/100));
+	var temp_esi = (bpay+da1)*(parseFloat(esi_percent)/100);
+	temp_esi = Math.round(parseFloat(temp_esi) * 100);
+	temp_esi = parseFloat(temp_esi) / 100;
+	var esi_value = Math.ceil(temp_esi);
 	var society_pf_value = Math.round((bpay+da1)*(parseFloat(society_pf_percent)/100));
 	var society_esi_value = Math.round((bpay+da1)*(parseFloat(society_esi_percent)/100));
 	
