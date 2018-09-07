@@ -3661,12 +3661,14 @@
 			$file = fopen("a.txt","a");
 			$content = "\n" . json_encode($var);
 			fwrite($file,$content);
+			fclose($file);
 		}
 		
 		public function cl_clear()
 		{	
 			$file = fopen("a.txt","w");
 			fwrite($file,"");
+			fclose($file);
 		}
 		
 		public function charges_transaction_report($data)
