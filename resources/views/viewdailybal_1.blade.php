@@ -1573,7 +1573,7 @@
 						
 						
 						
-					<tr><td colspan="10"><h5><b><center>Income<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Other Income<center></b></h5></td></tr>
 					<?php
 						$inc_cash_cr = 0;
 						$inc_adj_cr = 0;
