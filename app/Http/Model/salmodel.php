@@ -801,7 +801,7 @@
 				/******* ADJ ENTRY TO EXPENSE ******/
 				
 
-				/******* ADJ ENTRY TO H.O. ******/
+				/******* ADJ ENTRY TO H.O. ****** /
 					if($BID != 6) { // NO ENTRY FOR HO - HO
 						$sal_extra_type = DB::table("salary_extra")
 							->where("sal_extra_id",$data['sal_extra_id'])
@@ -819,7 +819,7 @@
 							$branch_to_branch_id = DB::table("branch_to_branch")
 								->insertGetId($insert_array);
 							//GENERATE ADJ NO. FOR H.O.
-							/***********/
+							/*********** /
 							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
 							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
 							$fn_data["rv_transaction_type"] = "DEBIT";
@@ -829,11 +829,30 @@
 							$this->rv_no->save_rv_no($fn_data);
 							unset($fn_data);
 							unset($insert_array);
-							/***********/
+							/*********** /
 							//NO ADJ NO. FOR THIS BRANCH (ADJ CREDIT)
 						}
 					}
 				/******* ADJ ENTRY TO H.O. ******/
+
+				/************** BRANCH ENTRY FOR  PF, ESI *****************/
+					if(in_array($temp_key,[5,6,7,8,14])) {
+						$sal_extra_info = DB::table("salary_extra")
+							->where("sal_extra_id",$temp_key)
+							->first();
+						$month_name = date("F");
+						if(!empty($sal_extra_info)) {
+							unset($fd);
+							$fd["amount"] = $data['salpay_extra_amt'];
+							$fd["particulars"] = "{$sal_extra_info->sal_extra_display_name} {$month_name}";
+							$fd["head_id"] = $sal_extra_info->head;
+							$fd["subhead_id"] = $sal_extra_info->sub_head;
+							$this->b2b_for_salary_extra($fd);
+						} else {
+							echo "sal_extra_id {$temp_key} not found";
+						}
+					}
+				/************** BRANCH ENTRY FOR  PF, ESI *****************/
 			}
 			
 			return;
@@ -894,11 +913,7 @@
 
 		public function agent_other_income($data)
 		{
-			$uname='';
-			if(Auth::user())
-			$uname= Auth::user();
-			$UID = $uname->Uid;
-			$BID=$uname->Bid;
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID = $uname->Uid; $BID=$uname->Bid;
 
 			$ia["Income_Head_lid"] = 85;
 			$ia["Income_SubHead_lid"] = 88;
@@ -922,6 +937,85 @@
 			$fn_data["rv_bid"] = $BID;
 			$this->rv_no->save_rv_no($fn_data);
 			/***********/
+		}
+
+		public function agent_sal_tds($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID = $uname->Uid; $BID=$uname->Bid;
+			$date = date("Y-m-d");
+			if($BID != 6) {//except for H.O.
+				$insert_array["Branch_Branch1_Id"] = 6;
+				$insert_array["Branch_Branch2_Id"] = $BID;
+				$insert_array["Branch_Tran_Date"] = $date;
+				$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+				$insert_array["LedgerHeadId"] = 57;
+				$insert_array["SubLedgerId"] = 246;
+				$insert_array["Branch_Amount"] = $data["amount"];
+				$insert_array["Branch_per"] = $data['particulars'];
+	
+				$branch_to_branch_id = DB::table("branch_to_branch")
+					->insertGetId($insert_array);
+				/******  GENERATE ADJ NO.  *****/
+				unset($fn_data);
+				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+				$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $date;
+				$fn_data["rv_bid"] = $BID;
+				$this->rv_no->save_rv_no($fn_data);
+				/***********/
+				/******  GENERATE ADJ NO.  *****/
+				unset($fn_data);
+				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+				$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $date;
+				$fn_data["rv_bid"] = 6;
+				$this->rv_no->save_rv_no($fn_data);
+				/***********/
+			}
+		}
+
+		public function b2b_for_salary_extra($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID = $uname->Uid; $BID=$uname->Bid;
+			$date = date("Y-m-d");
+			if($BID != 6) {//except for H.O.
+				unset($insert_array);
+				$insert_array["Branch_Branch1_Id"] = 6;
+				$insert_array["Branch_Branch2_Id"] = $BID;
+				$insert_array["Branch_Tran_Date"] = $date;
+				$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+				$insert_array["LedgerHeadId"] = $data["head_id"];
+				$insert_array["SubLedgerId"] = $data["subhead_id"];
+				$insert_array["Branch_Amount"] = $data["amount"];
+				$insert_array["Branch_per"] = $data['particulars'];
+	
+				$branch_to_branch_id = DB::table("branch_to_branch")
+					->insertGetId($insert_array);
+				/******  GENERATE ADJ NO.  *****/
+				unset($fn_data);
+				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+				$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $date;
+				$fn_data["rv_bid"] = $BID;
+				$this->rv_no->save_rv_no($fn_data);
+				/***********/
+				/******  GENERATE ADJ NO.  *****/
+				unset($fn_data);
+				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+				$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+				$fn_data["rv_transaction_type"] = "DEBIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $date;
+				$fn_data["rv_bid"] = 6;
+				$this->rv_no->save_rv_no($fn_data);
+				/***********/
+			}
 		}
 		
 	}

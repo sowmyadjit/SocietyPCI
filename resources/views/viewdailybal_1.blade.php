@@ -1384,6 +1384,7 @@
 					<!------------------ SD INTEREST  -------------------->
 
 
+					
 
 
 
@@ -3482,10 +3483,8 @@
 					<td>-</td>
 					<td>-</td>
 				</tr>
-	<!-- -------------Staff Addition----------------- -->
-	
-	
-	
+
+
 				<?php
 					$cash_cr_total = $cash_cr_total_4;
 					$cash_db_total = 0;
@@ -3499,6 +3498,377 @@
 					$gt_adj_cr += $adj_cr_total;
 					$gt_adj_db += $adj_db_total;
 				?>
+	<!-- -------------Staff Addition----------------- -->
+	
+	<!------------------ TDS  -------------------->
+		<tr><td colspan="10"><h5><b><center>TDS<center></b></h5></td></tr>
+				<?php
+					$cash_cr = 0;
+					$cash_db = 0;
+					$adj_cr = 0;
+					$adj_db = 0;
+					
+					$cash_cr_total = 0;
+					$cash_db_total = 0;
+					$adj_cr_total = 0;
+					$adj_db_total = 0;
+				?>
+				@foreach ($trandaily['tds'] as $row)
+						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+							<?php
+								$cash_cr = $row->salpay_extra_amt;
+								$cash_cr_total += $cash_cr;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>{{$row->receipt_no}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@else<?php //ADJ CREDIT?>
+							<?php
+								$adj_cr = $row->salpay_extra_amt;
+								$adj_cr_total += $adj_cr;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+				@endforeach
+
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				@foreach ($trandaily['tds'] as $row)
+						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+						@else<?php //ADJ CREDIT?>
+							<?php
+								$adj_db = $row->salpay_extra_amt;
+								$adj_db_total += $adj_db;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+				@endforeach
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				
+				<tr>
+					<th colspan =3>TOTAL TDS</th>
+					<td><?php echo $cash_cr_total; ?></td>
+					<td>-</td>
+					<td><?php echo $adj_cr_total; ?></td>
+					<td><?php echo $adj_db_total; ?></td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				<?php
+					$gt_cash_cr += $cash_cr_total;
+					$gt_cash_db += $cash_db_total;
+					$gt_adj_cr += $adj_cr_total;
+					$gt_adj_db += $adj_db_total;
+				?>
+	<!------------------ TDS  -------------------->
+	
+	<!------------------ PF  -------------------->
+		<tr><td colspan="10"><h5><b><center>PF<center></b></h5></td></tr>
+				<?php
+					$cash_cr = 0;
+					$cash_db = 0;
+					$adj_cr = 0;
+					$adj_db = 0;
+					
+					$cash_cr_total = 0;
+					$cash_db_total = 0;
+					$adj_cr_total = 0;
+					$adj_db_total = 0;
+				?>
+				@foreach ($trandaily['pf'] as $row)
+						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+							<?php
+								$cash_cr = $row->salpay_extra_amt;
+								$cash_cr_total += $cash_cr;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>{{$row->receipt_no}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@else<?php //ADJ CREDIT?>
+							<?php
+								$adj_cr = $row->salpay_extra_amt;
+								$adj_cr_total += $adj_cr;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+				@endforeach
+
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				@foreach ($trandaily['pf'] as $row)
+						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+						@else<?php //ADJ CREDIT?>
+							<?php
+								$adj_db = $row->salpay_extra_amt;
+								$adj_db_total += $adj_db;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+				@endforeach
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				
+				<tr>
+					<th colspan =3>TOTAL PF</th>
+					<td><?php echo $cash_cr_total; ?></td>
+					<td>-</td>
+					<td><?php echo $adj_cr_total; ?></td>
+					<td><?php echo $adj_db_total; ?></td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				<?php
+					$gt_cash_cr += $cash_cr_total;
+					$gt_cash_db += $cash_db_total;
+					$gt_adj_cr += $adj_cr_total;
+					$gt_adj_db += $adj_db_total;
+				?>
+	<!------------------ PF  -------------------->
+	
+	<!------------------ ESI  -------------------->
+		<tr><td colspan="10"><h5><b><center>ESI<center></b></h5></td></tr>
+				<?php
+					$cash_cr = 0;
+					$cash_db = 0;
+					$adj_cr = 0;
+					$adj_db = 0;
+					
+					$cash_cr_total = 0;
+					$cash_db_total = 0;
+					$adj_cr_total = 0;
+					$adj_db_total = 0;
+				?>
+				@foreach ($trandaily['esi'] as $row)
+						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+							<?php
+								$cash_cr = $row->salpay_extra_amt;
+								$cash_cr_total += $cash_cr;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>{{$row->receipt_no}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@else<?php //ADJ CREDIT?>
+							<?php
+								$adj_cr = $row->salpay_extra_amt;
+								$adj_cr_total += $adj_cr;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+				@endforeach
+
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				@foreach ($trandaily['esi'] as $row)
+						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+						@else<?php //ADJ CREDIT?>
+							<?php
+								$adj_db = $row->salpay_extra_amt;
+								$adj_db_total += $adj_db;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+				@endforeach
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				
+				<tr>
+					<th colspan =3>TOTAL PF</th>
+					<td><?php echo $cash_cr_total; ?></td>
+					<td>-</td>
+					<td><?php echo $adj_cr_total; ?></td>
+					<td><?php echo $adj_db_total; ?></td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				<?php
+					$gt_cash_cr += $cash_cr_total;
+					$gt_cash_db += $cash_db_total;
+					$gt_adj_cr += $adj_cr_total;
+					$gt_adj_db += $adj_db_total;
+				?>
+	<!------------------ ESI  -------------------->
+	
+	<!------------------ PROFESSIONAL TAX  -------------------->
+		<tr><td colspan="10"><h5><b><center>PROFESSIONAL TAX<center></b></h5></td></tr>
+				<?php
+					$cash_cr = 0;
+					$cash_db = 0;
+					$adj_cr = 0;
+					$adj_db = 0;
+					
+					$cash_cr_total = 0;
+					$cash_db_total = 0;
+					$adj_cr_total = 0;
+					$adj_db_total = 0;
+				?>
+				@foreach ($trandaily['professional_tax'] as $row)
+						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+							<?php
+								$cash_cr = $row->salpay_extra_amt;
+								$cash_cr_total += $cash_cr;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>{{$row->receipt_no}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@else<?php //ADJ CREDIT?>
+							<?php
+								$adj_cr = $row->salpay_extra_amt;
+								$adj_cr_total += $adj_cr;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+				@endforeach
+
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				@foreach ($trandaily['professional_tax'] as $row)
+						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+						@else<?php //ADJ CREDIT?>
+							<?php
+								$adj_db = $row->salpay_extra_amt;
+								$adj_db_total += $adj_db;
+							?>
+							<tr>
+								<td>{{$row->date}}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+								<td>{{$row->salpay_extra_particulars}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->salpay_extra_amt}}</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+				@endforeach
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				
+				<tr>
+					<th colspan =3>TOTAL PF</th>
+					<td><?php echo $cash_cr_total; ?></td>
+					<td>-</td>
+					<td><?php echo $adj_cr_total; ?></td>
+					<td><?php echo $adj_db_total; ?></td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				<?php
+					$gt_cash_cr += $cash_cr_total;
+					$gt_cash_db += $cash_db_total;
+					$gt_adj_cr += $adj_cr_total;
+					$gt_adj_db += $adj_db_total;
+				?>
+	<!------------------ PROFESSIONAL TAX  -------------------->
+
+
+
+	
+	
+	
 	
 	
 	<!-- -------------salary Extra Pay----------------- -->

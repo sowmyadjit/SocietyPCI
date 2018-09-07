@@ -2755,6 +2755,8 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$bid=$uname->Bid;
+
+			$excluede_arr = array(5,6,7,8,14);
 			
 			$emp_sal_extra=DB::table('salary_extra_pay')
 				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
@@ -2765,6 +2767,7 @@
 				->join('legder','legder.lid','=','salary_extra.sub_head')
 				->where('salary_extra_pay.date','=',$date)
 				->where('salary_extra_pay.bid','=',$bid)
+				->whereNotIn('salary_extra_pay.sal_extra_id',$excluede_arr)
 				->where('salary_extra_pay.deleted','=',0)
 				->get();
 			//print_r($emp_sal_extra);
@@ -3422,6 +3425,63 @@
 				->get();
 			// print_r($agent_sal_extra);exit;
 			return $agent_sal_extra;
+		}
+
+		public function pf($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$sal_extra=DB::table('salary_extra_pay')
+				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname',DB::raw(" 'ADJUSTMENT' as 'paymentmode' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+				->leftjoin('salary','salary.salid','=','salary_extra_pay.sal_id')
+				->join('user','user.Uid','=','salary.Uid')
+				->join('salary_extra','salary_extra.sal_extra_id','=','salary_extra_pay.sal_extra_id')
+				->join('legder','legder.lid','=','salary_extra.sub_head')
+				->where('salary_extra_pay.date','=',$date)
+				->where('salary_extra_pay.bid','=',$BID)
+				->whereIn('salary_extra_pay.sal_extra_id',[5,7])
+				->where('salary_extra_pay.deleted','=',0)
+				->get();
+			//print_r($emp_sal_extra);
+			return $sal_extra;
+		}
+
+		public function esi($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$sal_extra=DB::table('salary_extra_pay')
+				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname',DB::raw(" 'ADJUSTMENT' as 'paymentmode' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+				->leftjoin('salary','salary.salid','=','salary_extra_pay.sal_id')
+				->join('user','user.Uid','=','salary.Uid')
+				->join('salary_extra','salary_extra.sal_extra_id','=','salary_extra_pay.sal_extra_id')
+				->join('legder','legder.lid','=','salary_extra.sub_head')
+				->where('salary_extra_pay.date','=',$date)
+				->where('salary_extra_pay.bid','=',$BID)
+				->whereIn('salary_extra_pay.sal_extra_id',[6,8])
+				->where('salary_extra_pay.deleted','=',0)
+				->get();
+			//print_r($emp_sal_extra);
+			return $sal_extra;
+		}
+
+		public function professional_tax($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$sal_extra=DB::table('salary_extra_pay')
+				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname',DB::raw(" 'ADJUSTMENT' as 'paymentmode' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+				->leftjoin('salary','salary.salid','=','salary_extra_pay.sal_id')
+				->join('user','user.Uid','=','salary.Uid')
+				->join('salary_extra','salary_extra.sal_extra_id','=','salary_extra_pay.sal_extra_id')
+				->join('legder','legder.lid','=','salary_extra.sub_head')
+				->where('salary_extra_pay.date','=',$date)
+				->where('salary_extra_pay.bid','=',$BID)
+				->whereIn('salary_extra_pay.sal_extra_id',[14])
+				->where('salary_extra_pay.deleted','=',0)
+				->get();
+			//print_r($emp_sal_extra);
+			return $sal_extra;
 		}
 
 

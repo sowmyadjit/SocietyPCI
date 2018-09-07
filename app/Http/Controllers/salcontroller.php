@@ -244,6 +244,13 @@
 /*************edit end**************/
 
 			$get=$this->salary->payagentcommision($agentsal);
+
+			/*********** TDS **************/
+			unset($fd);
+			$fd["amount"] = $request->input("tds_value");
+			$fd["particulars"] = "TDS";
+			$this->salary->agent_sal_tds($fd);
+			/*********** TDS **************/
 			
 			
 		}
@@ -289,6 +296,10 @@
 				$this->salary->agent_other_income($fd);
 			}
 			
+			unset($fd);
+			$fd["amount"] = $request->input("tdsval");
+			$fd["particulars"] = "TDS";
+			$this->salary->agent_sal_tds($fd);
 			
 		}
 		
