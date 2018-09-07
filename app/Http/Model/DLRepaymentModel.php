@@ -336,7 +336,8 @@
 				$loanintrest=$x1+$loanintrest;
 			}
 			
-			
+			// var_dump($payAmt);
+			// var_dump($loanintrest);
 			if($payAmt>$loanintrest)
 			{
 				$payAmt=$payAmt-$loanintrest;
@@ -347,11 +348,14 @@
 			}
 			else
 			{
-				$intrestpaid=$payAmt-$loanintrest;
-				$intrestremaining=$intrestpaid-$loanintrest;
-				//$loanpendingamt=$loanpendingamt;
-				$payAmt=0;
-				
+				// $intrestpaid=$payAmt-$loanintrest;
+				// $intrestremaining=$intrestpaid-$loanintrest;
+				// //$loanpendingamt=$loanpendingamt;
+				// $payAmt=0;
+
+				$intrestpaid = $payAmt;
+				$payAmt = 0;
+				$intrestremaining = $loanintrest - $intrestpaid;
 			}
 			
 			
