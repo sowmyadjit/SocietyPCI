@@ -1617,6 +1617,46 @@
 							</tr>
 						@endif
 					@endforeach
+
+					<?php /****************** FROM JL ALLOCATION *******************/ ?>
+					@foreach ($trandaily['jewel_charges'] as $row)
+						<?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
+										<?php
+											$inc_cash_cr = $row->JewelLoan_OtherCharge;
+											$inc_cash_cr_total += $inc_cash_cr;
+										?>
+										<tr>
+											<td title="{{$row->JewelLoanId}}" >{{ $row->JewelLoan_StartDate }}</td>
+											<td>{{ $row->JewelLoan_LoanNumber }}</td>
+											<td>{{ $row->name }}({{$row->Uid}})</td>
+											<td>{{ $inc_cash_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $row->receipt_voucher_no }}</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php  } else { ?><?php //ADJ ?>
+										<?php
+											$inc_adj_cr = $row->JewelLoan_OtherCharge;
+											$inc_adj_cr_total += $inc_adj_cr;
+										?>
+										<tr>
+											<td title="{{$row->JewelLoanId}}" >{{ $row->JewelLoan_StartDate }}</td>
+											<td>{{ $row->JewelLoan_LoanNumber }}</td>
+											<td>{{ $row->name }}({{$row->Uid}})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $inc_adj_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php } ?>
+					@endforeach
+					<?php /****************** FROM JL ALLOCATION *******************/ ?>
 					
 					<tr>
 						<th colspan =3>Total Income </th>
@@ -2303,7 +2343,7 @@
 					
 					
 					
-					
+<?php /*		
 					<tr><td colspan="10"><h5><b><center>JL charges<center></b></h5></td></tr>
 					<?php
 						$jl_cash_cr = 0;
@@ -2362,6 +2402,236 @@
 						$gt_cash_cr += $jl_cash_cr_total;
 						$gt_adj_cr += $jl_adj_cr_total;
 					?>
+*/?>
+					
+<?php /****************** APPRAISER COMMISSION ********************/ ?>
+					<tr><td colspan="10"><h5><b><center>APPRAISER COMMISSION<center></b></h5></td></tr>
+					<?php
+						$cash_cr = 0;
+						$cash_db = 0;
+						$adj_cr = 0;
+						$adj_db = 0;
+						$cash_cr_total = 0;
+						$cash_db_total = 0;
+						$adj_cr_total = 0;
+						$adj_db_total = 0;
+					?>
+					@foreach ($trandaily['jewel_charges'] as $row)
+						<?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
+										<?php
+											$cash_cr = $row->JewelLoan_SaraparaCharge;
+											$cash_cr_total += $cash_cr;
+										?>
+										<tr>
+											<td title="{{$row->JewelLoanId}}" >{{ $row->JewelLoan_StartDate }}</td>
+											<td>{{ $row->JewelLoan_LoanNumber }}</td>
+											<td>{{ $row->name }}({{$row->Uid}})</td>
+											<td>{{ $cash_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $row->receipt_voucher_no }}</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php  } else { ?><?php //ADJ ?>
+										<?php
+											$adj_cr = $row->JewelLoan_SaraparaCharge;
+											$adj_cr_total += $adj_cr;
+										?>
+										<tr>
+											<td title="{{$row->JewelLoanId}}" >{{ $row->JewelLoan_StartDate }}</td>
+											<td>{{ $row->JewelLoan_LoanNumber }}</td>
+											<td>{{ $row->name }}({{$row->Uid}})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $adj_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php } ?>
+					@endforeach
+
+					<?php /************* APPRAISER SALARY **********/?>
+					@foreach ($trandaily['agent_sal_appraiser'] as $row)	<?php /* AGENT SALARY - PG, RD, APPRAISER */?>
+						<?php
+							// $adj_db = $row->Agent_Commission_PaidAmount + $row->Tds + $row->securityDeposit ;
+							$adj_db = $row->total_commission;
+							if($adj_db <= 0) {
+								continue;
+							}
+							$adj_db_total += $adj_db;
+						?>
+						<tr>
+							<td>{{$row->Agent_Commission_PaidDate}}</td>
+							<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
+							<td>Commission</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>{{$adj_db}}</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+					@endforeach
+					<?php /************* APPRAISER SALARY **********/ ?>
+
+					<tr>
+						<th colspan =3>Total APPRAISER COMMISSION</th>
+						<td><?php echo $cash_cr_total; ?></td>
+						<td><?php echo $cash_db_total; ?></td>
+						<td><?php echo $adj_cr_total; ?></td>
+						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $cash_cr_total;
+						$gt_cash_db += $cash_db_total;
+						$gt_adj_cr += $adj_cr_total;
+						$gt_adj_db += $adj_db_total;
+					?>
+<?php /****************** APPRAISER COMMISSION ********************/ ?>
+
+					
+<?php /****************** INSURANCE ********************/ ?>
+					<tr><td colspan="10"><h5><b><center>INSURANCE<center></b></h5></td></tr>
+					<?php
+						$cash_cr = 0;
+						$cash_db = 0;
+						$adj_cr = 0;
+						$adj_db = 0;
+						$cash_cr_total = 0;
+						$cash_db_total = 0;
+						$adj_cr_total = 0;
+						$adj_db_total = 0;
+					?>
+					@foreach ($trandaily['jewel_charges'] as $row)
+						<?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
+										<?php
+											$cash_cr = $row->JewelLoan_InsuranceCharge;
+											$cash_cr_total += $cash_cr;
+										?>
+										<tr>
+											<td title="{{$row->JewelLoanId}}" >{{ $row->JewelLoan_StartDate }}</td>
+											<td>{{ $row->JewelLoan_LoanNumber }}</td>
+											<td>{{ $row->name }}({{$row->Uid}})</td>
+											<td>{{ $cash_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $row->receipt_voucher_no }}</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php  } else { ?><?php //ADJ ?>
+										<?php
+											$adj_cr = $row->JewelLoan_InsuranceCharge;
+											$adj_cr_total += $adj_cr;
+										?>
+										<tr>
+											<td title="{{$row->JewelLoanId}}" >{{ $row->JewelLoan_StartDate }}</td>
+											<td>{{ $row->JewelLoan_LoanNumber }}</td>
+											<td>{{ $row->name }}({{$row->Uid}})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $adj_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php } ?>
+					@endforeach
+					<tr>
+						<th colspan =3>Total APPRAISER INSURANCE AMOUNT</th>
+						<td><?php echo $cash_cr_total; ?></td>
+						<td><?php echo $cash_db_total; ?></td>
+						<td><?php echo $adj_cr_total; ?></td>
+						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $cash_cr_total;
+						$gt_cash_db += $cash_db_total;
+						$gt_adj_cr += $adj_cr_total;
+						$gt_adj_db += $adj_db_total;
+					?>
+<?php /****************** INSURANCE ********************/ ?>
+
+					
+<?php /****************** BOOKS & FORMS ********************/ ?>
+					<tr><td colspan="10"><h5><b><center>BOOKS & FORMS<center></b></h5></td></tr>
+					<?php
+						$cash_cr = 0;
+						$cash_db = 0;
+						$adj_cr = 0;
+						$adj_db = 0;
+						$cash_cr_total = 0;
+						$cash_db_total = 0;
+						$adj_cr_total = 0;
+						$adj_db_total = 0;
+					?>
+					@foreach ($trandaily['jewel_charges'] as $row)
+						<?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
+										<?php
+											$cash_cr = $row->JewelLoan_BookAndFormCharge;
+											$cash_cr_total += $cash_cr;
+										?>
+										<tr>
+											<td title="{{$row->JewelLoanId}}" >{{ $row->JewelLoan_StartDate }}</td>
+											<td>{{ $row->JewelLoan_LoanNumber }}</td>
+											<td>{{ $row->name }}({{$row->Uid}})</td>
+											<td>{{ $cash_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $row->receipt_voucher_no }}</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php  } else { ?><?php //ADJ ?>
+										<?php
+											$adj_cr = $row->JewelLoan_BookAndFormCharge;
+											$adj_cr_total += $adj_cr;
+										?>
+										<tr>
+											<td title="{{$row->JewelLoanId}}" >{{ $row->JewelLoan_StartDate }}</td>
+											<td>{{ $row->JewelLoan_LoanNumber }}</td>
+											<td>{{ $row->name }}({{$row->Uid}})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $adj_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php } ?>
+					@endforeach
+					<tr>
+						<th colspan =3>Total BOOKS & FORMS CHARGE</th>
+						<td><?php echo $cash_cr_total; ?></td>
+						<td><?php echo $cash_db_total; ?></td>
+						<td><?php echo $adj_cr_total; ?></td>
+						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $cash_cr_total;
+						$gt_cash_db += $cash_db_total;
+						$gt_adj_cr += $adj_cr_total;
+						$gt_adj_db += $adj_db_total;
+					?>
+<?php /****************** BOOKS & FORMS ********************/ ?>
 					
 					
 					
@@ -2973,7 +3243,78 @@
 						$gt_adj_cr += $b2b_adj_cr_total;
 						$gt_adj_db += $b2b_adj_db_total;
 					?>
-					
+
+
+<?php if($trandaily['bid'] == 6) {?>
+					<?php /***************** HO ACCOUNT *********************/ ?>
+									<tr><td colspan="10"><h5><b><center>HO ACCOUNT<center></b></h5></td></tr>
+									<?php
+										$cash_cr = 0;
+										$cash_db = 0;
+										$adj_cr = 0;
+										$adj_db = 0;
+										$cash_cr_total = 0;
+										$cash_db_total = 0;
+										$adj_cr_total = 0;
+										$adj_db_total = 0;
+									?>
+									@foreach ($trandaily['sal_extra_from_ho'] as $row)
+												<?php if(strcasecmp($row->transaction_type,"CREDIT") == 0 ) {?><?php //ADJ CR ?>
+														<?php
+															$adj_cr = $row->salpay_extra_amt;
+															$adj_cr_total += $adj_cr;
+														?>
+														<tr>
+															<td title="{{$row->salpay_extra_id}}">{{ $row->date }}</td>
+															<td>{{ $row->name }}({{$row->Uid}})</td>
+															<td>{{ $row->salpay_extra_particulars }}</td>
+															<td>-</td>
+															<td>-</td>
+															<td>{{ $adj_cr }}</td>
+															<td>-</td>
+															<td>-</td>
+															<td>-</td>
+															<td>-</td>
+														</tr>
+												<?php } else { ?><?php //ADJ DB ?>
+														<?php
+															$adj_db = $row->salpay_extra_amt;
+															$adj_db_total += $adj_db;
+														?>
+														<tr>
+															<td title="{{$row->salpay_extra_id}}">{{ $row->date }}</td>
+															<td>{{ $row->name }}({{$row->Uid}})</td>
+															<td>{{ $row->salpay_extra_particulars }}</td>
+															<td>-</td>
+															<td>-</td>
+															<td>-</td>
+															<td>{{ $adj_db }}</td>
+															<td>-</td>
+															<td>-</td>
+															<td>-</td>
+														</tr>
+												<?php } ?>
+									@endforeach
+									<tr>
+										<th colspan =3>Total HO ACCOUNT</th>
+										<td><?php echo $cash_cr_total; ?></td>
+										<td><?php echo $cash_db_total; ?></td>
+										<td><?php echo $adj_cr_total; ?></td>
+										<td><?php echo $adj_db_total; ?></td>
+										<td>-</td>
+										<td>-</td>
+										<td>-</td>
+									</tr>
+									<?php
+										$gt_cash_cr += $cash_cr_total;
+										$gt_cash_db += $cash_db_total;
+										$gt_adj_cr += $adj_cr_total;
+										$gt_adj_db += $adj_db_total;
+									?>
+				<?php /***************** HO ACCOUNT *********************/ ?>
+			
+<?php } ?>
+
 					
 					
 		<!-- BANK TRANSACTIONS -->

@@ -195,6 +195,7 @@
 			
 			$trandaily['branch_branch_tran_credit']=$this->op->branch_branch_tran_credit($dte);
 			$trandaily['branch_branch_tot_credit']=$this->op->branch_branch_tot_credit($dte);
+			$trandaily['sal_extra_from_ho']=$this->op->sal_extra_from_ho($dte);
 			
 			$trandaily['Bank_Branch']=$this->op->Bank_Branch($dte);
 			$trandaily['Bank_Branch_tot']=$this->op->Bank_Branch_tot($dte);
@@ -212,6 +213,7 @@
 			$date_dmY = date("d-m-Y");
 			$trandaily['emp_sal']=$this->op->emp_sal($date_dmY);
 			$trandaily['agent_sal']=$this->op->agent_sal($dte);
+			$trandaily['agent_sal_appraiser']=$this->op->agent_sal_appraiser($dte);
 /**********salary******/
 /**********fd mon int******/
 
@@ -244,6 +246,8 @@
 			
 			$trandaily['jlcharges_adjust']=$this->op->jlcharges_adjust($dte);
 			$trandaily['jlcharges']=$this->op->jlcharges($dte);
+			$trandaily['jewel_charges']=$this->op->jewel_charges($dte);
+
 			
 			$trandaily['bank_tran_inhand']=$this->op->bank_tran_inhand($dte);
 			$trandaily['bank_tran_adjust']=$this->op->bank_tran_adjust($dte);
@@ -576,6 +580,7 @@
 			
 			$trandaily['branch_branch_tran_credit']=$this->op->branch_branch_tran_credit($dte);
 			$trandaily['branch_branch_tot_credit']=$this->op->branch_branch_tot_credit($dte);
+			$trandaily['sal_extra_from_ho']=$this->op->sal_extra_from_ho($dte);
 			
 			$trandaily['Bank_Branch']=$this->op->Bank_Branch($dte);
 			$trandaily['Bank_Branch_tot']=$this->op->Bank_Branch_tot($dte);
@@ -594,6 +599,7 @@
 			$date_dmY = date("d-m-Y", strtotime($dte));
 			$trandaily['emp_sal']=$this->op->emp_sal($date_dmY);
 			$trandaily['agent_sal']=$this->op->agent_sal($dte);
+			$trandaily['agent_sal_appraiser']=$this->op->agent_sal_appraiser($dte);
 /**********salary******/
 
 /**********fd mon int******/
@@ -622,6 +628,7 @@
 			
 			$trandaily['jlcharges_adjust']=$this->op->jlcharges_adjust($dte);
 			$trandaily['jlcharges']=$this->op->jlcharges($dte);
+			$trandaily['jewel_charges']=$this->op->jewel_charges($dte);
 			
 			$trandaily['bank_tran_inhand']=$this->op->bank_tran_inhand($dte);
 			$trandaily['bank_tran_adjust']=$this->op->bank_tran_adjust($dte);

@@ -2394,6 +2394,43 @@
 			$temp2['Uid']=$temp_Uid;
 			return $temp2;
 		}
+
+		public function jewel_charges($date) 
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+
+			$sa = array(
+				"jewelloan_allocation.JewelLoanId",
+				"JewelLoan_LoanNumber",
+				"JewelLoan_PaymentMode",
+				"JewelLoan_StartDate",
+				DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),
+				"user.Uid",
+				"JewelLoan_PaymentMode",
+				"JewelLoan_SaraparaCharge",
+				"JewelLoan_InsuranceCharge",
+				"JewelLoan_BookAndFormCharge",
+				"JewelLoan_OtherCharge",
+				"receipt_voucher_no"
+			);
+			$ret_data = DB::table("jewelloan_allocation")
+				->select($sa)
+				->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
+				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
+				->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
+				->where("receipt_voucher.transaction_category",20)
+				->where("receipt_voucher.receipt_voucher_type",1)
+				->where("receipt_voucher.bid",$BID)
+				->where('JewelLoan_Bid',$BID)
+				->where('JewelLoan_StartDate',$date)
+				->get();
+
+			return $ret_data;
+
+		}
 		
 		public function jlcharges_adjust($dte)
 		{
@@ -2738,12 +2775,35 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$bid=$uname->Bid;
+
+			$did_exclude_array = array(8); //DESIGNATION
 			
 			$emp_sal=DB::table('agent_commission_payment')
 				->select('Agent_Commission_PaidDate','FirstName','MiddleName','LastName','Agent_Commission_PaidforAmt','Tds','securityDeposit','Agent_Commission_PaidAmount','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), "total_commission")
 				->join('user','user.Uid','=','agent_commission_payment.Agent_Commission_Uid')
 				->where('Agent_Commission_PaidDate','=',$date)
 				->where('user.Bid','=',$bid)
+				->where('agent_commission_payment.deleted','=',0)
+				->whereNotIn("user.Did", $did_exclude_array)
+				->get();
+			return $emp_sal;
+		}
+		
+		public function agent_sal_appraiser($date)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$bid=$uname->Bid;
+
+			$Did = 8;
+			
+			$emp_sal=DB::table('agent_commission_payment')
+				->select('Agent_Commission_PaidDate','FirstName','MiddleName','LastName','Agent_Commission_PaidforAmt','Tds','securityDeposit','Agent_Commission_PaidAmount','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), "total_commission")
+				->join('user','user.Uid','=','agent_commission_payment.Agent_Commission_Uid')
+				->where('Agent_Commission_PaidDate','=',$date)
+				->where('user.Bid','=',$bid)
+				->where('user.Did','=',$Did)
 				->where('agent_commission_payment.deleted','=',0)
 				->get();
 			return $emp_sal;
@@ -3491,6 +3551,55 @@
 			$data["BID"] = $BID;
 			$data["BNAME"] = DB::table("branch")->where("Bid",$BID)->value("BName");
 			return $data;
+		}
+
+		public function sal_extra_from_ho($date)
+		{
+			/**************** FOR EMP SAL *****************/
+			$sa= array(
+				"salpay_extra_id",
+				"salary_extra_pay.date",
+				"salpay_extra_particulars",
+				"salpay_extra_amt",
+				DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),
+				DB::raw(" 'CREDIT' as 'transaction_type' "),
+				"user.Uid",
+				"salpay_extra_particulars"
+			);
+			$ret_data1 = DB::table("salary_extra_pay")
+				->select($sa)
+				->join("salary","salary.salid","=","salary_extra_pay.sal_id")
+				->join("user","user.Uid","=","salary.Uid")
+				->where("salary_extra_pay.bid",6)
+				->where("employee_type",1)
+				->where("salary_extra_pay.date",$date)
+				->where("salary_extra_pay.salpay_extra_amt",">",0)
+				->get();
+
+				
+			/**************** FOR AGENT SAL *****************/
+			$sa= array(
+				"salpay_extra_id",
+				"salary_extra_pay.date",
+				"salpay_extra_particulars",
+				"salpay_extra_amt",
+				DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),
+				DB::raw(" 'CREDIT' as 'transaction_type' "),
+				"user.Uid",
+				"salpay_extra_particulars"
+			);
+			$ret_data2 = DB::table("salary_extra_pay")
+				->select($sa)
+				->join("agent_commission_payment","agent_commission_payment.Agent_Commission_Id","=","salary_extra_pay.sal_id")
+				->join("user","user.Uid","=","agent_commission_payment.Agent_Commission_Uid")
+				->where("salary_extra_pay.bid",6)
+				->where("employee_type",2)
+				->where("salary_extra_pay.date",$date)
+				->where("salary_extra_pay.salpay_extra_amt",">",0)
+				->get();
+				
+			$ret_data = array_merge($ret_data1,$ret_data2);
+			return $ret_data;
 		}
 		
 		
