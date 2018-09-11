@@ -2416,7 +2416,7 @@
 				"JewelLoan_OtherCharge",
 				"receipt_voucher_no"
 			);
-			$ret_data = DB::table("jewelloan_allocation")
+			$ret_data1 = DB::table("jewelloan_allocation")
 				->select($sa)
 				->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
@@ -2427,6 +2427,44 @@
 				->where('JewelLoan_Bid',$BID)
 				->where('JewelLoan_StartDate',$date)
 				->get();
+
+			$i = -1;
+			if(!empty($ret_data1)) {
+				foreach($ret_data1 as $row) {
+					$exclude_arr[++$i] = $row->JewelLoanId;
+				}
+			} else {
+				$exclude_arr = array();
+			}
+
+			$sa = array(
+				"jewelloan_allocation.JewelLoanId",
+				"JewelLoan_LoanNumber",
+				"JewelLoan_PaymentMode",
+				"JewelLoan_StartDate",
+				DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),
+				"user.Uid",
+				"JewelLoan_PaymentMode",
+				"JewelLoan_SaraparaCharge",
+				"JewelLoan_InsuranceCharge",
+				"JewelLoan_BookAndFormCharge",
+				"JewelLoan_OtherCharge",
+				DB::raw(" '' as 'receipt_voucher_no' ")
+			);
+			$ret_data2 = DB::table("jewelloan_allocation")
+				->select($sa)
+				->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
+				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
+				// ->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
+				// ->where("receipt_voucher.transaction_category",20)
+				// ->where("receipt_voucher.receipt_voucher_type",1)
+				// ->where("receipt_voucher.bid",$BID)
+				->where('JewelLoan_Bid',$BID)
+				->where('JewelLoan_StartDate',$date)
+				->whereNotIn("jewelloan_allocation.JewelLoanId",$exclude_arr)
+				->get();
+
+			$ret_data = array_merge($ret_data1,$ret_data2);
 
 			return $ret_data;
 
@@ -2816,7 +2854,7 @@
 			$uname= Auth::user();
 			$bid=$uname->Bid;
 
-			$excluede_arr = array(5,6,7,8,14);
+			$excluede_arr = array(3,5,6,7,8,14);
 			
 			$emp_sal_extra=DB::table('salary_extra_pay')
 				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
@@ -3604,6 +3642,27 @@
 				->get();
 				
 			$ret_data = array_merge($ret_data1,$ret_data2);
+			return $ret_data;
+		}
+
+		public function staff_addition_ta($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+
+			$sal_etra_id_arr = array(3);
+			$ret_data = DB::table('salary_extra_pay')
+			->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+			->leftjoin('salary','salary.salid','=','salary_extra_pay.sal_id')
+			//->leftjoin('agent_commission_payment','agent_commission_payment.Agent_Commission_Id','=','salary_extra_pay.sal_id')
+			->join('user','user.Uid','=','salary.Uid')
+			->join('salary_extra','salary_extra.sal_extra_id','=','salary_extra_pay.sal_extra_id')
+			->join('legder','legder.lid','=','salary_extra.sub_head')
+			->where('salary_extra_pay.date','=',$date)
+			->where('salary_extra_pay.bid','=',$BID)
+			->whereIn('salary_extra_pay.sal_extra_id',$sal_etra_id_arr)
+			->where('salary_extra_pay.deleted','=',0)
+			->get();
+
 			return $ret_data;
 		}
 		

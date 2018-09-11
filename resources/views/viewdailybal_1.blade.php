@@ -1554,6 +1554,43 @@
 							</tr>
 						@endif
 					@endforeach
+					@foreach ($trandaily['staff_addition_ta'] as $row)
+						@if(strcasecmp($expencetran->pay_mode, 'INHAND') == 0)
+							<?php
+								$exp_cash_db = $row->salpay_extra_amt;
+								$exp_cash_db_total += $exp_cash_db;
+							?>
+							<tr>
+								<td>{{ $row->date }}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
+								<td>{{ $row->sal_extra_name }}</td>
+								<td>-</td>
+								<td>{{ $row->salpay_extra_amt }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@else
+							<?php
+								$exp_adj_db = $row->salpay_extra_amt;
+								$exp_adj_db_total += $exp_adj_db;
+							?>
+							<tr>
+								<td>{{ $row->date }}</td>
+								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}} ({{$row->Uid}})</td>
+								<td>{{ $row->sal_extra_name }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $row->salpay_extra_amt }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+					@endforeach
 					<tr>
 						<th colspan =3>Total expence </th>
 						<td>-</td>
@@ -1633,7 +1670,7 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-											<td>{{ $row->receipt_voucher_no }}</td>
+								<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
@@ -2430,7 +2467,7 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-											<td>{{ $row->receipt_voucher_no }}</td>
+											<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
@@ -2524,7 +2561,7 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-											<td>{{ $row->receipt_voucher_no }}</td>
+								<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
@@ -2592,7 +2629,7 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-											<td>{{ $row->receipt_voucher_no }}</td>
+											<?php /*		<td>{{ $row->receipt_voucher_no }}</td> */?>
 											<td>-</td>
 											<td>-</td>
 										</tr>

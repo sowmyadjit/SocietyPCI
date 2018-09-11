@@ -137,6 +137,7 @@
 			
 			$trandaily['expence']=$this->op->show_dailyexpencetran($dte);
 			$trandaily['expencebal']=$this->op->show_dailyexpencebalance($dte);
+			$trandaily['staff_addition_ta']=$this->op->staff_addition_ta($dte);
 			
 			$trandaily['income']=$this->op->show_dailyincometran($dte);
 			$trandaily['incomebal']=$this->op->show_dailyincomebalance($dte);
@@ -522,6 +523,7 @@
 			
 			$trandaily['expence']=$this->op->show_dailyexpencetran($dte);
 			$trandaily['expencebal']=$this->op->show_dailyexpencebalance($dte);
+			$trandaily['staff_addition_ta']=$this->op->staff_addition_ta($dte);
 			
 			$trandaily['income']=$this->op->show_dailyincometran($dte);
 			$trandaily['incomebal']=$this->op->show_dailyincomebalance($dte);
