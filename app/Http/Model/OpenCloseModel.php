@@ -3555,6 +3555,7 @@
 
 		public function sal_extra_from_ho($date)
 		{
+			$exclude_arr = array(3);
 			/**************** FOR EMP SAL *****************/
 			$sa= array(
 				"salpay_extra_id",
@@ -3574,6 +3575,8 @@
 				->where("employee_type",1)
 				->where("salary_extra_pay.date",$date)
 				->where("salary_extra_pay.salpay_extra_amt",">",0)
+				->whereNotIn("salary_extra_pay.sal_extra_id",$exclude_arr)
+				->where("salary_extra_pay.deleted",0)
 				->get();
 
 				
@@ -3596,6 +3599,8 @@
 				->where("employee_type",2)
 				->where("salary_extra_pay.date",$date)
 				->where("salary_extra_pay.salpay_extra_amt",">",0)
+				->whereNotIn("salary_extra_pay.sal_extra_id",$exclude_arr)
+				->where("salary_extra_pay.deleted",0)
 				->get();
 				
 			$ret_data = array_merge($ret_data1,$ret_data2);
