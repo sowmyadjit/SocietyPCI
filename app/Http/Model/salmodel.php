@@ -120,34 +120,115 @@
 					
 					DB::table('staffloan_repay')->insertGetId(['SLRepay_Date'=>$dte,'SLRepay_SLAllocID'=>$id['loannum'],'SLRepay_PaidAmt'=>$total_paid,'SLRepay_PayMode'=>"SALARY",'SLRepay_Created_By'=>$id['uid'],'SLRepay_Bid'=>$id['bid'],'SLRepay_Interest'=>$id['slintamt'],'paid_principle'=>$EMI_Amount]);
 				} else {	//DIFFERENT BRANCH - TRANSFER AAMOUNT TO H.O.
-				
-					//	HO to branch entry
-					$insert_array["Branch_Branch1_Id"] = 6;
-					$insert_array["Branch_Branch2_Id"] = $login_bid;
-					$insert_array["Branch_Tran_Date"] = $dte;
-					$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
-					$insert_array["LedgerHeadId"] = 57;
-					$insert_array["SubLedgerId"] = 61;
-					$insert_array["Branch_Amount"] = $total_paid;
-					$insert_array["Branch_per"] = "STAFF LOAN REPAYMENT AMOUNT ({$staff_loan_no} - $staff_loan_name)";
 
-					$branch_to_branch_id = DB::table("branch_to_branch")
-						->insertGetId($insert_array);
-
-					//GENERATE ADJ NO. FOR HO
-						/***********/
-						$fn_data["rv_payment_mode"] = "ADJUSTMENT";
-						$fn_data["rv_transaction_id"] = $branch_to_branch_id;
-						$fn_data["rv_transaction_type"] = "DEBIT";
-						$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
-						$fn_data["rv_date"] = $dte;
-						$fn_data["rv_bid"] = 6;
-						$adj_no = $this->rv_no->save_rv_no($fn_data);
-						unset($fn_data);
+					if($login_bid != 6) { //OTHER BRANCHES TRANSFER AMOUNT TO HO
+						$temp_head_id = 57;//ADJUSTMENTS
+						switch($login_bid) {
+							case 1:
+									$temp_subhead_id = 61;
+									break;
+							case 2:
+									$temp_subhead_id = 64;
+									break;
+							case 3:
+									$temp_subhead_id = 62;
+									break;
+							case 4:
+									$temp_subhead_id = 63;
+									break;
+							case 5:
+									$temp_subhead_id = 65;
+									break;
+							default :
+									$temp_subhead_id = 0;
+									break;
+						}
+						//	HO to branch entry
 						unset($insert_array);
-						echo " adj no: {$adj_no}";
-						/***********/
-					//NO ADJ NO. FOR H.O. (ADJ CREDIT)
+						$insert_array["Branch_Branch1_Id"] = 6;
+						$insert_array["Branch_Branch2_Id"] = $login_bid;
+						$insert_array["Branch_Tran_Date"] = $dte;
+						$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+						$insert_array["LedgerHeadId"] = $temp_head_id;
+						$insert_array["SubLedgerId"] = $temp_subhead_id;
+						$insert_array["Branch_Amount"] = $total_paid;
+						$insert_array["Branch_per"] = "STAFF LOAN REPAYMENT AMOUNT ({$staff_loan_no} - $staff_loan_name)";
+
+						$branch_to_branch_id = DB::table("branch_to_branch")
+							->insertGetId($insert_array);
+							/****** GENERATE ADJ NO. *****/
+							unset($fn_data);
+							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+							$fn_data["rv_transaction_type"] = "DEBIT";
+							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+							$fn_data["rv_date"] = $dte;
+							$fn_data["rv_bid"] = 6;
+							$adj_no = $this->rv_no->save_rv_no($fn_data);
+							echo " adj no: {$adj_no}";
+							/***********/
+							/****** GENERATE ADJ NO. *****/
+							unset($fn_data);
+							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+							$fn_data["rv_transaction_type"] = "DEBIT";
+							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+							$fn_data["rv_date"] = $dte;
+							$fn_data["rv_bid"] = $login_bid;
+							$adj_no = $this->rv_no->save_rv_no($fn_data);
+							echo " adj no: {$adj_no}";
+							/***********/
+					} else { //HO DIRECTLY TRANSFER AMOUNT TO BRANCH HAVING LOAN
+						$temp_head_id = 296;//BRANCH ACCOUNTS
+						switch($bid_of_loan_account) {
+							case 1:
+									$temp_subhead_id = 297;
+									break;
+							case 2:
+									$temp_subhead_id = 298;
+									break;
+							case 3:
+									$temp_subhead_id = 299;
+									break;
+							case 4:
+									$temp_subhead_id = 300;
+									break;
+							case 5:
+									$temp_subhead_id = 301;
+									break;
+							default :
+									$temp_subhead_id = 0;
+									break;
+						}
+
+						//	HO to branch entry
+						unset($insert_array);
+						$insert_array["Branch_Branch1_Id"] = $bid_of_loan_account;
+						$insert_array["Branch_Branch2_Id"] = 6;
+						$insert_array["Branch_Tran_Date"] = $dte;
+						$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
+						$insert_array["LedgerHeadId"] = $temp_head_id;
+						$insert_array["SubLedgerId"] = $temp_subhead_id;
+						$insert_array["Branch_Amount"] = $total_paid;
+						$insert_array["Branch_per"] = "STAFF LOAN REPAYMENT AMOUNT ({$staff_loan_no} - $staff_loan_name)";
+
+						$branch_to_branch_id = DB::table("branch_to_branch")
+							->insertGetId($insert_array);
+
+						//GENERATE ADJ NO. FOR HO
+							/***********/
+							unset($fn_data);
+							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+							$fn_data["rv_transaction_type"] = "DEBIT";
+							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+							$fn_data["rv_date"] = $dte;
+							$fn_data["rv_bid"] = 6;
+							$adj_no = $this->rv_no->save_rv_no($fn_data);
+							echo " adj no: {$adj_no}";
+							/***********/
+						//NO ADJ NO. FOR H.O. (ADJ CREDIT)
+					}
 				}
 				/************************* ************************/
 			}
