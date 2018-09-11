@@ -160,7 +160,7 @@
 							unset($fn_data);
 							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
 							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
-							$fn_data["rv_transaction_type"] = "DEBIT";
+							$fn_data["rv_transaction_type"] = "CREDIT";
 							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
 							$fn_data["rv_date"] = $dte;
 							$fn_data["rv_bid"] = 6;
@@ -214,20 +214,28 @@
 
 						$branch_to_branch_id = DB::table("branch_to_branch")
 							->insertGetId($insert_array);
-
-						//GENERATE ADJ NO. FOR HO
-							/***********/
+							/****** GENERATE ADJ NO. *****/
 							unset($fn_data);
 							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
 							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
 							$fn_data["rv_transaction_type"] = "DEBIT";
 							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
 							$fn_data["rv_date"] = $dte;
+							$fn_data["rv_bid"] = $bid_of_loan_account;
+							$adj_no = $this->rv_no->save_rv_no($fn_data);
+							echo " adj no: {$adj_no}";
+							/****** GENERATE ADJ NO. *****/
+							/****** GENERATE ADJ NO. *****/
+							unset($fn_data);
+							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
+							$fn_data["rv_transaction_type"] = "CREDIT";
+							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+							$fn_data["rv_date"] = $dte;
 							$fn_data["rv_bid"] = 6;
 							$adj_no = $this->rv_no->save_rv_no($fn_data);
 							echo " adj no: {$adj_no}";
-							/***********/
-						//NO ADJ NO. FOR H.O. (ADJ CREDIT)
+							/****** GENERATE ADJ NO. *****/
 					}
 				}
 				/************************* ************************/
