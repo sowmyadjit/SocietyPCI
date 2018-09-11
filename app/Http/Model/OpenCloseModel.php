@@ -1157,6 +1157,22 @@
 			->where('FDPayAmtReport_PayDate',$dte)
 			->where('fd_payamount.deleted',0)
 			->get();
+
+			/************************** SINGLE ENTRY FOR FD PAY AMOUNT **********************************/
+			$temp_list = array();
+			foreach($id as $key => $row) {
+				$acc_no = $row->FDPayAmt_AccNum;
+				if(isset($temp_list[$acc_no])) {// ACCOUNT NUMEBR REPEATED (HAS MORE THAN ONE PAYMENT ENTRY)
+					$old_key = $temp_list[$acc_no];
+					$id[$old_key]->FDPayAmt_PayableAmount += $row->FDPayAmt_PayableAmount;// ADD CURRENT ENTRY AMOUNT TO OLD ENTRY'S AMOUNT
+					$id[$old_key]->adj_no .= ", {$row->adj_no}";
+					unset($id[$key]);// DELETE CURRENT ENTRY
+				} else {
+					$temp_list[$acc_no] = $key;// SAVE CURRENT ACCOUNT NO
+				}
+			}
+			/************************** SINGLE ENTRY FOR FD PAY AMOUNT **********************************/
+
 			return $id;
 		}
 		public function show_dailyfdpayamttotbalance_adjust($dte)
