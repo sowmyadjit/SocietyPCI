@@ -650,7 +650,7 @@
 			$gettotmonth=$getdur*12;//get total month
 			$principleamt=$rdintrst->Total_Amount;
 			$rdtotal=$tot;
-			echo "rd total: {$rdtotal}<br />\n";
+			// echo "rd total: {$rdtotal}<br />\n";
 			if($getdur>1)
 			{
 				$calcdur=$getdur-1;
@@ -711,7 +711,7 @@
 				$getopbal=$this->getopngbal($acno,$sdate,$edate);
 				$opbal=$getopbal->opening_blance;
 				$due=($opbal*5)/1000;
-				echo "due count: {$duecount1}<br />\n	";
+				// echo "due count: {$duecount1}<br />\n	";
 				$dueamt=$due*$duecount1;
 				$dueamt=$this->roundamt->Roundall($dueamt);
 				$rdamt1=($interestamt-$dueamt);
@@ -916,7 +916,7 @@
 					$i = 1;
 				}
 			}
-			print_r($rd_transaction);//exit();
+			// print_r($rd_transaction);//exit();
 			// print_r($rd_transaction_sum);//exit();
 /****edit***/
 			return $rd_transaction;
