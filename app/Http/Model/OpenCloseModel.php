@@ -3681,6 +3681,32 @@
 
 			return $ret_data;
 		}
+
+		public function pg_prewithdrawal_charges($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$sa = array(
+				"pigmi_prewithdrawal.PgmPrewithdraw_ID",
+				"pigmi_prewithdrawal.Withdraw_Date",
+				"pigmi_prewithdrawal.PigmiAcc_No",
+				"pigmi_prewithdrawal.Deduct_Commission",
+				"pigmi_prewithdrawal.Deduct_Amount",
+				"pigmi_payamount.PayAmount_PaymentMode",
+				DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),
+				"user.Uid"
+			);
+			$ret_data = DB::table("pigmi_prewithdrawal")
+				->select($sa)
+				->join("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_prewithdrawal.PigmiAcc_No")
+				->join("pigmi_payamount","pigmi_payamount.PayAmount_PigmiAccNum","=","pigmi_prewithdrawal.PigmiAcc_No")
+				->join("user","user.Uid","=","pigmiallocation.UID")
+				->where("pigmi_prewithdrawal.Withdraw_Date",$date)
+				->where("pigmi_prewithdrawal.CashPaid_State","PAID")
+				->where("pigmiallocation.Bid",$BID)
+				->get();
+
+			return $ret_data;
+		}
 		
 		
 	}

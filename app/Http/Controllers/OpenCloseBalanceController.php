@@ -141,6 +141,7 @@
 			
 			$trandaily['income']=$this->op->show_dailyincometran($dte);
 			$trandaily['incomebal']=$this->op->show_dailyincomebalance($dte);
+			$trandaily['pg_prewithdrawal_charges']=$this->op->pg_prewithdrawal_charges($dte);
 			
 			$trandaily['dlallocation']=$this->op->show_dlallocationtran($dte);
 			$trandaily['dlallocationbal']=$this->op->show_dlallocationbalance($dte);
@@ -527,6 +528,7 @@
 			
 			$trandaily['income']=$this->op->show_dailyincometran($dte);
 			$trandaily['incomebal']=$this->op->show_dailyincomebalance($dte);
+			$trandaily['pg_prewithdrawal_charges']=$this->op->pg_prewithdrawal_charges($dte);
 			
 			$trandaily['dlallocation']=$this->op->show_dlallocationtran($dte);
 			$trandaily['dlallocationbal']=$this->op->show_dlallocationbalance($dte);

@@ -455,7 +455,7 @@
 							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) <?php /* CASH - PREWITHDRAWAL - DEDUCT COMMISSION */?>
+		<?php /*	@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) <?php // CASH - PREWITHDRAWAL - DEDUCT COMMISSION ?>
 						<?php
 							$pigmypay_cash_cr = $pigmyamt->Deduct_Commission;
 							if($pigmypay_cash_cr <= 0) {
@@ -476,7 +476,7 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) <?php /* CASH - PREWITHDRAWAL - DEDUCT AMOUNT */?>
+					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) <?php // CASH - PREWITHDRAWAL - DEDUCT AMOUNT ?>
 						<?php
 							$pigmypay_cash_cr = $pigmyamt->Deduct_Amount;
 							if($pigmypay_cash_cr <= 0) {
@@ -497,7 +497,7 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) <?php /* ADJUSTMENT - PREWITHDRAWAL - DEDUCT COMMISSION */?>
+					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) <?php // ADJUSTMENT - PREWITHDRAWAL - DEDUCT COMMISSION ?>
 						<?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Commission;
 							if($pigmypay_adj_cr <= 0) {
@@ -518,7 +518,7 @@
 							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) <?php /* ADJUSTMENT - PREWITHDRAWAL - DEDUCT AMOUNT */?>
+					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) <?php // ADJUSTMENT - PREWITHDRAWAL - DEDUCT AMOUNT ?>
 						<?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Amount;
 							if($pigmypay_adj_cr <= 0) {
@@ -538,7 +538,9 @@
 							<td>-</td>
 							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
-					@endforeach
+					@endforeach  
+*/?>
+
 					<tr>
 						<th colspan =3>Pigmy Amount Paid</th>
 						<td><?php echo $pigmypay_cash_cr_total; ?></td>
@@ -1694,6 +1696,84 @@
 						<?php } ?>
 					@endforeach
 					<?php /****************** FROM JL ALLOCATION *******************/ ?>
+					<?php /****************** FROM PG PREWITHDRAWAL Deduct_Commission *******************/ ?>
+					@foreach ($trandaily['pg_prewithdrawal_charges'] as $row)
+						<?php if(strcasecmp($row->PayAmount_PaymentMode, "CASH")  == 0 || strcasecmp($row->PayAmount_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
+										<?php
+											$inc_cash_cr = $row->Deduct_Commission;
+											$inc_cash_cr_total += $inc_cash_cr;
+										?>
+										<tr>
+											<td title="{{$row->PgmPrewithdraw_ID}}" >{{ $row->Withdraw_Date }}</td>
+											<td>{{ $row->PigmiAcc_No }}</td>
+											<td>PG DEDUCT COMMISSION - {{ $row->name }}({{$row->Uid}})</td>
+											<td>{{ $inc_cash_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+								<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php  } else { ?><?php //ADJ ?>
+										<?php
+											$inc_adj_cr = $row->Deduct_Commission;
+											$inc_adj_cr_total += $inc_adj_cr;
+										?>
+										<tr>
+											<td title="{{$row->PgmPrewithdraw_ID}}" >{{ $row->Withdraw_Date }}</td>
+											<td>{{ $row->PigmiAcc_No }}</td>
+											<td>PG DEDUCT COMMISSION - {{ $row->name }}({{$row->Uid}})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $inc_adj_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php } ?>
+					@endforeach
+					<?php /****************** FROM PG PREWITHDRAWAL Deduct_Commission *******************/ ?>
+					<?php /****************** FROM PG PREWITHDRAWAL Deduct_Amount *******************/ ?>
+					@foreach ($trandaily['pg_prewithdrawal_charges'] as $row)
+						<?php if(strcasecmp($row->PayAmount_PaymentMode, "CASH")  == 0 || strcasecmp($row->PayAmount_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
+										<?php
+											$inc_cash_cr = $row->Deduct_Commission;
+											$inc_cash_cr_total += $inc_cash_cr;
+										?>
+										<tr>
+											<td title="{{$row->PgmPrewithdraw_ID}}" >{{ $row->Withdraw_Date }}</td>
+											<td>{{ $row->PigmiAcc_No }}</td>
+											<td>PG DEDUCT AMOUNT - {{ $row->name }}({{$row->Uid}})</td>
+											<td>{{ $inc_cash_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+								<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php  } else { ?><?php //ADJ ?>
+										<?php
+											$inc_adj_cr = $row->Deduct_Amount;
+											$inc_adj_cr_total += $inc_adj_cr;
+										?>
+										<tr>
+											<td title="{{$row->PgmPrewithdraw_ID}}" >{{ $row->Withdraw_Date }}</td>
+											<td>{{ $row->PigmiAcc_No }}</td>
+											<td>PG DEDUCT AMOUNT - {{ $row->name }}({{$row->Uid}})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $inc_adj_cr }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+										</tr>
+						<?php } ?>
+					@endforeach
+					<?php /****************** FROM PG PREWITHDRAWAL Deduct_Amount *******************/ ?>
 					
 					<tr>
 						<th colspan =3>Total Income </th>
