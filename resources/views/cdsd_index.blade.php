@@ -62,7 +62,7 @@
 						</div>
 						
 						<div class="box-content">
-							<div class="alert alert-info" style="height:60px;">
+							<div class="alert alert-info" style="height:110px;">
 								<div>
 									<div class="col-md-3" style="height:38px;">
 										ACCOUNT TYPE:
@@ -93,6 +93,11 @@
 									<button id="cdsd_close" class="btn btn-default">SD CLOSE</button>
 									<button id="cdsd_pay" class="btn btn-default">SD PAY</button>
 								@endif
+								</div>
+								<div class="col-md-12" >
+									<div class="col-md-5 pull-right" style="margin: 10px 65px 0 0;">
+										<input class="form-control" id="cdsd_search" placeholder="SEARCH {{$category}} ACCOUNT NO" />
+									</div>
 								</div>
 							</div>
 									
@@ -142,6 +147,13 @@
 
 
 <script>
+		$('#cdsd_search').typeahead({
+			ajax: '/search_cdsd_acc_no?cdsd_type={{$cdsd_type}}'
+			// source:search_cdsd_acc_no
+		});
+</script>
+
+<script>
 	function show_loading_img(selector) {
 		var loading_img = $("#temp_loading_img").html();
 		$(selector).html(loading_img);
@@ -189,6 +201,21 @@
 <script>
 	$(".refresh_data").click(function() {
 		deposit_account_list("");
+	});
+</script>
+
+<script>
+	$("#cdsd_search").change(function() {
+		var cdsd_id = $(this).attr("data-value");
+		// console.log(cdsd_id);
+		if(cdsd_id === undefined) {
+			// console.log(":not def");
+		} else {
+			// console.log(":def");
+			deposit_account_list(cdsd_id);
+			$("#cdsd_search").val("");
+			$("#cdsd_search").attr("data-value",null);
+		}
 	});
 </script>
 
