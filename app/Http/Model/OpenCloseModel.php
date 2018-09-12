@@ -2226,6 +2226,7 @@
 			->where('JewelLoan_PaymentMode','=',"CASH")
 			->where('JewelLoan_StartDate',$dte)
 			->where('JewelLoan_Bid',$BranchId)
+			->where('jewelloan_allocation.deleted',0)
 			->get();
 			
 			
@@ -2261,6 +2262,7 @@
 			->where('JewelLoan_PaymentMode','<>',"CASH")
 			->where('JewelLoan_StartDate',$dte)
 			->where('JewelLoan_Bid',$BranchId)
+			->where('jewelloan_allocation.deleted',0)
 			->get();
 			
 			
@@ -2280,6 +2282,7 @@
 			
 			
 		}
+		
 		public function show_slallocationtran($dte)
 		{
 			//$dte=date('Y-m-d');
@@ -2294,10 +2297,10 @@
 			->where("receipt_voucher.transaction_category",19)
 			->where('StartDate',$dte)
 			->where('staffloan_allocation.Bid',$BranchId)
+			->where('staffloan_allocation.deleted',0)
 			->get();
-			
-			
 		}
+
 		public function show_slallocationbalance($dte)
 		{
 			//$dte=date('Y-m-d');

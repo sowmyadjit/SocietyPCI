@@ -3786,7 +3786,8 @@
 								);
 			$account_list = DB::table($table)
 				->select($select_array)
-				->join("user","user.Uid","=","{$table}.{$user_id_field}");
+				->join("user","user.Uid","=","{$table}.{$user_id_field}")
+				->where("jewelloan_allocation.deleted",0);
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$account_list = $account_list->where($branch_id_field,"=",$BID);
 			}
