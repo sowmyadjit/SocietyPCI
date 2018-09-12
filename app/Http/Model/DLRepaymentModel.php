@@ -507,7 +507,18 @@
 				$totfd=$fdamt-$payAmt_full;
 				DB::table('fd_prewithdrawal')->where('FdAcc_No','=',$fdnum)->update(['TotalAmt_Payable'=>$totfd]);
 			}
-				DB::table('fd_payamount')->insert(['FDPayAmt_AccNum'=>$fdnum,'FDPayAmt_PaymentMode'=>"Adjustment",'FDPayAmt_PayableAmount'=>$payAmt_full,'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'Bid'=>$bid,'FDPayAmt_IntType'=>$m]);
+				$fd_pay_amt_id = DB::table('fd_payamount')->insertGetId(['FDPayAmt_AccNum'=>$fdnum,'FDPayAmt_PaymentMode'=>"Adjustment",'FDPayAmt_PayableAmount'=>$payAmt_full,'FDPayAmt_PayDate'=>$dte,'FDPayAmtReport_PayDate'=>$dte,'Bid'=>$bid,'FDPayAmt_IntType'=>$m]);
+				
+					/****** RV ADJ NO for fd pay amount *****/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $fd_pay_amt_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::FD_PAYAMOUNT;//constant FD_PAYAMOUNT is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $dte;
+					$fn_data["rv_bid"] = $bid;
+					$this->rv_no->save_rv_no($fn_data);
+					/****** RV ADJ NO for fd pay amount *****/
 			}
 		}
 		
