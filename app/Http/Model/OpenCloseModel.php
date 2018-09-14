@@ -260,6 +260,7 @@
 			->where('tran_reversed','=',"NO")
 			->where('Uncleared_Bal','=','0')
 			->where('sb_transaction.deleted','=','0')
+			->where("sb_transaction.Amount",">",0)
 			->orderBy('SBReport_TranDate','desc')
 			->orderBy('Tranid','desc')
 			->get();
@@ -290,6 +291,41 @@
 			return DB::table('sb_transaction')->where('SBReport_TranDate',$dte)->where('TransactionType','=',"DEBIT")->where('Payment_Mode','<>',"CASH")->where('tran_reversed','=',"NO")//->where('Uncleared_Bal','=',null)
 			->where('Bid',$BranchId)->sum('Amount');
 		}
+
+		/*************** SB INTEREST PAID ***********/
+		public function sb_int_paid($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
+			$sa = array(
+				"Tranid",
+				"SBReport_TranDate",
+				"Amount",
+				"particulars",
+				"Payment_Mode",
+				"TransactionType",
+				"createaccount.AccNum",
+				DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),
+				"user.Uid"
+			);
+			$ret_data = DB::table("sb_transaction")
+				->select($sa)
+				->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
+				->join("user","user.Uid","=","createaccount.Uid")
+				->where("sb_transaction.Bid", $BID)
+				->where("sb_transaction.deleted", 0)
+				->where("sb_transaction.tran_reversed", "NO")
+				->where("sb_transaction.Uncleared_Bal", 0)
+				->where("sb_transaction.Amount",">",0)
+				->where("sb_transaction.particulars", "SB INTEREST")
+				->where("sb_transaction.SBReport_TranDate", $date)
+				->orderBy('SBReport_TranDate','desc')
+				->orderBy('Tranid','desc')
+				->get();
+
+			return $ret_data;
+		}
+		/*************** SB INTEREST PAID ***********/
 		
 		
 		//-------------------SB details end-----------------------

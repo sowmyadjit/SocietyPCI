@@ -67,6 +67,7 @@
 			$trandaily['sb_adjust']=$this->op->show_dailysbbalance_adjust($dte);
 			$trandaily['sbcredit_adjust']=$this->op->show_dailysbcreditbalance_adjust($dte);
 			$trandaily['sbdebit_adjust']=$this->op->show_dailysbdebitbalance_adjust($dte);
+			$trandaily['sb_int_paid']=$this->op->sb_int_paid($dte);
 			//RD
 			$trandaily['rd']=$this->op->show_dailyrdbalance($dte);
 			$trandaily['rdcredit']=$this->op->show_dailyrdcreditbalance($dte);
@@ -454,6 +455,7 @@
 			$trandaily['sb_adjust']=$this->op->show_dailysbbalance_adjust($dte);
 			$trandaily['sbcredit_adjust']=$this->op->show_dailysbcreditbalance_adjust($dte);
 			$trandaily['sbdebit_adjust']=$this->op->show_dailysbdebitbalance_adjust($dte);
+			$trandaily['sb_int_paid']=$this->op->sb_int_paid($dte);
 			//RD
 			$trandaily['rd']=$this->op->show_dailyrdbalance($dte);
 			$trandaily['rdcredit']=$this->op->show_dailyrdcreditbalance($dte);

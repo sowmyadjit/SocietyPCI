@@ -158,6 +158,74 @@
 						$gt_adj_cr += $sb_adj_cr_total;
 						$gt_adj_db += $sb_adj_db_total;
 					?>
+
+
+
+<?php /****************** SB INTEREST PAID********************/ ?>
+					<tr><td colspan="10"><h5><b><center>SB INTEREST<center></b></h5></td></tr>
+					<?php
+						$cash_cr = 0;
+						$cash_db = 0;
+						$adj_cr = 0;
+						$adj_db = 0;
+						$cash_cr_total = 0;
+						$cash_db_total = 0;
+						$adj_cr_total = 0;
+						$adj_db_total = 0;
+					?>
+
+					
+					@foreach ($trandaily['sb_int_paid'] as $row)
+						<?php
+							$amt = $row->Amount;
+							$acc_no = $row->AccNum;
+							$date = $row->SBReport_TranDate;
+							$particulars = $row->particulars;
+							$name = $row->name;
+							$uid = $row->Uid;
+							$rv_cr = "";
+							$rv_db = "";
+							$rv_adj = "";
+						?>
+										<?php
+											$adj_db = $amt;
+											$adj_db_total += $adj_db;
+										?>
+										<tr>
+											<td>{{$date}}</td>
+											<td>{{$acc_no}}</td>
+											<td>{{$particulars}} - {{ $name }}({{$uid}})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $adj_db }}</td>
+											<td>{{$rv_cr}}</td>
+											<td>{{$rv_db}}</td>
+											<td>{{$rv_adj}}</td>
+										</tr>
+					@endforeach
+
+					<tr>
+						<th colspan="3">Total SB INTEREST</th>
+						<td><?php echo $cash_cr_total; ?></td>
+						<td><?php echo $cash_db_total; ?></td>
+						<td><?php echo $adj_cr_total; ?></td>
+						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $cash_cr_total;
+						$gt_cash_db += $cash_db_total;
+						$gt_adj_cr += $adj_cr_total;
+						$gt_adj_db += $adj_db_total;
+					?>
+<?php /****************** SB INTEREST PAID********************/ ?>
+
+
+
+
 					
 					
 					
