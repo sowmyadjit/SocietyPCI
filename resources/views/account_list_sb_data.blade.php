@@ -20,6 +20,9 @@
 									@if($ret_data["account_type"] == "RD")
 										<th>Mature Date</th>
 									@endif
+									@if($ret_data["account_type"] == 2)
+										<th>Duration</th>
+									@endif
 									<th>Balance Amount</th>
 									<th>
 										<div>
@@ -56,6 +59,9 @@
 											<td>{{$row['start_date']}}</td>
 											@if($ret_data["account_type"] == "RD")
 												<td>{{ $row['end_date']}}</td>
+											@endif
+											@if($ret_data["account_type"] == 2)
+												<td>{{ $row['duration']}}</td>
 											@endif
 											<td>{{$row['balance']}}</td>
 											

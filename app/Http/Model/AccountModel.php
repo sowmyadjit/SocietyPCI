@@ -1428,6 +1428,7 @@
 									"{$table}.Closed as closed",
 									"{$table}.Total_Amount as balance",
 									"{$table}.Agent_ID as agent_id",
+									"{$table}.Duration as duration",
 									"user.Uid as user_id",
 									"user.FirstName as first_name",
 									"user.MiddleName as middle_name",
@@ -1488,6 +1489,7 @@
 				$ret_data["account_list"][$i]["account_type"] = $row_acc_list->account_type;
 				$ret_data["account_list"][$i]["start_date"] = $row_acc_list->start_date;
 				$ret_data["account_list"][$i]["end_date"] = $row_acc_list->end_date;
+				$ret_data["account_list"][$i]["duration"] = $row_acc_list->duration;
 				if($row_acc_list->account_type == "SB") {
 					$ret_data["account_list"][$i]["balance"] = $this->get_account_balance(["acc_id"=>$row_acc_list->account_id]);
 				} else {
