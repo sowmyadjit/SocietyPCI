@@ -1701,6 +1701,9 @@
 						<?php if(strcasecmp($row->PayAmount_PaymentMode, "CASH")  == 0 || strcasecmp($row->PayAmount_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
 										<?php
 											$inc_cash_cr = $row->Deduct_Commission;
+											if($inc_cash_cr <= 0) {
+												continue;
+											}
 											$inc_cash_cr_total += $inc_cash_cr;
 										?>
 										<tr>
@@ -1718,6 +1721,9 @@
 						<?php  } else { ?><?php //ADJ ?>
 										<?php
 											$inc_adj_cr = $row->Deduct_Commission;
+											if($inc_adj_cr <= 0) {
+												continue;
+											}
 											$inc_adj_cr_total += $inc_adj_cr;
 										?>
 										<tr>
@@ -1739,7 +1745,10 @@
 					@foreach ($trandaily['pg_prewithdrawal_charges'] as $row)
 						<?php if(strcasecmp($row->PayAmount_PaymentMode, "CASH")  == 0 || strcasecmp($row->PayAmount_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
 										<?php
-											$inc_cash_cr = $row->Deduct_Commission;
+											$inc_cash_cr = $row->Deduct_Amount;
+											if($inc_cash_cr <= 0) {
+												continue;
+											}
 											$inc_cash_cr_total += $inc_cash_cr;
 										?>
 										<tr>
@@ -1757,6 +1766,9 @@
 						<?php  } else { ?><?php //ADJ ?>
 										<?php
 											$inc_adj_cr = $row->Deduct_Amount;
+											if($inc_adj_cr <= 0) {
+												continue;
+											}
 											$inc_adj_cr_total += $inc_adj_cr;
 										?>
 										<tr>
