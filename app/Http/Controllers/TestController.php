@@ -69,6 +69,10 @@
 						->where("table_name","{$tran_table}")
 						->where("deleted",0)
 						->first();
+					if(empty($ch_row)) {
+						continue;
+					}
+					
 					$join_list = DB::table("cash_chitta_joining_tables")
 						->where("deleted",0)
 						->where("cash_chitta_id",$ch_row->cash_chitta_id)
