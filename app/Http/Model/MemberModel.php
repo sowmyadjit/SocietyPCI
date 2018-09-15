@@ -225,7 +225,7 @@
 			->select(DB::raw('Memid as id, CONCAT(`Memid`,"/",`Member_no`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
 			->where('status','=',"AUTHORISED");
 			//->where('Loan_Allocated','=','NO')
-			if($this->settings->get_value("allow_inter_branch") == 0) {
+			if($this->settings->get_value("allow_inter_branch_for_member") == 0) {
 				$ret_data = $ret_data->where("members.Bid",$BID);
 			}
 			$ret_data = $ret_data->get();
