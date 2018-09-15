@@ -204,7 +204,11 @@
 			$bankupdateamt=$bankamt+$amt;
 			
 			DB::table('addbank')->where('Bankid',$CreditBankId)->update(['TotalAmt'=>$bankupdateamt]);
-			$deposit_id = DB::table('deposit')->insertGetId(['Bid'=>$Bid,'d_date'=>$dte,'date'=>$dte,'depo_bank_id'=>$CreditBankId,'pay_mode'=>"CHEQUE",'cheque_no'=>$Cheque_Number,'cheque_date'=>$Cheque_Date,'bank_name'=>$Bank_Name,'amount'=>$amt,'reason'=>$particulars,'cd'=>$dte,'Deposit_type'=>"Deposit", 'paid'=>'yes' ]);
+			/***************FETCH SUB HEAD ID OF BANK ************/
+				$bank_id = $CreditBankId;
+				$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+			/***************FETCH HEAD ID OF BANK ************/
+			$deposit_id = DB::table('deposit')->insertGetId(['Bid'=>$Bid,'d_date'=>$dte,'date'=>$dte,'depo_bank_id'=>$CreditBankId,'pay_mode'=>"CHEQUE",'cheque_no'=>$Cheque_Number,'cheque_date'=>$Cheque_Date,'bank_name'=>$Bank_Name,'amount'=>$amt,'reason'=>$particulars,'cd'=>$dte,'Deposit_type'=>"Deposit", 'paid'=>'yes',"SubLedgerId"=>$dep_subhead_id ]);
 				// ADJ NO FOR BANK DEPOSIT
 				/***********/
 				$fn_data["rv_payment_mode"] = "ADJUSTMENT";
@@ -415,6 +419,10 @@
 				$addbank = DB::table('addbank')
 					->where('Bankid','=',$bank_id)
 					->first();
+				/***************FETCH SUB HEAD ID OF BANK ************/
+					$bank_id = $bank_id;
+					$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+				/***************FETCH HEAD ID OF BANK ************/
 
 				$insert_array["Bid"] = $BID;
 				$insert_array["d_date"] = date("d-m-Y",strtotime($date));
@@ -431,6 +439,7 @@
 				$insert_array["reason"] = $reason;
 				// $insert_array["cd"] = "";
 				$insert_array["Deposit_type"] = $Deposit_type;
+				$insert_array["SubLedgerId"] = $dep_subhead_id;
 
 				$insert_id = DB::table("deposit")
 					->insertGetId($insert_array);

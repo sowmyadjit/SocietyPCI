@@ -652,7 +652,7 @@
 					$sd_ho_amt = $this->cdsd_tran->get_cdsd_amount(["cdsd_type"=>2, "{$this->cdsd_tran->cdsd_id_field}"=>$temp_sd_ho_id]);
 					var_dump($sd_ho_amt);
 
-					$ho_remaining_transferable_amount = SDModel::SD_HO_AMOUNT_LIMIT - $sd_ho_amt;
+					$ho_remaining_transferable_amount = CDSDModel::SD_HO_AMOUNT_LIMIT - $sd_ho_amt;
 					
 
 					if($sd_amt < $ho_remaining_transferable_amount) {
@@ -661,7 +661,7 @@
 						$transfer_amount = $ho_remaining_transferable_amount;
 					}
 
-					if($sd_ho_amt < SDModel::SD_HO_AMOUNT_LIMIT) {
+					if($sd_ho_amt < CDSDModel::SD_HO_AMOUNT_LIMIT) {
 						$transfer_amount = $sd_amt;
 					} else {
 						$transfer_amount = 0;
