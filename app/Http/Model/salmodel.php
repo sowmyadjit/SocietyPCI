@@ -6,8 +6,8 @@
 	use App\Http\Model\RoundModel;
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
-	use App\Http\Model\SDModel;
-	use App\Http\Model\SDTranModel;
+	// use App\Http\Model\SDModel;
+	// use App\Http\Model\SDTranModel;
 
 	class salmodel extends Model
 	{
@@ -17,8 +17,8 @@
 		{
 			$this->roundamt=new RoundModel;
 			$this->rv_no = new ReceiptVoucherController;
-			$this->sd = new SDModel;
-			$this->sd_tran = new SDTranModel;
+			// $this->sd = new SDModel;
+			// $this->sd_tran = new SDTranModel;
 			$this->cdsd = new CDSDModel;
 			$this->cdsd_tran = new CDSDTranModel;
 		}

@@ -8,8 +8,8 @@
 	use App\Http\Model\ModulesModel;
 	use App\Http\Model\DepositModel;
 	use App\Http\Model\OpenCloseModel;
-	use App\Http\Model\SDModel;
-	use App\Http\Model\SDTranModel;
+	// use App\Http\Model\SDModel;
+	// use App\Http\Model\SDTranModel;
 	use App\Http\Model\CDSDModel;
 	use App\Http\Model\CDSDTranModel;
 	use App\Http\Model\ReceiptVoucherModel;
@@ -26,8 +26,8 @@
 			$this->creadepositmodel = new DepositModel;
 			$this->Modules= new ModulesModel;
 			$this->op= new OpenCloseModel;
-			$this->sd= new SDModel;
-			$this->sd_tran= new SDTranModel;
+			// $this->sd= new SDModel;
+			// $this->sd_tran= new SDTranModel;
 			$this->cdsd= new CDSDModel;
 			$this->cdsd_tran= new CDSDTranModel;
 			$this->rv_no = new ReceiptVoucherController;

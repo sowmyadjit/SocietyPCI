@@ -30,7 +30,7 @@
 	use App\Http\Model\RequestLoanModel;
 	use App\Http\Model\ShareModel;
 	use App\Http\Model\ReportModel;
-	use App\Http\Model\SDModel;
+	// use App\Http\Model\SDModel;
 	use App\Http\Model\CDSDModel;
 	
 	class SearchController extends Controller
@@ -80,7 +80,7 @@
 			$this->Loan=new LoanModel;
 			$this->Getsharemodel=new ShareModel;
 			$this->rep_mdl=new ReportModel;
-			$this->sd=new SDModel;
+			// $this->sd=new SDModel;
 			$this->cdsd=new CDSDModel;
 		}
 		
