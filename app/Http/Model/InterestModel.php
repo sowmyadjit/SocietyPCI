@@ -639,7 +639,7 @@
 			
 			//if($dte>=$edate)
 			//	{
-			$monthlytot=$this->getRDmonth_amt($acno,$sdate);
+			$monthlytot=$this->getRDmonth_amt2($acno,$sdate); //getRDmonth_amt
 			$tot=0;
 			foreach($monthlytot as $amt)
 			{
@@ -920,6 +920,56 @@
 			// print_r($rd_transaction_sum);//exit();
 /****edit***/
 			return $rd_transaction;
+		}
+		
+		function getRDmonth_amt2($acno,$sdate)//end date todays date 
+		{
+			/**************************** RD INTEREST WITH MORE THAN 1 YEAR ****************************/
+			// print_r($acno);exit();
+			$acc_info = DB::table('createaccount')
+				->where('AccNum','=',$acno)
+				->first();
+			$accid = $acc_info->Accid;
+			// $dur = $acc_info->Duration;
+			$end_date = $acc_info->Maturity_Date;//var_dump($end_date);
+			$end_date = date("Y-m",strtotime('-1 month',strtotime($end_date)));//REMOVE LAST MONTH 
+
+			$start_date = $sdate;
+			// $today = date("Y-m-d");
+			$temp_date = date("Y-m",strtotime($start_date));
+			$ret_data = array();
+			$due_months = 0;
+			$prev_max = 0;
+			while($temp_date <= $end_date) {
+				$monthly_min = DB::table('rd_transaction')
+					->selectRaw('min(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')
+					->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
+					->where('rd_transaction.Accid','=',$accid)
+					->where("rd_transaction.RDReport_TranDate","like","%{$temp_date}%")
+					->min("RD_Total_Bal");
+				$monthly_max = DB::table('rd_transaction')
+					->selectRaw('min(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')
+					->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
+					->where('rd_transaction.Accid','=',$accid)
+					->where("rd_transaction.RDReport_TranDate","like","%{$temp_date}%")
+					->max("RD_Total_Bal");
+				// echo "{$temp_date} : {$monthly_min} <br />\n";
+				if(empty($monthly_min)) {
+					$monthly_min = $prev_max;
+					$due_months++;
+				}
+				if(empty($monthly_max)) {
+					$monthly_max = $prev_max;
+				}
+
+				$ret_data["{$temp_date}"] = $monthly_min;
+				$prev_max = $monthly_max;
+				$temp_date = date("Y-m",strtotime('+1 month',strtotime("{$temp_date}-01")));
+			}
+			print_r($ret_data);
+			var_dump($due_months);
+			return $ret_data;
+			/**************************** RD INTEREST WITH MORE THAN 1 YEAR ****************************/
 		}
 		
 		function FDwithdraw($id)
