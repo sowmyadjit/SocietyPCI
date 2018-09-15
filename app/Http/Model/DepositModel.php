@@ -42,8 +42,12 @@ class DepositModel extends Model
 				$uname= Auth::user();
 				//$UID=$uname->Uid;
 				$BID=$uname->Bid;
+		/***************FETCH SUB HEAD ID OF BANK ************/
+			$bank_id = $id['bank'];
+			$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+		/***************FETCH HEAD ID OF BANK ************/
 		
-		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>$dte1,'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$pay_mode,'Bid'=>$BID,"paid"=>"yes","Deposit_type"=>"Deposit"]);
+		$id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>$dte1,'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$pay_mode,'Bid'=>$BID,"paid"=>"yes","Deposit_type"=>"Deposit","SubLedgerId"=>$dep_subhead_id]);
 		
 			/***********/
 			$fn_data["rv_payment_mode"] = $pay_mode;
@@ -126,7 +130,11 @@ class DepositModel extends Model
 			$UID=$uname->Uid;
 			
 			$BID=$uname->Bid;
-		$tran_id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>date('Y-m-d'),'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$id['paymode'],'Bid'=>$BID,'Deposit_type'=>"WITHDRAWL","paid"=>"yes"]);
+		/***************FETCH SUB HEAD ID OF BANK ************/
+			$bank_id = $id['bank'];
+			$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+		/***************FETCH HEAD ID OF BANK ************/
+		$tran_id = DB::table('deposit')->insertGetId(['depo_bank'=> $id['bankName'],'Branch'=>$id['branch'],'amount'=>$id['ta'],'d_date'=>$dte,'date'=>date('Y-m-d'),'depo_bank_id'=>$id['bank'],'reason'=>$id['perti'],'pay_mode'=>$id['paymode'],'Bid'=>$BID,'Deposit_type'=>"WITHDRAWL","paid"=>"yes","SubLedgerId"=>$dep_subhead_id]);
 		
 			/***********/
 			$fn_data["rv_payment_mode"] = $id['paymode'];

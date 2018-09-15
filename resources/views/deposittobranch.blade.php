@@ -215,7 +215,7 @@
 	//Deposite Cheque Date (Newly Added)
 	var chdate;
 	
-	$(function() {
+	// $(function() {
 		
 		$(function() {
 			$('input[name="chdate"]').daterangepicker({
