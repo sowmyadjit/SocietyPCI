@@ -2513,7 +2513,7 @@
 			$ret_data2 = DB::table("jewelloan_allocation")
 				->select($sa)
 				->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
-				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
+				// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
 				// ->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 				// ->where("receipt_voucher.transaction_category",20)
 				// ->where("receipt_voucher.receipt_voucher_type",1)
