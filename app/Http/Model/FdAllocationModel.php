@@ -254,7 +254,7 @@
 		
 		public function GetFdCertificate($id)
 		{
-			$id = DB::table('fdallocation')->select('Fdid','fdallocation.Accid','fdallocation.FdTid','fdallocation.Nid','fdallocation.Bid','createaccount.Uid','Custid','createaccount.AccNum','createaccount.AccTid','user.FirstName','user.MiddleName','user.LastName','user.Aid','Gender','MaritalStatus','Occupation','Age','Birthdate','address.Email','Address','City','District','State','PhoneNo','MobileNo','Pincode','BName','FdType','NumberOfDays','FdInterest','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_state','Fd_DepositAmt','Fd_StartDate','FdReport_StartDate','Fd_MatureDate','FdReport_MatureDate','Fd_CertificateNum','Fd_TotalAmt','Fd_Remarks','FDPayment_Mode','FDChq_No','FDChq_Date','FDBnk_Name','FDIFSC_Code','FDSB_Amt','FDBnk_Branch','FDUnclear_Bal','FDCleared_State','FatherName','SpouseName','CustomerType','FD_ReceiptNum','Fd_CertiPrint','FDkcc','Days')
+			$id = DB::table('fdallocation')->select('Fdid','fdallocation.Accid','fdallocation.FdTid','fdallocation.Nid','fdallocation.Bid','user.Uid','Custid','createaccount.AccNum','createaccount.AccTid','user.FirstName','user.MiddleName','user.LastName','user.Aid','Gender','MaritalStatus','Occupation','Age','Birthdate','address.Email','Address','City','District','State','PhoneNo','MobileNo','Pincode','BName','FdType','NumberOfDays','FdInterest','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_state','Fd_DepositAmt','Fd_StartDate','FdReport_StartDate','Fd_MatureDate','FdReport_MatureDate','Fd_CertificateNum','Fd_TotalAmt','Fd_Remarks','FDPayment_Mode','FDChq_No','FDChq_Date','FDBnk_Name','FDIFSC_Code','FDSB_Amt','FDBnk_Branch','FDUnclear_Bal','FDCleared_State','FatherName','SpouseName','CustomerType','FD_ReceiptNum','Fd_CertiPrint','FDkcc','Days')
 			->leftJoin('createaccount','createaccount.Accid', '=' , 'fdallocation.Accid')
 			->leftJoin('user','user.Uid', '=' , 'fdallocation.Uid')
 			//->leftJoin('user','user.Uid', '=' , 'createaccount.Uid')
@@ -265,9 +265,23 @@
 			->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
 			->where('Fdid',$id)
 			->get();
+			// print_r($id[0]);exit();
+
+			if($id[0]->FatherName == "" && $id[0]->SpouseName == "") {
+				$mem_info = DB::table("members")
+					->where("Uid", $id[0]->Uid)
+					->first();
+
+				if(!empty($mem_info)) {
+					if(!empty($mem_info->FatherName)) {
+						$id[0]->FatherName = $mem_info->FatherName;
+					} elseif(!empty($mem_info->SpouseName)) {
+						$id[0]->SpouseName = $mem_info->SpouseName;
+					}
+				}
+			}
 			
 			return $id;
-			
 		}
 		
 		public function GetFDNumForLoanAlloc($q)
