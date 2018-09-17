@@ -858,7 +858,7 @@
 			    $sbamt=$id['rdamount'];
 				
 			    $totalblnc=$Amount_total;
-				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $AccTid,'Bid' =>$bid,'Accid' => $sb_id,'TransactionType' => "DEBIT",'particulars' => "Amount debited for RD account",'Amount' =>$rdamt,'CurrentBalance' => $Amount_total,'tran_Date'=>date('Y-m-d'),'Time'=>$tm,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$totalAmount,'Payment_Mode'=>"SB ACCOUNT",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>'']);
+				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $AccTid,'Bid' =>$bid,'Accid' => $sb_id,'TransactionType' => "DEBIT",'particulars' => "Amount debited for RD account",'Amount' =>$rdamt,'CurrentBalance' => $Amount_total,'tran_Date'=>date('Y-m-d'),'Time'=>$tm,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$totalAmount,'Payment_Mode'=>"SB ACCOUNT",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>'', 'SubLedgerId'=>42]);
 				
 			}
 			return $rd_tran_id;

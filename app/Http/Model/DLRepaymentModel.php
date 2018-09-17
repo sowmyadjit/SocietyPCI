@@ -936,8 +936,13 @@
 				$chaamount=explode(",",$chargamt);
 				$x=$charges[$z];
 				$y=$chaamount[$z];
+
+				$temp_head_id = DB::table("chareges")->where("charges_id",$x)->value("subhead");
+				if(empty($temp_head_id)) {
+					$temp_head_id = 0;
+				}
 				
-				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"PL"]);
+				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"PL", 'SubLedgerId'=>$temp_head_id ]);
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -1009,7 +1014,13 @@
 				//$loanremainingamt=0;
 				$remainigemi=$emi;
 			}	     
-			$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$DepAlID,'PLRepay_PaidAmt'=>$id['plpayamt'],'PLRepay_PayMode'=>$id['plPayMode'],'PLRepay_Bid'=>$branch,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$RepayDte,'PLRepay_CalculatedInterest'=>$loaninterest,'RemainingInterest_Amt'=>$remaininginterst,'PLRepay_PaidInterest'=>$paidinterest,'PLRepay_Amtpaidtoprincpalamt'=>$payAmt,'PLRepay_EMIremaining'=>$remainigemi,'PL_ReceiptNum'=>$r,'PL_ChequeNO'=>$chequeno,'PL_ChequeDate'=>$chequedate,'PL_BankName'=>$bankname,'PL_BankBranch'=>$bankbranch,'PL_IFSC'=>$ifsc,'PL_CreditBank'=>$bankid,'interest_paid_upto'=>$interest_upto_pl, 'pigmy_commission'=>$pigmycommision]);
+			/******************** */
+			$pl_subhead_id = DB::table("personalloan_allocation")
+				->join("personalloan_payment","personalloan_payment.pl_allocation_id","=","personalloan_allocation.PersLoanAllocID")
+				->where("PersLoanAllocID",$DepAlID)
+				->value("personalloan_payment.SubLedgerId");
+			/******************** */
+			$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$DepAlID,'PLRepay_PaidAmt'=>$id['plpayamt'],'PLRepay_PayMode'=>$id['plPayMode'],'PLRepay_Bid'=>$branch,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$RepayDte,'PLRepay_CalculatedInterest'=>$loaninterest,'RemainingInterest_Amt'=>$remaininginterst,'PLRepay_PaidInterest'=>$paidinterest,'PLRepay_Amtpaidtoprincpalamt'=>$payAmt,'PLRepay_EMIremaining'=>$remainigemi,'PL_ReceiptNum'=>$r,'PL_ChequeNO'=>$chequeno,'PL_ChequeDate'=>$chequedate,'PL_BankName'=>$bankname,'PL_BankBranch'=>$bankbranch,'PL_IFSC'=>$ifsc,'PL_CreditBank'=>$bankid,'interest_paid_upto'=>$interest_upto_pl, 'pigmy_commission'=>$pigmycommision,  'SubLedgerId'=>$pl_subhead_id ]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
@@ -1049,7 +1060,7 @@
 			}
 			else if($paymode=="SB ACCOUNT")//SB ACCOUNT
 			{
-				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid' => $actid,'TransactionType' => "DEBIT",'particulars' => "Amount Debited to PL Account",'Amount' => $payAmt1,'CurrentBalance' => $sbavailbal,'Total_Bal' => $sbremamt,'tran_Date' => $RepayDte,'SBReport_TranDate'=> $RepayDte,'Time' =>$tme,'Month'=>$mnt,'Year'=>$year,'Time'=>$tme,'Payment_Mode'=>"SB ACCOUNT",'Bid'=>$branch,'CreatedBy'=>$UID]); 
+				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid' => $actid,'TransactionType' => "DEBIT",'particulars' => "Amount Debited to PL Account",'Amount' => $payAmt1,'CurrentBalance' => $sbavailbal,'Total_Bal' => $sbremamt,'tran_Date' => $RepayDte,'SBReport_TranDate'=> $RepayDte,'Time' =>$tme,'Month'=>$mnt,'Year'=>$year,'Time'=>$tme,'Payment_Mode'=>"SB ACCOUNT",'Bid'=>$branch,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]); 
 				
 				$sb=DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$sbremamt]);	
@@ -1133,8 +1144,13 @@
 				$chaamount=explode(",",$chargamt);
 				$x=$charges[$z];
 				$y=$chaamount[$z];
+
+				$temp_head_id = DB::table("chareges")->where("charges_id",$x)->value("subhead");
+				if(empty($temp_head_id)) {
+					$temp_head_id = 0;
+				}
 				
-				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"JL"]);
+				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"JL", 'SubLedgerId'=>$temp_head_id ]);
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -1185,7 +1201,7 @@
 				$repay_through_auction = 1;
 			}
 			
-			$jlTran=DB::table('jewelloan_repay')->InsertGetId(['JLRepay_JLAllocID'=>$DepAlID,'JLRepay_PaidAmt'=>$id['jlpayamt'],'JLRepay_PayMode'=>$paymode,'JLRepay_Bid'=>$bid,'JLRepay_Created_By'=>$UID,'JLRepay_Date'=>$RepayDte,'JLRepay_interestcalculated'=>$Loaninterest,'JLRepay_interestpaid'=>$paidinterest,'JLRepay_interestpending'=>$remaininginterst,'JLRepay_paidtoprincipalamt'=>$payAmt,'JL_ChequeNo'=>$chequeno,'JL_ChequeDate'=>$chequedate,'JL_BankName'=>$bankname,'JL_BankBranch'=>$bankbranch,'JL_CreditBank'=>$bankid,'JL_IFSC'=>$ifsc,'repay_through_auction'=>$repay_through_auction,'interest_paid_upto'=>$interest_upto]);
+			$jlTran=DB::table('jewelloan_repay')->InsertGetId(['JLRepay_JLAllocID'=>$DepAlID,'JLRepay_PaidAmt'=>$id['jlpayamt'],'JLRepay_PayMode'=>$paymode,'JLRepay_Bid'=>$bid,'JLRepay_Created_By'=>$UID,'JLRepay_Date'=>$RepayDte,'JLRepay_interestcalculated'=>$Loaninterest,'JLRepay_interestpaid'=>$paidinterest,'JLRepay_interestpending'=>$remaininginterst,'JLRepay_paidtoprincipalamt'=>$payAmt,'JL_ChequeNo'=>$chequeno,'JL_ChequeDate'=>$chequedate,'JL_BankName'=>$bankname,'JL_BankBranch'=>$bankbranch,'JL_CreditBank'=>$bankid,'JL_IFSC'=>$ifsc,'repay_through_auction'=>$repay_through_auction,'interest_paid_upto'=>$interest_upto, 'SubLedgerId'=>54 ]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
@@ -1225,7 +1241,7 @@
 			}
 			else if($paymode=="SB ACCOUNT")//SB ACCOUNT
 			{
-				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid' => $actid,'TransactionType' => "DEBIT",'particulars' => "Amount Debited to JL Account",'Amount' => $totamt,'CurrentBalance' => $sbavailbal,'Total_Bal' => $sbremamt,'tran_Date' => $RepayDte,'SBReport_TranDate'=> $RepayDte,'Time' =>$tme,'Month'=>$mnt,'Year'=>$year,'Time'=>$tme,'Payment_Mode'=>"SB ACCOUNT",'Bid'=>$branch,'CreatedBy'=>$UID]); 
+				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid' => $actid,'TransactionType' => "DEBIT",'particulars' => "Amount Debited to JL Account",'Amount' => $totamt,'CurrentBalance' => $sbavailbal,'Total_Bal' => $sbremamt,'tran_Date' => $RepayDte,'SBReport_TranDate'=> $RepayDte,'Time' =>$tme,'Month'=>$mnt,'Year'=>$year,'Time'=>$tme,'Payment_Mode'=>"SB ACCOUNT",'Bid'=>$branch,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]); 
 				
 				$sb=DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$sbremamt]);	

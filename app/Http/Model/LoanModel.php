@@ -83,7 +83,7 @@
 				$amt1=$id['PayableAmount'];
 				$amount=$a+$amt1;
 				
-				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$id['sb'],'AccTid'=>$id['DepSBtype'],'TransactionType'=>"CREDIT",'particulars'=>"Deposite Loan Amount",'Amount'=>$id['PayableAmount'],'CurrentBalance'=>$id['DepSBAvail'],'tran_Date'=>$datee,'SBReport_TranDate'=>$reportdatee,'Time'=>$tm,'Month'=>$dm,'Year'=>$dy,'Total_Bal'=>$amount,'Bid'=>$id['DepLoanBranchid'],'Payment_Mode'=>$id['DepLoanPayMode'],'CreatedBy'=>$UID]);
+				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$id['sb'],'AccTid'=>$id['DepSBtype'],'TransactionType'=>"CREDIT",'particulars'=>"Deposite Loan Amount",'Amount'=>$id['PayableAmount'],'CurrentBalance'=>$id['DepSBAvail'],'tran_Date'=>$datee,'SBReport_TranDate'=>$reportdatee,'Time'=>$tm,'Month'=>$dm,'Year'=>$dy,'Total_Bal'=>$amount,'Bid'=>$id['DepLoanBranchid'],'Payment_Mode'=>$id['DepLoanPayMode'],'CreatedBy'=>$UID, 'SubLedgerId'=> 42 ]);
 				
 				$ACID=$id['sb'];
 				$sb=DB::table('createaccount')->where('Accid',$ACID)
@@ -153,7 +153,7 @@
 				$Uidfi=$Uidfi1->Uid;
 				
 			}
-			$lid = DB::table('depositeloan_allocation')->insertGetId(['DepLoan_DepositeType'=> $deptyp,'DepLoan_LoanTypeID'=>$id['DepLoanType'],'DepLoan_Branch'=>$AccBID,'DepLoan_AccNum'=>$id['DepositAccountNum'],'DepLoan_LoanAmount'=>$id['DepLoanAmt'],'DepLoan_RemailningAmt'=>$id['DepLoanAmt'],'DepLoan_LoanCharge'=>$id['LoanCharge'],'DepLoan_LoanStartDate'=>$id['DepLoanStartDate'],'DepLoan_LoanEndDate'=>$id['DepLoanEndDate'],'DepLoan_LoanDurationDays'=>$id['emimonth'],'DepLoan_PaymentMode'=>$id['DepLoanPayMode'],'DepLoan_ChequeNumber'=>$id['DepLoanChequeNum'],'DepLoan_ChequeDate'=>$id['DepLoanChequeDte'],'DepLoan_BankId'=>$id['LoanBankId'],'DepLoan_LoanNum'=>$paccno,'DepLoan_SbTranId'=>$sbtran,'DepLoan_Uid'=>$Uidfi,'DepLoan_AuthBy'=>$UID,'EMI_Amount'=>$id['EMIAmount'],'DepLoan_lastpaiddate'=>$id['DepLoanStartDate'],'Old_loan_number'=>$id['old']]);
+			$lid = DB::table('depositeloan_allocation')->insertGetId(['DepLoan_DepositeType'=> $deptyp,'DepLoan_LoanTypeID'=>$id['DepLoanType'],'DepLoan_Branch'=>$AccBID,'DepLoan_AccNum'=>$id['DepositAccountNum'],'DepLoan_LoanAmount'=>$id['DepLoanAmt'],'DepLoan_RemailningAmt'=>$id['DepLoanAmt'],'DepLoan_LoanCharge'=>$id['LoanCharge'],'DepLoan_LoanStartDate'=>$id['DepLoanStartDate'],'DepLoan_LoanEndDate'=>$id['DepLoanEndDate'],'DepLoan_LoanDurationDays'=>$id['emimonth'],'DepLoan_PaymentMode'=>$id['DepLoanPayMode'],'DepLoan_ChequeNumber'=>$id['DepLoanChequeNum'],'DepLoan_ChequeDate'=>$id['DepLoanChequeDte'],'DepLoan_BankId'=>$id['LoanBankId'],'DepLoan_LoanNum'=>$paccno,'DepLoan_SbTranId'=>$sbtran,'DepLoan_Uid'=>$Uidfi,'DepLoan_AuthBy'=>$UID,'EMI_Amount'=>$id['EMIAmount'],'DepLoan_lastpaiddate'=>$id['DepLoanStartDate'],'Old_loan_number'=>$id['old'], 'SubLedgerId'=>55 ]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
@@ -641,7 +641,7 @@
 			if($paymode=="SB ACCOUNT")
 			{
 				
-				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$id['PersLoanSBAccid'],'AccTid'=>$id['PersLoanSBAccTid'],'TransactionType'=>"CREDIT",'particulars'=>"Personal Loan Amount ({$pl_no_for_sb_part})",'Amount'=>$id['PersPayAmt'],'CurrentBalance'=>$id['PersSBAvailhidn'],'tran_Date'=>$dte,'SBReport_TranDate'=>$reportdatee,'Time'=>$tm,'Month'=>$dm,'Year'=>$dy,'Total_Bal'=>$id['PersLoanSBtotalhidn'],'Bid'=>$id['PLBranchID'],'Payment_Mode'=>$id['PersLoanPayMode'],'CreatedBy'=>$UID/*,'Uncleared_Bal'=>$id['PersPayAmt'],'Cleared_State'=>"PENDING"*/]);
+				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$id['PersLoanSBAccid'],'AccTid'=>$id['PersLoanSBAccTid'],'TransactionType'=>"CREDIT",'particulars'=>"Personal Loan Amount ({$pl_no_for_sb_part})",'Amount'=>$id['PersPayAmt'],'CurrentBalance'=>$id['PersSBAvailhidn'],'tran_Date'=>$dte,'SBReport_TranDate'=>$reportdatee,'Time'=>$tm,'Month'=>$dm,'Year'=>$dy,'Total_Bal'=>$id['PersLoanSBtotalhidn'],'Bid'=>$id['PLBranchID'],'Payment_Mode'=>$id['PersLoanPayMode'],'CreatedBy'=>$UID/*,'Uncleared_Bal'=>$id['PersPayAmt'],'Cleared_State'=>"PENDING"*/, 'SubLedgerId'=>42 ]);
 				
 				DB::table('createaccount')
 				->where('Accid',$acid)
@@ -744,7 +744,7 @@
 			}*/
 			
 			
-			$jid=DB::table('jewelloan_allocation')->InsertGetId(['JewelLoan_LoanNumber'=>$count_inc,'JewelLoan_LoanTypeId'=>$id['loantyp'],'JewelLoan_Bid'=>$BranchId,'JewelLoan_Uid'=>$id['jeweluid'],'JewelLoan_AppraisalValue'=>$id['Jewelappval'],'JewelLoan_LoanDuration'=>$id['Jewelduration'],'JewelLoan_LoanAmount'=>$id['JewelAmt'],'JewelLoan_SaraparaCharge'=>$id['JewelspacomVal'],'JewelLoan_InsuranceCharge'=>$id['JewelinsuVal'],'JewelLoan_BookAndFormCharge'=>$id['JewelBkfrmChrgVal'],'JewelLoan_OtherCharge'=>$id['JewelOthrChrges'],'JewelLoan_LoanAmountAfterDeduct'=>$id['JewelPayAmountAfter'],'JewelLoan_StartDate'=>$id['JewelStartDate'],'JewelLoan_EndDate'=>$coneDate,'JewelLoan_PaymentMode'=>$id['JewelPayMode'],'JewelLoan_ChqNum'=>$id['JewelChequeNum'],'JewelLoan_ChqDate'=>$id['JewelChequeDte'],'JewelLoan_Bankid'=>$id['BankId'],'JewelLoan_CreatedBy'=>$UID,'JewelLoan_LoanRemainingAmount'=>$id['JewelAmt'],'JewelLoan_lastpaiddate'=>$id['JewelStartDate'],'jewelloan_Description'=>$id['Jewel_Description'],'jewelloan_Oldloan_No'=>$id['old'],'jewelloan_RequestID'=>$id['PersLoanAllocID']]);
+			$jid=DB::table('jewelloan_allocation')->InsertGetId(['JewelLoan_LoanNumber'=>$count_inc,'JewelLoan_LoanTypeId'=>$id['loantyp'],'JewelLoan_Bid'=>$BranchId,'JewelLoan_Uid'=>$id['jeweluid'],'JewelLoan_AppraisalValue'=>$id['Jewelappval'],'JewelLoan_LoanDuration'=>$id['Jewelduration'],'JewelLoan_LoanAmount'=>$id['JewelAmt'],'JewelLoan_SaraparaCharge'=>$id['JewelspacomVal'],'JewelLoan_InsuranceCharge'=>$id['JewelinsuVal'],'JewelLoan_BookAndFormCharge'=>$id['JewelBkfrmChrgVal'],'JewelLoan_OtherCharge'=>$id['JewelOthrChrges'],'JewelLoan_LoanAmountAfterDeduct'=>$id['JewelPayAmountAfter'],'JewelLoan_StartDate'=>$id['JewelStartDate'],'JewelLoan_EndDate'=>$coneDate,'JewelLoan_PaymentMode'=>$id['JewelPayMode'],'JewelLoan_ChqNum'=>$id['JewelChequeNum'],'JewelLoan_ChqDate'=>$id['JewelChequeDte'],'JewelLoan_Bankid'=>$id['BankId'],'JewelLoan_CreatedBy'=>$UID,'JewelLoan_LoanRemainingAmount'=>$id['JewelAmt'],'JewelLoan_lastpaiddate'=>$id['JewelStartDate'],'jewelloan_Description'=>$id['Jewel_Description'],'jewelloan_Oldloan_No'=>$id['old'],'jewelloan_RequestID'=>$id['PersLoanAllocID'], 'SubLedgerId'=>54 ]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $id['JewelPayMode'];
@@ -1080,7 +1080,7 @@
 			if($paymode=="SB ACCOUNT")
 			{
 				
-				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid'=>$id['StfLoanSBAccTid'],'TransactionType'=>"CREDIT",'particulars'=>"Staff Loan Amount ({$count_inc})",'Amount'=>$payamt,'CurrentBalance'=>$id['StfSBAvail'],'tran_Date'=>$dte,'SBReport_TranDate'=>$reportdatee,'Time'=>$tm,'Month'=>$dm,'Year'=>$dy,'Total_Bal'=>$id['StfLoanSBtotal'],'Bid'=>$AccBID,'Payment_Mode'=>$paymode,'CreatedBy'=>$UID,'Uncleared_Bal'=>$payamt,'Cleared_State'=>"PENDING"]);
+				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid'=>$id['StfLoanSBAccTid'],'TransactionType'=>"CREDIT",'particulars'=>"Staff Loan Amount ({$count_inc})",'Amount'=>$payamt,'CurrentBalance'=>$id['StfSBAvail'],'tran_Date'=>$dte,'SBReport_TranDate'=>$reportdatee,'Time'=>$tm,'Month'=>$dm,'Year'=>$dy,'Total_Bal'=>$id['StfLoanSBtotal'],'Bid'=>$AccBID,'Payment_Mode'=>$paymode,'CreatedBy'=>$UID,'Uncleared_Bal'=>$payamt,'Cleared_State'=>"PENDING", 'SubLedgerId'=>42 ] );
 				
 				DB::table('createaccount')
 				->where('Accid',$acid)

@@ -56,7 +56,7 @@
 				$r1=$respit3+1;
 				DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r1]);
 			
-			$pigmi_payamount_id = DB::table('pigmi_payamount')->insertGetId(['PayAmount_PigmiAccNum'=>$id['account'],'PayAmount_PaymentMode'=>$id['PigPayMode'],'PayAmount_ChequeNum'=>$id['PigPayChequeNum'],'PayAmount_ChequeDate'=>$id['PigPayChequeDate'],'PayAmount_PayableAmount'=>$id['PigPayableAmt'],'PayAmount_PayDate'=>$paydate,'PayAmountReport_PayDate'=>$paydatereport,'PayAmount_BankId'=>$id['BankId'],'PayAmount_IntType'=>$id['PigIntMode'],'PayAmount_ReceiptNum'=>$ReceiptNum,'PayAmount_PaymentVoucher'=>$r1,'Bid'=>$BID]);
+			$pigmi_payamount_id = DB::table('pigmi_payamount')->insertGetId(['PayAmount_PigmiAccNum'=>$id['account'],'PayAmount_PaymentMode'=>$id['PigPayMode'],'PayAmount_ChequeNum'=>$id['PigPayChequeNum'],'PayAmount_ChequeDate'=>$id['PigPayChequeDate'],'PayAmount_PayableAmount'=>$id['PigPayableAmt'],'PayAmount_PayDate'=>$paydate,'PayAmountReport_PayDate'=>$paydatereport,'PayAmount_BankId'=>$id['BankId'],'PayAmount_IntType'=>$id['PigIntMode'],'PayAmount_ReceiptNum'=>$ReceiptNum,'PayAmount_PaymentVoucher'=>$r1,'Bid'=>$BID, 'SubLedgerId'=>102 ]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $PayMode;
@@ -107,6 +107,10 @@
 				$addbank = DB::table('addbank')
 				->where('Bankid','=',$BankId)
 				->first();
+				/***************FETCH SUB HEAD ID OF BANK ************/
+					$bank_id = $BankId;
+					$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+				/***************FETCH HEAD ID OF BANK ************/
 
 				$insert_array["Bid"] = $BID;
 				$insert_array["d_date"] = $paydate;
@@ -122,6 +126,7 @@
 				$insert_array["paid"] = "yes";
 				$insert_array["reason"] = "PIGMY PAY AMOUNT THROUGH CHEQUE";
 				// $insert_array["cd"] = "";
+				$insert_array["SubLedgerId"] = $dep_subhead_id;
 				$insert_array["Deposit_type"] = "WITHDRAWL";
 
 				DB::table("deposit")
@@ -151,7 +156,7 @@
 
 				$sb_particulars = "Credited from Pygmy Account ({$PigAccNum})";
 
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$sb_particulars,'Amount' =>$id['PigPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'bid'=>$BID,'Payment_Mode'=>"PIGMY"]);
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$sb_particulars,'Amount' =>$id['PigPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'bid'=>$BID,'Payment_Mode'=>"PIGMY", 'SubLedgerId'=>42 ]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
@@ -200,7 +205,7 @@
 				$r1=$respit3+1;
 				DB::table('branch')->where('Bid',$BID)->update(['Recp_No'=>$r1]);
 				
-			$rd_payamount_id = DB::table('rd_payamount')->insertGetId(['RDPayAmt_AccNum'=>$id['rdaccount'],'RDPayAmt_PaymentMode'=>$id['RDPayMode'],'RDPayAmt_ChequeNum'=>$id['RDPayChequeNum'],'RDPayAmt_ChequeDate'=>$id['RDPayChequeDate'],'RDPayAmt_PayableAmount'=>$id['RDPayableAmt'],'RDPayAmt_PayDate'=>$paydate,'RDPayAmtReport_PayDate'=>$paydatereport,'RDPayAmt_BankId'=>$id['BankId'],'RDPayAmt_IntType'=>$id['RDIntMode'],'RD_PayAmount_ReceiptNum'=>$ReceiptNum,'RD_PayAmount_pamentvoucher'=>$r1,'Bid'=>$BID]);
+			$rd_payamount_id = DB::table('rd_payamount')->insertGetId(['RDPayAmt_AccNum'=>$id['rdaccount'],'RDPayAmt_PaymentMode'=>$id['RDPayMode'],'RDPayAmt_ChequeNum'=>$id['RDPayChequeNum'],'RDPayAmt_ChequeDate'=>$id['RDPayChequeDate'],'RDPayAmt_PayableAmount'=>$id['RDPayableAmt'],'RDPayAmt_PayDate'=>$paydate,'RDPayAmtReport_PayDate'=>$paydatereport,'RDPayAmt_BankId'=>$id['BankId'],'RDPayAmt_IntType'=>$id['RDIntMode'],'RD_PayAmount_ReceiptNum'=>$ReceiptNum,'RD_PayAmount_pamentvoucher'=>$r1,'Bid'=>$BID, 'SubLedgerId'=>43 ]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $RDPayMode;
@@ -241,6 +246,10 @@
 				$addbank = DB::table('addbank')
 				->where('Bankid','=',$BankId)
 				->first();
+				/***************FETCH SUB HEAD ID OF BANK ************/
+					$bank_id = $BankId;
+					$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+				/***************FETCH HEAD ID OF BANK ************/
 
 				$insert_array["Bid"] = $BID;
 				$insert_array["d_date"] = $paydate;
@@ -256,6 +265,7 @@
 				$insert_array["paid"] = "yes";
 				$insert_array["reason"] = "RD PAY AMOUNT THROUGH CHEQUE";
 				// $insert_array["cd"] = "";
+				$insert_array["SubLedgerId"] = $dep_subhead_id;
 				$insert_array["Deposit_type"] = "WITHDRAWL";
 
 				DB::table("deposit")
@@ -285,7 +295,7 @@
 
 				$temp_particulars = "Credited from RD Account ({$RDAccNum})";
 
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['RDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u, 'Bid'=>$BID, 'Payment_Mode'=>'ADJUSTMENT' ]);
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['RDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u, 'Bid'=>$BID, 'Payment_Mode'=>'ADJUSTMENT', 'SubLedgerId'=>42 ]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
@@ -399,6 +409,10 @@
 				$addbank = DB::table('addbank')
 				->where('Bankid','=',$BankId)
 				->first();
+				/***************FETCH SUB HEAD ID OF BANK ************/
+					$bank_id = $BankId;
+					$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+				/***************FETCH HEAD ID OF BANK ************/
 
 				$insert_array["Bid"] = $BID;
 				$insert_array["d_date"] = $paydate;
@@ -414,6 +428,7 @@
 				$insert_array["paid"] = "yes";
 				$insert_array["reason"] = "{$fd_type_name} PAY AMOUNT THROUGH CHEQUE";
 				// $insert_array["cd"] = "";
+				$insert_array["SubLedgerId"] = $dep_subhead_id;
 				$insert_array["Deposit_type"] = "WITHDRAWL";
 
 				DB::table("deposit")
@@ -444,7 +459,7 @@
 
 				$temp_particulars =  "Credited from {$fd_type_name} Account ({$id["fdaccount"]})";
 
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'Payment_Mode'=>$FDPayMode,'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['FDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,"Bid"=>$udetail->Bid]);
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$id['accid'],'Payment_Mode'=>$FDPayMode,'AccTid' => $id['actid'],'TransactionType' => "CREDIT",'particulars' =>$temp_particulars,'Amount' =>$id['FDPayableAmt'],'CurrentBalance' => $id['sbavailamt'],'Total_Bal' => $id['sbremamt'],'tran_Date' => $reportdte,'SBReport_TranDate'=>$reportdte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,"Bid"=>$udetail->Bid, 'SubLedgerId'=>42 ]);
 				
 				DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$amt]);
