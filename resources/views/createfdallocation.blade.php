@@ -463,7 +463,20 @@
 				alert(interestamt1);
 				
 				//x=+x.toFixed(2);
-				x=Math.round(x);
+				// x=Math.round(x);
+				
+				/***** round 50 paise to 0*****/
+				var amt = x;
+				var rupees = parseInt(amt);
+				var paise = amt - rupees;
+				// console.log(paise);
+				if(paise > 0.5) {
+					x = rupees + 1;
+				} else {
+					x = rupees;
+				}
+				/***** round 50 paise to 0*****/
+
 				$('#mamt').val(x);
 				$('#mamtreadonly').val(x);
 				
