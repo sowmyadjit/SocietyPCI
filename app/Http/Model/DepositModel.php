@@ -1215,7 +1215,7 @@ class DepositModel extends Model
 				$temp_subhead_id = 105; //CD INTEREST
 			} else {
 				$category = "SD";
-				$temp_subhead_id = 249; // SD INT
+				$temp_subhead_id = 109; // SD INT PAID
 			}
 
 			if(isset($data["payment_mode"])) {
@@ -1250,6 +1250,25 @@ class DepositModel extends Model
 
 			if(($data["cdsd_type"] == 2 && $data["user_type"] == 2) || ($data["cdsd_type"] == 1 && $data["user_type"] == 1)) {/*&& (strcasecmp($closing_interest, "YES") == 0)*/
 				if($cdsd_acc_info->sb_acc_id > 0) {	//DEBITI ENTRY FOR SD ACCOUNT
+					
+					if($data["cdsd_type"] == 1) { // CD
+						$temp_subhead_id = 44;
+					} else { //SD
+						switch($data["user_type"]) {
+							case 1:
+									$temp_subhead_id = 156;
+									break;
+							case 2:
+									$temp_subhead_id = 283;
+									break;
+							case 3:
+									$temp_subhead_id = 45;
+									break;
+							default:
+									$temp_subhead_id = "";
+						}
+					}
+
 					unset($fd);
 					$fd["cdsd_id"] = $data["cdsd_id"];
 					$fd["cdsd_type"] = $data["cdsd_type"];
@@ -1265,7 +1284,7 @@ class DepositModel extends Model
 					// $fd["cheque_no"] = 
 					// $fd["cheque_date"] = 
 					// $fd["bank_id"] = 
-					$fd["subhead_id"] = 249;
+					$fd["subhead_id"] = $temp_subhead_id; // SD INTEREST
 					$fd["deleted"] = 0;
 					$this->cdsd_tran->clear_row_data();
 					$this->cdsd_tran->set_row_data($fd);
@@ -1290,13 +1309,34 @@ class DepositModel extends Model
 
 					//IF CURRENT BRANCH IS HO,  THEN ADD B2B TRAN  FROM HO TO BRANCH
 					if($cdsd_acc_info->bid == 6) {
+						
+						switch($sb_acc_info->Bid) {
+							case 1:
+									$temp_subhead_id = 297;
+									break;
+							case 2:
+									$temp_subhead_id = 298;
+									break;
+							case 3:
+									$temp_subhead_id = 299;
+									break;
+							case 4:
+									$temp_subhead_id = 300;
+									break;
+							case 5:
+									$temp_subhead_id = 301;
+									break;
+							default:
+									$temp_subhead_id = 0;
+						}
+
 						unset($insert_array);
 						$insert_array["Branch_Branch1_Id"] = $sb_acc_info->Bid;
 						$insert_array["Branch_Branch2_Id"] = $cdsd_acc_info->bid;
 						$insert_array["Branch_Tran_Date"] = $data["date"];
 						$insert_array["Branch_payment_Mode"] = "ADJUSTMENT";
-						$insert_array["LedgerHeadId"] = 71;
-						$insert_array["SubLedgerId"] = 249;
+						$insert_array["LedgerHeadId"] = 296;
+						$insert_array["SubLedgerId"] = $temp_subhead_id;
 						$insert_array["Branch_Amount"] = $cdsd_acc_info->int_prev;
 						$insert_array["Branch_per"] = "TO ADJ SB";
 
@@ -1409,7 +1449,7 @@ class DepositModel extends Model
 			if($cdsd_acc_info->cdsd_type == 1) { // CD
 				$temp_subhead_id = 105; // CD INT
 			} else { // SD
-				$temp_subhead_id = 249; // SD INT
+				$temp_subhead_id = 109; // SD INT PAID
 			}
 		
 				$sd_cr_id = DB::table("cdsd_transaction")
@@ -1509,7 +1549,7 @@ class DepositModel extends Model
 			if($data["cdsd_type"] == 1) { //CD
 				$temp_subhead_id = 44; //CD TRAN
 			} else { //SD
-				switch($user_type) { // SD TRAN
+				switch($acc_info->user_type) { // SD TRAN
 					case 1:
 							$temp_subhead_id = 156;
 							break;
@@ -1580,6 +1620,11 @@ class DepositModel extends Model
 				$category = "SD";
 			}
 
+			/***************FETCH SUB HEAD ID OF BANK ************/
+				$bank_id = $data["bank"];
+				$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+			/***************FETCH HEAD ID OF BANK ************/
+
 			unset($fd);
 			$fd["Bid"] = $BID;
 			$fd["date"] = date("Y-m-d");
@@ -1590,6 +1635,7 @@ class DepositModel extends Model
 			$fd["amount"] = $data["pay_amt"];
 			$fd["paid"] = "yes";
 			$fd["reason"] = "{$category} PAY AMOUNT";
+			$fd["SubLedgerId"] = $dep_subhead_id;
 			$fd["Deposit_type"] = "WITHDRAWL";
 
 			$dep_id = DB::table("deposit")
