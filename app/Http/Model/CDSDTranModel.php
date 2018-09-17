@@ -24,6 +24,7 @@ class CDSDTranModel extends Model
 	public $cheque_date_field = 'cheque_date';
 	public $bank_id_field = 'bank_id';
 	public $subhead_id_field = 'subhead_id';
+	public $created_by_field = 'created_by';
 	public $deleted_field = 'deleted';
 	
 	private $field_list = array(
@@ -43,6 +44,7 @@ class CDSDTranModel extends Model
 		"cheque_date",
 		"bank_id",
 		"subhead_id",
+		"created_by",
 		"deleted"
 	);
 

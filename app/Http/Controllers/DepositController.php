@@ -458,6 +458,7 @@
 			// $fn_data["cdsd_close_date"] = ;
 			$fn_data["cdsd_closed"] = NOT_CLOSED;
 			// $fn_data["subhead_id"] = ;
+			$fn_data["created_by"] = $UID;
 			$fn_data["deleted"] = NOT_DELETED;
 
 			$this->cdsd->clear_row_data();
@@ -513,18 +514,30 @@
 			$account_info = $this->cdsd->get_row(["{$this->cdsd->pk}"=>$in_data["cdsd_id"]]);
 			$user_type = $account_info->{$this->cdsd->user_type_field};
 
-			switch($user_type) {
-				case 1:
-						$temp_subhead_id = 156;
-						break;
-				case 2:
-						$temp_subhead_id = 283;
-						break;
-				case 3:
-						$temp_subhead_id = "";
-						break;
-				default:
-						$temp_subhead_id = "";
+			if($in_data["cdsd_type"] == 1) { //CD
+					if($in_data["is_interest_tran"] == 1) { // CD INTEREST
+							$temp_subhead_id = 105;
+					} else { //CD TRANSACTION
+							$temp_subhead_id = 44;
+					}
+			} else { //SD
+					if($in_data["is_interest_tran"] == 1) { // SD INTEREST
+							$temp_subhead_id = 109;
+					} else { // SD TRANSACTION
+							switch($user_type) {
+								case 1:
+										$temp_subhead_id = 156;
+										break;
+								case 2:
+										$temp_subhead_id = 283;
+										break;
+								case 3:
+										$temp_subhead_id = 45;
+										break;
+								default:
+										$temp_subhead_id = "";
+							}
+					}
 			}
 
 			$cdsd_acc_info = $this->cdsd->get_row(["cdsd_id"=>$in_data["cdsd_id"]]);
@@ -545,11 +558,12 @@
 			// $fn_data[$this->cdsd_tran->cheque_date_field] = "";
 			// $fn_data[$this->cdsd_tran->bank_id_field] = "";
 			$fn_data[$this->cdsd_tran->subhead_id_field] = $temp_subhead_id;
+			$fn_data[$this->cdsd_tran->created_by_field] = $UID;
 			$fn_data[$this->cdsd_tran->deleted_field] = "";
 		
 			$this->cdsd_tran->clear_row_data();
 			$this->cdsd_tran->set_row_data($fn_data);
-			$sd_tran_id = $this->cdsd_tran->insert_row();
+			$cdsd_tran_id = $this->cdsd_tran->insert_row();
 			/****** RV SD TRAN *****/
 			if($in_data["cdsd_transaction_type"] == 1) {
 				$rv_transaction_type = "CREDIT";
@@ -563,7 +577,7 @@
 			}
 			unset($fn_data);
 			$fn_data["rv_payment_mode"] = $rv_payment_mode;
-			$fn_data["rv_transaction_id"] = $sd_tran_id;
+			$fn_data["rv_transaction_id"] = $cdsd_tran_id;
 			$fn_data["rv_transaction_type"] = $rv_transaction_type;
 			$fn_data["rv_transaction_category"] = ReceiptVoucherModel::CDSD_TRAN;//constant SB_TRAN is declared in ReceiptVoucherModel
 			$fn_data["rv_date"] = $in_data["cdsd_tran_date"];

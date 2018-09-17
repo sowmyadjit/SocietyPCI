@@ -23,6 +23,7 @@ class CDSDModel extends Model
 	public $cdsd_close_date_field = 'cdsd_close_date';
 	public $cdsd_closed_field = 'cdsd_closed';
 	public $subhead_id_field = 'subhead_id';
+	public $created_by_field = 'created_by';
 	public $deleted_field = 'deleted';
 	
 	private $field_list = array(
@@ -38,6 +39,7 @@ class CDSDModel extends Model
 		"cdsd_close_date",
 		"cdsd_closed",
 		"subhead_id",
+		"created_by",
 		"deleted"
 	);
 

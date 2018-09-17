@@ -1406,9 +1406,14 @@ class DepositModel extends Model
 			}
 
 			$cdsd_acc_info = $this->cdsd->get_row(["cdsd_type"=>$cdsd_type, "cdsd_id"=>$data["cdsd_id"]]);
+			if($cdsd_acc_info->cdsd_type == 1) { // CD
+				$temp_subhead_id = 105; // CD INT
+			} else { // SD
+				$temp_subhead_id = 249; // SD INT
+			}
 		
 				$sd_cr_id = DB::table("cdsd_transaction")
-					->insertGetId(["cdsd_type"=>$cdsd_acc_info->cdsd_type, "cdsd_id"=>$cdsd_acc_info->cdsd_id, "date"=>date("Y-m-d"), "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>2, "amount"=>$cdsd_acc_info->int_prev, "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} INTEREST", "interest_tran"=>2, "subhead_id"=>249 ]);
+					->insertGetId(["cdsd_type"=>$cdsd_acc_info->cdsd_type, "cdsd_id"=>$cdsd_acc_info->cdsd_id, "date"=>date("Y-m-d"), "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>2, "amount"=>$cdsd_acc_info->int_prev, "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} INTEREST", "interest_tran"=>2, "subhead_id"=>$temp_subhead_id ]);
 						
 				/****** RV SD CREDIT *****/
 				unset($fn_data);
@@ -1500,8 +1505,28 @@ class DepositModel extends Model
 			$fd["cdsd_id"] = $data["cdsd_id"];
 			$amt = $this->cdsd_tran->get_cdsd_amount($fd);
 
+			
+			if($data["cdsd_type"] == 1) { //CD
+				$temp_subhead_id = 44; //CD TRAN
+			} else { //SD
+				switch($user_type) { // SD TRAN
+					case 1:
+							$temp_subhead_id = 156;
+							break;
+					case 2:
+							$temp_subhead_id = 283;
+							break;
+					case 3:
+							$temp_subhead_id = 45;
+							break;
+					default:
+							$temp_subhead_id = "";
+				}
+			}
+
+
 			DB::table("cdsd_transaction")
-				->insertGetId(["cdsd_type"=>$data["cdsd_type"], "cdsd_id"=>$data["cdsd_id"], "date"=>$data["pay_date"], "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>2, "amount"=>$amt/*$data["pay_amt"]*/, "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} PAY", "interest_tran"=>0, "bal_cf"=>0, "bank_id"=>$data["bank"], "cheque_no"=>$data["cheque_no"], "cheque_date"=>$data["cheque_date"]  ]);
+				->insertGetId(["cdsd_type"=>$data["cdsd_type"], "cdsd_id"=>$data["cdsd_id"], "date"=>$data["pay_date"], "time"=>date("H:i:s"), "bid"=>$BID, "transaction_type"=>2, "amount"=>$amt/*$data["pay_amt"]*/, "paid"=>1, "payment_mode"=>$temp_payment_mode, "particulars"=>"{$category} PAY", "interest_tran"=>0, "bal_cf"=>0, "bank_id"=>$data["bank"], "cheque_no"=>$data["cheque_no"], "cheque_date"=>$data["cheque_date"], 'subhead_id'=>$temp_subhead_id  ]);
 
 			/* if(strcasecmp($data["pay_mode"], "SB") == 0) {
 				$insert_array_sb = array(
@@ -1609,6 +1634,7 @@ class DepositModel extends Model
 			$fd["Payment_Mode"] = "ADJUSTMENT";
 			$fd["CreatedBy"] = $UID;
 			$fd["tran_reversed"] = "no";
+			$fd["SubLedgerId"] = 42;
 			$fd["deleted"] = 0;
 
 			$sb_id = DB::table("sb_transaction")
