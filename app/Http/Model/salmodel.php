@@ -265,7 +265,7 @@
 			}
 			/****************** */
 			
-			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => $netpay,'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID]);
+			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => $netpay,'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
 			DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>$totbal]);
 
 			/************ HO SALARY - TRANSFER SB AMOUNT TO BRANCH(KULAI) **********/
@@ -598,10 +598,30 @@
 			}
 			if($pmode=="SB ACCOUNT")
 			{
-				$tranid=DB::table('sb_transaction')->insertGetId(['Accid'=>$id['sbAcNo'],'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"AGENT COMMISION",'Amount'=>$id['pay'],'CurrentBalance'=>$avilablebal,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$total,'Bid'=>$BID,'Payment_Mode'=>"SALARY",'CreatedBy'=>$UID]);
+				$tranid=DB::table('sb_transaction')->insertGetId(['Accid'=>$id['sbAcNo'],'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>"AGENT COMMISION",'Amount'=>$id['pay'],'CurrentBalance'=>$avilablebal,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$total,'Bid'=>$BID,'Payment_Mode'=>"SALARY",'CreatedBy'=>$UID, 'SubLedgerId'=>42]);
 				DB::table('createaccount')->where('Accid','=',$accid)->update(['Total_Amount'=>$total]);
 			}
-			$agt_cmm_id = DB::table('agent_commission_payment')->insertGetId(['Agent_Commission_Uid'=>$id['aguid'],'Agent_Commission_Bid'=>$BID,'Agent_Commission_PaidDate'=>$dte,'Agent_Commission_PaidforAmt'=>$id['totalamt'],'Agent_Commission_PaidAmount'=>$id['pay'],'Agent_Commission_PaidStatus'=>"PAID",'Agent_Commission_PaidBY'=>$UID,'Agent_Commission_Persent'=>$id['cp'],'securityDeposit'=>$id['sdpo'],'Tds'=>$id['tdsval'],'paymentmode'=>$pmode,'sbtranid'=>$tranid,'total_commission'=>$id["com_total_val"]/*$id['commdis']*/]);
+
+			/************* SUB HEAD ID BASED ON AGENT TYPE ***************/
+				switch($id["agent_type"]) {
+					case "APPRAISER": 
+										$agent_com_subhead = 66;
+										break;
+					
+					case "RD": 
+										$agent_com_subhead = 84;
+										break;
+					case "PG": 
+										$agent_com_subhead = 82;
+										break;
+								
+					default : 
+										$agent_com_subhead = 0;
+												
+										
+				}
+			/************* SUB HEAD ID BASED ON AGENT TYPE ***************/
+			$agt_cmm_id = DB::table('agent_commission_payment')->insertGetId(['Agent_Commission_Uid'=>$id['aguid'],'Agent_Commission_Bid'=>$BID,'Agent_Commission_PaidDate'=>$dte,'Agent_Commission_PaidforAmt'=>$id['totalamt'],'Agent_Commission_PaidAmount'=>$id['pay'],'Agent_Commission_PaidStatus'=>"PAID",'Agent_Commission_PaidBY'=>$UID,'Agent_Commission_Persent'=>$id['cp'],'securityDeposit'=>$id['sdpo'],'Tds'=>$id['tdsval'],'paymentmode'=>$pmode,'sbtranid'=>$tranid,'total_commission'=>$id["com_total_val"]/*$id['commdis']*/, 'SubLedgerId'=>$agent_com_subhead ]);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $pmode;

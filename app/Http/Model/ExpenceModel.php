@@ -126,6 +126,10 @@
 					->where('Bankid','=',$bankID)
 					->first();
 					$Deposit_type = "WITHDRAWL";
+					/***************FETCH SUB HEAD ID OF BANK ************/
+						$bank_id = $bankID;
+						$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+					/***************FETCH HEAD ID OF BANK ************/
 
 					$insert_array["Bid"] = $BID1;
 					$insert_array["d_date"] = date("d-m-Y",strtotime($dte));
@@ -142,6 +146,7 @@
 					$insert_array["reason"] = $particulars;
 					// $insert_array["cd"] = "";
 					$insert_array["Deposit_type"] = $Deposit_type;
+					$insert_array["SubLedgerId"] = $dep_subhead_id;
 					$insert_id1 = DB::table("deposit")
 						->insertGetId($insert_array);
 					unset($insert_array);
@@ -186,6 +191,10 @@
 					->where('Bankid','=',$bankID2)
 					->first();
 					$Deposit_type = "Deposit";
+					/***************FETCH SUB HEAD ID OF BANK ************/
+						$bank_id = $bankID2;
+						$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+					/***************FETCH HEAD ID OF BANK ************/
 
 					$insert_array["Bid"] = $BID2;
 					$insert_array["d_date"] = date("d-m-Y",strtotime($dte));
@@ -202,6 +211,7 @@
 					$insert_array["reason"] = $particulars;
 					// $insert_array["cd"] = "";
 					$insert_array["Deposit_type"] = $Deposit_type;
+					$insert_array["SubLedgerId"] = $dep_subhead_id;
 					$insert_id2 = DB::table("deposit")
 						->insertGetId($insert_array);
 					unset($insert_array);
@@ -693,6 +703,10 @@
 				$addbank = DB::table('addbank')
 				->where('Bankid','=',$bankID)
 				->first();
+				/***************FETCH SUB HEAD ID OF BANK ************/
+					$bank_id = $bankID;
+					$dep_subhead_id = DB::table("addbank")->where("Bankid",$bank_id)->value("SubLedgerId");
+				/***************FETCH HEAD ID OF BANK ************/
 
 				$insert_array["Bid"] = $BID;
 				$insert_array["d_date"] = $dte;
@@ -709,6 +723,7 @@
 				$insert_array["reason"] = "INCOME THROUGH CHEQUE";
 				// $insert_array["cd"] = "";
 				$insert_array["Deposit_type"] = "Deposit";
+				$insert_array["SubLedgerId"] = $dep_subhead_id;
 
 				$deposit_id = DB::table("deposit")
 					->insertGetId($insert_array);
@@ -731,7 +746,7 @@
 				$ca1=DB::table('createaccount')->select('Total_Amount')->where('Accid',$accnum)->first();
 				$ca=$ca1->Total_Amount;
 				$tot=$ca-$amount1;
-				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$accnum,'AccTid'=>"1",'TransactionType'=>"DEBIT",'particulars'=>$particlr,'Amount'=>$amount1,'CurrentBalance'=>$ca,'tran_Date'=>$dte,'SBReport_TranDate'=>$trandate,'Time'=>$tm,'Month'=>$m,'Year'=>$y,'Total_Bal'=>$tot,'Bid'=>$BID,'Payment_Mode'=>"SB",'CreatedBy'=>$UID]);
+				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$accnum,'AccTid'=>"1",'TransactionType'=>"DEBIT",'particulars'=>$particlr,'Amount'=>$amount1,'CurrentBalance'=>$ca,'tran_Date'=>$dte,'SBReport_TranDate'=>$trandate,'Time'=>$tm,'Month'=>$m,'Year'=>$y,'Total_Bal'=>$tot,'Bid'=>$BID,'Payment_Mode'=>"SB",'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
 				
 				DB::table('createaccount')
 				->where('Accid',$accnum)
@@ -761,6 +776,10 @@
 						$addbank = DB::table('addbank')
 						->where('Bankid','=',$bank_id)
 						->first();
+						/***************FETCH SUB HEAD ID OF BANK ************/
+							$temp_bank_id = $bank_id;
+							$dep_subhead_id = DB::table("addbank")->where("Bankid",$temp_bank_id)->value("SubLedgerId");
+						/***************FETCH HEAD ID OF BANK ************/
 						
 						unset($insert_array_deposit);
 						$insert_array_deposit["Bid"] = $BID;
@@ -778,6 +797,7 @@
 						$insert_array_deposit["reason"] = $reason;
 						// $insert_array_deposit["cd"] = "";
 						$insert_array_deposit["Deposit_type"] = $Deposit_type;
+						$insert_array_deposit["SubLedgerId"] = $dep_subhead_id;
 
 						$deposit_insert_id = DB::table("deposit")
 							->insertGetId($insert_array_deposit);

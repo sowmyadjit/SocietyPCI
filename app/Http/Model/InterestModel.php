@@ -1557,8 +1557,8 @@
 														"Year"=>date("Y",strtotime($tran_date)),
 														"Bid"=>$row->bid,
 														"CreatedBy"=>$UID,
-														"LedgerHeadId"=>"",
-														"SubLedgerId"=>"",
+														"LedgerHeadId"=>38,
+														"SubLedgerId"=>102,
 														"ignore_for_service_charge"=>"1",
 														"service_charge"=>"1",
 													);

@@ -242,6 +242,8 @@
 /*************edit**************/
 			$agentsal['sal_extra_all']=$request->input('sal_extra_all');
 /*************edit end**************/
+			// $agent_type = $request->input('agent_type',true);
+			$agentsal['agent_type']="PG";
 
 			$get=$this->salary->payagentcommision($agentsal);
 
@@ -276,6 +278,7 @@
 			$agentsal['amount']=$request->input('amount');  
 			$agentsal['loopid']=$request->input('loopid');
 			$agent_type = $request->input('agent_type',true);
+			$agentsal['agent_type']=$agent_type;
 			if($agent_type == "APPRAISER") {
 				$agentsal['com_total_val'] = $request->input('totalamt');// - $request->input("ot");
 			} elseif($agent_type == "RD") {
