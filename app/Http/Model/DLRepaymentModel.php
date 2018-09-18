@@ -7,6 +7,7 @@
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
 	use App\Http\Model\SettingsModel;
+	use App\Http\Model\AllChargesModel;
 	
 	class DLRepaymentModel extends Model
 	{
@@ -15,6 +16,7 @@
 		public function __construct() {
 			$this->rv_no = new ReceiptVoucherController;
 			$this->settings = new SettingsModel;
+			$this->all_ch = new AllChargesModel;
 		}
 		
 		public function pigmydlacc()
@@ -299,8 +301,10 @@
 				
 			}
 			$n=$id['loopid'];
-			$charges=$id['charges'];
-			$chaamount=$id['amount'];
+			$chargid=$id['charges'];
+			$chargamt=$id['amount'];
+			$arr_index = -1;
+			$z = 0;
 			$chargsum=0;
 			for($i=1;$i<$n;$i++)
 			{
@@ -319,6 +323,24 @@
 				
 				
 				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"DL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+				/******************** ALL CHARGES ******************/
+				$chareges_info = DB::table("chareges")->where("charges_id",$x)->first();
+				unset($fd);
+				$fd["date"] = $RepayDte;
+				$fd["bid"] = $bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $y;
+				$fd["particulars"] = $chareges_info->charges_name;
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 27; // depositeloan_repay
+				$fd["tran_id"] = 0;
+				$fd["SubLedgerId"] = $chareges_info->subhead;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_ids[++$arr_index] = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -397,6 +419,12 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+
+				/************ UPDATE TRAN ID OF CHARGES ************/
+				DB::table("all_charges")
+					->whereIn("all_charges_id", $insert_ids)
+					->update(["tran_id"=>$DLTran]);
+				/************ UPDATE TRAN ID OF CHARGES ************/
 
 			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="PIGMI ACCOUNT"||$paymode=="FD_ACCOUNT")
 			{
@@ -949,6 +977,7 @@
 			$bankbranch=$id['bankbranch_pl'];
 			$ifsc=$id['ifsccode_pl'];
 			
+			$arr_index = -1;
 			$z=0;
 			$chargsum=0;
 			for($i=1;$i<$n;$i++)
@@ -965,6 +994,24 @@
 				}
 				
 				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"PL", 'SubLedgerId'=>$temp_head_id ]);
+				/******************** ALL CHARGES ******************/
+				$chareges_info = DB::table("chareges")->where("charges_id",$x)->first();
+				unset($fd);
+				$fd["date"] = $RepayDte;
+				$fd["bid"] = $bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $y;
+				$fd["particulars"] = $chareges_info->charges_name;
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 25; // personalloan_repay
+				$fd["tran_id"] = 0;
+				$fd["SubLedgerId"] = $chareges_info->subhead;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_ids[++$arr_index] = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -1054,6 +1101,12 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+
+				/************ UPDATE TRAN ID OF CHARGES ************/
+				DB::table("all_charges")
+					->whereIn("all_charges_id", $insert_ids)
+					->update(["tran_id"=>$plTran]);
+				/************ UPDATE TRAN ID OF CHARGES ************/
 			
 			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="PYGMY ACCOUNT"||$paymode=="ADJUSTMENT")
 			{
@@ -1157,6 +1210,7 @@
 				$Loaninterest=$x1+$Loaninterest;
 			}
 			
+			$arr_index = -1;
 			$z=0;
 			$chargsum=0;
 			for($i=1;$i<$n;$i++)
@@ -1173,6 +1227,24 @@
 				}
 				
 				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"JL", 'SubLedgerId'=>$temp_head_id ]);
+				/******************** ALL CHARGES ******************/
+					$chareges_info = DB::table("chareges")->where("charges_id",$x)->first();
+					unset($fd);
+					$fd["date"] = $RepayDte;
+					$fd["bid"] = $bid;
+					$fd["transaction_type"] = 2; // DEBIT
+					$fd["payment_mode"] = $id['jlPayMode'];
+					$fd["amount"] = $y;
+					$fd["particulars"] = $chareges_info->charges_name;
+					$fd["paid"] = 1;
+					$fd["tran_table"] = 24; // jewelloan_repay
+					$fd["tran_id"] = 0;
+					$fd["SubLedgerId"] = $temp_head_id;
+					$fd["deleted"] = 0;
+					$this->all_ch->clear_row_data();
+					$this->all_ch->set_row_data($fd);
+					$insert_ids[++$arr_index] = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -1235,6 +1307,12 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+
+				/************ UPDATE TRAN ID OF CHARGES ************/
+				DB::table("all_charges")
+					->whereIn("all_charges_id", $insert_ids)
+					->update(["tran_id"=>$jlTran]);
+				/************ UPDATE TRAN ID OF CHARGES ************/
 
 			DB::table('jewelloan_allocation')
 			->where('JewelLoanId',$DepAlID)
@@ -1318,6 +1396,7 @@
 			
 /*********************** sl charegs  ************************/
 
+			$arr_index = -1;
 			$z=0;
 			$n = $id['xsl'];
 			$chargid = $id['charges'];
@@ -1343,6 +1422,24 @@
 				
 				
 				$chargtabid[]=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$DepAlID,'bid'=>$bid,'charg_tran_date'=>$RepayDte,'loantype'=>"SL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+				/******************** ALL CHARGES ******************/
+				$chareges_info = DB::table("chareges")->where("charges_id",$x)->first();
+				unset($fd);
+				$fd["date"] = $RepayDte;
+				$fd["bid"] = $bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $y;
+				$fd["particulars"] = $chareges_info->charges_name;
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 26; // personalloan_repay
+				$fd["tran_id"] = 0;
+				$fd["SubLedgerId"] = $chareges_info->subhead;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_ids[++$arr_index] = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -1392,6 +1489,13 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+
+				/************ UPDATE TRAN ID OF CHARGES ************/
+				DB::table("all_charges")
+					->whereIn("all_charges_id", $insert_ids)
+					->update(["tran_id"=>$slTran]);
+				/************ UPDATE TRAN ID OF CHARGES ************/
+
 			// print_r($chargtabid);
 			if(!empty($chargtabid)) {
 				foreach($chargtabid as $key => $value) {
