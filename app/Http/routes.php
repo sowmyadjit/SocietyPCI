@@ -1053,6 +1053,8 @@
 		});
 		Route::get('change_branch_index','UserController@change_branch_index');
 		Route::get('change_branch','UserController@change_branch');
+		Route::post('add_row_to_table_index','UserController@add_row_to_table_index');
+		Route::post('add_row_to_table_submit','UserController@add_row_to_table_submit');
 		
 		
 		 

@@ -128,4 +128,25 @@ class UserController extends Controller
 		$this->user_model->change_branch(["branch_id" => $request->input("branch_id")]);
 		return;
 	}
+
+	public function add_row_to_table_index(Request $request)
+	{
+		$data = array();
+		$i = -1;
+		$tables = \DB::select('SHOW TABLES');
+		foreach($tables as $table){
+			foreach($table as $key => $value) {
+				$data["table_names"][++$i] = $value;
+			}
+		}
+		// print_r($data);
+		return view("add_row_to_table_index", compact("data"));
+	}
+
+	public function add_row_to_table_submit(Request $request)
+	{
+		$id = (array) json_decode($request->input("da"));
+		// print_r($id);
+		return \DB::table($id["table_name"])->insertGetId([]);
+	}
 }

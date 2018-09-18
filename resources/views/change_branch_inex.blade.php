@@ -18,8 +18,11 @@
 							<a class="btn btn-default change_btn" id="5" >TAL</a>
 							<a class="btn btn-default change_btn" id="6" >HO</a>
 							Allow inter branch <input type="checkbox" id="ib" />
+							<button id="add_row" class="pull-right btn-sm">+row</button>
 						</div>
 					</div>
+
+					<div id="data_box"></div>
 					
 					<div id="msg">
 						
@@ -68,7 +71,24 @@
 
 <style>
 	#msg {
-		margin:0 0 15px 40px;
+		margin:30px 0 15px 40px;
 		color: green;
 	}
 </style>
+
+
+<script>
+	$("#add_row").click(function() {
+		// console.log("9+");
+		$.ajax({
+			type: 'post',
+			url: 'add_row_to_table_index',
+			data: '',
+			success:  function(data) {
+				console.log("done");
+				$("#data_box").html(data);
+				$("#msg").html("");
+			}
+		});
+	});
+</script>
