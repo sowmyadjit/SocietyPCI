@@ -249,9 +249,38 @@
 			$this->insertSalExtraPay($sal_extra_data);
 /*************edit end**************/
 
+/*************** SEPARATE TA AMOUNT FROM TOTAL SB AMOUNT ***************/
+			$ta = 0;
+			$ta_part = "TA";
+			
+			$sal_extra_all = $id['sal_extra_all'];
+			$sal_extra_arr = explode('|',$sal_extra_all);
+			$count = 0;
+			foreach($sal_extra_arr as $val) {
+				$temp = explode('#',$val);
+				if($temp[0] == 'undefined' || $temp[0] == '-')
+						continue;
+				if($temp[1] == 0)
+						continue;
+				$ex_key[$count] = $temp[0];
+				$value[$count] = $temp[1];
+				$part[$count] = $temp[2];
+				$count++;
+			}
+			for($i=0;$i<$count;$i++) {
+				// echo "\n<br />{$ex_key[$i]} - {$value[$i]} - {$part[$i]}";
+				if($ex_key[$i] == 3) { // 3 - TA
+					$ta = $value[$i];
+					$ta_part = $part[$i];
+					break;
+				}
+			}
+			/*************** SEPARATE TA AMOUNT FROM TOTAL SB AMOUNT ***************/
+
 			$accbal1=DB::table('createaccount')->select('Total_Amount')->where('Accid',$accid)->first();
 			$accbal=$accbal1->Total_Amount;
-			$totbal=$accbal+$netpay;
+			// $totbal=$accbal+$netpay;
+			$totbal=$accbal+($netpay-$ta);
 
 			
 			/****************** */
@@ -265,8 +294,11 @@
 			}
 			/****************** */
 			
-			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => $netpay,'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
-			DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>$totbal]);
+			/*************** SEPARATE TA AMOUNT FROM TOTAL SB AMOUNT ***************/
+			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => ($netpay-$ta),'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
+			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>$ta_part,'Amount' => ($ta),'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
+			/*************** SEPARATE TA AMOUNT FROM TOTAL SB AMOUNT ***************/
+			DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>($totbal+$ta)]);
 
 			/************ HO SALARY - TRANSFER SB AMOUNT TO BRANCH(KULAI) **********/
 			if($BID == 6) {// ONLY FOR HO SALARY
