@@ -1625,7 +1625,7 @@
 						@endif
 					@endforeach
 					@foreach ($trandaily['staff_addition_ta'] as $row)
-						@if(strcasecmp($expencetran->pay_mode, 'INHAND') == 0)
+						@if(strcasecmp($row->pay_mode, 'INHAND') == 0)
 							<?php
 								$exp_cash_db = $row->salpay_extra_amt;
 								$exp_cash_db_total += $exp_cash_db;

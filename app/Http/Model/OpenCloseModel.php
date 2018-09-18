@@ -3710,7 +3710,7 @@
 
 			$sal_etra_id_arr = array(3);
 			$ret_data = DB::table('salary_extra_pay')
-			->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+			->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" 'ADJUSTMENT' as 'pay_mode' ") )
 			->leftjoin('salary','salary.salid','=','salary_extra_pay.sal_id')
 			//->leftjoin('agent_commission_payment','agent_commission_payment.Agent_Commission_Id','=','salary_extra_pay.sal_id')
 			->join('user','user.Uid','=','salary.Uid')
