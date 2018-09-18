@@ -486,7 +486,17 @@
 						$int_type = 'PREWITHDRAWAL';
 					}
 
-					DB::table('pigmi_payamount')->insertGetId(['Bid'=>$bid,'PayAmount_PigmiAccNum'=>$pg_ac_no,'PayAmount_PaymentMode'=>'DL REPAY','PayAmount_PayableAmount'=>$id['pgpayamt'],'PayAmountReport_PayDate'=>$RepayDte,'PayAmount_PayDate'=>$PayAmount_PayDate,'PayAmount_IntType'=>$int_type]);
+					$pigmi_payamount_id = DB::table('pigmi_payamount')->insertGetId(['Bid'=>$bid,'PayAmount_PigmiAccNum'=>$pg_ac_no,'PayAmount_PaymentMode'=>'DL REPAY','PayAmount_PayableAmount'=>$id['pgpayamt'],'PayAmountReport_PayDate'=>$RepayDte,'PayAmount_PayDate'=>$PayAmount_PayDate,'PayAmount_IntType'=>$int_type]);
+					/****** RV ADJ NO for fd pay amount *****/
+					unset($fn_data);
+					$fn_data["rv_payment_mode"] = "ADJUSTMENT";
+					$fn_data["rv_transaction_id"] = $pigmi_payamount_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PG_PAYAMOUNT;//constant PG_PAYAMOUNT is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $RepayDte;
+					$fn_data["rv_bid"] = $bid;
+					$this->rv_no->save_rv_no($fn_data);
+					/****** RV ADJ NO for fd pay amount *****/
 				}
 /***************** pigmi paid amount entry *************************/
 				
