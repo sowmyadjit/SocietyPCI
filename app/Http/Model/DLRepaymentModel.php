@@ -361,18 +361,30 @@
 			
 			if($loantype=="pygmy DL")
 			{
-				
-				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['DLAlloc'],'DLRepay_PaidAmt'=>$id['pgpayamt'],'DLRepay_PayMode'=>$id['PgPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1"]);
+				/*************** SUB HEAD ID ***********/
+				$temp_subhead_id = DB::table("depositeloan_allocation")
+				->where("DepLoanAllocId", $id['DLAlloc'])
+				->value("SubLedgerId");
+				/*************** SUB HEAD ID ***********/
+				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['DLAlloc'],'DLRepay_PaidAmt'=>$id['pgpayamt'],'DLRepay_PayMode'=>$id['PgPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1", 'SubLedgerId'=>$temp_subhead_id ]);
 			}
 			else if($loantype=="RD DL")
 			{
-				
-				
-				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['RDDLAlloc'],'DLRepay_PaidAmt'=>$id['rdpayamt'],'DLRepay_PayMode'=>$id['RdPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1"]);
+				/*************** SUB HEAD ID ***********/
+				$temp_subhead_id = DB::table("depositeloan_allocation")
+				->where("DepLoanAllocId", $id['RDDLAlloc'])
+				->value("SubLedgerId");
+				/*************** SUB HEAD ID ***********/
+				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['RDDLAlloc'],'DLRepay_PaidAmt'=>$id['rdpayamt'],'DLRepay_PayMode'=>$id['RdPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1", 'SubLedgerId'=>$temp_subhead_id ]);
 			}
 			else if($loantype=="FD DL")
 			{
-				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['FDDLAlloc'],'DLRepay_PaidAmt'=>$id['fdpayamt'],'DLRepay_PayMode'=>$id['FdPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1"]);
+				/*************** SUB HEAD ID ***********/
+				$temp_subhead_id = DB::table("depositeloan_allocation")
+				->where("DepLoanAllocId", $id['FDDLAlloc'])
+				->value("SubLedgerId");
+				/*************** SUB HEAD ID ***********/
+				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['FDDLAlloc'],'DLRepay_PaidAmt'=>$id['fdpayamt'],'DLRepay_PayMode'=>$id['FdPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1", 'SubLedgerId'=>$temp_subhead_id ]);
 			}
 			
 				/***********/
@@ -442,7 +454,7 @@
 			}*/
 			else if($paymode=="SB ACCOUNT")//SB ACCOUNT
 			{
-				DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid' => $actid,'TransactionType' => "DEBIT",'particulars' => "Amount Debited to DL Account",'Amount' => $payAmt_full,'CurrentBalance' => $sbavailbal,'Total_Bal' => $sbremamt,'tran_Date' => $RepayDte,'SBReport_TranDate'=> $RepayDte,'Time' =>$tme,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SB ACCOUNT",'Bid'=>$branch,'CreatedBy'=>$UID]); 
+				DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid' => $actid,'TransactionType' => "DEBIT",'particulars' => "Amount Debited to DL Account",'Amount' => $payAmt_full,'CurrentBalance' => $sbavailbal,'Total_Bal' => $sbremamt,'tran_Date' => $RepayDte,'SBReport_TranDate'=> $RepayDte,'Time' =>$tme,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SB ACCOUNT",'Bid'=>$branch,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]); 
 				
 				$sb=DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$sbremamt]);				
@@ -1352,7 +1364,13 @@
 			$remaining_amount = $prev_remaining_amount - $principle_paid;
 			/****** ******/
 
-			$slTran=DB::table('staffloan_repay')->InsertGetId(['SLRepay_SLAllocID'=>$DepAlID,'SLRepay_PaidAmt'=>$id['slpayamt'],'SLRepay_PayMode'=>$id['slPayMode'],'SLRepay_Bid'=>$branch,'SLRepay_Created_By'=>$UID,'SLRepay_Date'=>$RepayDte,'SLRepay_Interest'=>$interest_paid,'paid_principle'=>$principle_paid]);
+			/********* SUB HEAD ID **********/
+			$temp_subhead_id = DB::table("staffloan_allocation")
+				->where("StfLoanAllocID",$DepAlID)
+				->value("SubLedgerId");
+			/********* SUB HEAD ID **********/
+
+			$slTran=DB::table('staffloan_repay')->InsertGetId(['SLRepay_SLAllocID'=>$DepAlID,'SLRepay_PaidAmt'=>$id['slpayamt'],'SLRepay_PayMode'=>$id['slPayMode'],'SLRepay_Bid'=>$branch,'SLRepay_Created_By'=>$UID,'SLRepay_Date'=>$RepayDte,'SLRepay_Interest'=>$interest_paid,'paid_principle'=>$principle_paid, 'SubLedgerId'=>$temp_subhead_id ]);
 
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
@@ -1365,10 +1383,12 @@
 				unset($fn_data);
 				/***********/
 			// print_r($chargtabid);
-			foreach($chargtabid as $key => $value) {
-				DB::table("charges_tran")
-					->where("charg_id", $value)
-					->update(["repay_id"=>$slTran]);
+			if(!empty($chargtabid)) {
+				foreach($chargtabid as $key => $value) {
+					DB::table("charges_tran")
+						->where("charg_id", $value)
+						->update(["repay_id"=>$slTran]);
+				}
 			}
 
 			DB::table('staffloan_allocation')
@@ -1390,7 +1410,7 @@
 			}
 			else if($paymode=="SB ACCOUNT")//SB ACCOUNT
 			{
-				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid' => $actid,'TransactionType' => "DEBIT",'particulars' => "Amount Debited to SL Account",'Amount' => $payAmt_tot,'CurrentBalance' => $sbavailbal,'Total_Bal' => $sbremamt,'tran_Date' => $RepayDte,'SBReport_TranDate'=> $RepayDte,'Time' =>$tme,'Month'=>$mnt,'Year'=>$year,'Time'=>$tme,'Payment_Mode'=>"SB ACCOUNT",'Bid'=>$branch,'CreatedBy'=>$UID]); 
+				$sbtran=DB::table('sb_transaction')->insertGetId(['Accid'=>$acid,'AccTid' => $actid,'TransactionType' => "DEBIT",'particulars' => "Amount Debited to SL Account",'Amount' => $payAmt_tot,'CurrentBalance' => $sbavailbal,'Total_Bal' => $sbremamt,'tran_Date' => $RepayDte,'SBReport_TranDate'=> $RepayDte,'Time' =>$tme,'Month'=>$mnt,'Year'=>$year,'Time'=>$tme,'Payment_Mode'=>"SB ACCOUNT",'Bid'=>$branch,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]); 
 				
 				$sb=DB::table('createaccount')->where('Accid',$acid)
 				->update(['Total_Amount'=>$sbremamt]);	
@@ -1408,6 +1428,7 @@
 				
 			}
 		}
+		
 		public function chargeslist() //For Branch wise Repor
 		{
 			
