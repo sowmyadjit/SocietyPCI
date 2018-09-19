@@ -8,6 +8,7 @@
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
 	use App\Http\Model\SettingsModel;
+	use App\Http\Model\AllChargesModel;
 	
 	
 	class CustomerModel extends Model
@@ -19,6 +20,7 @@
 		{
 			$this->rv_no = new ReceiptVoucherController;
 			$this->settings = new SettingsModel;
+			$this->all_ch = new AllChargesModel;
 		}
 		
 		public function insert($id)
@@ -104,11 +106,12 @@
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 28; // customer
 				$fd["tran_id"] = $cid;
+				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 86; // MEMBER FEES
 				$fd["deleted"] = 0;
 				$this->all_ch->clear_row_data();
 				$this->all_ch->set_row_data($fd);
-				$insert_ids[++$arr_index] = $this->all_ch->insert_row();
+				$this->all_ch->insert_row();
 				/******************** ALL CHARGES ******************/
 				
 			}

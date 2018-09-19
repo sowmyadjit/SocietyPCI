@@ -188,6 +188,7 @@
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 29; // depositeloan_allocation
 				$fd["tran_id"] = $lid;
+				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 90;
 				$fd["deleted"] = 0;
 				$this->all_ch->clear_row_data();
