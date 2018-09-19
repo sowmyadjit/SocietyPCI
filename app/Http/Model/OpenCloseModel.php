@@ -3171,7 +3171,7 @@
 									} else {
 										$alloc_row = DB::table('depositeloan_repay')
 											->select("DLRepay_PayMode",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
-											->join("depositeloan_allocation","depositeloan_allocation.PersLoanAllocID","=","depositeloan_repay.DLRepay_ID")
+											->join("depositeloan_allocation","depositeloan_allocation.DepLoanAllocId","=","depositeloan_repay.DLRepay_ID")
 											->join("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
 											->where('DLRepay_Date','=',$date)
 											->where('DLRepay_DepAllocID','=',$row->loanid)
