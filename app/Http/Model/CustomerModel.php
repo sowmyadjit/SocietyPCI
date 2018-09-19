@@ -104,7 +104,7 @@
 				$fd["amount"] = $id['custfee'];
 				$fd["particulars"] = "MEMBER FEES";
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 28; // customer
+				$fd["tran_table"] = 6; // customer
 				$fd["tran_id"] = $cid;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 86; // MEMBER FEES
