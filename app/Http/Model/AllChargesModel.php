@@ -23,6 +23,7 @@ class AllChargesModel extends Model
 	public $paid = 'paid';
 	public $tran_table = 'tran_table';
 	public $tran_id = 'tran_id';
+	public $created_by = 'created_by';
 	public $SubLedgerId = 'SubLedgerId';
 	public $deleted = 'deleted';
 	
@@ -38,6 +39,7 @@ class AllChargesModel extends Model
 		"paid",
 		"tran_table",
 		"tran_id",
+		"created_by",
 		"SubLedgerId",
 		"deleted"
 	);

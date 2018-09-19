@@ -335,6 +335,7 @@
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 27; // depositeloan_repay
 				$fd["tran_id"] = 0;
+				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = $chareges_info->subhead;
 				$fd["deleted"] = 0;
 				$this->all_ch->clear_row_data();
@@ -1006,6 +1007,7 @@
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 25; // personalloan_repay
 				$fd["tran_id"] = 0;
+				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = $chareges_info->subhead;
 				$fd["deleted"] = 0;
 				$this->all_ch->clear_row_data();
@@ -1239,6 +1241,7 @@
 					$fd["paid"] = 1;
 					$fd["tran_table"] = 24; // jewelloan_repay
 					$fd["tran_id"] = 0;
+					$fd["created_by"] = $UID;
 					$fd["SubLedgerId"] = $temp_head_id;
 					$fd["deleted"] = 0;
 					$this->all_ch->clear_row_data();
@@ -1434,6 +1437,7 @@
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 26; // personalloan_repay
 				$fd["tran_id"] = 0;
+				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = $chareges_info->subhead;
 				$fd["deleted"] = 0;
 				$this->all_ch->clear_row_data();
