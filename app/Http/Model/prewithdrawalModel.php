@@ -9,6 +9,7 @@
 	use App\Http\Model\RoundModel;
 	use App\Http\Model\DepositModel;
 	use App\Http\Model\SettingsModel;
+	use App\Http\Model\AllChargesModel;
 
 	class prewithdrawalModel extends Model
 	{
@@ -20,6 +21,7 @@
 			$this->settings = new SettingsModel;
 			$this->roundamt=new RoundModel;
 			$this->dep_mdl = new DepositModel;
+			$this->all_ch = new AllChargesModel;
 		}
 		
 		public function Getpigmyacct()
@@ -194,6 +196,49 @@
 				->update(['Closed'=>"YES",'Total_Amount'=>$totalamtpay]);
 				
 			}
+			
+
+			if(isset($totcommission)) {
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = $reportdte;
+				$fd["bid"] = $b;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = "";
+				$fd["amount"] = $totcommission;
+				$fd["particulars"] = "PIGMY COMMISSION";
+				$fd["paid"] = 0; //										--later will bbe replaced with 1
+				$fd["tran_table"] = 31; // pigmi_prewithdrawal 			--later will be updated with   28-pigmi_payamount
+				$fd["tran_id"] = $id; // 								--later will be updated with pigmy pay amt tran id
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 82; // PIGMY COMMISSION
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
+			}
+			if(isset($deduct)) {
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = $reportdte;
+				$fd["bid"] = $b;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = "";
+				$fd["amount"] = $deduct;
+				$fd["particulars"] = "OTHER INCOME";
+				$fd["paid"] = 0; //										--later will bbe replaced with 1
+				$fd["tran_table"] = 31; // pigmi_prewithdrawal 			--later will be updated with   28-pigmi_payamount
+				$fd["tran_id"] = $id; // 								--later will be updated with pigmy pay amt tran id
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 88; // OTHER INCOME
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
+			}
+
 		}
 		
 		function getpigmiinterest($acno)

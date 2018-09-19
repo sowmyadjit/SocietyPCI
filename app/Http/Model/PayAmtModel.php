@@ -68,6 +68,19 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+				/******************** PREWITHDRAWAL CHARGES **************************/
+				$prewithdrawal_charges = DB::table("pigmi_prewithdrawal")
+					->where("PigmiAcc_No", $PigAccNum)
+					->first();
+
+				if(!empty($prewithdrawal_charges)) {
+					DB::table("all_charges")
+						->where("tran_table", 31) // 31 - pigmi_prewithdrawal TABLE
+						->where("tran_id", $prewithdrawal_charges->PgmPrewithdraw_ID) // PIGMY PREWITHDRAWAL ID
+						->update([ "paid"=>1, "tran_table"=>28, "tran_id"=>$pigmi_payamount_id, "payment_mode"=>$PayMode ]); // 28 - pigmi_payamount TABLE
+				}
+				/******************** PREWITHDRAWAL CHARGES **************************/
+
 			
 			if($inttype=="PREWITHDRAWAL")
 			{
