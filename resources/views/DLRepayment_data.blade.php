@@ -3072,7 +3072,7 @@ console.log("amt="+bal);
 						}
 					}
 					
-					x=xrddl;
+					x=xfddl;
 					charges=temp;
 					amount=temp1;
 					
@@ -3581,10 +3581,10 @@ console.log("amt="+bal);
 		
 		htmltextfddl='<span class="xtr"><label class="control-label inline col-md-2">chareges:';
 		htmltextfddl+='<select class="form-control xtr_drop"  id="BranchListDDfddl'+xfddl+'" name="BranchListDDfddl'+xfddl+'" >'+drop_val+'</select>';  
-		htmltextfddl+='<input type="text" class="form-control xtr_charg" id="xtr_chargrddl'+xfddl+'">';
+		htmltextfddl+='<input type="text" class="form-control xtr_charg" id="xtr_chargfddl'+xfddl+'">';
 		htmltextfddl+="</label></span>";
 		
-		xrddl=xrddl+1;
+		xfddl=xfddl+1;
 		
 		
 		
