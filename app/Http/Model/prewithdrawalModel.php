@@ -497,7 +497,8 @@
 			if($monthdiff>12)
 			{
 				$payableamt=$amt+$interestamt;
-				DB::table('rd_prewithdrawal')->insertGetId(['RdAcc_No'=>$acno,'RdTotal_Amt'=>$rdtotal,'TotalAmt_Payable'=>$payableamt,'Particulars'=>"prewithdrawal after 1 year",'Withdraw_Date'=>$dte,'Deduct_Amt'=>$intamt]);
+				$rd_prewithdrawal_id = DB::table('rd_prewithdrawal')->insertGetId(['RdAcc_No'=>$acno,'RdTotal_Amt'=>$rdtotal,'TotalAmt_Payable'=>$payableamt,'Particulars'=>"prewithdrawal after 1 year",'Withdraw_Date'=>$dte,'Deduct_Amt'=>$intamt]);
+				$rd_deduct_amt = $intamt;
 				
 				$mnt=date('m');
 				$year=date('Y');
@@ -520,7 +521,8 @@
 						$payableamt=$amt-25;
 						$intamt1=25;
 					}
-					DB::table('rd_prewithdrawal')->insertGetId(['RdAcc_No'=>$acno,'RdTotal_Amt'=>$rdtotal,'TotalAmt_Payable'=>$payableamt,'Particulars'=>"prewithdrawal before 1 year",'Withdraw_Date'=>$dte,'Deduct_Amt'=>$intamt1]);
+					$rd_prewithdrawal_id = DB::table('rd_prewithdrawal')->insertGetId(['RdAcc_No'=>$acno,'RdTotal_Amt'=>$rdtotal,'TotalAmt_Payable'=>$payableamt,'Particulars'=>"prewithdrawal before 1 year",'Withdraw_Date'=>$dte,'Deduct_Amt'=>$intamt1]);
+					$rd_deduct_amt = $intamt1;
 					
 					$mnt=date('m');
 					$year=date('Y');
@@ -546,7 +548,8 @@
 						$intamt2=10;
 						
 					}
-					DB::table('rd_prewithdrawal')->insertGetId(['RdAcc_No'=>$acno,'RdTotal_Amt'=>$rdtotal,'TotalAmt_Payable'=>$payableamt,'Particulars'=>"prewithdrawal before 1 year",'Deduct_Amt'=>$intamt2]);
+					$rd_prewithdrawal_id = DB::table('rd_prewithdrawal')->insertGetId(['RdAcc_No'=>$acno,'RdTotal_Amt'=>$rdtotal,'TotalAmt_Payable'=>$payableamt,'Particulars'=>"prewithdrawal before 1 year",'Deduct_Amt'=>$intamt2]);
+					$rd_deduct_amt = $intamt2;
 					
 					$mnt=date('m');
 					$year=date('Y');
@@ -559,6 +562,26 @@
 				
 			}
 			
+			if(isset($rd_deduct_amt)) {
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = date("Y-m-d");
+				$fd["bid"] = $bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = "";
+				$fd["amount"] = $rd_deduct_amt;
+				$fd["particulars"] = "OTHER INCOME";
+				$fd["paid"] = 0; //										--later will bbe replaced with 1
+				$fd["tran_table"] = 32; // rd_prewithdrawal 			--later will be updated with   33-rd_payamount
+				$fd["tran_id"] = $rd_prewithdrawal_id; // 				--later will be updated with rd pay amt tran id
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 88; // OTHER INCOME
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
+			}
 			
 			
 			
