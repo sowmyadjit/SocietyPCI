@@ -538,7 +538,7 @@
 			$sbamt=$id['PersLoanSBtotalhidn'];
 			$Persloantypeid=$id['Persloantypeid'];
 			
-			$id['PersLoanEndDate'] = date("d/m/Y",strtotime($id['PersLoanEndDate']));
+			$id['PersLoanEndDate'] = date("d/m/Y",strtotime(str_replace("/","-","2021-09-19")));
 			$tempeDate = explode('/',$id['PersLoanEndDate']);
 			$coneDate = $tempeDate[2]."-".$tempeDate[1]."-".$tempeDate[0];
 			
@@ -636,7 +636,143 @@
 				$fn_data["rv_bid"] = null;
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
-				/***********/																
+				/***********/
+				/******************** ALL CHARGES - otherCharges ******************/
+				unset($fd);
+				$fd["date"] = date("Y-m-d");
+				$fd["bid"] = $id['PLBranchID'];
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $id['PersOthrChrges'];
+				$fd["particulars"] = "OTHER INCOME";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // personalloan_payment
+				$fd["tran_id"] = $perslid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 88; // OTHER INCOME
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES - otherCharges ******************/
+				/******************** ALL CHARGES - Book_FormCharges ******************/
+				unset($fd);
+				$fd["date"] = date("Y-m-d");
+				$fd["bid"] = $id['PLBranchID'];
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $id['PersBkfrmChrg'];
+				$fd["particulars"] = "BOOKS AND FORMS";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // personalloan_payment
+				$fd["tran_id"] = $perslid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 90;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES - Book_FormCharges ******************/
+				/******************** ALL CHARGES - AjustmentCharges ******************/
+				$loan_type_info = DB::table("loan_type")
+					->where("LoanType_ID",$Persloantypeid)
+					->first();
+				if(!empty($loan_type_info)) {
+					$loan_sub_head_id = $loan_type_info->SubLedgerId;
+				} else {
+					$loan_sub_head_id = 0;
+				}
+				switch($loan_sub_head_id) {  // LOAN'S SUB HEAD ID
+					case 50:
+					case 52:
+							$temp_subhead_id = 58; // A CLASS SUSPEND SHARE CAPITAL (CHARGE'S SUB HEAD ID)
+							$temp_subhead_name = "A CLASS SUSPEND SHARE CAPITAL";
+							break;
+					case 51:
+					case 53:
+							$temp_subhead_id = 59; // C CLASS SUSPEND SHARE CAPITAL (CHARGE'S SUB HEAD ID)
+							$temp_subhead_name = "C CLASS SUSPEND SHARE CAPITAL";
+							break;
+					default: 
+							$temp_subhead_id = 0;
+							$temp_subhead_name = "";
+				}
+				unset($fd);
+				$fd["date"] = date("Y-m-d");
+				$fd["bid"] = $id['PLBranchID'];
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $id['PersAdjChrg'];
+				$fd["particulars"] = $temp_subhead_name;
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // personalloan_payment
+				$fd["tran_id"] = $perslid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = $temp_subhead_id;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES - AjustmentCharges ******************/
+				/******************** ALL CHARGES - ShareCharges ******************/
+				$loan_type_info = DB::table("loan_type")
+					->where("LoanType_ID",$Persloantypeid)
+					->first();
+				if(!empty($loan_type_info)) {
+					$loan_sub_head_id = $loan_type_info->SubLedgerId;
+				} else {
+					$loan_sub_head_id = 0;
+				}
+				switch($loan_sub_head_id) {  // LOAN'S SUB HEAD ID
+					case 50:
+					case 52:
+							$temp_subhead_id = 58; // A CLASS SUSPEND SHARE CAPITAL (CHARGE'S SUB HEAD ID)
+							$temp_subhead_name = "A CLASS SUSPEND SHARE CAPITAL";
+							break;
+					case 51:
+					case 53:
+							$temp_subhead_id = 59; // C CLASS SUSPEND SHARE CAPITAL (CHARGE'S SUB HEAD ID)
+							$temp_subhead_name = "C CLASS SUSPEND SHARE CAPITAL";
+							break;
+					default: 
+							$temp_subhead_id = 0;
+							$temp_subhead_name = "";
+				}
+				unset($fd);
+				$fd["date"] = date("Y-m-d");
+				$fd["bid"] = $id['PLBranchID'];
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $id['PersShrChrg'];
+				$fd["particulars"] = $temp_subhead_name;
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // personalloan_payment
+				$fd["tran_id"] = $perslid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = $temp_subhead_id;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES - ShareCharges ******************/
+				/******************** ALL CHARGES - Insurance ******************/
+				unset($fd);
+				$fd["date"] = date("Y-m-d");
+				$fd["bid"] = $id['PLBranchID'];
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $id['Insurance'];
+				$fd["particulars"] = "INSURANCE";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // personalloan_payment
+				$fd["tran_id"] = $perslid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 93; // INSURANCE
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES - Insurance ******************/
 			
 			$membertyp1=DB::table('members')->select('agent_member')->where('Memid','=',$id['PLMembID'])->first();
 			$membertyp=$membertyp1->agent_member;
