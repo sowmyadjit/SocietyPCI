@@ -9,6 +9,7 @@
 	use App\Http\Controllers\ReceiptVoucherController;
 	use App\Http\Model\SettingsModel;
 	use App\Http\Model\AccountModel;
+	use App\Http\Model\AllChargesModel;
 	
 	class LoanModel extends Model
 	{
@@ -18,6 +19,7 @@
 				$this->acc = new AccountModel;
 				$this->rv_no = new ReceiptVoucherController;
 				$this->settings = new SettingsModel;
+				$this->all_ch = new AllChargesModel;
 		}
 		
 		public function getaccname($id)
@@ -175,6 +177,25 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = $id['DepLoanStartDate'];
+				$fd["bid"] = $AccBID;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $paymode;
+				$fd["amount"] = $id['LoanCharge'];
+				$fd["particulars"] = "BOOKS AND FORMS";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 29; // depositeloan_allocation
+				$fd["tran_id"] = $lid;
+				$fd["SubLedgerId"] = 90;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
+
+
 			/******** INCLUDE DL NO IN SB PARTICULARS */
 			$temp_part = "Deposite Loan Amount ({$paccno})";
 			DB::table("sb_transaction")
@@ -2511,17 +2532,20 @@
 						->join("address","address.Aid","=","members.Aid")
 						->whereIn("members.Memid",[$guarantor1_mem_id,$guarantor2_mem_id])
 						->get();
-			if(!empty($guarantors)) {
+			if(!empty($guarantors[0])) {
 				$ret_data["customer_details"]["guarantor1_name"] = $guarantors[0]->FirstName;//PL
 				$ret_data["customer_details"]["guarantor1_mobile"] = $guarantors[0]->MobileNo;//PL
 				$ret_data["customer_details"]["guarantor1_address"] = $guarantors[0]->Address;//PL
-				$ret_data["customer_details"]["guarantor2_name"] = $guarantors[1]->FirstName;//PL
-				$ret_data["customer_details"]["guarantor2_mobile"] = $guarantors[1]->MobileNo;//PL
-				$ret_data["customer_details"]["guarantor2_address"] = $guarantors[1]->Address;//PL
 			} else {
 				$ret_data["customer_details"]["guarantor1_name"] = "";
 				$ret_data["customer_details"]["guarantor1_mobile"] = "";
 				$ret_data["customer_details"]["guarantor1_address"] = "";
+			}
+			if(!empty($guarantors[1])) {
+				$ret_data["customer_details"]["guarantor2_name"] = $guarantors[1]->FirstName;//PL
+				$ret_data["customer_details"]["guarantor2_mobile"] = $guarantors[1]->MobileNo;//PL
+				$ret_data["customer_details"]["guarantor2_address"] = $guarantors[1]->Address;//PL
+			} else {
 				$ret_data["customer_details"]["guarantor2_name"] = "";
 				$ret_data["customer_details"]["guarantor2_mobile"] = "";
 				$ret_data["customer_details"]["guarantor2_address"] = "";
