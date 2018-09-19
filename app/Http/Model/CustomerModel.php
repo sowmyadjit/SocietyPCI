@@ -92,6 +92,24 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = $dte;
+				$fd["bid"] = $id['branchid'];
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = "CASH";
+				$fd["amount"] = $id['custfee'];
+				$fd["particulars"] = "MEMBER FEES";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 28; // customer
+				$fd["tran_id"] = $cid;
+				$fd["SubLedgerId"] = 86; // MEMBER FEES
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_ids[++$arr_index] = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
 				
 			}
 			else if($CustType=="CUSTOMER")
