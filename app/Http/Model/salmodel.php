@@ -8,6 +8,7 @@
 	use App\Http\Controllers\ReceiptVoucherController;
 	// use App\Http\Model\SDModel;
 	// use App\Http\Model\SDTranModel;
+	use App\Http\Model\AllChargesModel;
 
 	class salmodel extends Model
 	{
@@ -21,6 +22,7 @@
 			// $this->sd_tran = new SDTranModel;
 			$this->cdsd = new CDSDModel;
 			$this->cdsd_tran = new CDSDTranModel;
+			$this->all_ch = new AllChargesModel;
 		}
 		public function insert($id)
 		{
@@ -868,6 +870,11 @@
 			} else {
 				$tran_date = date("Y-m-d");//OTHER WISE TAKE TODAY'S DATE
 			}
+			if(isset($sal_extra_data['pay_mode'])) {
+				$pay_mode = $sal_extra_data['pay_mode'];//IF DATE PROVIDED
+			} else {
+				$pay_mode = "ADJUSTMENT";
+			}
 			
 			$sal_extra_arr = explode('|',$sal_extra_all);
 			$sal_extra = array();
@@ -875,6 +882,7 @@
 			$ex_key = array();
 			$value = array();
 			$part = array();
+			/********************** FILTER INVALID ENTRIES *********************/
 			foreach($sal_extra_arr as $val) {
 				$temp = explode('#',$val);
 				if($temp[0] == 'undefined' || $temp[0] == '-')
@@ -886,6 +894,7 @@
 				$part[$count] = $temp[2];
 				$count++;
 			}
+			/********************** FILTER INVALID ENTRIES *********************/
 			
 			$data = array();
 			$sal_extra_table = DB::table('salary_extra')->get();
@@ -895,6 +904,7 @@
 			
 			print_r($ex_key);
 			for($i=0;$i<$count;$i++) {
+				/*********************** ADD ENTRY TO SAL EXTRA PAY TABLE **********************/
 				$data['date']= $tran_date;
 				$data['bid']= $BID;
 				$data['sal_id']= $sal_id;
@@ -907,6 +917,32 @@
 				$data['SubLedgerId']= $sal_extra_list[$temp_key]->sub_head;
 				DB::table('salary_extra_pay')
 					->insertGetId($data);
+				/*********************** ADD ENTRY TO SAL EXTRA PAY TABLE **********************/
+				/******************** ADD ENTRY TO ALL CHARGES ******************/
+				if($emp_type == 1) {
+					$tran_table = 34; // salary
+				} elseif($emp_type == 2) {
+					$tran_table = 35; // agent_commission_payment
+				} else {
+					$tran_table = 0;
+				}
+				unset($fd);
+				$fd["date"] = $tran_date;
+				$fd["bid"] = $BID;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $pay_mode;
+				$fd["amount"] = $value[$i];
+				$fd["particulars"] = $part[$i];
+				$fd["paid"] = 1;
+				$fd["tran_table"] = $tran_table;
+				$fd["tran_id"] = $sal_id;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = $sal_extra_list[$temp_key]->sub_head;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ADD ENTRY TO ALL CHARGES ******************/
 
 				/******* ADJ ENTRY TO EXPENSE ******/
 					$sal_extra_type = DB::table("salary_extra")
