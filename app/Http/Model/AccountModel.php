@@ -1438,7 +1438,8 @@
 			$account_list = DB::table($table)
 				->select($select_array)
 				->join("user","user.Uid","=","{$table}.Uid")
-				->join("accounttype","accounttype.AccTid","=","{$table}.AccTid");
+				->join("accounttype","accounttype.AccTid","=","{$table}.AccTid")
+				->where("status","AUTHORISED");
 				if($this->settings->get_value("allow_inter_branch") == 0) {
 					$account_list = $account_list->where($branch_id_field,"=",$BranchId);
 				}
