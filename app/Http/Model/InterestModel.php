@@ -1165,7 +1165,7 @@
 				->where('createaccount.AccTid','=',$data["acctype"])
 				->where('Closed','=',"NO")
 				->where('Bid','=',$BID)
-				// ->where('Accid','=',"39")
+				// ->where('Accid','=',"4138")
 				->where('last_interest_calculated_till','<',$interest_calculation_date)
 //				->limit(5)
 				->get();
@@ -1252,6 +1252,7 @@
 				$created_date = DB::table("createaccount")
 					->where("Accid","=",$data["acc_id"])
 					->value("Created_on");
+				$created_date = str_replace("/","-",$created_date);
 				$start_month = date("m",strtotime($created_date));
 				$start_year = date("Y",strtotime($created_date));
 				$temp_date = "{$start_year}-{$start_month}";
