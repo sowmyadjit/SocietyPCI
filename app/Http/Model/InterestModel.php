@@ -966,8 +966,8 @@
 				$prev_max = $monthly_max;
 				$temp_date = date("Y-m",strtotime('+1 month',strtotime("{$temp_date}-01")));
 			}
-			print_r($ret_data);
-			var_dump($due_months);
+			// print_r($ret_data);
+			// var_dump($due_months);
 			return $ret_data;
 			/**************************** RD INTEREST WITH MORE THAN 1 YEAR ****************************/
 		}
