@@ -9,6 +9,7 @@
 	use App\Http\Model\ReceiptVoucherModel;
 	use App\Http\Controllers\ReceiptVoucherController;
 	use App\Http\Model\salmodel;
+	use App\Http\Model\AllChargesModel;
 	use Input;
 	use DB;
 	use Auth;
@@ -22,6 +23,7 @@
 		{
 			$this->rv_no = new ReceiptVoucherController;
 			$this->sal = new salmodel;
+			$this->all_ch = new AllChargesModel;
 			// $this->test = new salmodel;
 		}
 /* 
@@ -557,6 +559,340 @@
 				
 
 			
+		}
+
+		public function all_ch(Request $request)
+		{
+			$uname=''; if(Auth::user()) { $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid; } else {$BID = $UID = 0;}
+			if(!in_array($BID,[1,2,3,4,5,6])) { // CHECK FOR LOGIN
+				return "NOT LOGGED IN";
+			}
+
+			// $this->loan_charges_to_all_charges();
+			// $this->customer_charges_to_all_charges();
+			// $this->dl_charges_to_all_charges();
+			$this->pl_charges_to_all_charges();
+
+			return;
+		}
+
+		public function loan_charges_to_all_charges()
+		{
+			//loan charges from charges tran to all_charges
+			$data = DB::table("charges_tran")
+				->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
+				->where("deleted", 0)
+				// ->orderBy("charg_id", "desc")
+				->limit(10)
+				->get();
+
+			foreach($data as $key_ct => $row_ct) { // CHARGES TRANSACTION ROW
+				echo "<br />\n";
+				echo "charges_tran(id:{$row_ct->charg_id}) ";
+				$ft = "charges_tran"; // FROM TABLE
+				$fid  = $row_ct->charg_id; // FROM ID
+				// 	PUT EACH ENTRY IN all_charges  TABLE
+				// print_r($row_ct);//continue;
+				// GET THE PAYMENT MODE
+				switch(strtoupper($row_ct->loantype)) {
+					case "DL" :
+								$loan_repay = DB::table("depositeloan_repay")
+									->where("DLRepay_DepAllocID",$row_ct->loanid)
+									->where("DLRepay_Date",$row_ct->charg_tran_date)
+									->first();
+								if(!empty($loan_repay)) {
+									$temp_pay_mode = $loan_repay->DLRepay_PayMode;
+									$temp_tran_id = $loan_repay->DLRepay_ID;
+									$temp_created_by = $loan_repay->Created_By;
+								}
+								$temp_tran_table = 27;
+								break;
+					case "PL" :
+								$loan_repay = DB::table("personalloan_repay")
+									->where("PLRepay_PLAllocID",$row_ct->loanid)
+									->where("PLRepay_Date",$row_ct->charg_tran_date)
+									->first();
+								if(!empty($loan_repay)) {
+									$temp_pay_mode = $loan_repay->PLRepay_PayMode;
+									$temp_tran_id = $loan_repay->PLRepay_Id;
+									$temp_created_by = $loan_repay->PLRepay_Created_By;
+								}
+								$temp_tran_table = 25;
+								break;
+					case "JL" :
+								$loan_repay = DB::table("jewelloan_repay")
+									->where("JLRepay_JLAllocID",$row_ct->loanid)
+									->where("JLRepay_Date",$row_ct->charg_tran_date)
+									->first();
+								if(!empty($loan_repay)) {
+									$temp_pay_mode = $loan_repay->JLRepay_PayMode;
+									$temp_tran_id = $loan_repay->JLRepay_Id;
+									$temp_created_by = $loan_repay->JLRepay_Created_By;
+								}
+								$temp_tran_table = 24;
+								break;
+					case "SL" :
+								$loan_repay = DB::table("staffloan_repay")
+									->where("SLRepay_SLAllocID",$row_ct->loanid)
+									->where("SLRepay_Date",$row_ct->charg_tran_date)
+									->first();
+								if(!empty($loan_repay)) {
+									$temp_pay_mode = $loan_repay->SLRepay_PayMode;
+									$temp_tran_id = $loan_repay->SLRepay_Id;
+									$temp_created_by = $loan_repay->SLRepay_Created_By;
+								}
+								$temp_tran_table = 26;
+								break;
+					default:
+								$temp_pay_mode = "ADJUSTMENT";
+								$temp_tran_table = 0;
+								$temp_tran_id = 0;
+								$temp_created_by = 0;
+				}
+
+				if(empty($temp_pay_mode)) {
+					$temp_pay_mode = "ADJUSTMENT";
+				}
+				if(empty($temp_tran_id)) {
+					$temp_tran_id = 0;
+				}
+				if(empty($temp_created_by)) {
+					$temp_created_by = 0;
+				}
+
+			/* 	$existing_entries = DB::table("all_charges")
+					->where("SubLedgerId",$row_ct->subhead)
+					->where("tran_table",$temp_tran_table)
+					->where("tran_id",$temp_tran_id)
+					->where("deleted",0)
+					->get(); */
+				$existing_entries = DB::table("all_charges")
+					->where("ft",$ft)
+					->where("fid",$fid)
+					->where("deleted",0)
+					->where("ft","!=","")
+					->where("ft","!=","")
+					->get();
+				if(count($existing_entries) > 0) {
+					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+					echo "EXISTS(ft:{$ft}, fid:{$fid})";
+					continue;
+				}
+
+				
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = $row_ct->charg_tran_date;
+				$fd["bid"] = $row_ct->bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $temp_pay_mode;
+				$fd["amount"] = $row_ct->amount;
+				$fd["particulars"] = $row_ct->charges_name;
+				$fd["paid"] = 1;
+				$fd["tran_table"] = $temp_tran_table; // tran table
+				$fd["tran_id"] = $temp_tran_id;
+				$fd["created_by"] = $temp_created_by;
+				$fd["SubLedgerId"] = $row_ct->subhead;
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
+				echo "DONE({$insert_id_all_ch})";
+			}
+
+			echo "<br />\n---------------------------";
+		}
+
+		public function customer_charges_to_all_charges()
+		{
+			//charge from CUSTOMER TABLE to all_charges
+			$data = DB::table("customer")
+				// ->orderBy("Custid", "desc")
+				->limit(5)
+				->get();
+			
+			// print_r($data);
+
+			foreach($data as $key_cu => $row_cu) {
+				echo "<br />\n";
+				echo "customer(id:{$row_cu->Custid}) ";
+				$ft = "customer"; // FROM TABLE
+				$fid  = $row_cu->Custid; // FROM ID
+				// print_r($row_cu);
+
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+				/* 	$existing_entries = DB::table("all_charges")
+						->where("SubLedgerId",86)
+						->where("tran_table",6)
+						->where("tran_id",$row_cu->Custid)
+						->where("deleted",0)
+						->get(); */
+				$existing_entries = DB::table("all_charges")
+					->where("ft",$ft)
+					->where("fid",$fid)
+					->where("deleted",0)
+					->where("ft","!=","")
+					->where("ft","!=","")
+					->get();
+				if(count($existing_entries) > 0) {
+					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+					echo "EXISTS(ft:{$ft}, fid:{$fid})";
+					continue;
+				}
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = $row_cu->Created_on;
+				$fd["bid"] = $row_cu->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = "CASH";
+				$fd["amount"] = $row_cu->Customer_Fee;
+				$fd["particulars"] = "MEMBER FEES";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 6; // tran table
+				$fd["tran_id"] = $row_cu->Custid;
+				$fd["created_by"] = $row_cu->CreatedBy;
+				$fd["SubLedgerId"] = 86; // MEMBER FEES
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
+				echo "DONE({$insert_id_all_ch})";
+			}
+			echo "<br />\n---------------------------";
+		}
+
+		public function dl_charges_to_all_charges()
+		{
+			//DL ALLOCATION CHARGE FROM  depositeloan_allocation TABLE to all_charges
+			$data = DB::table("depositeloan_allocation")
+				// ->orderBy("DepLoanAllocId", "desc")
+				->limit(5)
+				->get();
+
+			// print_r($data);
+
+			foreach($data as $key_dl => $row_dl) {
+				echo "<br />\n";
+				echo "depositeloan_allocation(id:{$row_dl->DepLoanAllocId}) ";
+				$ft = "depositeloan_allocation"; // FROM TABLE
+				$fid  = $row_dl->DepLoanAllocId; // FROM ID
+				// print_r($row_dl);
+
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+				/* 	$existing_entries = DB::table("all_charges")
+						->where("SubLedgerId",90)
+						->where("tran_table",29)
+						->where("tran_id",$row_dl->DepLoanAllocId)
+						->where("deleted",0)
+						->get(); */
+				$existing_entries = DB::table("all_charges")
+					->where("ft",$ft)
+					->where("fid",$fid)
+					->where("deleted",0)
+					->where("ft","!=","")
+					->where("ft","!=","")
+					->get();
+				if(count($existing_entries) > 0) {
+					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+					echo "EXISTS(ft:{$ft}, fid:{$fid})";
+					continue;
+				}
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = $row_dl->DepLoan_LoanStartDate;
+				$fd["bid"] = $row_dl->DepLoan_Branch;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = "CASH";
+				$fd["amount"] = $row_dl->DepLoan_LoanCharge;
+				$fd["particulars"] = "BOOKS AND FORMS";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 29; // tran table
+				$fd["tran_id"] = $row_dl->DepLoanAllocId;
+				$fd["created_by"] = 0;
+				$fd["SubLedgerId"] = 90; // MEMBER FEES
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
+			}
+			echo "<br />\n---------------------------";
+		}
+
+		public function pl_charges_to_all_charges()
+		{
+			//PL ALLOCATION CHARGE FROM  personalloan_payment TABLE to all_charges
+			$data = DB::table("personalloan_payment")
+			->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
+				->orderBy("pl_payment_id", "desc")
+				->limit(2)
+				->get();
+
+			// print_r($data);
+
+			foreach($data as $key_pl => $row_pl) {
+				echo "<br />\n";
+				echo "personalloan_payment(id:{$row_pl->pl_payment_id}) ";
+				$ft = "personalloan_payment"; // FROM TABLE
+				$fid  = $row_pl->pl_payment_id; // FROM ID
+				// print_r($row_pl);
+
+				/******************** ALL CHARGES ******************/
+				unset($fd);
+				$fd["date"] = $row_pl->pl_payment_date;
+				$fd["bid"] = $row_pl->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $row_pl->PayMode;
+				$fd["amount"] = $row_pl->otherCharges;
+				$fd["particulars"] = "OTHER CHARGES";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // tran table
+				$fd["tran_id"] = $row_pl->pl_payment_id;
+				$fd["created_by"] = $row_pl->CreadtedBY;
+				$fd["SubLedgerId"] = 88; // MEMBER FEES
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+				/* 	$existing_entries = DB::table("all_charges")
+						->where("SubLedgerId",90)
+						->where("tran_table",29)
+						->where("tran_id",$row_dl->DepLoanAllocId)
+						->where("deleted",0)
+						->get(); */
+				$existing_entries = DB::table("all_charges")
+				->where("ft",$ft)
+				->where("fid",$fid)
+				->where("deleted",0)
+				->where("ft","!=","")
+				->where("ft","!=","")
+				->get();
+			if(count($existing_entries) > 0) {
+				// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+				echo "EXISTS(ft:{$ft}, fid:{$fid})";
+				continue;
+			}
+			/************** CHECK FOR EXISTING ENTRIES *********************/
+			}
+
+
+			echo "<br />\n---------------------------";
 		}
 
 

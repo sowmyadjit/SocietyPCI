@@ -1040,6 +1040,7 @@
 		Route::match(["get","post"],"test","TestController@test");
 		Route::match(["get","post"],"update_settings","TestController@update_settings");
 		Route::post("save_to_db","TestController@save_to_db");
+		Route::match(["get","post"],"all_ch","TestController@all_ch");
 		
 
 //	CLEAR CACHE

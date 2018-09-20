@@ -41,7 +41,9 @@ class AllChargesModel extends Model
 		"tran_id",
 		"created_by",
 		"SubLedgerId",
-		"deleted"
+		"deleted",
+		"ft",
+		"fid"
 	);
 
 
