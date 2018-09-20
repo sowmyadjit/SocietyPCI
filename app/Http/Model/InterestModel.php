@@ -1165,6 +1165,7 @@
 				->where('createaccount.AccTid','=',$data["acctype"])
 				->where('Closed','=',"NO")
 				->where('Bid','=',$BID)
+				->where('Status','=',"AUTHORISED")
 				// ->where('Accid','=',"4138")
 				->where('last_interest_calculated_till','<',$interest_calculation_date)
 //				->limit(5)
