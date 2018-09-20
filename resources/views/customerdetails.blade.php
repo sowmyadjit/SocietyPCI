@@ -115,12 +115,12 @@
 							<div class="form-group">
 								<label class="control-label col-sm-4">BRANCH:</label>
 									<div id="the-basics" class="col-sm-8">
-										<input class="typeahead form-control"  type="text" value="{{ $customer->BName }}" id="custbid" <?php if($edit=='edit'){}else {echo 'readonly';} ?>>
+										<input class="typeahead form-control"  type="text" value="{{ $customer->BName }}" id="custbid" <?php if($edit=='edit'){echo 'readonly';}else {echo 'readonly';} ?>>
 									</div>
 							</div>
 							
 							<div class="col-sm-8 hidden">
-										<input class="form-control"  type="text" id="branchid" name="branchid">
+										<input class="form-control"  type="text" id="branchid" name="branchid" value="{{$customer->Bid}}">
 									</div>
 
 							<!--<div class="form-group">
