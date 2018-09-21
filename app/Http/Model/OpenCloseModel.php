@@ -198,11 +198,9 @@
 			$BranchId=$uname->Bid;
 			
 			$sbtoday=$dte;
-			$id = DB::table('sb_transaction')->select('SBReport_TranDate','TransactionType','Amount','Total_Bal','AccNum','Tranid','particulars','CurrentBalance','receipt_voucher_no as SB_resp_No','receipt_voucher_no as SB_paymentvoucher_No','Payment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			$id = DB::table('sb_transaction')->select('SBReport_TranDate','TransactionType','Amount','Total_Bal','AccNum','Tranid','particulars','CurrentBalance', DB::raw(" '' as 'SB_resp_No' "), DB::raw(" '' as 'SB_paymentvoucher_No' "),'Payment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
-			->join("receipt_voucher","receipt_voucher.transaction_id","=","sb_transaction.Tranid")
 			->join("user","user.Uid","=","createaccount.Uid")
-			->where("receipt_voucher.transaction_category",1)
 			->where("createaccount.Status","AUTHORISED")
 			->where('SBReport_TranDate',$sbtoday)
 			->where('sb_transaction.Bid','=',$BranchId)
@@ -213,8 +211,23 @@
 			->orderBy('SBReport_TranDate','desc')
 			->orderBy('Tranid','desc')
 			->get();
+
+			$data_list = &$id;
+			foreach($data_list as $key => $row) {
+				$rv_adj = DB::table("receipt_voucher")
+					->where("receipt_voucher.transaction_id",$row->Tranid)
+					->where("receipt_voucher.transaction_category",1)
+					->where("receipt_voucher.bid",$BranchId)
+					->where("receipt_voucher.deleted",0)
+					->value("receipt_voucher_no");
+				$data_list[$key]->SB_resp_No = $rv_adj;
+				$data_list[$key]->SB_paymentvoucher_No = $rv_adj;
+			}
+
 			return $id;
 		}
+
+		
 		
 		public function show_dailysbcreditbalance($dte)
 		{
@@ -248,10 +261,10 @@
 			$BranchId=$uname->Bid;
 			
 			$sbtoday=$dte;
-			$id = DB::table('sb_transaction')->select('SBReport_TranDate','TransactionType','Amount','Total_Bal','AccNum','Tranid','particulars','CurrentBalance','receipt_voucher_no as SB_resp_No','receipt_voucher_no as SB_paymentvoucher_No','Payment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id = DB::table('sb_transaction')->select('SBReport_TranDate','TransactionType','Amount','Total_Bal','AccNum','Tranid','particulars','CurrentBalance',DB::raw(" '' as 'SB_resp_No' "),DB::raw(" '' as 'SB_paymentvoucher_No' "),'Payment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),DB::raw(" '' as 'adj_no' ")	)
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
 			->join("user","user.Uid","=","createaccount.Uid")
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","sb_transaction.Tranid")
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","sb_transaction.Tranid")
 			// ->where("receipt_voucher.transaction_category",1)
 			->where("createaccount.Status","AUTHORISED")
 			->where('SBReport_TranDate',$sbtoday)
@@ -264,6 +277,19 @@
 			->orderBy('SBReport_TranDate','desc')
 			->orderBy('Tranid','desc')
 			->get();
+
+			$data_list = &$id;
+			foreach($data_list as $key => $row) {
+				$rv_adj = DB::table("receipt_voucher")
+					->where("receipt_voucher.transaction_id",$row->Tranid)
+					// ->where("receipt_voucher.transaction_category",1)
+					// ->where("receipt_voucher.bid",$BranchId)
+					// ->where("receipt_voucher.deleted",0)
+					->value("receipt_voucher_no");
+				$data_list[$key]->SB_resp_No = $rv_adj;
+				$data_list[$key]->SB_paymentvoucher_No = $rv_adj;
+				$data_list[$key]->adj_no = $rv_adj;
+			}
 			return $id;
 		}
 		
@@ -339,7 +365,39 @@
 			
 			//$dtoday=date('Y-m-d');
 			$dtoday=$dte;
-			$id1 = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum','receipt_voucher_no as RD_resp_No','RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+
+			
+			$id = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum',DB::raw(" '' as 'RD_resp_No' "),'RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'rd_transaction.Accid')
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","rd_transaction.RD_TransID")
+			->join("user","user.Uid","=","createaccount.Uid")
+			->where("createaccount.Status","AUTHORISED")
+			// ->where("receipt_voucher.transaction_category",2)
+			->where('RDReport_TranDate',$dtoday)
+			->where('rd_transaction.Bid','=',$BranchId)
+			->where('RDPayment_Mode','=',"CASH")
+			->where('RD_Particulars','!=',"RD INTEREST CAL")
+			->where('rd_transaction.deleted',0)
+			//->orderBy('RDReport_TranDate','desc')
+			->orderBy('RD_TransID','desc')
+			->get();
+
+
+			$data_list = &$id;
+			foreach($data_list as $key => $row) {
+				$rv_adj = DB::table("receipt_voucher")
+					->where("receipt_voucher.transaction_id",$row->RD_TransID)
+					->where("receipt_voucher.transaction_category",2)
+					->where("receipt_voucher.bid",$BranchId)
+					->value("receipt_voucher_no");
+				$data_list[$key]->RD_resp_No = $rv_adj;
+			}
+
+
+
+
+
+			/* $id1 = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum','receipt_voucher_no as RD_resp_No','RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'rd_transaction.Accid')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","rd_transaction.RD_TransID")
 			->join("user","user.Uid","=","createaccount.Uid")
@@ -377,7 +435,7 @@
 			->orderBy('RD_TransID','desc')
 			->get();
 
-			$id = array_merge($id1,$id2);
+			$id = array_merge($id1,$id2); */
 			return $id;
 			
 		}
@@ -640,19 +698,31 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('pigmi_payamount')->select('PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate','receipt_voucher_no as PayAmount_ReceiptNum','receipt_voucher_no as PayAmount_PaymentVoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			$id=DB::table('pigmi_payamount')->select('PayId','PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate',DB::raw(" '' as 'PayAmount_ReceiptNum' "),DB::raw(" '' as 'PayAmount_PaymentVoucher' "),'user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','PayAmount_PigmiAccNum')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
 			->join("user","user.Uid","=","pigmiallocation.UID")
-			->where("receipt_voucher.transaction_category",14)
+			// ->where("receipt_voucher.transaction_category",14)
 			->where('PayAmountReport_PayDate',$dte)
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','=',"CASH")
-			
-			
 			->where('PayAmount_IntType','=',"INTEREST")
 			->where('pigmi_payamount.deleted',0)
 			->get();
+
+			
+			$data_list = &$id;
+			foreach($data_list as $key => $row) {
+				$rv_adj = DB::table("receipt_voucher")
+					->where("receipt_voucher.transaction_id",$row->PayId)
+					->where("receipt_voucher.transaction_category",14)
+					->where("receipt_voucher.bid",$BranchId)
+					->where("receipt_voucher.deleted",0)
+					->value("receipt_voucher_no");
+				$data_list[$key]->PayAmount_PaymentVoucher = $rv_adj;
+				$data_list[$key]->PayAmount_ReceiptNum = $rv_adj;
+			}
+			
 			return $id;
 		}
 		public function show_dailypigmypayamttotbalance($dte)
@@ -682,19 +752,20 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('pigmi_payamount')->select('PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate','receipt_voucher_no as PayAmount_ReceiptNum','receipt_voucher_no as PayAmount_PaymentVoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id=DB::table('pigmi_payamount')->select('pigmi_payamount.PayId','PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate',DB::raw(" '' as 'PayAmount_ReceiptNum' "),DB::raw(" '' as 'PayAmount_PaymentVoucher' "),'user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),DB::raw(" '' as 'adj_no' "))
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','PayAmount_PigmiAccNum')
 			->join("user","user.Uid","=","pigmiallocation.UID")
-			->join("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
-			->where("receipt_voucher.bid",$BranchId)
-			->where("receipt_voucher.transaction_category",14)
+			// ->join("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
+			// ->where("receipt_voucher.bid",$BranchId)
+			// ->where("receipt_voucher.transaction_category",14)
 			->where('PayAmountReport_PayDate',$dte)
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"INTEREST")
 			->where('pigmi_payamount.deleted',0)
 			->get();
-/**************************** pigmi paid amount single entry ***************************/
+
+			/**************************** pigmi paid amount single entry ***************************/
 			$pre_row = NULL;
 			$pre_no = '';
 			foreach($id as $key => $row)
@@ -710,7 +781,16 @@
 				$pre_row = $row;
 				$pre_no = $cur_no;
 			}
-/**************************** pigmi paid amount single entry ***************************/
+			/**************************** pigmi paid amount single entry ***************************/
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "PayId";
+			$fd["transaction_category"] = 14;
+			$fd["receipt_voucher_type"] = 3;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["PayAmount_ReceiptNum","PayAmount_PaymentVoucher","adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
 			return $id;
 		}
 		public function show_dailypigmypayamttotbalance_adjust($dte)
@@ -741,21 +821,33 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('pigmi_payamount')->select('PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate','receipt_voucher_no as PayAmount_ReceiptNum','receipt_voucher_no as PayAmount_PaymentVoucher','PgmTotal_Amt','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			$id=DB::table('pigmi_payamount')->select('pigmi_payamount.PayId','PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate',DB::raw(" '' as 'PayAmount_ReceiptNum' "),DB::raw(" '' as 'PayAmount_PaymentVoucher' "),'PgmTotal_Amt','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','PayAmount_PigmiAccNum')
 			->join('pigmi_prewithdrawal','pigmi_prewithdrawal.PigmiAcc_No','=','PayAmount_PigmiAccNum')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
 			->join("user","user.Uid","=","pigmiallocation.UID")
-			->where("receipt_voucher.transaction_category",14)
-			->where("receipt_voucher.receipt_voucher_type",2)
+			// ->where("receipt_voucher.transaction_category",14)
+			// ->where("receipt_voucher.receipt_voucher_type",2)
 			->where('PayAmountReport_PayDate',$dte)
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
 			->where('pigmi_payamount.deleted',0)
 			->get();
+
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "PayId";
+			$fd["transaction_category"] = 14;
+			$fd["receipt_voucher_type"] = 2;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["PayAmount_ReceiptNum","PayAmount_PaymentVoucher"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
+
 			return $id;
 		}
+
 		public function show_dailypigmypayamttotbalance_per($dte)
 		{
 			//$dte=date('Y-m-d');
@@ -783,7 +875,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('pigmi_payamount')->select('PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate','receipt_voucher_no as PayAmount_ReceiptNum','receipt_voucher_no as PayAmount_PaymentVoucher','PgmTotal_Amt','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id=DB::table('pigmi_payamount')->select('pigmi_payamount.PayId','PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate',DB::raw(" '' as 'PayAmount_ReceiptNum' "),DB::raw(" '' as 'PayAmount_PaymentVoucher' "),'PgmTotal_Amt','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),DB::raw(" '' as 'adj_no' ") )
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','PayAmount_PigmiAccNum')
 			->join('pigmi_prewithdrawal','pigmi_prewithdrawal.PigmiAcc_No','=','PayAmount_PigmiAccNum')
 			->join("user","user.Uid","=","pigmiallocation.UID")
@@ -795,9 +887,7 @@
 			->where('pigmi_payamount.deleted',0)
 			->get();
 			
-			
-			
-/**************************** pigmi paid amount single entry ***************************/
+			/**************************** pigmi paid amount single entry ***************************/
 			$pre_row = NULL;
 			$pre_no = '';
 			foreach($id as $key => $row)
@@ -813,10 +903,10 @@
 				$pre_row = $row;
 				$pre_no = $cur_no;
 			}
-/**************************** pigmi paid amount single entry ***************************/
+			/**************************** pigmi paid amount single entry ***************************/
 
 
-/**************************** Adding extra charges ***************************/
+			/**************************** Adding extra charges ***************************/
 			foreach($id as $key => $row)
 			{
 				$PigmiAcc_No = $row->PayAmount_PigmiAccNum;
@@ -829,7 +919,16 @@
 			//	$id[$key]->PayAmount_PayableAmount += ($Deduct_Commission + $Deduct_Amount);
 				$id[$key]->PayAmount_PayableAmount = $pre_with_row->PgmTotal_Amt;
 			}
-/**************************** Adding extra charges ***************************/
+			/**************************** Adding extra charges ***************************/
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "PayId";
+			$fd["transaction_category"] = 14;
+			$fd["receipt_voucher_type"] = 3;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["PayAmount_ReceiptNum","PayAmount_PaymentVoucher","adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
 			
 			
 			return $id;
@@ -1006,7 +1105,17 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('rd_payamount')->select('RDPayAmt_AccNum','RDPayAmt_PayableAmount','RDPayAmtReport_PayDate','receipt_voucher_no as RD_PayAmount_pamentvoucher', 'RDPayAmt_PaymentMode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id=DB::table('rd_payamount')->select('rd_payamount.RDPayId','RDPayAmt_AccNum','RDPayAmt_PayableAmount','RDPayAmtReport_PayDate',DB::raw(" '' as 'RD_PayAmount_pamentvoucher' "), 'RDPayAmt_PaymentMode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),DB::raw(" '' as 'adj_no' ") )
+			->join('createaccount','createaccount.AccNum','=','rd_payamount.RDPayAmt_AccNum')
+			// ->join("receipt_voucher","receipt_voucher.transaction_id","=","rd_payamount.RDPayId")
+			->join("user","user.Uid","=","createaccount.Uid")
+			// ->where("receipt_voucher.transaction_category",15)
+			->where('createaccount.Bid',$BranchId)
+			->where('RDPayAmtReport_PayDate',$dte)
+			->where('rd_payamount.deleted',0)
+			->get();
+			
+			/* $id=DB::table('rd_payamount')->select('RDPayAmt_AccNum','RDPayAmt_PayableAmount','RDPayAmtReport_PayDate','receipt_voucher_no as RD_PayAmount_pamentvoucher', 'RDPayAmt_PaymentMode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'receipt_voucher_no as adj_no')
 			->join('createaccount','createaccount.AccNum','=','rd_payamount.RDPayAmt_AccNum')
 			->join("receipt_voucher","receipt_voucher.transaction_id","=","rd_payamount.RDPayId")
 			->join("user","user.Uid","=","createaccount.Uid")
@@ -1014,7 +1123,16 @@
 			->where('createaccount.Bid',$BranchId)
 			->where('RDPayAmtReport_PayDate',$dte)
 			->where('rd_payamount.deleted',0)
-			->get();
+			->get(); */
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "RDPayId";
+			$fd["transaction_category"] = 15;
+			$fd["receipt_voucher_type"] = ""; // ANY
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["RD_PayAmount_pamentvoucher","adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
 			return $id;
 		}
 		public function show_dailyrdpayamttotbalance($dte)
@@ -1039,16 +1157,25 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fdallocation')->select('Fd_CertificateNum','Fd_DepositAmt','Created_Date','receipt_voucher_no as FD_resp_No','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
+			$id=DB::table('fdallocation')->select('fdallocation.Fdid','Fd_CertificateNum','Fd_DepositAmt','Created_Date',DB::raw(" '' as 'FD_resp_No' "),'user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
 			->join("user","user.Uid","=","fdallocation.Uid")
-			->where("receipt_voucher.transaction_category",8)
+			// ->where("receipt_voucher.transaction_category",8)
 			->where('Created_Date',$dte)
 			->where('FDPayment_Mode','=',"CASH")
 			->where('FdTid','!=',1)
-			
 			->where('fdallocation.Bid',$BranchId)
 			->get();
+			
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "Fdid";
+			$fd["transaction_category"] = 8;
+			$fd["receipt_voucher_type"] = 1;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["FD_resp_No"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
 			return $id;
 		}
 
@@ -1095,14 +1222,24 @@
 			$BranchId=$uname->Bid;
 			
 			$id=DB::table('fdallocation')
-			->select('Fd_CertificateNum','Fd_DepositAmt','Created_Date','FD_resp_No','receipt_voucher_no as adj_no')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
+			->select('fdallocation.Fdid','Fd_CertificateNum','Fd_DepositAmt','Created_Date','FD_resp_No',DB::raw(" '' as 'adj_no' ") )
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
 			->where('Created_Date',$dte)
 			->where('FDPayment_Mode','<>',"CASH")
 			->where('FdTid','!=',1)
-			
 			->where('fdallocation.Bid',$BranchId)
 			->get();
+
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "Fdid";
+			$fd["transaction_category"] = 8;
+			$fd["receipt_voucher_type"] = 3;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
+			
 			return $id;
 		}
 
@@ -3758,6 +3895,24 @@
 			}
 
 			return $ret_data;
+		}
+
+		public function daily_rep_rv_adj_no(&$data_list,$data) // $data_list IS PASSED THROUGH REFERENCE - SO IT POINTS TO AND MODIFIES ORIGINAL DATA
+		{
+			foreach($data_list as $key => $row) {
+				$rv_adj = DB::table("receipt_voucher")
+					->where("receipt_voucher.transaction_id",$row->{$data["transaction_id"]})
+					->where("receipt_voucher.transaction_category",$data["transaction_category"])
+					->where("receipt_voucher.bid",$data["bid"])
+					->where("receipt_voucher.deleted",0);
+				if(!empty($data["receipt_voucher_type"])) { // COMPARE IF SPECIFIED
+					$rv_adj = $rv_adj->where("receipt_voucher.receipt_voucher_type",$data["receipt_voucher_type"]);
+				}
+				$rv_adj = $rv_adj->value("receipt_voucher_no");
+				foreach($data["rv_fields"] as $rv_field) { // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+					$data_list[$key]->{$rv_field} = $rv_adj;
+				}
+			}
 		}
 		
 		

@@ -568,11 +568,11 @@
 				return "NOT LOGGED IN";
 			}
 
-			// $this->loan_charges_to_all_charges();
-			// $this->customer_charges_to_all_charges();
-			// $this->dl_charges_to_all_charges();
-			// $this->pl_charges_to_all_charges();
-			// $this->pg_prewith_charges_to_all_charges();
+			$this->loan_charges_to_all_charges();
+			$this->customer_charges_to_all_charges();
+			$this->dl_charges_to_all_charges();
+			$this->pl_charges_to_all_charges();
+			$this->pg_prewith_charges_to_all_charges();
 			$this->rd_prewith_charges_to_all_charges();
 
 			return;
