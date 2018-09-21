@@ -571,7 +571,9 @@
 			// $this->loan_charges_to_all_charges();
 			// $this->customer_charges_to_all_charges();
 			// $this->dl_charges_to_all_charges();
-			$this->pl_charges_to_all_charges();
+			// $this->pl_charges_to_all_charges();
+			// $this->pg_prewith_charges_to_all_charges();
+			$this->rd_prewith_charges_to_all_charges();
 
 			return;
 		}
@@ -836,8 +838,8 @@
 			//PL ALLOCATION CHARGE FROM  personalloan_payment TABLE to all_charges
 			$data = DB::table("personalloan_payment")
 			->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
-				->orderBy("pl_payment_id", "desc")
-				->limit(2)
+				// ->orderBy("pl_payment_id", "desc")
+				->limit(5)
 				->get();
 
 			// print_r($data);
@@ -847,28 +849,7 @@
 				echo "personalloan_payment(id:{$row_pl->pl_payment_id}) ";
 				$ft = "personalloan_payment"; // FROM TABLE
 				$fid  = $row_pl->pl_payment_id; // FROM ID
-				// print_r($row_pl);
-
-				/******************** ALL CHARGES ******************/
-				unset($fd);
-				$fd["date"] = $row_pl->pl_payment_date;
-				$fd["bid"] = $row_pl->Bid;
-				$fd["transaction_type"] = 2; // DEBIT
-				$fd["payment_mode"] = $row_pl->PayMode;
-				$fd["amount"] = $row_pl->otherCharges;
-				$fd["particulars"] = "OTHER CHARGES";
-				$fd["paid"] = 1;
-				$fd["tran_table"] = 30; // tran table
-				$fd["tran_id"] = $row_pl->pl_payment_id;
-				$fd["created_by"] = $row_pl->CreadtedBY;
-				$fd["SubLedgerId"] = 88; // MEMBER FEES
-				$fd["deleted"] = 0;
-				$fd["ft"] = $ft;//TEMPORARY
-				$fd["fid"] = $fid;//TEMPORARY
-				$this->all_ch->clear_row_data();
-				$this->all_ch->set_row_data($fd);
-				$insert_id_all_ch = $this->all_ch->insert_row();
-				/******************** ALL CHARGES ******************/
+				// print_r($row_pl); continue;
 				/************** CHECK FOR EXISTING ENTRIES *********************/
 				/* 	$existing_entries = DB::table("all_charges")
 						->where("SubLedgerId",90)
@@ -877,21 +858,301 @@
 						->where("deleted",0)
 						->get(); */
 				$existing_entries = DB::table("all_charges")
-				->where("ft",$ft)
-				->where("fid",$fid)
-				->where("deleted",0)
-				->where("ft","!=","")
-				->where("ft","!=","")
+					->where("ft",$ft)
+					->where("fid",$fid)
+					->where("deleted",0)
+					->where("ft","!=","")
+					->where("ft","!=","")
+					->get();
+				if(count($existing_entries) > 0) {
+					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+					echo "EXISTS(ft:{$ft}, fid:{$fid})";
+					continue;
+				}
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+
+				/******************** ALL CHARGES (OTHER INCOME)******************/
+				unset($fd);
+				$fd["date"] = $row_pl->pl_payment_date;
+				$fd["bid"] = $row_pl->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $row_pl->PayMode;
+				$fd["amount"] = $row_pl->otherCharges;
+				$fd["particulars"] = "OTHER INCOME";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // tran table
+				$fd["tran_id"] = $row_pl->pl_payment_id;
+				$fd["created_by"] = $row_pl->CreadtedBY;
+				$fd["SubLedgerId"] = 88; // OTHER INCOME
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES (OTHER INCOME)******************/
+				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
+				unset($fd);
+				$fd["date"] = $row_pl->pl_payment_date;
+				$fd["bid"] = $row_pl->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $row_pl->PayMode;
+				$fd["amount"] = $row_pl->Book_FormCharges;
+				$fd["particulars"] = "BOOKS AND FORMS";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // tran table
+				$fd["tran_id"] = $row_pl->pl_payment_id;
+				$fd["created_by"] = $row_pl->CreadtedBY;
+				$fd["SubLedgerId"] = 90; // BOOKS AND FORMS
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
+				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 1st)******************/
+				unset($fd);
+				$fd["date"] = $row_pl->pl_payment_date;
+				$fd["bid"] = $row_pl->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $row_pl->PayMode;
+				$fd["amount"] = $row_pl->AjustmentCharges; // 1st
+				$fd["particulars"] = "C CLASS SUSPEND SHARE CAPITAL";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // tran table
+				$fd["tran_id"] = $row_pl->pl_payment_id;
+				$fd["created_by"] = $row_pl->CreadtedBY;
+				$fd["SubLedgerId"] = 59; // C CLASS SUSPEND SHARE CAPITAL
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 1st)******************/
+				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 2nd)******************/
+				unset($fd);
+				$fd["date"] = $row_pl->pl_payment_date;
+				$fd["bid"] = $row_pl->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $row_pl->PayMode;
+				$fd["amount"] = $row_pl->ShareCharges; // 2nd
+				$fd["particulars"] = "C CLASS SUSPEND SHARE CAPITAL";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 30; // tran table
+				$fd["tran_id"] = $row_pl->pl_payment_id;
+				$fd["created_by"] = $row_pl->CreadtedBY;
+				$fd["SubLedgerId"] = 59; // C CLASS SUSPEND SHARE CAPITAL
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 2nd)******************/
+			}
+			echo "<br />\n---------------------------";
+		}
+
+		public function pg_prewith_charges_to_all_charges()
+		{
+			//PG PREWITHDRAWAL CHARGE FROM  pigmi_prewithdrawal TABLE to all_charges
+			$sa = array( //select array	
+				"pigmi_prewithdrawal.PgmPrewithdraw_ID", // pigmi_prewithdrawal
+				"pigmi_prewithdrawal.PigmiAcc_No",
+				"pigmi_prewithdrawal.Withdraw_Date",
+				"pigmi_prewithdrawal.Deduct_Commission",
+				"pigmi_prewithdrawal.Deduct_Amount",
+				"pigmi_payamount.PayId", // pigmi_payamount
+				"pigmi_payamount.PayAmountReport_PayDate", 
+				"pigmi_payamount.PayAmount_PaymentMode",
+				"pigmiallocation.Bid",  // pigmiallocation
+			);
+			$data = DB::table("pigmi_prewithdrawal")
+				->select($sa)
+				->leftJoin("pigmi_payamount","pigmi_payamount.PayAmount_PigmiAccNum","=","pigmi_prewithdrawal.PigmiAcc_No")
+				->leftJoin("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_prewithdrawal.PigmiAcc_No")
+				->groupBy("pigmi_prewithdrawal.PigmiAcc_No")
+				// ->orderBy("PgmPrewithdraw_ID", "desc")
+				->limit(5)
 				->get();
-			if(count($existing_entries) > 0) {
-				// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
-				echo "EXISTS(ft:{$ft}, fid:{$fid})";
-				continue;
+			
+			// print_r($data);
+
+			foreach($data as $key_pgpre => $row_pgpre) {
+				echo "<br />\n";
+				echo "pigmi_prewithdrawal(id:{$row_pgpre->PgmPrewithdraw_ID}) ";
+				$ft = "pigmi_prewithdrawal"; // FROM TABLE
+				$fid  = $row_pgpre->PgmPrewithdraw_ID; // FROM ID
+				// print_r($row_pgpre);continue;
+
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+				/* 	$existing_entries = DB::table("all_charges")
+						->where("SubLedgerId",)
+						->where("tran_table",)
+						->where("tran_id",$row_->)
+						->where("deleted",0)
+						->get(); */
+				$existing_entries = DB::table("all_charges")
+					->where("ft",$ft)
+					->where("fid",$fid)
+					->where("deleted",0)
+					->where("ft","!=","")
+					->where("ft","!=","")
+					->get();
+				if(count($existing_entries) > 0) {
+					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+					echo "EXISTS(ft:{$ft}, fid:{$fid})";
+					continue;
+				}
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+
+				/******************** ALL CHARGES (OTHER INCOME)******************/
+				if(!empty($row_pgpre->PayId)) {
+					$temp_tran_table = 28; // pigmi_payamount
+					$temp_tran_id = $row_pgpre->PayId;
+					$temp_date = $row_pgpre->PayAmountReport_PayDate;
+				} else {
+					$temp_tran_table = 31; // pigmi_prewithdrawal
+					$temp_tran_id = $row_pgpre->PgmPrewithdraw_ID;
+					$temp_date = $row_pgpre->Withdraw_Date;
+				}
+				unset($fd);
+				$fd["date"] = $temp_date;
+				$fd["bid"] = $row_pgpre->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $row_pgpre->PayAmount_PaymentMode;
+				$fd["amount"] = $row_pgpre->Deduct_Commission;
+				$fd["particulars"] = "OTHER INCOME";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = $temp_tran_table; // tran table
+				$fd["tran_id"] = $temp_tran_id;
+				$fd["created_by"] = 0;
+				$fd["SubLedgerId"] = 88; // OTHER INCOME
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES (OTHER INCOME)******************/
+				/******************** ALL CHARGES (PIGMY COMMISSION)******************/
+				if(!empty($row_pgpre->PayId)) {
+					$temp_tran_table = 28; // pigmi_payamount
+					$temp_tran_id = $row_pgpre->PayId;
+					$temp_date = $row_pgpre->PayAmountReport_PayDate;
+				} else {
+					$temp_tran_table = 31; // pigmi_prewithdrawal
+					$temp_tran_id = $row_pgpre->PgmPrewithdraw_ID;
+					$temp_date = $row_pgpre->Withdraw_Date;
+				}
+				unset($fd);
+				$fd["date"] = $temp_date;
+				$fd["bid"] = $row_pgpre->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $row_pgpre->PayAmount_PaymentMode;
+				$fd["amount"] = $row_pgpre->Deduct_Commission;
+				$fd["particulars"] = "PIGMY COMMISSION";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = $temp_tran_table; // tran table
+				$fd["tran_id"] = $temp_tran_id;
+				$fd["created_by"] = 0;
+				$fd["SubLedgerId"] = 82; // PIGMY COMMISSION
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES (PIGMY COMMISSION)******************/
 			}
-			/************** CHECK FOR EXISTING ENTRIES *********************/
-			}
+			echo "<br />\n---------------------------";
+		}
+
+		public function rd_prewith_charges_to_all_charges()
+		{
+			//RD PREWITHDRAWAL CHARGE FROM  rd_prewithdrawal TABLE to all_charges
+			$sa = array( //select array	
+				"rd_prewithdrawal.RdPrewithdraw_ID", // rd_prewithdrawal
+				"rd_prewithdrawal.RdAcc_No",
+				"rd_prewithdrawal.Withdraw_Date",
+				"rd_prewithdrawal.Deduct_Amt",
+				"rd_payamount.RDPayId", // rd_payamount
+				"rd_payamount.RDPayAmtReport_PayDate", 
+				"rd_payamount.RDPayAmt_PaymentMode",
+				"createaccount.Bid",  // createaccount
+			);
+			$data = DB::table("rd_prewithdrawal")
+				// ->select($sa)
+				->leftJoin("rd_payamount","rd_payamount.RDPayAmt_AccNum","=","rd_prewithdrawal.RdAcc_No")
+				->leftJoin("createaccount","createaccount.AccNum","=","rd_prewithdrawal.RdAcc_No")
+				->groupBy("rd_prewithdrawal.RdAcc_No")
+				// ->orderBy("RdPrewithdraw_ID", "desc")
+				->limit(5)
+				->get();
+			
+			// print_r($data);
+
+			foreach($data as $key_rdpre => $row_rdpre) {
+				echo "<br />\n";
+				echo "rd_prewithdrawal(id:{$row_rdpre->RdPrewithdraw_ID}) ";
+				$ft = "rd_prewithdrawal"; // FROM TABLE
+				$fid  = $row_rdpre->RdPrewithdraw_ID; // FROM ID
+				// print_r($row_rdpre);
+
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+				/* 	$existing_entries = DB::table("all_charges")
+						->where("SubLedgerId",)
+						->where("tran_table",)
+						->where("tran_id",$row_->)
+						->where("deleted",0)
+						->get(); */
+				$existing_entries = DB::table("all_charges")
+					->where("ft",$ft)
+					->where("fid",$fid)
+					->where("deleted",0)
+					->where("ft","!=","")
+					->where("ft","!=","")
+					->get();
+				if(count($existing_entries) > 0) {
+					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+					echo "EXISTS(ft:{$ft}, fid:{$fid})";
+					continue;
+				}
+				/************** CHECK FOR EXISTING ENTRIES *********************/
 
 
+				/******************** ALL CHARGES (OTHER INCOME)******************/
+				if(!empty($row_rdpre->RDPayId)) {
+					$temp_tran_table = 33; // rd_payamount
+					$temp_tran_id = $row_rdpre->RDPayId;
+					$temp_date = $row_rdpre->RDPayAmtReport_PayDate;
+				} else {
+					$temp_tran_table = 32; // rd_prewithdrawal
+					$temp_tran_id = $row_rdpre->RdPrewithdraw_ID;
+					$temp_date = $row_rdpre->Withdraw_Date;
+				}
+				unset($fd);
+				$fd["date"] = $temp_date;
+				$fd["bid"] = $row_rdpre->Bid;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $row_rdpre->RDPayAmt_PaymentMode;
+				$fd["amount"] = $row_rdpre->Deduct_Amt;
+				$fd["particulars"] = "OTHER INCOME";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = $temp_tran_table; // tran table
+				$fd["tran_id"] = $temp_tran_id;
+				$fd["created_by"] = 0;
+				$fd["SubLedgerId"] = 88; // OTHER INCOME
+				$fd["deleted"] = 0;
+				$fd["ft"] = $ft;//TEMPORARY
+				$fd["fid"] = $fid;//TEMPORARY
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_id_all_ch = $this->all_ch->insert_row();
+				/******************** ALL CHARGES (OTHER INCOME)******************/
+			}
 			echo "<br />\n---------------------------";
 		}
 
