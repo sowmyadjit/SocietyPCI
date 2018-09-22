@@ -3924,6 +3924,67 @@
 				}
 			}
 		}
+
+		public function daily_rep_all_charges($date)
+		{
+			$sa = array(
+				"all_charges_id",
+				"SubLedgerId"
+			);
+			$subhead_list = DB::table("all_charges")
+				->select($sa)
+				->where("deleted",0)
+				->where("date",$date)
+				->groupBy("SubLedgerId")
+				->get();
+			
+			foreach($subhead_list as $key_sub => $row_sub) {
+				$sa = array(
+					"all_charges.all_charges_id",
+					"all_charges.date",
+					"all_charges.payment_mode",
+					"all_charges.amount",
+					"all_charges.particulars",
+					"all_charges.tran_table",
+					"all_charges.tran_id",
+					"all_charges.SubLedgerId",
+					"all_charges.all_charges_id",
+					"all_charges.all_charges_id",
+					"all_charges.all_charges_id",
+					DB::raw(" '' as 'name' "),
+					DB::raw(" '' as 'acc_no' "),
+					DB::raw(" '' as 'uid' ")
+				);
+				$subhead_tran_list = DB::table("all_charges")
+					->select($sa)
+					->where("SubLedgerId",$row_sub->SubLedgerId)
+					->where("date",$date)
+					->where("deleted",0)
+					->get();
+					$ret_data[$row_sub->SubLedgerId]["subhead_tran"] = $subhead_tran_list;
+					$ret_data[$row_sub->SubLedgerId]["subhead_name"] = DB::table("legder")
+						->where("lid",$row_sub->SubLedgerId)
+						->value("lname");
+			}
+
+			/*************** FFETCH USER INFO ****************/
+			foreach($ret_data as $key_ret => $row_ret) {
+				foreach($row_ret["subhead_tran"]	 as $key_tran => $row_tran) {
+					// print_r($ret_data[$key_ret]["subhead_tran"][$key_tran]);
+					if(!empty($row_tran->tran_table) && !empty($row_tran->tran_id)) {
+						$base_table = DB::table("tablenames") ->where("Tid",$row_tran->tran_table) ->value("TName");
+						//fetch user details
+					}
+					$ret_data[$key_ret]["subhead_tran"][$key_tran]->name = "";
+					$ret_data[$key_ret]["subhead_tran"][$key_tran]->acc_no = "";
+					$ret_data[$key_ret]["subhead_tran"][$key_tran]->uid = "";
+				}
+			}
+			/*************** FFETCH USER INFO ****************/
+
+			// print_r($ret_data);//exit();
+			return $ret_data;
+		}
 		
 		
 	}

@@ -4405,6 +4405,93 @@
 
 
 
+	<!------------------ ALL CHARGES  -------------------->
+			<tr><td colspan="10"><h5><b><center>ALL CHARGES<center></b></h5></td></tr>
+			<?php foreach($trandaily["daily_rep_all_charges"] as $key_allch => $row_allch) {?>
+				<tr><td colspan="10"><b><center>{{$row_allch["subhead_name"]}}<center></b></td></tr>
+					
+				<?php
+						$cash_cr = 0;
+						$cash_db = 0;
+						$adj_cr = 0;
+						$adj_db = 0;
+						$cash_cr_total = 0;
+						$cash_db_total = 0;
+						$adj_cr_total = 0;
+						$adj_db_total = 0;
+					?>
+
+					<?php foreach($row_allch["subhead_tran"] as $key_tran => $row_tran) { //print_r($row_tran); ?>
+						<?php
+							$amt = $row_tran->amount;
+							$acc_no = $row_tran->acc_no;
+							$date = $row_tran->date;
+							$particulars = $row_tran->particulars;
+							$name = $row_tran->name;
+							$uid = $row_tran->uid;
+							$rv_cr = "";
+							$rv_db = "";
+							$rv_adj = "";
+						?>
+						<?php if(strcasecmp($row_tran->payment_mode,"CASH") == 0  ||  strcasecmp($row_tran->payment_mode,"INHAND") == 0) {?><?php //CASH ?>
+										<?php
+											$cash_db = $amt;
+											$cash_db_total += $cash_db;
+										?>
+										<tr>
+											<td>{{$date}}</td>
+											<td>{{$acc_no}}</td>
+											<td>{{$particulars}} - {{ $name }}({{$uid}})</td>
+											<td>{{ $cash_db }}</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{$rv_cr}}</td>
+											<td>{{$rv_db}}</td>
+											<td>{{$rv_adj}}</td>
+										</tr>
+						<?php } else { ?><?php //ADJ ?>
+										<?php
+											$adj_db = $amt;
+											$adj_db_total += $adj_db;
+										?>
+										<tr>
+											<td>{{$date}}</td>
+											<td>{{$acc_no}}</td>
+											<td>{{$particulars}} - {{ $name }}({{$uid}})</td>
+											<td>-</td>
+											<td>-</td>
+											<td>-</td>
+											<td>{{ $adj_db }}</td>
+											<td>{{$rv_cr}}</td>
+											<td>{{$rv_db}}</td>
+											<td>{{$rv_adj}}</td>
+										</tr>
+						<?php } ?>
+					<?php } ?>
+					
+					<tr>
+						<th colspan =3>Total {{$row_allch["subhead_name"]}}</th>
+						<td><?php echo $cash_cr_total; ?></td>
+						<td><?php echo $cash_db_total; ?></td>
+						<td><?php echo $adj_cr_total; ?></td>
+						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $cash_cr_total;
+						$gt_cash_db += $cash_db_total;
+						$gt_adj_cr += $adj_cr_total;
+						$gt_adj_db += $adj_db_total;
+					?>
+
+			<?php }?>
+	<!------------------ ALL CHARGES  -------------------->
+
+
+
 	
 	
 	
