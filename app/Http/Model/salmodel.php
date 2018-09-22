@@ -162,7 +162,7 @@
 							unset($fn_data);
 							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
 							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
-							$fn_data["rv_transaction_type"] = "CREDIT";
+							$fn_data["rv_transaction_type"] = "DEBIT";
 							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
 							$fn_data["rv_date"] = $dte;
 							$fn_data["rv_bid"] = 6;
@@ -173,7 +173,7 @@
 							unset($fn_data);
 							$fn_data["rv_payment_mode"] = "ADJUSTMENT";
 							$fn_data["rv_transaction_id"] = $branch_to_branch_id;
-							$fn_data["rv_transaction_type"] = "DEBIT";
+							$fn_data["rv_transaction_type"] = "CREDIT";
 							$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
 							$fn_data["rv_date"] = $dte;
 							$fn_data["rv_bid"] = $login_bid;
