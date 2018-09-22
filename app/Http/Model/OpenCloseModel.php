@@ -1730,16 +1730,26 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('branch_to_branch')->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as voucher_no','receipt_voucher_no as adj_no')
+			$id=DB::table('branch_to_branch')->select('branch_to_branch.Branch_Id','BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'voucher_no' "),DB::raw(" '' as 'adj_no' ") )
 			->join('branch','branch.Bid','=','Branch_Branch2_Id')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
-			->where("receipt_voucher.transaction_category",4)
-			->where("receipt_voucher.bid",$BranchId)
-			->where("receipt_voucher.deleted",0)
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
+			// ->where("receipt_voucher.transaction_category",4)
+			// ->where("receipt_voucher.bid",$BranchId)
+			// ->where("receipt_voucher.deleted",0)
 			->where('Branch_Tran_Date',$dte)
 			->where('Branch_Branch1_Id',$BranchId)
 			->where('branch_to_branch.deleted',0)
 			->get();
+			
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "Branch_Id";
+			$fd["transaction_category"] = 4;
+			$fd["receipt_voucher_type"] = "";
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["voucher_no","adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
 			
 			return $id;
 		}
