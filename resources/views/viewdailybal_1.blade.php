@@ -4367,8 +4367,8 @@
 						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
 						@else<?php //ADJ CREDIT?>
 							<?php
-								$adj_db = $row->salpay_extra_amt;
-								$adj_db_total += $adj_db;
+								$adj_cr = $row->salpay_extra_amt;
+								$adj_cr_total += $adj_cr;
 							?>
 							<tr>
 								<td>{{$row->date}}</td>
@@ -4388,7 +4388,7 @@
 				<tr>
 					<th colspan =3>TOTAL PF</th>
 					<td><?php echo $cash_cr_total; ?></td>
-					<td>-</td>
+					<td><?php echo $cash_db_total; ?></td>
 					<td><?php echo $adj_cr_total; ?></td>
 					<td><?php echo $adj_db_total; ?></td>
 					<td>-</td>
@@ -4435,14 +4435,14 @@
 						?>
 						<?php if(strcasecmp($row_tran->payment_mode,"CASH") == 0  ||  strcasecmp($row_tran->payment_mode,"INHAND") == 0) {?><?php //CASH ?>
 										<?php
-											$cash_db = $amt;
-											$cash_db_total += $cash_db;
+											$cash_cr = $amt;
+											$cash_cr_total += $cash_cr;
 										?>
 										<tr>
-											<td>{{$date}}</td>
+											<td title="{{$row_tran->all_charges_id}}">{{$date}}</td>
 											<td>{{$acc_no}}</td>
 											<td>{{$particulars}} - {{ $name }}({{$uid}})</td>
-											<td>{{ $cash_db }}</td>
+											<td>{{ $cash_cr }}</td>
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
@@ -4452,17 +4452,17 @@
 										</tr>
 						<?php } else { ?><?php //ADJ ?>
 										<?php
-											$adj_db = $amt;
-											$adj_db_total += $adj_db;
+											$adj_cr = $amt;
+											$adj_cr_total += $adj_cr;
 										?>
 										<tr>
-											<td>{{$date}}</td>
+											<td title="{{$row_tran->all_charges_id}}">{{$date}}</td>
 											<td>{{$acc_no}}</td>
 											<td>{{$particulars}} - {{ $name }}({{$uid}})</td>
 											<td>-</td>
 											<td>-</td>
+											<td>{{ $adj_cr }}</td>
 											<td>-</td>
-											<td>{{ $adj_db }}</td>
 											<td>{{$rv_cr}}</td>
 											<td>{{$rv_db}}</td>
 											<td>{{$rv_adj}}</td>

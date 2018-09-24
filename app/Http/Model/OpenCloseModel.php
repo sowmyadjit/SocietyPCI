@@ -3927,6 +3927,8 @@
 
 		public function daily_rep_all_charges($date)
 		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$ret_data = array();
 			$sa = array(
 				"all_charges_id",
 				"SubLedgerId"
@@ -3934,6 +3936,7 @@
 			$subhead_list = DB::table("all_charges")
 				->select($sa)
 				->where("deleted",0)
+				->where("bid",$BID)
 				->where("date",$date)
 				->groupBy("SubLedgerId")
 				->get();
@@ -3959,6 +3962,7 @@
 					->select($sa)
 					->where("SubLedgerId",$row_sub->SubLedgerId)
 					->where("date",$date)
+					->where("bid",$BID)
 					->where("deleted",0)
 					->get();
 					$ret_data[$row_sub->SubLedgerId]["subhead_tran"] = $subhead_tran_list;
@@ -3972,12 +3976,176 @@
 				foreach($row_ret["subhead_tran"]	 as $key_tran => $row_tran) {
 					// print_r($ret_data[$key_ret]["subhead_tran"][$key_tran]);
 					if(!empty($row_tran->tran_table) && !empty($row_tran->tran_id)) {
-						$base_table = DB::table("tablenames") ->where("Tid",$row_tran->tran_table) ->value("TName");
+						// $base_table = DB::table("tablenames") ->where("Tid",$row_tran->tran_table) ->value("TName");
+						$temp_name = "";
+						$temp_acc_no = "";
+						$temp_uid = "";
+						switch($row_tran->tran_table) {
+							case 6: // customer TABLE
+									$user_info = DB::table("customer")
+										->select("FirstName","MiddleName","LastName","Uid")
+										->where("Custid",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = "{$user_info->FirstName} {$user_info->MiddleName} {$user_info->LastName}";
+										$temp_acc_no = "";
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 24: // jewelloan_repay TABLE
+									$user_info = DB::table("jewelloan_repay")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'JewelLoan_LoanNumber')
+										->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_JLAllocID")
+										->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
+										->where("jewelloan_repay.JLRepay_Id",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->JewelLoan_LoanNumber;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 25: // personalloan_payment TABLE
+									$user_info = DB::table("personalloan_payment")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'PersLoan_Number')
+										->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
+										->join("members","members.Memid","=","personalloan_allocation.MemId")
+										->join("user","user.Uid","=","members.Uid")
+										->where("personalloan_payment.pl_payment_id",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->PersLoan_Number;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 26: // staffloan_repay TABLE
+									$user_info = DB::table("staffloan_repay")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'StfLoan_Number')
+										->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","staffloan_repay.SLRepay_SLAllocID")
+										->join("user","user.Uid","=","staffloan_allocation.Uid")
+										->where("staffloan_repay.SLRepay_Id",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->StfLoan_Number;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 27: // depositeloan_repay TABLE
+									$user_info = DB::table("depositeloan_repay")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'DepLoan_LoanNum')
+										->join("depositeloan_allocation","depositeloan_allocation.DepLoanAllocId","=","depositeloan_repay.DLRepay_DepAllocID")
+										->join("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
+										->where("depositeloan_repay.DLRepay_ID",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->DepLoan_LoanNum;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 28: // pigmi_payamount TABLE
+									$user_info = DB::table("pigmi_payamount")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'pigmiallocation.PigmiAcc_No')
+										->join("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_payamount.PayAmount_PigmiAccNum")
+										->join("user","user.Uid","=","pigmiallocation.UID")
+										->where("pigmi_payamount.PayId",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->PigmiAcc_No;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 29: // depositeloan_allocation TABLE
+									$user_info = DB::table("depositeloan_allocation")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'depositeloan_allocation.DepLoan_LoanNum')
+										->join("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
+										->where("depositeloan_allocation.DepLoanAllocId",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->DepLoan_LoanNum;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 30: // personalloan_payment TABLE
+									$user_info = DB::table("personalloan_payment")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'personalloan_allocation.PersLoan_Number')
+										->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
+										->join("members","members.Memid","=","personalloan_allocation.MemId")
+										->join("user","user.Uid","=","members.Uid")
+										->where("personalloan_payment.pl_payment_id",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->PersLoan_Number;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 31: // pigmi_prewithdrawal TABLE
+									$user_info = DB::table("pigmi_prewithdrawal")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'pigmiallocation.PigmiAcc_No')
+										->join("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_prewithdrawal.PigmiAcc_No")
+										->join("user","user.Uid","=","pigmiallocation.UID")
+										->where("pigmi_prewithdrawal.PgmPrewithdraw_ID",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->PigmiAcc_No;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 32: // rd_prewithdrawal TABLE
+									$user_info = DB::table("rd_prewithdrawal")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'createaccount.AccNum')
+										->join("createaccount","createaccount.AccNum","=","rd_prewithdrawal.RdAcc_No")
+										->join("user","user.Uid","=","createaccount.Uid")
+										->where("rd_prewithdrawal.RdPrewithdraw_ID",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->AccNum;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 33: // rd_payamount TABLE
+									$user_info = DB::table("rd_prewithdrawal")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'createaccount.AccNum')
+										->join("createaccount","createaccount.AccNum","=","rd_payamount.RDPayAmt_AccNum")
+										->join("user","user.Uid","=","createaccount.Uid")
+										->where("rd_payamount.RDPayId",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->AccNum;
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 34: // salary TABLE
+									$user_info = DB::table("salary")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' ") )
+										->join("user","user.Uid","=","salary.Uid")
+										->where("salary.salid",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = "";
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							default:
+									$temp_name = "";
+									$temp_acc_no = "";
+									$temp_uid = "";
+									break;
+						}
 						//fetch user details
 					}
-					$ret_data[$key_ret]["subhead_tran"][$key_tran]->name = "";
-					$ret_data[$key_ret]["subhead_tran"][$key_tran]->acc_no = "";
-					$ret_data[$key_ret]["subhead_tran"][$key_tran]->uid = "";
+					$ret_data[$key_ret]["subhead_tran"][$key_tran]->name = $temp_name;
+					$ret_data[$key_ret]["subhead_tran"][$key_tran]->acc_no = $temp_acc_no;
+					$ret_data[$key_ret]["subhead_tran"][$key_tran]->uid = $temp_uid;
 				}
 			}
 			/*************** FFETCH USER INFO ****************/
