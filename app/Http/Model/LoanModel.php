@@ -647,7 +647,7 @@
 				$fd["particulars"] = "OTHER INCOME";
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $perslid;
+				$fd["tran_id"] = $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 88; // OTHER INCOME
 				$fd["deleted"] = 0;
@@ -665,7 +665,7 @@
 				$fd["particulars"] = "BOOKS AND FORMS";
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $perslid;
+				$fd["tran_id"] = $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 90;
 				$fd["deleted"] = 0;
@@ -706,7 +706,7 @@
 				$fd["particulars"] = $temp_subhead_name;
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $perslid;
+				$fd["tran_id"] = $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = $temp_subhead_id;
 				$fd["deleted"] = 0;
@@ -747,7 +747,7 @@
 				$fd["particulars"] = $temp_subhead_name;
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $perslid;
+				$fd["tran_id"] = $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = $temp_subhead_id;
 				$fd["deleted"] = 0;
@@ -765,7 +765,7 @@
 				$fd["particulars"] = "INSURANCE";
 				$fd["paid"] = 1;
 				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $perslid;
+				$fd["tran_id"] = $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 93; // INSURANCE
 				$fd["deleted"] = 0;
@@ -924,6 +924,78 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+				/******************** ALL CHARGES (APPRAISER COMMISSION) ******************/
+				unset($fd);
+				$fd["date"] = $id['JewelStartDate'];
+				$fd["bid"] = $BranchId;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $id['JewelPayMode'];
+				$fd["amount"] = $id['JewelspacomVal'];
+				$fd["particulars"] = "APPRAISER COMMISSION";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 35; // personalloan_repay
+				$fd["tran_id"] = $jid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 66;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES (APPRAISER COMMISSION) ******************/
+				/******************** ALL CHARGES (INSURANCE) ******************/
+				unset($fd);
+				$fd["date"] = $id['JewelStartDate'];
+				$fd["bid"] = $BranchId;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $id['JewelPayMode'];
+				$fd["amount"] = $id['JewelinsuVal'];
+				$fd["particulars"] = "INSURANCE";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 35; // personalloan_repay
+				$fd["tran_id"] = $jid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 93;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES (INSURANCE) ******************/
+				/******************** ALL CHARGES (BOOKS AND FORMS) ******************/
+				unset($fd);
+				$fd["date"] = $id['JewelStartDate'];
+				$fd["bid"] = $BranchId;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $id['JewelPayMode'];
+				$fd["amount"] = $id['JewelBkfrmChrgVal'];
+				$fd["particulars"] = "BOOKS AND FORMS";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 35; // personalloan_repay
+				$fd["tran_id"] = $jid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 90;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES (BOOKS AND FORMS) ******************/
+				/******************** ALL CHARGES (OTHER INCOME) ******************/
+				unset($fd);
+				$fd["date"] = $id['JewelStartDate'];
+				$fd["bid"] = $BranchId;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $id['JewelPayMode'];
+				$fd["amount"] = $id['JewelOthrChrges'];
+				$fd["particulars"] = "OTHER INCOME";
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 35; // personalloan_repay
+				$fd["tran_id"] = $jid;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = 88;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$this->all_ch->insert_row();
+				/******************** ALL CHARGES (OTHER INCOME) ******************/
 
 			$pid=$id['PersLoanAllocID'];
 			

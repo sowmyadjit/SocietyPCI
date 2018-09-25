@@ -568,12 +568,13 @@
 				return "NOT LOGGED IN";
 			}
 
-			$this->loan_charges_to_all_charges();
+			// $this->loan_charges_to_all_charges();
 			// $this->customer_charges_to_all_charges();
 			// $this->dl_charges_to_all_charges();
 			// $this->pl_charges_to_all_charges();
 			// $this->pg_prewith_charges_to_all_charges();
 			// $this->rd_prewith_charges_to_all_charges();
+			$this->jl_charges_to_all_charges();
 
 			return;
 		}
@@ -1195,6 +1196,148 @@
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 			}
 			echo "<br />\n---------------------------";
+		}
+
+		public function jl_charges_to_all_charges()
+		{
+			// JL ALLOCATION CHARGE FROM  jewelloan_allocation TABLE to all_charges
+			$sa = array(
+				"JewelLoanId",
+				"JewelLoan_Bid",
+				"JewelLoan_SaraparaCharge",
+				"JewelLoan_InsuranceCharge",
+				"JewelLoan_BookAndFormCharge",
+				"JewelLoan_OtherCharge",
+				"JewelLoan_StartDate",
+				"JewelLoan_PaymentMode",
+				"JewelLoan_CreatedBy"
+			);
+
+			$data = DB::table("jewelloan_allocation")
+				->select($sa)
+				->orderBy("jewelloan_allocation.JewelLoanId", "desc")
+				->limit(2)
+				->get();
+
+			// print_r($data);
+
+			foreach($data as $key_jl => $row_jl) {
+				echo "<br />\n";
+				echo "jewelloan_allocation(id:{$row_jl->JewelLoanId}) ";
+				$ft = "jewelloan_allocation"; // FROM TABLE
+				$fid  = $row_jl->JewelLoanId; // FROM ID
+				// print_r($row_jl);
+
+
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+				/* 	$existing_entries = DB::table("all_charges")
+						->where("SubLedgerId",)
+						->where("tran_table",)
+						->where("tran_id",$row_->)
+						->where("deleted",0)
+						->get(); */
+						$existing_entries = DB::table("all_charges")
+						->where("ft",$ft)
+						->where("fid",$fid)
+						->where("deleted",0)
+						->where("ft","!=","")
+						->where("ft","!=","")
+						->get();
+					if(count($existing_entries) > 0) {
+						// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+						echo "EXISTS(ft:{$ft}, fid:{$fid})";
+						continue;
+					}
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+				/******************** ALL CHARGES (APPRAISER COMMISSION)******************/
+				if(!empty($row_jl->JewelLoan_SaraparaCharge)) { // SKIP 0 AMT
+					unset($fd);
+					$fd["date"] = $row_jl->JewelLoan_StartDate;
+					$fd["bid"] = $row_jl->JewelLoan_Bid;
+					$fd["transaction_type"] = 2; // DEBIT
+					$fd["payment_mode"] = $row_jl->JewelLoan_PaymentMode;
+					$fd["amount"] = $row_jl->JewelLoan_SaraparaCharge;
+					$fd["particulars"] = "APPRAISER COMMISSION";
+					$fd["paid"] = 1;
+					$fd["tran_table"] = 35; // tran table
+					$fd["tran_id"] = $row_jl->JewelLoanId;
+					$fd["created_by"] = $row_jl->JewelLoan_CreatedBy;
+					$fd["SubLedgerId"] = 66; // APPRAISER COMMISSION
+					$fd["deleted"] = 0;
+					$fd["ft"] = $ft;//TEMPORARY
+					$fd["fid"] = $fid;//TEMPORARY
+					$this->all_ch->clear_row_data();
+					$this->all_ch->set_row_data($fd);
+					$insert_id_all_ch = $this->all_ch->insert_row();
+				}
+				/******************** ALL CHARGES (APPRAISER COMMISSION)******************/
+				/******************** ALL CHARGES (INSURANCE)******************/
+				if(!empty($row_jl->JewelLoan_InsuranceCharge)) { // SKIP 0 AMT
+					unset($fd);
+					$fd["date"] = $row_jl->JewelLoan_StartDate;
+					$fd["bid"] = $row_jl->JewelLoan_Bid;
+					$fd["transaction_type"] = 2; // DEBIT
+					$fd["payment_mode"] = $row_jl->JewelLoan_PaymentMode;
+					$fd["amount"] = $row_jl->JewelLoan_InsuranceCharge;
+					$fd["particulars"] = "INSURANCE";
+					$fd["paid"] = 1;
+					$fd["tran_table"] = 35; // tran table
+					$fd["tran_id"] = $row_jl->JewelLoanId;
+					$fd["created_by"] = $row_jl->JewelLoan_CreatedBy;
+					$fd["SubLedgerId"] = 93; // INSURANCE
+					$fd["deleted"] = 0;
+					$fd["ft"] = $ft;//TEMPORARY
+					$fd["fid"] = $fid;//TEMPORARY
+					$this->all_ch->clear_row_data();
+					$this->all_ch->set_row_data($fd);
+					$insert_id_all_ch = $this->all_ch->insert_row();
+				}
+				/******************** ALL CHARGES (INSURANCE)******************/
+				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
+				if(!empty($row_jl->JewelLoan_BookAndFormCharge)) { // SKIP 0 AMT
+					unset($fd);
+					$fd["date"] = $row_jl->JewelLoan_StartDate;
+					$fd["bid"] = $row_jl->JewelLoan_Bid;
+					$fd["transaction_type"] = 2; // DEBIT
+					$fd["payment_mode"] = $row_jl->JewelLoan_PaymentMode;
+					$fd["amount"] = $row_jl->JewelLoan_BookAndFormCharge;
+					$fd["particulars"] = "BOOKS AND FORMS";
+					$fd["paid"] = 1;
+					$fd["tran_table"] = 35; // tran table
+					$fd["tran_id"] = $row_jl->JewelLoanId;
+					$fd["created_by"] = $row_jl->JewelLoan_CreatedBy;
+					$fd["SubLedgerId"] = 90; // BOOKS AND FORMS
+					$fd["deleted"] = 0;
+					$fd["ft"] = $ft;//TEMPORARY
+					$fd["fid"] = $fid;//TEMPORARY
+					$this->all_ch->clear_row_data();
+					$this->all_ch->set_row_data($fd);
+					$insert_id_all_ch = $this->all_ch->insert_row();
+				}
+				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
+				/******************** ALL CHARGES (OTHER INCOME)******************/
+				if(!empty($row_jl->JewelLoan_OtherCharge)) { // SKIP 0 AMT
+					unset($fd);
+					$fd["date"] = $row_jl->JewelLoan_StartDate;
+					$fd["bid"] = $row_jl->JewelLoan_Bid;
+					$fd["transaction_type"] = 2; // DEBIT
+					$fd["payment_mode"] = $row_jl->JewelLoan_PaymentMode;
+					$fd["amount"] = $row_jl->JewelLoan_OtherCharge;
+					$fd["particulars"] = "OTHER INCOME";
+					$fd["paid"] = 1;
+					$fd["tran_table"] = 35; // tran table
+					$fd["tran_id"] = $row_jl->JewelLoanId;
+					$fd["created_by"] = $row_jl->JewelLoan_CreatedBy;
+					$fd["SubLedgerId"] = 88; // OTHER INCOME
+					$fd["deleted"] = 0;
+					$fd["ft"] = $ft;//TEMPORARY
+					$fd["fid"] = $fid;//TEMPORARY
+					$this->all_ch->clear_row_data();
+					$this->all_ch->set_row_data($fd);
+					$insert_id_all_ch = $this->all_ch->insert_row();
+				}
+				/******************** ALL CHARGES (OTHER INCOME)******************/
+			}
 		}
 
 
