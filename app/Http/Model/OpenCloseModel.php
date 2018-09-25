@@ -1775,7 +1775,7 @@
 			$BranchId=$uname->Bid;
 			
 			$id1=DB::table('branch_to_branch')
-				->select('Branch_Id','BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as receipt_no',DB::raw(" '' as 'adj_no' "))
+				->select('Branch_Id','BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode','receipt_voucher_no as receipt_no',DB::raw(" '' as 'adj_no' "), 'SubLedgerId')
 				->join('branch','branch.Bid','=','Branch_Branch1_Id')
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","branch_to_branch.Branch_Id")
 				->where("receipt_voucher.transaction_category",4)
@@ -1796,7 +1796,7 @@
 
 			/******* ADJUSTMENT CREDIT *****/
 			$id2 = DB::table('branch_to_branch')
-				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' "))
+				->select('BName','Branch_Tran_Date','Branch_Amount','Branch_per','Branch_payment_Mode',DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' "), 'SubLedgerId')
 				->join('branch','branch.Bid','=','Branch_Branch1_Id')
 				->where('Branch_Tran_Date',$dte)
 				->where('Branch_Branch2_Id',$BranchId)

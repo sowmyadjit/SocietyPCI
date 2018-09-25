@@ -3467,6 +3467,57 @@
 			
 <?php } ?>
 
+
+				<?php /***************** BONUS *********************/ ?>
+								<tr><td colspan="10"><h5><b><center>BONUS<center></b></h5></td></tr>
+								<?php
+									$cash_cr = 0;
+									$cash_db = 0;
+									$adj_cr = 0;
+									$adj_db = 0;
+									$cash_cr_total = 0;
+									$cash_db_total = 0;
+									$adj_cr_total = 0;
+									$adj_db_total = 0;
+								?>
+								@foreach($trandaily['branch_branch_tran_credit'] as $row)
+									<?php if($row->SubLedgerId == 197) {?>
+														<?php
+															$adj_db = $row->Branch_Amount;
+															$adj_db_total += $adj_db;
+														?>
+														<tr>
+															<td>{{ $row->Branch_Tran_Date }}</td>
+															<td></td>
+															<td>{{ $row->Branch_per }}</td>
+															<td>-</td>
+															<td>-</td>
+															<td>-</td>
+															<td>{{ $adj_db }}</td>
+															<td>-</td>
+															<td>-</td>
+															<td>-</td>
+														</tr>
+									<?php } ?>
+								@endforeach
+								<tr>
+									<th colspan =3>Total BONUS</th>
+									<td><?php echo $cash_cr_total; ?></td>
+									<td><?php echo $cash_db_total; ?></td>
+									<td><?php echo $adj_cr_total; ?></td>
+									<td><?php echo $adj_db_total; ?></td>
+									<td>-</td>
+									<td>-</td>
+									<td>-</td>
+								</tr>
+								<?php
+									$gt_cash_cr += $cash_cr_total;
+									$gt_cash_db += $cash_db_total;
+									$gt_adj_cr += $adj_cr_total;
+									$gt_adj_db += $adj_db_total;
+								?>
+				<?php /***************** BONUS *********************/ ?>
+
 					
 					
 		<!-- BANK TRANSACTIONS -->
