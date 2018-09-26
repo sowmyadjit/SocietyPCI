@@ -569,12 +569,12 @@
 			}
 
 			// $this->loan_charges_to_all_charges();
-			// $this->customer_charges_to_all_charges();
+			$this->customer_charges_to_all_charges();
 			// $this->dl_charges_to_all_charges();
 			// $this->pl_charges_to_all_charges();
 			// $this->pg_prewith_charges_to_all_charges();
 			// $this->rd_prewith_charges_to_all_charges();
-			$this->jl_charges_to_all_charges();
+			// $this->jl_charges_to_all_charges();
 
 			return;
 		}
@@ -702,9 +702,9 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES ******************/
-				echo "DONE({$insert_id_all_ch})";
 			}
 
 			echo "<br />\n---------------------------";
@@ -768,9 +768,9 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES ******************/
-				echo "DONE({$insert_id_all_ch})";
 			}
 			echo "<br />\n---------------------------";
 		}
@@ -833,6 +833,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES ******************/
 			}
@@ -897,6 +898,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
@@ -919,6 +921,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
 				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 1st)******************/
@@ -941,6 +944,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 1st)******************/
 				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 2nd)******************/
@@ -963,6 +967,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 2nd)******************/
 				/******************** ALL CHARGES (INSURANCE)******************/
@@ -985,6 +990,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (INSURANCE)******************/
 			}
@@ -1073,6 +1079,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 				/******************** ALL CHARGES (PIGMY COMMISSION)******************/
@@ -1104,6 +1111,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (PIGMY COMMISSION)******************/
 			}
@@ -1192,6 +1200,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 			}
@@ -1269,6 +1278,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (APPRAISER COMMISSION)******************/
 				/******************** ALL CHARGES (INSURANCE)******************/
@@ -1291,6 +1301,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (INSURANCE)******************/
 				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
@@ -1313,6 +1324,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
 				/******************** ALL CHARGES (OTHER INCOME)******************/
@@ -1335,6 +1347,7 @@
 					$this->all_ch->clear_row_data();
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
+					echo "DONE({$insert_id_all_ch})";
 				}
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 			}
