@@ -1191,7 +1191,26 @@
 		
 		public function getSBForStaff($id)
 		{
+			$emp_acc_id = DB::table("employee")
+				->where("Uid",$id["userid"])
+				->value("accid");
+				
 			$id=DB::table('createaccount')
+			->select('AccNum','Total_Amount','Accid','AccTid','FirstName','MiddleName','LastName')
+			->join('user','user.Uid','=','createaccount.Uid')
+			->where('createaccount.Accid','=',$emp_acc_id)
+			->first();
+
+			if(!empty($id)) {
+				/*********/
+				$fn_data["acc_id"] =  $id->Accid;
+				$sb_balance = $this->acc->get_account_balance($fn_data);
+				/*********/
+				$id->Total_Amount = $sb_balance;
+			}
+
+
+			/* $id=DB::table('createaccount')
 			->select('AccNum','Total_Amount','Accid','AccTid','FirstName','MiddleName','LastName')
 			->join('user','user.Uid','=','createaccount.Uid')
 			->where('AccNum','like','%SB%')
@@ -1200,11 +1219,11 @@
 
 			if(!empty($id)) {
 				$id->Total_Amount = 90;
-				/*********/
+				/********* /
 				$fn_data["acc_id"] =  $id->Accid;
 				$sb_balance = $this->acc->get_account_balance($fn_data);
-				/*********/
-			}
+				/********* /
+			} */
 
 			return $id;
 		}
