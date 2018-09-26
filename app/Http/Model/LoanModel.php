@@ -1297,7 +1297,8 @@
 			$cd=$id['Compulsory_Deposit'];
 			$sc=$id['staffcharge'];
 			$amt_cd=$cd+$sc;
-			$cd_id=DB::table('compulsory_deposit')->insertGetId(['CD_Bid'=>$bid,'CD_Amount'=>$amt_cd,'CD_Date'=>$dte,'CD_Account'=>$count_inc,'CD_Type'=>"CREDIT"]);
+			// $cd_id=DB::table('compulsory_deposit')->insertGetId(['CD_Bid'=>$bid,'CD_Amount'=>$amt_cd,'CD_Date'=>$dte,'CD_Account'=>$count_inc,'CD_Type'=>"CREDIT"]);
+			$cd_id = 0;
 			
 			$tot_branch_cd=$Branch_CD+$amt_cd;
 			DB::table('branch')->where('Bid',$bid)->update(['CD'=>$tot_branch_cd]);
