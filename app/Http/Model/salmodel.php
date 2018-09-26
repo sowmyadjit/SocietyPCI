@@ -919,7 +919,7 @@
 					->insertGetId($data);
 				/*********************** ADD ENTRY TO SAL EXTRA PAY TABLE **********************/
 				/******************** ADD ENTRY TO ALL CHARGES ******************/
-				if($emp_type == 1) {
+				/* if($emp_type == 1) {
 					$tran_table = 34; // salary
 				} elseif($emp_type == 2) {
 					$tran_table = 35; // agent_commission_payment
@@ -941,7 +941,7 @@
 				$fd["deleted"] = 0;
 				$this->all_ch->clear_row_data();
 				$this->all_ch->set_row_data($fd);
-				$this->all_ch->insert_row();
+				$this->all_ch->insert_row(); */
 				/******************** ADD ENTRY TO ALL CHARGES ******************/
 
 				/******* ADJ ENTRY TO EXPENSE ******/
