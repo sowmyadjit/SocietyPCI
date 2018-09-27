@@ -963,13 +963,13 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('pigmi_payamount')->select('PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate','PayAmount_ReceiptNum','receipt_voucher_no as PayAmount_PaymentVoucher','PgmTotal_Amt','Deduct_Commission','Deduct_Amount','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
+			$id=DB::table('pigmi_payamount')->select('PayAmount_PigmiAccNum','PayAmount_PayableAmount','PayAmountReport_PayDate','PayAmount_ReceiptNum',/*'receipt_voucher_no as PayAmount_PaymentVoucher',*/DB::raw(" '' as PayAmount_PaymentVoucher "),'PgmTotal_Amt','Deduct_Commission','Deduct_Amount','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','PayAmount_PigmiAccNum')
 			->join('pigmi_prewithdrawal','pigmi_prewithdrawal.PigmiAcc_No','=','PayAmount_PigmiAccNum')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","pigmi_payamount.PayId")
 			->join("user","user.Uid","=","pigmiallocation.UID")
-			->where("receipt_voucher.transaction_category",14)
-			->where("receipt_voucher.receipt_voucher_type",1)
+			// ->where("receipt_voucher.transaction_category",14)
+			// ->where("receipt_voucher.receipt_voucher_type",1)
 			->where('PayAmountReport_PayDate',$dte)
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','=',"CASH")
@@ -4006,12 +4006,12 @@
 									}
 									break;
 							case 25: // personalloan_payment TABLE
-									$user_info = DB::table("personalloan_payment")
+									$user_info = DB::table("personalloan_repay")
 										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'PersLoan_Number')
-										->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
+										->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_PLAllocID")
 										->join("members","members.Memid","=","personalloan_allocation.MemId")
 										->join("user","user.Uid","=","members.Uid")
-										->where("personalloan_payment.pl_payment_id",$row_tran->tran_id)
+										->where("personalloan_repay.PLRepay_Id",$row_tran->tran_id)
 										->first();
 									if(!empty($user_info)) {
 										$temp_name = $user_info->name;
@@ -4132,6 +4132,18 @@
 									if(!empty($user_info)) {
 										$temp_name = $user_info->name;
 										$temp_acc_no = "";
+										$temp_uid = $user_info->Uid;
+									}
+									break;
+							case 35: // JL Allocation
+									$user_info = DB::table("jewelloan_allocation")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'JewelLoan_LoanNumber' )
+										->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
+										->where("jewelloan_allocation.JewelLoanId",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->JewelLoan_LoanNumber;
 										$temp_uid = $user_info->Uid;
 									}
 									break;

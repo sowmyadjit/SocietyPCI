@@ -1537,14 +1537,14 @@
 					
 					
 					
-					
+<?php /*
 					<tr><td colspan="10"><h5><b><center>D Class<center></b></h5></td></tr>
-					<?php
+					< ?php
 						$classd_cash_cr = 0;
 						$classd_cash_cr_total = 0;
 					?>
 					@foreach ($trandaily['classd'] as $classd)
-						<?php
+						< ?php
 							$classd_cash_cr = $classd->Customer_Fee;
 							$classd_cash_cr_total += $classd_cash_cr;
 						?>
@@ -1563,7 +1563,7 @@
 					@endforeach
 					<tr>
 						<th colspan =3>Total D class Fee </th>
-						<td><?php echo $classd_cash_cr_total; ?></td>
+						<td>< ?php echo $classd_cash_cr_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -1571,9 +1571,10 @@
 						<td>-</td>
 						<td>-</td>
 					</tr>
-					<?php
+					< ?php
 						$gt_cash_cr += $classd_cash_cr_total;
 					?>
+*/?>
 
 
 
@@ -1725,10 +1726,11 @@
 						@endif
 					@endforeach
 
-					<?php /****************** FROM JL ALLOCATION *******************/ ?>
+<?php /*
+					< ?php /****************** FROM JL ALLOCATION ******************* / ?>
 					@foreach ($trandaily['jewel_charges'] as $row)
-						<?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
-										<?php
+						< ?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
+										< ?php
 											$inc_cash_cr = $row->JewelLoan_OtherCharge;
 											$inc_cash_cr_total += $inc_cash_cr;
 										?>
@@ -1740,12 +1742,12 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-								<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
+								< ?php /*	<td>{{ $row->receipt_voucher_no }}</td> * /?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php  } else { ?><?php //ADJ ?>
-										<?php
+						< ?php  } else { ?>< ?php //ADJ ?>
+										< ?php
 											$inc_adj_cr = $row->JewelLoan_OtherCharge;
 											$inc_adj_cr_total += $inc_adj_cr;
 										?>
@@ -1761,13 +1763,14 @@
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php } ?>
+						< php } ?>
 					@endforeach
-					<?php /****************** FROM JL ALLOCATION *******************/ ?>
-					<?php /****************** FROM PG PREWITHDRAWAL Deduct_Amount *******************/ ?>
+					< ?php /****************** FROM JL ALLOCATION ******************* / ?>
+
+					< ?php /****************** FROM PG PREWITHDRAWAL Deduct_Amount ******************* / ?>
 					@foreach ($trandaily['pg_prewithdrawal_charges'] as $row)
-						<?php if(strcasecmp($row->PayAmount_PaymentMode, "CASH")  == 0 || strcasecmp($row->PayAmount_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
-										<?php
+						< ?php if(strcasecmp($row->PayAmount_PaymentMode, "CASH")  == 0 || strcasecmp($row->PayAmount_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
+										< ?php
 											$inc_cash_cr = $row->Deduct_Amount;
 											if($inc_cash_cr <= 0) {
 												continue;
@@ -1782,12 +1785,12 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-								<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
+								< ?php /*	<td>{{ $row->receipt_voucher_no }}</td> * /?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php  } else { ?><?php //ADJ ?>
-										<?php
+						< ?php  } else { ?>< ?php //ADJ ?>
+										< ?php
 											$inc_adj_cr = $row->Deduct_Amount;
 											if($inc_adj_cr <= 0) {
 												continue;
@@ -1806,9 +1809,10 @@
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php } ?>
+						< ?php } ?>
 					@endforeach
-					<?php /****************** FROM PG PREWITHDRAWAL Deduct_Amount *******************/ ?>
+					< ?php /****************** FROM PG PREWITHDRAWAL Deduct_Amount ******************* / ?>
+*/?>
 					
 					<tr>
 						<th colspan =3>Total Income </th>
@@ -1876,8 +1880,10 @@
 							<td>{{$dlallocation->adj_no}}</td>
 						</tr>
 					@endforeach
+
+<?php /*
 					@foreach ($trandaily['dlallocation_charg'] as $dlallocation)
-						<?php
+						< ?php
 							$dl_cash_cr = $dlallocation->DepLoan_LoanCharge;
 							$dl_cash_cr_total += $dl_cash_cr;
 						?>
@@ -1895,7 +1901,7 @@
 						</tr>
 					@endforeach		
 					@foreach ($trandaily['dlallocation_charg_adjust'] as $dlallocation)
-						<?php
+						< ?php
 							$dl_adj_cr = $dlallocation->DepLoan_LoanCharge;
 							$dl_adj_cr_total += $dl_adj_cr;
 						?>
@@ -1912,6 +1918,8 @@
 							<td>{{$dlallocation->adj_no}}</td>
 						</tr>
 					@endforeach
+*/?>
+
 					<tr>
 						<th colspan =3>Total Deposit Loan </th>
 						<td><?php echo $dl_cash_cr_total; ?></td>
@@ -2103,9 +2111,10 @@
 							<td>{{$plallocation->adj_no}}</td>
 						</tr>
 					@endforeach
-					
+
+<?php /*
 					@foreach ($trandaily['plallocation_chargcash'] as $plallocation)
-						<?php
+						< ?php
 							$pl_cash_cr = $plallocation->otherCharges;
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
@@ -2123,7 +2132,7 @@
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_chargcash'] as $plallocation)
-						<?php
+						< ?php
 							$pl_cash_cr = $plallocation->Book_FormCharges;
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
@@ -2141,7 +2150,7 @@
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_chargcash'] as $plallocation)
-						<?php
+						< ?php
 							$pl_cash_cr = $plallocation->AjustmentCharges;
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
@@ -2159,7 +2168,7 @@
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_chargcash'] as $plallocation)
-						<?php
+						< ?php
 							$pl_cash_cr = $plallocation->ShareCharges;
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
@@ -2177,7 +2186,7 @@
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_chargcash'] as $plallocation)
-						<?php
+						< ?php
 							$pl_cash_cr = $plallocation->Insurance;
 							$pl_cash_cr_total += $pl_cash_cr;
 						?>
@@ -2196,7 +2205,7 @@
 					@endforeach
 					
 					@foreach ($trandaily['plallocation_charg'] as $plallocation)
-						<?php
+						< ?php
 							$pl_adj_cr = $plallocation->otherCharges;
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
@@ -2214,7 +2223,7 @@
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_charg'] as $plallocation)
-						<?php
+						< ?php
 							$pl_adj_cr = $plallocation->Book_FormCharges;
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
@@ -2232,7 +2241,7 @@
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_charg'] as $plallocation)
-						<?php
+						< ?php
 							$pl_adj_cr = $plallocation->AjustmentCharges;
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
@@ -2250,7 +2259,7 @@
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_charg'] as $plallocation)
-						<?php
+						< ?php
 							$pl_adj_cr = $plallocation->ShareCharges;
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
@@ -2268,7 +2277,7 @@
 						</tr>
 					@endforeach
 					@foreach ($trandaily['plallocation_charg'] as $plallocation)
-						<?php
+						< ?php
 							$pl_adj_cr = $plallocation->Insurance;
 							$pl_adj_cr_total += $pl_adj_cr;
 						?>
@@ -2285,6 +2294,8 @@
 							<td>-</td>
 						</tr>
 					@endforeach
+*/?>
+
 					<tr>
 						<th colspan =3>Total Personal Loan </th>
 						<td><?php echo $pl_cash_cr_total; ?></td>
@@ -3162,9 +3173,9 @@
 					
 <!-- ------------------------------- loan charges ------------------------------- -->
 
-
+<?php /*
 					<tr><td colspan="10"><h5><b><center>LOAN CHARGES TRANSACTION<center></b></h5></td></tr>
-					<?php
+					< ?php
 						$cash_cr = 0;
 						$adj_cr = 0;
 						
@@ -3173,15 +3184,15 @@
 					?>
 					@foreach ($trandaily['loan_charge'] as $row)
 						@if( strcasecmp($row->pay_mode, "CASH") == 0 || strcasecmp($row->pay_mode, "INHAND") == 0)
-							<?php
+							< ?php
 								$cash_cr = $row->amount;
 								$cash_cr_total += $cash_cr;
 							?>
 							<tr>
 								<td>{{ $row->charg_tran_date }}</td>
 								<td>{{ $row->ln_no }}</td>
-								<td>{{ $row->lname }}<?php /* - {{ $row->name }}({{ $row->Uid }}) */ ?></td>
-								<td><p class="text-right"><?php echo $cash_cr; ?></p></td>
+								<td>{{ $row->lname }}< ?php /* - {{ $row->name }}({{ $row->Uid }}) * / ?></td>
+								<td><p class="text-right">< ?php echo $cash_cr; ?></p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
 								<td><p class="text-center">-</p></td>
@@ -3190,17 +3201,17 @@
 								<td>-</td>
 							</tr>
 						@else
-							<?php
+							< ?php
 								$adj_cr = $row->amount;
 								$adj_cr_total += $adj_cr;
 							?>
 							<tr>
 								<td>{{ $row->charg_tran_date }}</td>
 								<td>{{ $row->ln_no }}</td>
-								<td>{{ $row->lname }} <?php /* - {{ $row->name }}({{ $row->Uid }}) */ ?></td>
+								<td>{{ $row->lname }} < ?php /* - {{ $row->name }}({{ $row->Uid }}) * / ?></td>
 								<td><p class="text-right">-</p></td>
 								<td><p class="text-center">-</p></td>
-								<td><p class="text-center"><?php echo $adj_cr; ?></p></td>
+								<td><p class="text-center">< ?php echo $adj_cr; ?></p></td>
 								<td><p class="text-center">-</p></td>
 								<td>-</td>
 								<td>-</td>
@@ -3210,22 +3221,25 @@
 					@endforeach
 					<tr>
 						<th colspan =3>Total Loan Charges </th>
-						<td><?php echo $cash_cr_total; ?></td>
+						<td>< ?php echo $cash_cr_total; ?></td>
 						<td>-</td>
-						<td><?php echo $adj_cr_total; ?></td>
+						<td>< ?php echo $adj_cr_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
-					<?php
+					< ?php
 						$gt_cash_cr += $cash_cr_total;
 						$gt_adj_cr += $adj_cr_total;
 					?>
-
+*/?>
 
 
 <!-- ------------------------------- loan charges end ------------------------------- -->
+
+
+
 					<?php
 						$b2b_name = "Branch to Branch";
 						if($trandaily["bid"] == 6) {
@@ -3796,11 +3810,12 @@
 							<td>-</td>				
 						</tr>
 					@endforeach
-					
-					<?php /****************** FROM PG PREWITHDRAWAL Deduct_Commission *******************/ ?>
+
+<?php /*
+					< ?php /****************** FROM PG PREWITHDRAWAL Deduct_Commission ******************* / ?>
 					@foreach ($trandaily['pg_prewithdrawal_charges'] as $row)
-						<?php if(strcasecmp($row->PayAmount_PaymentMode, "CASH")  == 0 || strcasecmp($row->PayAmount_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
-										<?php
+						< ?php if(strcasecmp($row->PayAmount_PaymentMode, "CASH")  == 0 || strcasecmp($row->PayAmount_PaymentMode, "INHAND") ==0) {?>< ?php //CASH ?>
+										< ?php
 											$cash_cr = $row->Deduct_Commission;
 											if($cash_cr <= 0) {
 												continue;
@@ -3815,12 +3830,12 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-								<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
+								< ?php /*	<td>{{ $row->receipt_voucher_no }}</td> * /?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php  } else { ?><?php //ADJ ?>
-										<?php
+						< ?php  } else { ?>< ?php //ADJ ?>
+										< ?php
 											$adj_cr = $row->Deduct_Commission;
 											if($inc_adj_cr <= 0) {
 												continue;
@@ -3839,9 +3854,10 @@
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php } ?>
+						< ?php } ?>
 					@endforeach
-					<?php /****************** FROM PG PREWITHDRAWAL Deduct_Commission *******************/ ?>
+					< ?php /****************** FROM PG PREWITHDRAWAL Deduct_Commission ******************* / ?>
+*/?>
 				
 				<tr>
 					<th colspan =3>Agent Salary </th>
