@@ -568,26 +568,29 @@
 			if(!in_array($BID,[1,2,3,4,5,6])) { // CHECK FOR LOGIN
 				return "NOT LOGGED IN";
 			}
-
-			// $this->loan_charges_to_all_charges();
-			// $this->customer_charges_to_all_charges();
-			// $this->dl_charges_to_all_charges();
-			// $this->pl_charges_to_all_charges();
-			// $this->pg_prewith_charges_to_all_charges();
-			$this->rd_prewith_charges_to_all_charges();
-			// $this->jl_charges_to_all_charges();
+			$fd["from_date"] = "2018-08-30";
+			$this->loan_charges_to_all_charges($fd);
+			$this->customer_charges_to_all_charges($fd);
+			$this->dl_charges_to_all_charges($fd);
+			$this->pl_charges_to_all_charges($fd);
+			$this->pg_prewith_charges_to_all_charges($fd);
+			$this->rd_prewith_charges_to_all_charges($fd);
+			$this->jl_charges_to_all_charges($fd);
 
 			return;
 		}
 
-		public function loan_charges_to_all_charges()
+		public function loan_charges_to_all_charges($data)
 		{
 			//loan charges from charges tran to all_charges
+			$from_date = $data["from_date"];
+			$date_field = "charg_tran_date";
 			$data = DB::table("charges_tran")
 				->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
 				->where("deleted", 0)
-				->orderBy("charg_id", "desc")
-				->limit(5)
+				->where($date_field,">=",$from_date)
+				// ->orderBy("charg_id", "desc")
+				// ->limit(5)
 				->get();
 
 			foreach($data as $key_ct => $row_ct) { // CHARGES TRANSACTION ROW
@@ -714,12 +717,15 @@
 			echo "<br />\n---------------------------";
 		}
 
-		public function customer_charges_to_all_charges()
+		public function customer_charges_to_all_charges($data)
 		{
 			//charge from CUSTOMER TABLE to all_charges
+			$from_date = $data["from_date"];
+			$date_field = "Created_on";
 			$data = DB::table("customer")
-				->orderBy("Custid", "desc")
-				->limit(5)
+				->where($date_field,">=",$from_date)
+				// ->orderBy("Custid", "desc")
+				// ->limit(5)
 				->get();
 			
 			// print_r($data);
@@ -784,12 +790,15 @@
 			echo "<br />\n---------------------------";
 		}
 
-		public function dl_charges_to_all_charges()
+		public function dl_charges_to_all_charges($data)
 		{
 			//DL ALLOCATION CHARGE FROM  depositeloan_allocation TABLE to all_charges
+			$from_date = $data["from_date"];
+			$date_field = "DepLoan_LoanStartDate";
 			$data = DB::table("depositeloan_allocation")
-				->orderBy("DepLoanAllocId", "desc")
-				->limit(10)
+				->where($date_field,">=",$from_date)
+				// ->orderBy("DepLoanAllocId", "desc")
+				// ->limit(10)
 				->get();
 
 			// print_r($data);
@@ -854,13 +863,16 @@
 			echo "<br />\n---------------------------";
 		}
 
-		public function pl_charges_to_all_charges()
+		public function pl_charges_to_all_charges($data)
 		{
 			//PL ALLOCATION CHARGE FROM  personalloan_payment TABLE to all_charges
+			$from_date = $data["from_date"];
+			$date_field = "pl_payment_date";
 			$data = DB::table("personalloan_payment")
-			->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
-				->orderBy("pl_payment_id", "desc")
-				->limit(10)
+				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
+				->where($date_field,">=",$from_date)
+				// ->orderBy("pl_payment_id", "desc")
+				// ->limit(10)
 				->get();
 
 			// print_r($data);
@@ -1014,9 +1026,11 @@
 			echo "<br />\n---------------------------";
 		}
 
-		public function pg_prewith_charges_to_all_charges()
+		public function pg_prewith_charges_to_all_charges($data)
 		{
 			//PG PREWITHDRAWAL CHARGE FROM  pigmi_prewithdrawal TABLE to all_charges
+			$from_date = $data["from_date"];
+			$date_field = "PayAmountReport_PayDate";
 			$sa = array( //select array	
 				"pigmi_prewithdrawal.PgmPrewithdraw_ID", // pigmi_prewithdrawal
 				"pigmi_prewithdrawal.PigmiAcc_No",
@@ -1032,9 +1046,10 @@
 				->select($sa)
 				->leftJoin("pigmi_payamount","pigmi_payamount.PayAmount_PigmiAccNum","=","pigmi_prewithdrawal.PigmiAcc_No")
 				->leftJoin("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_prewithdrawal.PigmiAcc_No")
+				->where($date_field,">=",$from_date)
 				->groupBy("pigmi_prewithdrawal.PigmiAcc_No")
-				->orderBy("PgmPrewithdraw_ID", "desc")
-				->limit(10)
+				// ->orderBy("PgmPrewithdraw_ID", "desc")
+				// ->limit(10)
 				->get();
 			
 			// print_r($data);
@@ -1140,9 +1155,11 @@
 			echo "<br />\n---------------------------";
 		}
 
-		public function rd_prewith_charges_to_all_charges()
+		public function rd_prewith_charges_to_all_charges($data)
 		{
 			//RD PREWITHDRAWAL CHARGE FROM  rd_prewithdrawal TABLE to all_charges
+			$from_date = $data["from_date"];
+			$date_field = "RDPayAmtReport_PayDate";
 			$sa = array( //select array	
 				"rd_prewithdrawal.RdPrewithdraw_ID", // rd_prewithdrawal
 				"rd_prewithdrawal.RdAcc_No",
@@ -1157,9 +1174,10 @@
 				// ->select($sa)
 				->leftJoin("rd_payamount","rd_payamount.RDPayAmt_AccNum","=","rd_prewithdrawal.RdAcc_No")
 				->leftJoin("createaccount","createaccount.AccNum","=","rd_prewithdrawal.RdAcc_No")
+				->where($date_field,">=",$from_date)
 				->groupBy("rd_prewithdrawal.RdAcc_No")
-				->orderBy("RdPrewithdraw_ID", "desc")
-				->limit(10)
+				// ->orderBy("RdPrewithdraw_ID", "desc")
+				// ->limit(10)
 				->get();
 			
 			// print_r($data);
@@ -1234,9 +1252,11 @@
 			echo "<br />\n---------------------------";
 		}
 
-		public function jl_charges_to_all_charges()
+		public function jl_charges_to_all_charges($data)
 		{
 			// JL ALLOCATION CHARGE FROM  jewelloan_allocation TABLE to all_charges
+			$from_date = $data["from_date"];
+			$date_field = "JewelLoan_StartDate";
 			$sa = array(
 				"JewelLoanId",
 				"JewelLoan_Bid",
@@ -1251,8 +1271,9 @@
 
 			$data = DB::table("jewelloan_allocation")
 				->select($sa)
-				->orderBy("jewelloan_allocation.JewelLoanId", "desc")
-				->limit(2)
+				->where($date_field,">=",$from_date)
+				// ->orderBy("jewelloan_allocation.JewelLoanId", "desc")
+				// ->limit(10)
 				->get();
 
 			// print_r($data);
@@ -1272,13 +1293,16 @@
 						->where("tran_id",$row_->)
 						->where("deleted",0)
 						->get(); */
-						$existing_entries = DB::table("all_charges")
-						->where("ft",$ft)
-						->where("fid",$fid)
-						->where("deleted",0)
-						->where("ft","!=","")
-						->where("ft","!=","")
-						->get();
+				$tt = 35; // tt - tran table
+				$tid = $row_jl->JewelLoanId; // tid - tran id
+				$existing_entries = DB::table("all_charges")
+					->where("tran_table",$tt)
+					->where("tran_id",$tid)
+					->where("deleted",0)
+					->where("tran_table","!=","")
+					->where("tran_table","!=",0)
+					->where("tran_id","!=",0)
+					->get();
 					if(count($existing_entries) > 0) {
 						// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
 						echo "EXISTS(ft:{$ft}, fid:{$fid})";
@@ -1306,7 +1330,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (APPRAISER COMMISSION)******************/
 				/******************** ALL CHARGES (INSURANCE)******************/
 				if(!empty($row_jl->JewelLoan_InsuranceCharge)) { // SKIP 0 AMT
@@ -1329,7 +1353,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (INSURANCE)******************/
 				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
 				if(!empty($row_jl->JewelLoan_BookAndFormCharge)) { // SKIP 0 AMT
@@ -1352,7 +1376,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 				if(!empty($row_jl->JewelLoan_OtherCharge)) { // SKIP 0 AMT
@@ -1375,7 +1399,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 			}
 		}
