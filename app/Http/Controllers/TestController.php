@@ -561,6 +561,7 @@
 			
 		}
 
+		//ALL CHARGES
 		public function all_ch(Request $request)
 		{
 			$uname=''; if(Auth::user()) { $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid; } else {$BID = $UID = 0;}
@@ -569,11 +570,11 @@
 			}
 
 			// $this->loan_charges_to_all_charges();
-			$this->customer_charges_to_all_charges();
+			// $this->customer_charges_to_all_charges();
 			// $this->dl_charges_to_all_charges();
 			// $this->pl_charges_to_all_charges();
 			// $this->pg_prewith_charges_to_all_charges();
-			// $this->rd_prewith_charges_to_all_charges();
+			$this->rd_prewith_charges_to_all_charges();
 			// $this->jl_charges_to_all_charges();
 
 			return;
@@ -586,7 +587,7 @@
 				->join("chareges","chareges.charges_id","=","charges_tran.charges_id")
 				->where("deleted", 0)
 				->orderBy("charg_id", "desc")
-				->limit(1000)
+				->limit(5)
 				->get();
 
 			foreach($data as $key_ct => $row_ct) { // CHARGES TRANSACTION ROW
@@ -669,12 +670,15 @@
 					->where("tran_id",$temp_tran_id)
 					->where("deleted",0)
 					->get(); */
+				$tt = $temp_tran_table; // tt - tran table
+				$tid = $temp_tran_id; // tid - tran id
 				$existing_entries = DB::table("all_charges")
-					->where("ft",$ft)
-					->where("fid",$fid)
+					->where("tran_table",$tt)
+					->where("tran_id",$tid)
 					->where("deleted",0)
-					->where("ft","!=","")
-					->where("ft","!=","")
+					->where("tran_table","!=","")
+					->where("tran_table","!=",0)
+					->where("tran_id","!=",0)
 					->get();
 				if(count($existing_entries) > 0) {
 					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
@@ -714,8 +718,8 @@
 		{
 			//charge from CUSTOMER TABLE to all_charges
 			$data = DB::table("customer")
-				// ->orderBy("Custid", "desc")
-				// ->limit(5)
+				->orderBy("Custid", "desc")
+				->limit(5)
 				->get();
 			
 			// print_r($data);
@@ -734,13 +738,16 @@
 						->where("tran_id",$row_cu->Custid)
 						->where("deleted",0)
 						->get(); */
-				$existing_entries = DB::table("all_charges")
-					->where("ft",$ft)
-					->where("fid",$fid)
-					->where("deleted",0)
-					->where("ft","!=","")
-					->where("ft","!=","")
-					->get();
+					$tt = 6; // tt - tran table
+					$tid = $row_cu->Custid; // tid - tran id
+					$existing_entries = DB::table("all_charges")
+						->where("tran_table",$tt)
+						->where("tran_id",$tid)
+						->where("deleted",0)
+						->where("tran_table","!=","")
+						->where("tran_table","!=",0)
+						->where("tran_id","!=",0)
+						->get();
 				if(count($existing_entries) > 0) {
 					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
 					echo "EXISTS(ft:{$ft}, fid:{$fid})";
@@ -769,6 +776,8 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
+				} else {
+					echo "amt 0";
 				}
 				/******************** ALL CHARGES ******************/
 			}
@@ -779,8 +788,8 @@
 		{
 			//DL ALLOCATION CHARGE FROM  depositeloan_allocation TABLE to all_charges
 			$data = DB::table("depositeloan_allocation")
-				// ->orderBy("DepLoanAllocId", "desc")
-				// ->limit(5)
+				->orderBy("DepLoanAllocId", "desc")
+				->limit(10)
 				->get();
 
 			// print_r($data);
@@ -799,12 +808,15 @@
 						->where("tran_id",$row_dl->DepLoanAllocId)
 						->where("deleted",0)
 						->get(); */
+				$tt = 29; // tt - tran table
+				$tid = $row_dl->DepLoanAllocId; // tid - tran id
 				$existing_entries = DB::table("all_charges")
-					->where("ft",$ft)
-					->where("fid",$fid)
+					->where("tran_table",$tt)
+					->where("tran_id",$tid)
 					->where("deleted",0)
-					->where("ft","!=","")
-					->where("ft","!=","")
+					->where("tran_table","!=","")
+					->where("tran_table","!=",0)
+					->where("tran_id","!=",0)
 					->get();
 				if(count($existing_entries) > 0) {
 					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
@@ -834,6 +846,8 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
+				} else {
+					echo "amt 0";
 				}
 				/******************** ALL CHARGES ******************/
 			}
@@ -845,8 +859,8 @@
 			//PL ALLOCATION CHARGE FROM  personalloan_payment TABLE to all_charges
 			$data = DB::table("personalloan_payment")
 			->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
-				// ->orderBy("pl_payment_id", "desc")
-				// ->limit(5)
+				->orderBy("pl_payment_id", "desc")
+				->limit(10)
 				->get();
 
 			// print_r($data);
@@ -864,12 +878,15 @@
 						->where("tran_id",$row_dl->DepLoanAllocId)
 						->where("deleted",0)
 						->get(); */
+				$tt = 30; // tt - tran table
+				$tid = $row_pl->pl_payment_id; // tid - tran id
 				$existing_entries = DB::table("all_charges")
-					->where("ft",$ft)
-					->where("fid",$fid)
+					->where("tran_table",$tt)
+					->where("tran_id",$tid)
 					->where("deleted",0)
-					->where("ft","!=","")
-					->where("ft","!=","")
+					->where("tran_table","!=","")
+					->where("tran_table","!=",0)
+					->where("tran_id","!=",0)
 					->get();
 				if(count($existing_entries) > 0) {
 					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
@@ -899,7 +916,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
 				if(!empty($row_pl->Book_FormCharges)) { // SKIP 0 AMT
@@ -922,7 +939,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (BOOKS AND FORMS)******************/
 				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 1st)******************/
 				if(!empty($row_pl->AjustmentCharges)) { // SKIP 0 AMT
@@ -945,7 +962,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 1st)******************/
 				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 2nd)******************/
 				if(!empty($row_pl->ShareCharges)) { // SKIP 0 AMT
@@ -968,7 +985,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (C CLASS SUSPEND SHARE CAPITAL - 2nd)******************/
 				/******************** ALL CHARGES (INSURANCE)******************/
 				if(!empty($row_pl->Insurance)) { // SKIP 0 AMT
@@ -991,7 +1008,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (INSURANCE)******************/
 			}
 			echo "<br />\n---------------------------";
@@ -1016,8 +1033,8 @@
 				->leftJoin("pigmi_payamount","pigmi_payamount.PayAmount_PigmiAccNum","=","pigmi_prewithdrawal.PigmiAcc_No")
 				->leftJoin("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_prewithdrawal.PigmiAcc_No")
 				->groupBy("pigmi_prewithdrawal.PigmiAcc_No")
-				// ->orderBy("PgmPrewithdraw_ID", "desc")
-				// ->limit(5)
+				->orderBy("PgmPrewithdraw_ID", "desc")
+				->limit(10)
 				->get();
 			
 			// print_r($data);
@@ -1029,6 +1046,17 @@
 				$fid  = $row_pgpre->PgmPrewithdraw_ID; // FROM ID
 				// print_r($row_pgpre);continue;
 
+				
+				if(!empty($row_pgpre->PayId)) {
+					$temp_tran_table = 28; // pigmi_payamount
+					$temp_tran_id = $row_pgpre->PayId;
+					$temp_date = $row_pgpre->PayAmountReport_PayDate;
+				} else {
+					$temp_tran_table = 31; // pigmi_prewithdrawal
+					$temp_tran_id = $row_pgpre->PgmPrewithdraw_ID;
+					$temp_date = $row_pgpre->Withdraw_Date;
+				}
+
 				/************** CHECK FOR EXISTING ENTRIES *********************/
 				/* 	$existing_entries = DB::table("all_charges")
 						->where("SubLedgerId",)
@@ -1036,12 +1064,15 @@
 						->where("tran_id",$row_->)
 						->where("deleted",0)
 						->get(); */
+				$tt = $temp_tran_table; // tt - tran table
+				$tid = $temp_tran_id; // tid - tran id
 				$existing_entries = DB::table("all_charges")
-					->where("ft",$ft)
-					->where("fid",$fid)
+					->where("tran_table",$tt)
+					->where("tran_id",$tid)
 					->where("deleted",0)
-					->where("ft","!=","")
-					->where("ft","!=","")
+					->where("tran_table","!=","")
+					->where("tran_table","!=",0)
+					->where("tran_id","!=",0)
 					->get();
 				if(count($existing_entries) > 0) {
 					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
@@ -1052,15 +1083,6 @@
 
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 				if(!empty($row_pgpre->Deduct_Amount)) { // SKIP 0 AMT
-					if(!empty($row_pgpre->PayId)) {
-						$temp_tran_table = 28; // pigmi_payamount
-						$temp_tran_id = $row_pgpre->PayId;
-						$temp_date = $row_pgpre->PayAmountReport_PayDate;
-					} else {
-						$temp_tran_table = 31; // pigmi_prewithdrawal
-						$temp_tran_id = $row_pgpre->PgmPrewithdraw_ID;
-						$temp_date = $row_pgpre->Withdraw_Date;
-					}
 					unset($fd);
 					$fd["date"] = $temp_date;
 					$fd["bid"] = $row_pgpre->Bid;
@@ -1080,7 +1102,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 				/******************** ALL CHARGES (PIGMY COMMISSION)******************/
 				if(!empty($row_pgpre->Deduct_Commission)) { // SKIP 0 AMT
@@ -1112,7 +1134,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (PIGMY COMMISSION)******************/
 			}
 			echo "<br />\n---------------------------";
@@ -1136,8 +1158,8 @@
 				->leftJoin("rd_payamount","rd_payamount.RDPayAmt_AccNum","=","rd_prewithdrawal.RdAcc_No")
 				->leftJoin("createaccount","createaccount.AccNum","=","rd_prewithdrawal.RdAcc_No")
 				->groupBy("rd_prewithdrawal.RdAcc_No")
-				// ->orderBy("RdPrewithdraw_ID", "desc")
-				// ->limit(5)
+				->orderBy("RdPrewithdraw_ID", "desc")
+				->limit(10)
 				->get();
 			
 			// print_r($data);
@@ -1149,28 +1171,7 @@
 				$fid  = $row_rdpre->RdPrewithdraw_ID; // FROM ID
 				// print_r($row_rdpre);
 
-				/************** CHECK FOR EXISTING ENTRIES *********************/
-				/* 	$existing_entries = DB::table("all_charges")
-						->where("SubLedgerId",)
-						->where("tran_table",)
-						->where("tran_id",$row_->)
-						->where("deleted",0)
-						->get(); */
-				$existing_entries = DB::table("all_charges")
-					->where("ft",$ft)
-					->where("fid",$fid)
-					->where("deleted",0)
-					->where("ft","!=","")
-					->where("ft","!=","")
-					->get();
-				if(count($existing_entries) > 0) {
-					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
-					echo "EXISTS(ft:{$ft}, fid:{$fid})";
-					continue;
-				}
-				/************** CHECK FOR EXISTING ENTRIES *********************/
-
-				/******************** ALL CHARGES (OTHER INCOME)******************/
+				
 				if(!empty($row_rdpre->RDPayId)) {
 					$temp_tran_table = 33; // rd_payamount
 					$temp_tran_id = $row_rdpre->RDPayId;
@@ -1180,6 +1181,32 @@
 					$temp_tran_id = $row_rdpre->RdPrewithdraw_ID;
 					$temp_date = $row_rdpre->Withdraw_Date;
 				}
+
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+				/* 	$existing_entries = DB::table("all_charges")
+						->where("SubLedgerId",)
+						->where("tran_table",)
+						->where("tran_id",$row_->)
+						->where("deleted",0)
+						->get(); */
+				$tt = $temp_tran_table; // tt - tran table
+				$tid = $temp_tran_id; // tid - tran id
+				$existing_entries = DB::table("all_charges")
+					->where("tran_table",$tt)
+					->where("tran_id",$tid)
+					->where("deleted",0)
+					->where("tran_table","!=","")
+					->where("tran_table","!=",0)
+					->where("tran_id","!=",0)
+					->get();
+				if(count($existing_entries) > 0) {
+					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
+					echo "EXISTS(ft:{$ft}, fid:{$fid})";
+					continue;
+				}
+				/************** CHECK FOR EXISTING ENTRIES *********************/
+
+				/******************** ALL CHARGES (OTHER INCOME)******************/
 
 				if(!empty($row_rdpre->Deduct_Amt)) { // SKIP 0 AMT
 					unset($fd);
@@ -1201,7 +1228,7 @@
 					$this->all_ch->set_row_data($fd);
 					$insert_id_all_ch = $this->all_ch->insert_row();
 					echo "DONE({$insert_id_all_ch})";
-				}
+				} else { echo "amt 0";}
 				/******************** ALL CHARGES (OTHER INCOME)******************/
 			}
 			echo "<br />\n---------------------------";
