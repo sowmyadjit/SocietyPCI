@@ -2567,9 +2567,10 @@
 					?>
 */?>
 					
-<?php /****************** APPRAISER COMMISSION ********************/ ?>
+<?php /*
+< ?php /****************** APPRAISER COMMISSION ******************** / ?>
 					<tr><td colspan="10"><h5><b><center>APPRAISER COMMISSION<center></b></h5></td></tr>
-					<?php
+					< ?php
 						$cash_cr = 0;
 						$cash_db = 0;
 						$adj_cr = 0;
@@ -2580,8 +2581,8 @@
 						$adj_db_total = 0;
 					?>
 					@foreach ($trandaily['jewel_charges'] as $row)
-						<?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
-										<?php
+						< ?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?>< ?php //CASH ?>
+										< ?php
 											$cash_cr = $row->JewelLoan_SaraparaCharge;
 											$cash_cr_total += $cash_cr;
 										?>
@@ -2593,12 +2594,12 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-											<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
+											< ?php /*	<td>{{ $row->receipt_voucher_no }}</td> * /?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php  } else { ?><?php //ADJ ?>
-										<?php
+						< ?php  } else { ?>< ?php //ADJ ?>
+										< ?php
 											$adj_cr = $row->JewelLoan_SaraparaCharge;
 											$adj_cr_total += $adj_cr;
 										?>
@@ -2614,12 +2615,12 @@
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php } ?>
+						< ?php } ?>
 					@endforeach
 
-					<?php /************* APPRAISER SALARY **********/?>
-					@foreach ($trandaily['agent_sal_appraiser'] as $row)	<?php /* AGENT SALARY - PG, RD, APPRAISER */?>
-						<?php
+					< ?php /************* APPRAISER SALARY ********** /?>
+					@foreach ($trandaily['agent_sal_appraiser'] as $row)	< ?php /* AGENT SALARY - PG, RD, APPRAISER * /?>
+						< ?php
 							// $adj_db = $row->Agent_Commission_PaidAmount + $row->Tds + $row->securityDeposit ;
 							$adj_db = $row->total_commission;
 							if($adj_db <= 0) {
@@ -2640,30 +2641,30 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					<?php /************* APPRAISER SALARY **********/ ?>
+					< ?php /************* APPRAISER SALARY ********** / ?>
 
 					<tr>
 						<th colspan =3>Total APPRAISER COMMISSION</th>
-						<td><?php echo $cash_cr_total; ?></td>
-						<td><?php echo $cash_db_total; ?></td>
-						<td><?php echo $adj_cr_total; ?></td>
-						<td><?php echo $adj_db_total; ?></td>
+						<td>< ?php echo $cash_cr_total; ?></td>
+						<td>< ?php echo $cash_db_total; ?></td>
+						<td>< ?php echo $adj_cr_total; ?></td>
+						<td>< ?php echo $adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
-					<?php
+					< ?php
 						$gt_cash_cr += $cash_cr_total;
 						$gt_cash_db += $cash_db_total;
 						$gt_adj_cr += $adj_cr_total;
 						$gt_adj_db += $adj_db_total;
 					?>
-<?php /****************** APPRAISER COMMISSION ********************/ ?>
+< ?php /****************** APPRAISER COMMISSION ******************** / ?>
 
 					
-<?php /****************** INSURANCE ********************/ ?>
+< ?php /****************** INSURANCE ******************** / ?>
 					<tr><td colspan="10"><h5><b><center>INSURANCE<center></b></h5></td></tr>
-					<?php
+					< ?php
 						$cash_cr = 0;
 						$cash_db = 0;
 						$adj_cr = 0;
@@ -2674,8 +2675,8 @@
 						$adj_db_total = 0;
 					?>
 					@foreach ($trandaily['jewel_charges'] as $row)
-						<?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
-										<?php
+						< ?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?>< ?php //CASH ?>
+										< ?php
 											$cash_cr = $row->JewelLoan_InsuranceCharge;
 											$cash_cr_total += $cash_cr;
 										?>
@@ -2687,12 +2688,12 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-								<?php /*	<td>{{ $row->receipt_voucher_no }}</td> */?>
+								< ?php /*	<td>{{ $row->receipt_voucher_no }}</td> * /?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php  } else { ?><?php //ADJ ?>
-										<?php
+						< ?php  } else { ?>< ?php //ADJ ?>
+										< ?php
 											$adj_cr = $row->JewelLoan_InsuranceCharge;
 											$adj_cr_total += $adj_cr;
 										?>
@@ -2708,30 +2709,30 @@
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php } ?>
+						< ?php } ?>
 					@endforeach
 					<tr>
 						<th colspan =3>Total APPRAISER INSURANCE AMOUNT</th>
-						<td><?php echo $cash_cr_total; ?></td>
-						<td><?php echo $cash_db_total; ?></td>
-						<td><?php echo $adj_cr_total; ?></td>
-						<td><?php echo $adj_db_total; ?></td>
+						<td>< ?php echo $cash_cr_total; ?></td>
+						<td>< ?php echo $cash_db_total; ?></td>
+						<td>< ?php echo $adj_cr_total; ?></td>
+						<td>< ?php echo $adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
-					<?php
+					< ?php
 						$gt_cash_cr += $cash_cr_total;
 						$gt_cash_db += $cash_db_total;
 						$gt_adj_cr += $adj_cr_total;
 						$gt_adj_db += $adj_db_total;
 					?>
-<?php /****************** INSURANCE ********************/ ?>
+< ?php /****************** INSURANCE ******************** / ?>
 
 					
-<?php /****************** BOOKS & FORMS ********************/ ?>
+< ?php /****************** BOOKS & FORMS ******************** / ?>
 					<tr><td colspan="10"><h5><b><center>BOOKS & FORMS<center></b></h5></td></tr>
-					<?php
+					< ?php
 						$cash_cr = 0;
 						$cash_db = 0;
 						$adj_cr = 0;
@@ -2742,8 +2743,8 @@
 						$adj_db_total = 0;
 					?>
 					@foreach ($trandaily['jewel_charges'] as $row)
-						<?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?><?php //CASH ?>
-										<?php
+						< ?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?>< ?php //CASH ?>
+										< ?php
 											$cash_cr = $row->JewelLoan_BookAndFormCharge;
 											$cash_cr_total += $cash_cr;
 										?>
@@ -2755,12 +2756,12 @@
 											<td>-</td>
 											<td>-</td>
 											<td>-</td>
-											<?php /*		<td>{{ $row->receipt_voucher_no }}</td> */?>
+											< ?php /*		<td>{{ $row->receipt_voucher_no }}</td> * /?>
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php  } else { ?><?php //ADJ ?>
-										<?php
+						< ?php  } else { ?>< ?php //ADJ ?>
+										< ?php
 											$adj_cr = $row->JewelLoan_BookAndFormCharge;
 											$adj_cr_total += $adj_cr;
 										?>
@@ -2776,27 +2777,26 @@
 											<td>-</td>
 											<td>-</td>
 										</tr>
-						<?php } ?>
+						< ?php } ?>
 					@endforeach
 					<tr>
 						<th colspan =3>Total BOOKS & FORMS CHARGE</th>
-						<td><?php echo $cash_cr_total; ?></td>
-						<td><?php echo $cash_db_total; ?></td>
-						<td><?php echo $adj_cr_total; ?></td>
-						<td><?php echo $adj_db_total; ?></td>
+						<td>< ?php echo $cash_cr_total; ?></td>
+						<td>< ?php echo $cash_db_total; ?></td>
+						<td>< ?php echo $adj_cr_total; ?></td>
+						<td>< ?php echo $adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
-					<?php
+					< ?php
 						$gt_cash_cr += $cash_cr_total;
 						$gt_cash_db += $cash_db_total;
 						$gt_adj_cr += $adj_cr_total;
 						$gt_adj_db += $adj_db_total;
 					?>
-<?php /****************** BOOKS & FORMS ********************/ ?>
-					
-					
+< ?php /****************** BOOKS & FORMS ******************** / ?>			
+*/?>
 					
 					
 					
@@ -4434,8 +4434,8 @@
 						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
 						@else<?php //ADJ CREDIT?>
 							<?php
-								$adj_cr = $row->salpay_extra_amt;
-								$adj_cr_total += $adj_cr;
+								$adj_db = $row->salpay_extra_amt;
+								$adj_db_total += $adj_db;
 							?>
 							<tr>
 								<td>{{$row->date}}</td>
