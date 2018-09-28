@@ -1293,7 +1293,9 @@
 			{
 				$count_inc="PCIS"."SL".$BranchCode.($cntrow+1);
 			}
-			$EmpUid=$id['StaffID'];
+			$req_id = $id['StaffID'];
+			$EmpUid = DB::table("request_loan")->where("PersLoanAllocID",$req_id)->value("Uid");
+			// $EmpUid=$id['StaffID'];
 			$cd=$id['Compulsory_Deposit'];
 			$sc=$id['staffcharge'];
 			$amt_cd=$cd+$sc;
@@ -1303,7 +1305,7 @@
 			$tot_branch_cd=$Branch_CD+$amt_cd;
 			DB::table('branch')->where('Bid',$bid)->update(['CD'=>$tot_branch_cd]);
 			
-			$perslid = DB::table('staffloan_allocation')->insertGetId(['StfLoan_Number'=> $count_inc,'Bid'=> $AccBID,'DocId'=>$docid,'Uid'=>$id['StaffID'],'LoanAmt'=>$id['Stfamttopay'],'otherCharges'=>$id['StfOthrChrge'],'Book_FormCharges'=>$id['StfBkfrmChrg'],'AjustmentCharges'=>$id['Compulsory_Deposit'],'ShareCharges'=>$id['staffcharge'],'PayableAmt'=>$id['StfPayAmt'],'LoandurationYears'=>$id['LoanDurationYears'],'LoanduratiobDays'=>$id['LoanDurationDays'],'Staff_Surety'=>$id['suretyid'],'Loan_Type'=>$id['StfLoanType'],'StartDate'=>$consDate,'EndDate'=>$coneDate,'PayMode'=>$paymode,'accid'=>$id['StfLoanSBAccid'],'CreadtedBY'=>$UID,'BankID'=>$id['StfBankId'],'ChequeDate'=>$id['StfLoanChequeDte'],'ChequeNumber'=>$id['StfLoanChequeNum'],'StaffLoan_LoanRemainingAmount'=>$id['Stfamttopay'],'cd_id'=>$cd_id,'LedgerHeadId'=>'49','SubLedgerId'=>'56']);
+			$perslid = DB::table('staffloan_allocation')->insertGetId(['StfLoan_Number'=> $count_inc,'Bid'=> $AccBID,'DocId'=>$docid,'Uid'=>/*$id['StaffID']*/$EmpUid,'LoanAmt'=>$id['Stfamttopay'],'otherCharges'=>$id['StfOthrChrge'],'Book_FormCharges'=>$id['StfBkfrmChrg'],'AjustmentCharges'=>$id['Compulsory_Deposit'],'ShareCharges'=>$id['staffcharge'],'PayableAmt'=>$id['StfPayAmt'],'LoandurationYears'=>$id['LoanDurationYears'],'LoanduratiobDays'=>$id['LoanDurationDays'],'Staff_Surety'=>$id['suretyid'],'Loan_Type'=>$id['StfLoanType'],'StartDate'=>$consDate,'EndDate'=>$coneDate,'PayMode'=>$paymode,'accid'=>$id['StfLoanSBAccid'],'CreadtedBY'=>$UID,'BankID'=>$id['StfBankId'],'ChequeDate'=>$id['StfLoanChequeDte'],'ChequeNumber'=>$id['StfLoanChequeNum'],'StaffLoan_LoanRemainingAmount'=>$id['Stfamttopay'],'cd_id'=>$cd_id,'LedgerHeadId'=>'49','SubLedgerId'=>'56']);
 			
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
