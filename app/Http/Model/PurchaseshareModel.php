@@ -410,7 +410,7 @@
 			else if($id['tt']=="Adjust TO Branch")
 			{
 				
-				DB::table('branch_to_branch')->insert(['Branch_Branch1_Id'=>$BID,'Branch_Branch2_Id'=>$id['BranchList2'],'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['payamt'],'Branch_per'=>$id['per'],'LedgerHeadId'=>$id['HeadiD'],'SubLedgerId'=>$id['expsubhead']]);
+				DB::table('branch_to_branch')->insert(['Branch_Branch1_Id'=>/*$BID*/$id['BranchList2'],'Branch_Branch2_Id'=>/*$id['BranchList2']*/$BID,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$id['payamt'],'Branch_per'=>$id['per'],'LedgerHeadId'=>$id['HeadiD'],'SubLedgerId'=>$id['expsubhead']]);
 			}
 			return $id;
 		}
