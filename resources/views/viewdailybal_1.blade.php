@@ -3426,7 +3426,8 @@
 									?>
 									@foreach ($trandaily['sal_extra_from_ho'] as $row)
 												<?php if(strcasecmp($row->transaction_type,"CREDIT") == 0 ) {?><?php //ADJ CR ?>
-														<?php
+<?php /*		DON'T SHOW CREDIT ENTR
+												< ?php
 															$adj_cr = $row->salpay_extra_amt;
 															$adj_cr_total += $adj_cr;
 														?>
@@ -3442,6 +3443,7 @@
 															<td>-</td>
 															<td>-</td>
 														</tr>
+*/?>
 												<?php } else { ?><?php //ADJ DB ?>
 														<?php
 															$adj_db = $row->salpay_extra_amt;
@@ -4247,28 +4249,30 @@
 						@endif
 				@endforeach
 
-				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY AND BRANCH IS NOT HO ************/?>
 				@foreach ($trandaily['pf'] as $row)
-						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
-						@else<?php //ADJ CREDIT?>
-							<?php
-								$adj_db = $row->salpay_extra_amt;
-								$adj_db_total += $adj_db;
-							?>
-							<tr>
-								<td>{{$row->date}}</td>
-								<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
-								<td>{{$row->salpay_extra_particulars}}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{$row->salpay_extra_amt}}</td>
-								<td>-</td>
-								<td>-</td>
-							</tr>
-						@endif
+					<?php if($trandaily['bid'] != 6) { // DON'T SHOW THESE ENTRIES FOR HO ?>
+							@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
+							@else<?php //ADJ CREDIT?>
+								<?php
+									$adj_db = $row->salpay_extra_amt;
+									$adj_db_total += $adj_db;
+								?>
+								<tr>
+									<td>{{$row->date}}</td>
+									<td>{{$row->FirstName}} {{$row->MiddleName}} {{$row->LastName}}</td>
+									<td>{{$row->salpay_extra_particulars}}</td>
+									<td>-</td>
+									<td>-</td>
+									<td>-</td>
+									<td>{{$row->salpay_extra_amt}}</td>
+									<td>-</td>
+									<td>-</td>
+								</tr>
+							@endif
+					<?php } ?>
 				@endforeach
-				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY AND BRANCH IS NOT HO ************/?>
 				
 				<tr>
 					<th colspan =3>TOTAL PF</th>
@@ -4338,8 +4342,9 @@
 						@endif
 				@endforeach
 
-				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY AND BRANCH IS NOT HO ************/?>
 				@foreach ($trandaily['esi'] as $row)
+					<?php if($trandaily['bid'] != 6) { // DON'T SHOW THESE ENTRIES FOR HO ?>
 						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
 						@else<?php //ADJ CREDIT?>
 							<?php
@@ -4358,8 +4363,9 @@
 								<td>-</td>
 							</tr>
 						@endif
+					<?php } ?>
 				@endforeach
-				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY AND BRANCH IS NOT HO ************/?>
 				
 				<tr>
 					<th colspan =3>TOTAL PF</th>
@@ -4429,8 +4435,9 @@
 						@endif
 				@endforeach
 
-				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY AND BRANCH IS NOT HO ************/?>
 				@foreach ($trandaily['professional_tax'] as $row)
+					<?php if($trandaily['bid'] != 6) { // DON'T SHOW THESE ENTRIES FOR HO ?>
 						@if(strcasecmp($row->paymentmode, "CASH") == 0 || strcasecmp($row->paymentmode, "INHAND") == 0)<?php //CASH CREDIT?>
 						@else<?php //ADJ CREDIT?>
 							<?php
@@ -4449,8 +4456,9 @@
 								<td>-</td>
 							</tr>
 						@endif
+					<?php } ?>
 				@endforeach
-				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY ************/?>
+				<?php /********** SHOW A REVERSE ENTRY IF IT IS ADJ ENTRY AND BRANCH IS NOT HO ************/?>
 				
 				<tr>
 					<th colspan =3>TOTAL PF</th>
