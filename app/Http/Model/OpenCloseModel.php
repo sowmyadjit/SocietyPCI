@@ -2760,7 +2760,7 @@
 				->where('Bid',$Branchid)
 				->where('fdallocation.FdReport_MatureDate',">=",date("Y-m-d"))
 				->get();
-			print_r($fdaccno);
+			// print_r($fdaccno);
 			foreach($fdaccno as $accno)
 			{
 				$saleem=0;
