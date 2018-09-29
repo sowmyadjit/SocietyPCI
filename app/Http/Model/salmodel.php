@@ -637,6 +637,9 @@
 			}
 
 			/************* SUB HEAD ID BASED ON AGENT TYPE ***************/
+				if(empty($id["agent_type"])) {
+					$id["agent_type"] = "";
+				}
 				switch($id["agent_type"]) {
 					case "APPRAISER": 
 										$agent_com_subhead = 66;
