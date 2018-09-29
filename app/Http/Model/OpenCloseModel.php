@@ -3085,7 +3085,7 @@
 			$uname= Auth::user();
 			$bid=$uname->Bid;
 
-			$excluede_arr = array(11,9);
+			$excluede_arr = array(11,9,10);
 			
 			$agent_sal_extra=DB::table('salary_extra_pay')
 				->select('salpay_extra_amt', 'salary_extra.sal_extra_type', 'salpay_extra_particulars', 'salary_extra_pay.date', 'FirstName', 'MiddleName', 'LastName','sal_extra_name', 'lname','paymentmode',DB::raw(" '' as 'receipt_no' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
