@@ -2567,10 +2567,9 @@
 					?>
 */?>
 					
-<?php /*
-< ?php /****************** APPRAISER COMMISSION ******************** / ?>
+<?php /****************** APPRAISER COMMISSION ********************/ ?>
 					<tr><td colspan="10"><h5><b><center>APPRAISER COMMISSION<center></b></h5></td></tr>
-					< ?php
+					<?php
 						$cash_cr = 0;
 						$cash_db = 0;
 						$adj_cr = 0;
@@ -2580,6 +2579,8 @@
 						$adj_cr_total = 0;
 						$adj_db_total = 0;
 					?>
+					
+<?php /*
 					@foreach ($trandaily['jewel_charges'] as $row)
 						< ?php if(strcasecmp($row->JewelLoan_PaymentMode, "CASH")  == 0 || strcasecmp($row->JewelLoan_PaymentMode, "INHAND") ==0) {?>< ?php //CASH ?>
 										< ?php
@@ -2617,10 +2618,11 @@
 										</tr>
 						< ?php } ?>
 					@endforeach
+*/?>
 
-					< ?php /************* APPRAISER SALARY ********** /?>
-					@foreach ($trandaily['agent_sal_appraiser'] as $row)	< ?php /* AGENT SALARY - PG, RD, APPRAISER * /?>
-						< ?php
+					<?php /************* APPRAISER SALARY **********/?>
+					@foreach ($trandaily['agent_sal_appraiser'] as $row)	<?php /* AGENT SALARY - PG, RD, APPRAISER */?>
+						<?php
 							// $adj_db = $row->Agent_Commission_PaidAmount + $row->Tds + $row->securityDeposit ;
 							$adj_db = $row->total_commission;
 							if($adj_db <= 0) {
@@ -2641,27 +2643,27 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					< ?php /************* APPRAISER SALARY ********** / ?>
+					<?php /************* APPRAISER SALARY **********/ ?>
 
 					<tr>
-						<th colspan =3>Total APPRAISER COMMISSION</th>
-						<td>< ?php echo $cash_cr_total; ?></td>
-						<td>< ?php echo $cash_db_total; ?></td>
-						<td>< ?php echo $adj_cr_total; ?></td>
-						<td>< ?php echo $adj_db_total; ?></td>
+						<th colspan="3">Total APPRAISER COMMISSION</th>
+						<td><?php echo $cash_cr_total; ?></td>
+						<td><?php echo $cash_db_total; ?></td>
+						<td><?php echo $adj_cr_total; ?></td>
+						<td><?php echo $adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
-					< ?php
+					<?php
 						$gt_cash_cr += $cash_cr_total;
 						$gt_cash_db += $cash_db_total;
 						$gt_adj_cr += $adj_cr_total;
 						$gt_adj_db += $adj_db_total;
 					?>
-< ?php /****************** APPRAISER COMMISSION ******************** / ?>
+<?php /****************** APPRAISER COMMISSION ********************/ ?>
 
-					
+<?php /*	
 < ?php /****************** INSURANCE ******************** / ?>
 					<tr><td colspan="10"><h5><b><center>INSURANCE<center></b></h5></td></tr>
 					< ?php
