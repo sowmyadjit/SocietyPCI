@@ -156,12 +156,18 @@
 		
 		public function GetAlocatedAgent($alcg)
 		{ 
-			return DB::table('user')
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $UID=$uname->Uid; $BID=$uname->Bid;
+			$ret_data = DB::table('user')
 			//->join('pigmi_transaction','pigmi_transaction.Agentid','=','user.Uid')
 			->select(DB::raw('user.Uid as id, CONCAT(`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))->distinct()
 			->where('user.FirstName','like','%'.$alcg.'%')
-			->where('user.Did','=','4')
-			->get();
+			->where('user.Did','=','4');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("user.Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
+
+			return $ret_data;
 		}
 		public function GetAlocatedAgent1($alcg)
 		{
