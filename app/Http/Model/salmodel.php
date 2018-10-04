@@ -297,8 +297,11 @@
 			/****************** */
 			
 			/*************** SEPARATE TA AMOUNT FROM TOTAL SB AMOUNT ***************/
-			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => ($netpay-$ta),'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
-			$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>$ta_part,'Amount' => ($ta),'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
+			if($BID != 6) { // IF IT IS HO THEN DON'T ADD SB TRANSACTIONS
+				$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>"SALARY AMOUNT",'Amount' => ($netpay-$ta),'CurrentBalance' => $accbal,'Total_Bal' => $totbal,'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
+				$res = DB::table('sb_transaction')->insertGetId(['Accid'=> $accid,'AccTid' =>"1",'TransactionType' =>"CREDIT",'particulars' =>$ta_part,'Amount' => ($ta),'tran_Date' =>$dte,'SBReport_TranDate'=>  $dte,'Month'=>$mnt,'Year'=>$year,'Payment_Mode'=>"SALARY",'Bid'=>$temp_bid/*$id['bid']*/,'CreatedBy'=>$UID, 'SubLedgerId'=>42 ]);
+				// NO RV ADJ NO FOR - ADJ CREDIT ENRTY
+			}
 			/*************** SEPARATE TA AMOUNT FROM TOTAL SB AMOUNT ***************/
 			DB::table('createaccount')->where('Accid',$accid)->update(['Total_Amount'=>($totbal+$ta)]);
 
