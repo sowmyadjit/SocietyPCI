@@ -95,7 +95,7 @@
 							<input class="form-control hidden"  type="text" id="com_total_val" name="com_total_val" readonly >
 						</div>
 						<div class="col-sm-2">
-							<input class="form-control"  type="text" id="com_per" name="com_per" onchange="calc_com(); update_total_commission();" placeholder="Commission %">  %
+							<input class="form-control"  type="text" id="com_per" name="com_per" onchange="calc_com(); <?php /*update_total_commission(); */ ?>" placeholder="Commission %">  %
 						</div>
 					</div>
 					
@@ -816,7 +816,9 @@
 		var com_val = 0;
 		com_val = calc_amt * (com_per / 100);
 		
-		
+		/******** store total commission *******/
+		$("#com_total_val").val(Math.round(com_val));
+		/******** store total commission *******/
 		
 		
 		var tds_box_no = tds_id.substr(1);
@@ -999,8 +1001,8 @@
 </script>
 
 <script>
-	function update_total_commission()
+	/* function update_total_commission()
 	{
-		$("#com_total_val").val($("#com_val").val());
-	}
+		// $("#com_total_val").val($("#com_val").val());
+	} */
 </script>
