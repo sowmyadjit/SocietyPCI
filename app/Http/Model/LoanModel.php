@@ -1916,6 +1916,9 @@
 			$charges = $details['charges'];
 			$auctionAmt = $details['auc_amt'];
 			$buyerpaymentmode = $details['pay_mode'];
+			$chequeno = $details['chequeno'];
+			$cheque_date = $details['cheque_date'];
+			$cheque_bank_id = $details['cheque_bank_id'];
 			$SBAccid = $details['buyer_acc_no'];
 			$jewelalocid = $details['jl_alloc_id'];
 			$bid2 = $details['bid2'];
@@ -1966,6 +1969,20 @@
 					->update(['Total_Amount'=>$updateamt]);
 				$id = DB::table('sb_transaction')
 						->insertGetId(['Accid'=> $SBAccid,'AccTid' => "1",'TransactionType' => "DEBIT",'particulars' =>"SB ACCOUNT",'Amount' =>$auctionAmt,'CurrentBalance' => $Total_Amount,'Total_Bal' => $updateamt,'tran_Date' =>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$UID,'Bid'=>$BID,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'Payment_Mode'=>"SB"]);
+			}  else if($buyerpaymentmode == "CHEQUE") {
+				
+				$bankid = $cheque_bank_id;
+				$Banktot1=DB::table('addbank')->select('TotalAmt')->where('Bankid',$bankid)->first();
+				$Banktot=$Banktot1->TotalAmt;
+				$amt=$auctionAmt;
+				$bankamttot=$Banktot+$amt; // AMOUNT CREDITED TO BANK
+
+				
+				DB::table('addbank')->where('Bankid',$bankid)
+				->update(['TotalAmt'=>$bankamttot]);
+
+				
+				DB::table('deposit')->insert(['Bid'=>$BID,'d_date'=>$auc_date,'date'=>$auc_date,'depo_bank_id'=>$cheque_bank_id,'pay_mode'=>"CHEQUE",'cheque_no'=>$chequeno,'cheque_date'=>$cheque_date,'amount'=>$auctionAmt,'Deposit_type'=>"DEPOSIT",'reason'=>$per ]);
 			}
 			
 			if($pay_type == "CASH") {
@@ -1994,8 +2011,29 @@
 					/***********/
 			
 			} else {
-				DB::table('branch_to_branch')
-					->insert(['Branch_Branch1_Id'=>$BID,'Branch_Branch2_Id'=>$bid2,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$auctionAmt,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
+				$b2b_tran_id = DB::table('branch_to_branch')
+					->insert(['Branch_Branch1_Id'=>$bid2/*$BID*/,'Branch_Branch2_Id'=>6,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$auctionAmt,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
+					
+					/****** HO - ADJ CREDIT *****/
+					$fn_data["rv_payment_mode"] = $pay_type;
+					$fn_data["rv_transaction_id"] = $b2b_tran_id;
+					$fn_data["rv_transaction_type"] = "CREDIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $dte;
+					$fn_data["rv_bid"] = 6;
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
+					/****** BRANCH - ADJ DB *****/
+					$fn_data["rv_payment_mode"] = $pay_type;
+					$fn_data["rv_transaction_id"] = $b2b_tran_id;
+					$fn_data["rv_transaction_type"] = "DEBIT";
+					$fn_data["rv_transaction_category"] = ReceiptVoucherModel::B2B_TRAN;//constant B2B_TRAN is declared in ReceiptVoucherModel
+					$fn_data["rv_date"] = $dte;
+					$fn_data["rv_bid"] = $bid2;//TO BRANCH
+					$this->rv_no->save_rv_no($fn_data);
+					unset($fn_data);
+					/***********/
 			}
 				
 			DB::table('jewelloan_allocation')
@@ -2006,7 +2044,7 @@
 				
 			DB::table('jewel_auction')
 				->where('JewelLoanId',$jewelalocid)
-				->update(['auction_date'=>$auc_date,'jewel_auction_amount'=>$auctionAmt,'loan_deduction_amount'=>$loan_deduction_amount,'extra_amount'=>$extra_amount,'buyer_name'=>$buyerName,'pay_mode'=>$buyerpaymentmode,'sb_acc_no'=>$SBAccid,'bank_name'=>"",'cheque_no'=>"",'cheque_date'=>""]);
+				->update(['auction_date'=>$auc_date,'jewel_auction_amount'=>$auctionAmt,'loan_deduction_amount'=>$loan_deduction_amount,'extra_amount'=>$extra_amount,'buyer_name'=>$buyerName,'pay_mode'=>$buyerpaymentmode,'sb_acc_no'=>$SBAccid,'bank_name'=>" ",'cheque_no'=>$chequeno,'cheque_date'=>$cheque_date,'bank_id'=>$cheque_bank_id ]);
 			
 			$jewel_auction_id = DB::table("jewel_auction")
 				->where("JewelLoanId",$jewelalocid)

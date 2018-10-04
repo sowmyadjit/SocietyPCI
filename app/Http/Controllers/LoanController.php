@@ -1107,6 +1107,9 @@
 			$data['bname'] = $request->input("bname",true);
 			$data['bid2'] = $request->input("bid2",true);
 			$data['pay_mode'] = $request->input("pay_mode",true);
+			$data['chequeno'] = $request->input("chequeno",true);
+			$data['cheque_date'] = $request->input("cheque_date",true);
+			$data['cheque_bank_id'] = $request->input("cheque_bank_id",true);
 			$data['pay_type'] = $request->input("pay_type",true);
 			$data['buyer_acc_no'] = $request->input("buyer_acc_no",true);
 			$data['bk_name'] = $request->input("bk_name",true);

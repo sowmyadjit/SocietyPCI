@@ -61,7 +61,8 @@
 							<select class="form-control" id="pay_mode" name="pay_mode" onchange="pay_mode_change();">
 								<option>-----Payment Mode-----</option>
 								<option value="CASH">CASH</option>
-								<option value="SB">SB</option>
+						<?php /*<option value="SB">SB</option>*/?>
+								<option value="CHEQUE">CHEQUE</option>
 							</select>
 						</div>
 					</div>
@@ -77,6 +78,41 @@
 							<input class="typeahead form-control"  id="rdaccount" type="text" name="rdaccount" placeholder="SELECT Account Number">  
 						</div>
 					</div>
+
+
+					<div class="form-group buyer_cheque">
+						<div class="form-group">
+							<label class="control-label col-sm-4" for="first_name">Cheque Number:</label>
+							<div class="col-md-4">
+								<input type="text" class="form-control" id="chequeno" name="chequeno" placeholder="CHEQUE NUMBER">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-4 control-label">Cheque Date</label>
+							<div class="col-md-4">
+								<div class="input-group input-append date auc_date" id="datePicker">
+									<input type="text" class="form-control datepicker" name="cheque_date" id="cheque_date"  placeholder="YYYY/MM/DD" data-date-format="yyyy-mm-dd" VALUE="{{date('Y-m-d')}}"/>
+									<span class="input-group-addon add-on">
+										<span class="glyphicon glyphicon-calendar">
+										</span>
+									</span> 
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4">Bank Name:</label>
+							<div id="the-basics" class="col-sm-4">
+								<input class="typeaheadbank form-control"  type="text" id="cheque_bank_id" placeholder="SELECT Bank"  >  
+							</div>
+						</div>
+					</div>
+
+
+
+
+
+
+
 					<div class="form-group">
 						<label class="control-label col-sm-4"> TO BRANCH:</label>
 						<div class="col-md-4">
@@ -155,13 +191,25 @@
 </script>
 
 <script>
+	$('input.typeaheadbank').typeahead({
+		//ajax: '/GetBank'
+		source:GetBank
+	});
+</script>
+
+<script>
 	function pay_mode_change() {
 			var pay_mode;
 			pay_mode = $("#pay_mode").val();
 			if(pay_mode == "SB") {
+				$(".buyer_cheque").hide();
 				$(".buyer_sb").show();
+			} else if(pay_mode == "CHEQUE") {
+				$(".buyer_sb").hide();
+				$(".buyer_cheque").show();
 			} else {
 				$(".buyer_sb").hide();
+				$(".buyer_cheque").hide();
 			}
 		}
 		
@@ -219,6 +267,7 @@
 	
 	$(document).ready(function(){
 		$(".buyer_sb").hide();
+		$(".buyer_cheque").hide();
 		var branchid=0;
 		$('.cnclbtn').click(function(e){
 			var retVal = confirm("Are You Sure ?");
@@ -230,6 +279,7 @@
 			}
 		});
 		
+		var submit_count = 0;
 		$('.sbmbtn').click( function(e) {
 	//		e.preventDefault();
 	//		var acc,auc_amt,name,ln_no,st_date,end_date,gross_wt,net_wt,app_val,ln_amt,rem_amt,auc_amt,pay_mode;
@@ -250,6 +300,9 @@
 				auc_amt = "{{$data['auc_amt']}}";
 				bid2 = $("#BranchList2").val();
 				pay_mode = $("#pay_mode").val();
+				chequeno = $("#chequeno").val();
+				cheque_date = $("#cheque_date").val();
+				cheque_bank_id = $("#cheque_bank_id").attr("data-value");
 				pay_type = $("#pay_type").val();
 				buyer_acc_no = $("#rdaccount").val();
 				bk_name = $("#bk_name").val();
@@ -258,18 +311,21 @@
 				subhead_id = $("#expsubhead").val();
 				per = $("#per").val();
 				auc_date = $("#pdate").val();
-			
-			$.ajax({
-				url: 'jewelAuctionPay',
-			//	type: 'post',
-			//	data:  $('#form_des').serialize(),
-				type: 'get',
-				data:'&jl_alloc_id='+jl_alloc_id+'&cname='+cname+'&bname='+bname+'&ln_no='+ln_no+'&st_date='+st_date+'&end_date='+end_date+'&gross_wt='+gross_wt+'&net_wt='+net_wt+'&ln_amt='+ln_amt+'&rem_amt='+rem_amt+'&rem_int='+rem_int+'&charges='+charges+'&auc_amt='+auc_amt+'&pay_mode='+pay_mode+'&pay_type='+pay_type+'&bk_name='+bk_name+'&by_ac_no='+by_ac_no+'&bid2='+bid2+'&head_id='+head_id+'&subhead_id='+subhead_id+'&per='+per+'&auc_date='+auc_date+'&buyer_acc_no='+buyer_acc_no,
-				success: function(data) {
-					alert('success');
-				//	$('.branchclassid').click();
+
+				if(submit_count == 0) {
+					submit_count++;
+					$.ajax({
+						url: 'jewelAuctionPay',
+					//	type: 'post',
+					//	data:  $('#form_des').serialize(),
+						type: 'get',
+						data:'&jl_alloc_id='+jl_alloc_id+'&cname='+cname+'&bname='+bname+'&ln_no='+ln_no+'&st_date='+st_date+'&end_date='+end_date+'&gross_wt='+gross_wt+'&net_wt='+net_wt+'&ln_amt='+ln_amt+'&rem_amt='+rem_amt+'&rem_int='+rem_int+'&charges='+charges+'&auc_amt='+auc_amt+'&pay_mode='+pay_mode+'&chequeno='+chequeno+'&cheque_date='+cheque_date+'&cheque_bank_id='+cheque_bank_id+'&pay_type='+pay_type+'&bk_name='+bk_name+'&by_ac_no='+by_ac_no+'&bid2='+bid2+'&head_id='+head_id+'&subhead_id='+subhead_id+'&per='+per+'&auc_date='+auc_date+'&buyer_acc_no='+buyer_acc_no,
+						success: function(data) {
+							alert('success');
+						//	$('.branchclassid').click();
+						}
+					});
 				}
-			});
 		});
 		
 		$('#HeadiD').change(function(e){
