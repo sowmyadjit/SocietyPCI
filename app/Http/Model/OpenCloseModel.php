@@ -3484,6 +3484,32 @@
 			return $jewel_auction_account;
 		}
 		
+		public function jewel_auction_suspense_creation($date)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$bid=$uname->Bid;
+			
+			$jewel_auction_suspense_creation = DB::table("jewel_auction")
+				->select(
+							"pay_mode",
+							"jewel_auction.extra_amount",
+							"jewel_auction.jl_auction_suspense_create_date",
+							"jewelloan_allocation.JewelLoan_LoanNumber",
+							'user.Uid',
+							DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+						)
+				->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewel_auction.JewelLoanId")
+				->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
+				->where("jewelloan_allocation.JewelLoan_Bid","=",$bid)
+				->where("jewel_auction.jl_auction_suspense_create_date","=",$date)
+				->where("jewel_auction.deleted","=",0)
+				->get();
+			
+			return $jewel_auction_suspense_creation;
+		}
+		
 		public function jewel_auction_suspense($date)
 		{
 			$uname='';

@@ -3012,12 +3012,39 @@
 <?php /****************************************** JEWEL AUCTION SUSPENSE - (IN BRANCH) ******************************************/?>
 					<tr><td colspan="10"><h5><b><center>JL AUCTION SUSPENSE<center></b></h5></td></tr>
 					<?php
+						$cash_cr = 0;
 						$cash_db = 0;
+						$adj_cr = 0;
 						$adj_db = 0;
 						
+						$cash_cr_total = 0;
 						$cash_db_total = 0;
+						$adj_cr_total = 0;
 						$adj_db_total = 0;
 					?>
+					
+					<?php /********************* SUSPENSE CREATION  - (jewel_auction TABLE) - ALWAYS ADJUSTMENT CREDIT *********************/?>
+					@foreach ($trandaily['jewel_auction_suspense_creation'] as $row_jew)
+							<?php
+								$adj_cr = $row_jew->extra_amount;
+								$adj_cr_total += $adj_cr;
+							?>
+							<tr>
+								<td>{{ $row_jew->jl_auction_suspense_create_date }}</td>
+								<td>{{ $row_jew->JewelLoan_LoanNumber }}</td>
+								<td>-{{ $row_jew->name }}({{$row_jew->Uid}})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$adj_cr}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+					@endforeach
+					<?php /********************* SUSPENSE CREATION  - (jewel_auction TABLE) *********************/?>
+
+					<?php /********************* SUSPENSE PAYMENT  - (auction_amount_transaction TABLE) *********************/?>
 					@foreach ($trandaily['jewel_auction_suspense'] as $row_jew)
 						@if(strcasecmp($row_jew->pay_mode, 'CASH') == 0)
 							<?php
@@ -3055,18 +3082,21 @@
 							</tr>
 						@endif
 					@endforeach
+					<?php /********************* SUSPENSE PAYMENT  - (auction_amount_transaction TABLE) *********************/?>
 					<tr>
 						<th colspan="3">Total Auction Suspense Pay</th>
-						<td>-</td>
+						<td><?php echo $cash_cr_total; ?></td>
 						<td><?php echo $cash_db_total; ?></td>
-						<td>-</td>
+						<td><?php echo $adj_cr_total; ?></td>
 						<td><?php echo $adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
 					<?php
+						$gt_cash_cr += $cash_cr_total;
 						$gt_cash_db += $cash_db_total;
+						$gt_adj_cr += $adj_cr_total;
 						$gt_adj_db += $adj_db_total;
 					?>
 <?php /****************************************** JEWEL AUCTION SUSPENSE - (IN BRANCH) ******************************************/?>

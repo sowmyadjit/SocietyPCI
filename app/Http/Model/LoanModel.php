@@ -2046,7 +2046,7 @@
 				
 			DB::table('jewel_auction')
 				->where('JewelLoanId',$jewelalocid)
-				->update(['auction_date'=>$auc_date,'jewel_auction_amount'=>$auctionAmt,'loan_deduction_amount'=>$loan_deduction_amount,'extra_amount'=>$extra_amount,'buyer_name'=>$buyerName,'pay_mode'=>$buyerpaymentmode,'sb_acc_no'=>$SBAccid,'bank_name'=>" ",'cheque_no'=>$chequeno,'cheque_date'=>$cheque_date,'bank_id'=>$cheque_bank_id ]);
+				->update(['auction_date'=>$auc_date,'jewel_auction_amount'=>$auctionAmt,'loan_deduction_amount'=>$loan_deduction_amount,'extra_amount'=>$extra_amount,'buyer_name'=>$buyerName,'pay_mode'=>$buyerpaymentmode,'sb_acc_no'=>$SBAccid,'bank_name'=>" ",'cheque_no'=>$chequeno,'cheque_date'=>$cheque_date,'bank_id'=>$cheque_bank_id,"jl_auction_suspense_create_date"=>$auc_date ]);
 			
 			$jewel_auction_id = DB::table("jewel_auction")
 				->where("JewelLoanId",$jewelalocid)
