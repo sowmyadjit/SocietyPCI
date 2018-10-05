@@ -246,6 +246,7 @@
 			
 			
 			$trandaily['jewel_auction_account']=$this->op->jewel_auction_account($dte);
+			$trandaily['jewel_auction_suspense']=$this->op->jewel_auction_suspense($dte);
 			
 			$trandaily['jlcharges_adjust']=$this->op->jlcharges_adjust($dte);
 			$trandaily['jlcharges']=$this->op->jlcharges($dte);
@@ -631,6 +632,7 @@
 			$trandaily['professional_tax']=$this->op->professional_tax($dte);
 			
 			$trandaily['jewel_auction_account']=$this->op->jewel_auction_account($dte);
+			$trandaily['jewel_auction_suspense']=$this->op->jewel_auction_suspense($dte);
 			
 			
 			$trandaily['jlcharges_adjust']=$this->op->jlcharges_adjust($dte);

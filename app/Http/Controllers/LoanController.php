@@ -1163,7 +1163,7 @@
 				return "succuss";
 			}
 			else {
-			return view('jewelAuctionExtraAmountPayDetails',compact("data"));
+				return view('jewelAuctionExtraAmountPayDetails',compact("data"));
 			}
 		}
 		

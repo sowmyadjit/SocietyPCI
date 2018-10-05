@@ -2921,8 +2921,96 @@
 						$gt_cash_cr += $jlrepay_cash_cr_total;
 						$gt_adj_cr += $jlrepay_adj_cr_total;
 					?>
-					
+
+<?php /****************************************** JEWEL AUCTION - (IN HO)  ******************************************/?>
 					<tr><td colspan="10"><h5><b><center>JL AUCTION ACCOUNT<center></b></h5></td></tr>
+					<?php
+						$cash_cr = 0;
+						$adj_cr = 0;
+						$adj_db = 0;
+						
+						$cash_cr_total = 0;
+						$adj_cr_total = 0;
+						$adj_db_total = 0;
+					?>
+					@foreach ($trandaily['jewel_auction_account'] as $row_jew)
+						@if(strcasecmp($row_jew->pay_mode, 'CASH') == 0)
+							<?php
+								$cash_cr = $row_jew->jewel_auction_amount;
+								$cash_cr_total += $cash_cr;
+							?>
+							<tr>
+								<td>{{ $row_jew->auction_date }}</td>
+								<td>{{ $row_jew->JewelLoan_LoanNumber }}</td>
+								<td>{{ $row_jew->name }}</td>
+								<td>{{$cash_cr}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@else
+							<?php
+								$adj_cr = $row_jew->jewel_auction_amount;
+								$adj_cr_total += $adj_cr;
+							?>
+							<tr>
+								<td>{{ $row_jew->auction_date }}</td>
+								<td>{{ $row_jew->JewelLoan_LoanNumber }}</td>
+								<td>{{ $row_jew->name }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$adj_cr}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endif
+					@endforeach
+
+					<?php /********************* opposit entry to b2b amt - ADJ DEBIT **********************/?>
+					@foreach ($trandaily['jewel_auction_account'] as $row_jew)
+							<?php
+								$adj_db = $row_jew->jewel_auction_amount;
+								$adj_db_total += $adj_db;
+							?>
+							<tr>
+								<td>{{ $row_jew->auction_date }}</td>
+								<td>{{ $row_jew->JewelLoan_LoanNumber }}</td>
+								<td>{{ $row_jew->name }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$adj_db}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+					@endforeach
+					<?php /********************* opposit entry to b2b amt - ADJ DEBIT **********************/?>
+
+					<tr>
+						<th colspan="3">Total Auction Account Pay</th>
+						<td><?php echo $cash_cr_total; ?></td>
+						<td>-</td>
+						<td><?php echo $adj_cr_total; ?></td>
+						<td><?php echo $adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $cash_cr_total;
+						$gt_adj_cr += $adj_cr_total;
+						$gt_adj_db += $adj_db_total;
+					?>
+<?php /****************************************** JEWEL AUCTION - (IN HO)  ******************************************/?>
+
+<?php /****************************************** JEWEL AUCTION SUSPENSE - (IN BRANCH) ******************************************/?>
+					<tr><td colspan="10"><h5><b><center>JL AUCTION SUSPENSE<center></b></h5></td></tr>
 					<?php
 						$cash_db = 0;
 						$adj_db = 0;
@@ -2930,7 +3018,7 @@
 						$cash_db_total = 0;
 						$adj_db_total = 0;
 					?>
-					@foreach ($trandaily['jewel_auction_account'] as $row_jew)
+					@foreach ($trandaily['jewel_auction_suspense'] as $row_jew)
 						@if(strcasecmp($row_jew->pay_mode, 'CASH') == 0)
 							<?php
 								$cash_db = $row_jew->amt_piad;
@@ -2968,7 +3056,7 @@
 						@endif
 					@endforeach
 					<tr>
-						<th colspan =3>Total Auction Account Pay</th>
+						<th colspan="3">Total Auction Suspense Pay</th>
 						<td>-</td>
 						<td><?php echo $cash_db_total; ?></td>
 						<td>-</td>
@@ -2981,6 +3069,7 @@
 						$gt_cash_db += $cash_db_total;
 						$gt_adj_db += $adj_db_total;
 					?>
+<?php /****************************************** JEWEL AUCTION SUSPENSE - (IN BRANCH) ******************************************/?>
 					
 					
 					

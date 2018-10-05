@@ -1840,6 +1840,7 @@
 //						->where('JewelLoan_Closed','=','NO')
 //						->where('JewelLoan_Bid','=',$BID)
 						->where('auction_status','=','1')
+						->where('jewel_auction.deleted','=',0)
 						->paginate(10);
 					//	->get();
 			return $result;
@@ -1864,6 +1865,7 @@
 						->where('auction_status','=','2')
 //						->where('extra_amount','>','0')
 						->where('exta_amount_paid','=','0')
+						->where('jewel_auction.deleted','=',0)
 						->paginate(10);
 					//	->get();
 					

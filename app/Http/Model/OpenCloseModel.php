@@ -1617,15 +1617,25 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('jewelloan_repay')->select('JewelLoan_LoanNumber','JLRepay_Date','receipt_voucher_no as jL_ReceiptNum','JLRepay_PaidAmt','JLRepay_PayMode',"JLRepay_paidtoprincipalamt","JLRepay_interestpaid",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id=DB::table('jewelloan_repay')->select('JLRepay_Id','JewelLoan_LoanNumber','JLRepay_Date',DB::raw(" '' as 'jL_ReceiptNum' ") /*'receipt_voucher_no as jL_ReceiptNum'*/,'JLRepay_PaidAmt','JLRepay_PayMode',"JLRepay_paidtoprincipalamt","JLRepay_interestpaid",'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),DB::raw(" '' as 'adj_no' ")/*'receipt_voucher_no as adj_no'*/)
 			->join('jewelloan_allocation','jewelloan_allocation.JewelLoanId','=','JLRepay_JLAllocID')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_repay.JLRepay_Id")
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_repay.JLRepay_Id")
 			->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
-			->where("receipt_voucher.transaction_category",23)
+			// ->where("receipt_voucher.transaction_category",23)
 			->where('JLRepay_Date',$dte)
 			->where('JLRepay_Bid',$BranchId)
 			->where('jewelloan_repay.deleted',0)
 			->get();
+			
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "JLRepay_Id";
+			$fd["transaction_category"] = 23;
+			$fd["receipt_voucher_type"] = "";
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["jL_ReceiptNum","adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
 			
 			return $id;
 		}
@@ -3446,15 +3456,42 @@
 			else
 				return "no";
 		}
-		
+
 		public function jewel_auction_account($date)
 		{
 			$uname='';
 			if(Auth::user())
 			$uname= Auth::user();
 			$bid=$uname->Bid;
+			if($bid == 6) {
+				$sa = array(
+					"jewel_auction.pay_mode",
+					"jewel_auction.jewel_auction_amount",
+					"jewel_auction.auction_date",
+					"jewelloan_allocation.JewelLoan_LoanNumber",
+					"buyer_name as name"
+				);
+				$jewel_auction_account = DB::table("jewel_auction")
+					->select($sa)
+					->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewel_auction.JewelLoanId")
+					->where("jewelloan_allocation.auction_status",2) // auction done
+					->where("jewel_auction.auction_date",$date)
+					->where("jewel_auction.deleted",0)
+					->get();
+			} else {
+				$jewel_auction_account = [];
+			}
+			return $jewel_auction_account;
+		}
+		
+		public function jewel_auction_suspense($date)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$bid=$uname->Bid;
 			
-			$jewel_auction_account = DB::table("auction_amount_transaction")
+			$jewel_auction_suspense = DB::table("auction_amount_transaction")
 				->select(
 							"pay_mode",
 							"amt_piad",
@@ -3467,13 +3504,13 @@
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","auction_amount_transaction.auc_tran_id")
 				->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
 				->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
-				->where("receipt_voucher.transaction_category",20)
+				->where("receipt_voucher.transaction_category",26)
 				->where("auction_amount_transaction.bid","=",$bid)
 				->where("tran_date","=",$date)
 				->where("auction_amount_transaction.deleted","=","0")
 				->get();
 			
-			return $jewel_auction_account;
+			return $jewel_auction_suspense;
 		}
 		
 		public function view_cash_details()

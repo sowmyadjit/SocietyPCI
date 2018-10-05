@@ -214,7 +214,7 @@
 				return false;
 			}
 		});
-		
+		var submit_count = 0;
 		$('.sbmbtn').click( function(e) {
 			e.preventDefault();
 			var jl_alloc_id,auc_amt,name,ln_no,st_date,end_date,gross_wt,net_wt,app_val,ln_amt,auc_amt,pay_mode,per;
@@ -237,18 +237,22 @@
 				bank_acc_no = $("#bank_acc_no").attr("data-value");
 				pay_date = $("#pay_date").val();
 				per = $("#per").val();
-			
-			$.ajax({
-				url: 'jewelAuctionExtraAmountPayDetails',
-			//	type: 'post',
-			//	data:  $('#form_des').serialize(),
-				type: 'get',
-				data:'&jl_alloc_id='+jl_alloc_id+'&cname='+cname+'&ln_no='+ln_no+'&st_date='+st_date+'&end_date='+end_date+'&gross_wt='+gross_wt+'&net_wt='+net_wt+'&ln_amt='+ln_amt+'&auc_amt='+auc_amt+'&pay_mode='+pay_mode+'&bk_name='+bk_name+'&per='+per+'&acc_no='+acc_no+'&extra_amt='+extra_amt+'&cheque_no='+cheque_no+'&cheque_date='+cheque_date+'&bank_acc_no='+bank_acc_no+'&pay_date='+pay_date,
-				success: function(data) {
-					alert('success');
-				//	$('.branchclassid').click();
+
+				if(submit_count == 0) {
+					submit_count++;
+					$.ajax({
+						url: 'jewelAuctionExtraAmountPayDetails',
+					//	type: 'post',
+					//	data:  $('#form_des').serialize(),
+						type: 'get',
+						data:'&jl_alloc_id='+jl_alloc_id+'&cname='+cname+'&ln_no='+ln_no+'&st_date='+st_date+'&end_date='+end_date+'&gross_wt='+gross_wt+'&net_wt='+net_wt+'&ln_amt='+ln_amt+'&auc_amt='+auc_amt+'&pay_mode='+pay_mode+'&bk_name='+bk_name+'&per='+per+'&acc_no='+acc_no+'&extra_amt='+extra_amt+'&cheque_no='+cheque_no+'&cheque_date='+cheque_date+'&bank_acc_no='+bank_acc_no+'&pay_date='+pay_date,
+						success: function(data) {
+							alert('success');
+						//	$('.branchclassid').click();
+						}
+					});
 				}
-			});
+
 		});
 		
 		$('#HeadiD').change(function(e){
