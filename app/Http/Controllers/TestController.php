@@ -568,7 +568,7 @@
 			if(!in_array($BID,[1,2,3,4,5,6])) { // CHECK FOR LOGIN
 				return "NOT LOGGED IN";
 			}
-			$fd["from_date"] = "2018-08-30";
+			$fd["from_date"] = "2018-08-01";
 			$this->loan_charges_to_all_charges($fd);
 			$this->customer_charges_to_all_charges($fd);
 			$this->dl_charges_to_all_charges($fd);
@@ -682,6 +682,7 @@
 					->where("tran_table","!=","")
 					->where("tran_table","!=",0)
 					->where("tran_id","!=",0)
+					->where("SubLedgerId",$row_ct->subhead)
 					->get();
 				if(count($existing_entries) > 0) {
 					// echo "EXISTS(subhead:{$row_ct->subhead}, table:{$temp_tran_table}, tran_id:{$temp_tran_id})";
@@ -747,6 +748,7 @@
 					$tt = 6; // tt - tran table
 					$tid = $row_cu->Custid; // tid - tran id
 					$existing_entries = DB::table("all_charges")
+						->select("all_charges_id")
 						->where("tran_table",$tt)
 						->where("tran_id",$tid)
 						->where("deleted",0)
@@ -796,6 +798,13 @@
 			$from_date = $data["from_date"];
 			$date_field = "DepLoan_LoanStartDate";
 			$data = DB::table("depositeloan_allocation")
+				->select(
+					"DepLoanAllocId",
+					"DepLoan_LoanCharge",
+					"DepLoan_LoanStartDate",
+					"DepLoan_Branch",
+					"DepLoan_PaymentMode"
+					)
 				->where($date_field,">=",$from_date)
 				// ->orderBy("DepLoanAllocId", "desc")
 				// ->limit(10)
@@ -820,6 +829,7 @@
 				$tt = 29; // tt - tran table
 				$tid = $row_dl->DepLoanAllocId; // tid - tran id
 				$existing_entries = DB::table("all_charges")
+					->select("all_charges_id")
 					->where("tran_table",$tt)
 					->where("tran_id",$tid)
 					->where("deleted",0)
@@ -840,7 +850,7 @@
 					$fd["date"] = $row_dl->DepLoan_LoanStartDate;
 					$fd["bid"] = $row_dl->DepLoan_Branch;
 					$fd["transaction_type"] = 2; // DEBIT
-					$fd["payment_mode"] = "CASH";
+					$fd["payment_mode"] = $row_dl->DepLoan_PaymentMode;
 					$fd["amount"] = $row_dl->DepLoan_LoanCharge;
 					$fd["particulars"] = "BOOKS AND FORMS";
 					$fd["paid"] = 1;
@@ -869,6 +879,19 @@
 			$from_date = $data["from_date"];
 			$date_field = "pl_payment_date";
 			$data = DB::table("personalloan_payment")
+				->select(
+					"pl_payment_id",
+					"pl_payment_date",
+					"Bid",
+					"PayMode",
+					"pl_payment_id",
+					"CreadtedBY",
+					"personalloan_payment.otherCharges",
+					"personalloan_payment.Book_FormCharges",
+					"personalloan_payment.AjustmentCharges",
+					"personalloan_payment.ShareCharges",
+					"personalloan_payment.Insurance"
+				)
 				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_payment.pl_allocation_id")
 				->where($date_field,">=",$from_date)
 				// ->orderBy("pl_payment_id", "desc")
@@ -893,6 +916,7 @@
 				$tt = 30; // tt - tran table
 				$tid = $row_pl->pl_payment_id; // tid - tran id
 				$existing_entries = DB::table("all_charges")
+					->select("all_charges_id")
 					->where("tran_table",$tt)
 					->where("tran_id",$tid)
 					->where("deleted",0)
@@ -1082,6 +1106,7 @@
 				$tt = $temp_tran_table; // tt - tran table
 				$tid = $temp_tran_id; // tid - tran id
 				$existing_entries = DB::table("all_charges")
+					->select("all_charges_id")
 					->where("tran_table",$tt)
 					->where("tran_id",$tid)
 					->where("deleted",0)
@@ -1210,6 +1235,7 @@
 				$tt = $temp_tran_table; // tt - tran table
 				$tid = $temp_tran_id; // tid - tran id
 				$existing_entries = DB::table("all_charges")
+					->select("all_charges_id")
 					->where("tran_table",$tt)
 					->where("tran_id",$tid)
 					->where("deleted",0)
@@ -1296,6 +1322,7 @@
 				$tt = 35; // tt - tran table
 				$tid = $row_jl->JewelLoanId; // tid - tran id
 				$existing_entries = DB::table("all_charges")
+					->select("all_charges_id")
 					->where("tran_table",$tt)
 					->where("tran_id",$tid)
 					->where("deleted",0)
