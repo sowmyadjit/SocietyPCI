@@ -49,17 +49,12 @@
 							<input type="text" class="form-control" id="bname" name="bname" value="" />
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-4" for="first_name">AUCTION AMOUNT:</label>
-						<div class="col-md-4">
-							<input type="text" class="form-control" id="auc_amt" name="auc_amt" value="{{$data['auc_amt']}}" readonly>
-						</div>
-					</div>
+
 					<div class="form-group">
 						<label class="control-label col-sm-4">Payment Mode:</label>
 						<div class="col-md-4">
 							<select class="form-control" id="pay_mode" name="pay_mode" onchange="pay_mode_change();">
-								<option>-----Payment Mode-----</option>
+								<option>-----Buyer Pays Through-----</option>
 								<option value="CASH">CASH</option>
 						<?php /*<option value="SB">SB</option>*/?>
 								<option value="CHEQUE">CHEQUE</option>
@@ -107,6 +102,25 @@
 						</div>
 					</div>
 
+
+					<div class="form-group">
+						<label class="control-label col-sm-4" for="first_name">AUCTION AMOUNT:</label>
+						<div class="col-md-4">
+							<input type="text" class="form-control" id="auc_amt" name="auc_amt" value="{{$data['auc_amt']}}" readonly>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-4" for="first_name">PAPER CHARGE:</label>
+						<div class="col-md-4">
+							<input type="text" class="form-control" id="paper_charge" name="paper_charge" value="0">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-4" for="first_name">AMOUNT TRANSFERING TO BRANCH:</label>
+						<div class="col-md-4">
+							<input type="text" class="form-control" id="amount_to_branch" name="amount_to_branch" value="{{$data['auc_amt']}}" readonly>
+						</div>
+					</div>
 
 
 
@@ -311,6 +325,8 @@
 				subhead_id = $("#expsubhead").val();
 				per = $("#per").val();
 				auc_date = $("#pdate").val();
+				paper_charge = $("#paper_charge").val();
+				amount_to_branch = $("#amount_to_branch").val();
 
 				if(submit_count == 0) {
 					submit_count++;
@@ -319,7 +335,7 @@
 					//	type: 'post',
 					//	data:  $('#form_des').serialize(),
 						type: 'get',
-						data:'&jl_alloc_id='+jl_alloc_id+'&cname='+cname+'&bname='+bname+'&ln_no='+ln_no+'&st_date='+st_date+'&end_date='+end_date+'&gross_wt='+gross_wt+'&net_wt='+net_wt+'&ln_amt='+ln_amt+'&rem_amt='+rem_amt+'&rem_int='+rem_int+'&charges='+charges+'&auc_amt='+auc_amt+'&pay_mode='+pay_mode+'&chequeno='+chequeno+'&cheque_date='+cheque_date+'&cheque_bank_id='+cheque_bank_id+'&pay_type='+pay_type+'&bk_name='+bk_name+'&by_ac_no='+by_ac_no+'&bid2='+bid2+'&head_id='+head_id+'&subhead_id='+subhead_id+'&per='+per+'&auc_date='+auc_date+'&buyer_acc_no='+buyer_acc_no,
+						data:'&jl_alloc_id='+jl_alloc_id+'&cname='+cname+'&bname='+bname+'&ln_no='+ln_no+'&st_date='+st_date+'&end_date='+end_date+'&gross_wt='+gross_wt+'&net_wt='+net_wt+'&ln_amt='+ln_amt+'&rem_amt='+rem_amt+'&rem_int='+rem_int+'&charges='+charges+'&auc_amt='+auc_amt+'&pay_mode='+pay_mode+'&chequeno='+chequeno+'&cheque_date='+cheque_date+'&cheque_bank_id='+cheque_bank_id+'&pay_type='+pay_type+'&bk_name='+bk_name+'&by_ac_no='+by_ac_no+'&bid2='+bid2+'&head_id='+head_id+'&subhead_id='+subhead_id+'&per='+per+'&auc_date='+auc_date+'&buyer_acc_no='+buyer_acc_no+'&paper_charge='+paper_charge+'&amount_to_branch='+amount_to_branch,
 						success: function(data) {
 							alert('success');
 						//	$('.branchclassid').click();
@@ -355,5 +371,22 @@
 				}
 			});
 		});
+	});
+</script>
+
+<script>
+	$("#paper_charge").keyup	(function(e) {
+		// console.log(e);
+		var auction_amount = parseFloat($("#auc_amt").val());
+		var paper_charge = parseFloat($("#paper_charge").val());
+		if(isNaN(paper_charge)) {
+			paper_charge = 0;
+		}
+		$("#paper_charge").val(paper_charge)
+		var amount_to_branch = parseFloat(auction_amount - paper_charge);
+		if(amount_to_branch < 0) {
+			amount_to_branch = 0;
+		}
+		$("#amount_to_branch").val(amount_to_branch);
 	});
 </script>

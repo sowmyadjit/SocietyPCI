@@ -1118,6 +1118,8 @@
 			$data['subhead_id'] = $request->input("subhead_id",true);
 			$data['per'] = $request->input("per",true);
 			$data['auc_date'] = $request->input("auc_date",true);
+			$data['paper_charge'] = $request->input("paper_charge",true);
+			$data['amount_to_branch'] = $request->input("amount_to_branch",true);
 			
 			if($data['bname'] !== true)
 			{

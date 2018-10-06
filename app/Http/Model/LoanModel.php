@@ -1933,11 +1933,13 @@
 			$year = date('Y',strtotime($auc_date));
 			$mnt = date('m',strtotime($auc_date));
 			$pay_type = $details["pay_type"];
+			$paper_charge = $details["paper_charge"];
+			$amount_to_branch = $details["amount_to_branch"];
 			
 			$loan_deduction_amount = $rem_amt + $rem_int + $charges;
 		/*	$extra_amount =  */
 			
-			$extra_amount = $auctionAmt - $loan_deduction_amount;
+			$extra_amount = $auctionAmt - $loan_deduction_amount - $paper_charge;
 			if($extra_amount < 0)
 				$extra_amount = 0;
 			
@@ -1989,7 +1991,7 @@
 			
 			if($pay_type == "CASH") {
 				$b2b_tran_id = DB::table('branch_to_branch')
-					->insertGetId(['Branch_Branch1_Id'=>$BID,'Branch_Branch2_Id'=>$bid2,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$auctionAmt,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
+					->insertGetId(['Branch_Branch1_Id'=>$BID,'Branch_Branch2_Id'=>$bid2,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$amount_to_branch,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
 				
 					/***********/
 					$fn_data["rv_payment_mode"] = $pay_type;
@@ -2014,7 +2016,7 @@
 			
 			} else {
 				$b2b_tran_id = DB::table('branch_to_branch')
-					->insert(['Branch_Branch1_Id'=>$bid2/*$BID*/,'Branch_Branch2_Id'=>6,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$auctionAmt,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
+					->insert(['Branch_Branch1_Id'=>$bid2/*$BID*/,'Branch_Branch2_Id'=>6,'Branch_Tran_Date'=>$dte,'Branch_Amount'=>$amount_to_branch,'Branch_per'=>$per,'LedgerHeadId'=>$HeadiD,'SubLedgerId'=>$expsubhead,'jewelalocId'=>$jewelalocid]);
 					
 					/****** HO - ADJ CREDIT *****/
 					$fn_data["rv_payment_mode"] = $pay_type;
@@ -2037,6 +2039,27 @@
 					unset($fn_data);
 					/***********/
 			}
+
+			$jl_acc_no = DB::table('jewelloan_allocation')->where('JewelLoanId',$jewelalocid)->where("deleted",0)->value("JewelLoan_LoanNumber");
+			$jl_auction_id = DB::table('jewel_auction')->where('JewelLoanId',$jewelalocid)->where("deleted",0)->value("jewel_auction_id");
+			/******************** ALL CHARGES - PAPER CHARGE (216-JEWEL AUCTION EXPENSES) ******************/
+			unset($fd);
+			$fd["date"] = $dte;
+			$fd["bid"] = $BID;
+			$fd["transaction_type"] = 2; // DEBIT
+			$fd["payment_mode"] = "ADJUSTMENT";
+			$fd["amount"] = $paper_charge;
+			$fd["particulars"] = "JL AUCTION PAPER CHARGE ({$jl_acc_no})";
+			$fd["paid"] = 1;
+			$fd["tran_table"] = 36; // jewel_auction
+			$fd["tran_id"] = $jl_auction_id;
+			$fd["created_by"] = $UID;
+			$fd["SubLedgerId"] = 216;
+			$fd["deleted"] = 0;
+			$this->all_ch->clear_row_data();
+			$this->all_ch->set_row_data($fd);
+			$this->all_ch->insert_row();
+			/******************** ALL CHARGES ******************/
 				
 			DB::table('jewelloan_allocation')
 				->where('JewelLoanId',$jewelalocid)
@@ -2633,6 +2656,7 @@
 				->select()
 				->where("JewelLoanId","=", $jewel_allocation_id)
 				->first();
+			return $jewel_auction->extra_amount; // TEMP
 			$extra_amount = $jewel_auction->jewel_auction_amount - $jewel_auction->loan_deduction_amount;
 //			$extra_amount = $jewel_auction->extra_amount;
 			
