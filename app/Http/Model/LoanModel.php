@@ -2890,6 +2890,7 @@
 				->join("personalloan_allocation","personalloan_allocation.PersLoanAllocID","=","personalloan_repay.PLRepay_PLAllocID")
 				->where("personalloan_allocation.PersLoanAllocID","=",$allocation->PersLoanAllocID)
 				->where("PL_ChequeStatus",'=',0)//*cheque cleared
+				->where("personalloan_repay.deleted",0)
 //				->orderBy("PLRepay_Id","desc")
 				->get();
 			//print_r($repayment); exit();
@@ -3048,6 +3049,7 @@
 						)
 				->join("depositeloan_allocation","depositeloan_allocation.DepLoanAllocId","=","depositeloan_repay.DLRepay_DepAllocID")
 				->where("depositeloan_allocation.DepLoanAllocId","=",$allocation->DepLoanAllocId)
+				->where("depositeloan_repay.deleted",0)
 				->orderBy("DLRepay_ID","asc")
 				->get();
 				
@@ -3219,6 +3221,7 @@
 						)
 				->join("staffloan_allocation","staffloan_allocation.StfLoanAllocID","=","staffloan_repay.SLRepay_SLAllocID")
 				->where("staffloan_allocation.StfLoanAllocID","=",$allocation->StfLoanAllocID)
+				->where("staffloan_repay.deleted",0)
 				->orderBy("SLRepay_Id","asc")
 				->get();
 				
