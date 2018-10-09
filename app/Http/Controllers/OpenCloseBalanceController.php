@@ -259,6 +259,7 @@
 			$trandaily['bank_amt_deposit']=$this->op->bank_amt_deposit($dte);
 			$trandaily['bank_amt_WITHDRAWL']=$this->op->bank_amt_WITHDRAWL($dte);
 			$trandaily['daily_rep_all_charges']=$this->op->daily_rep_all_charges($dte);
+			$trandaily['b2b_opp_adj_db']=$this->op->b2b_opp_adj_db($dte);
 			
 			$Url="openclose";
 			$trandaily['module']=$this->Modules->GetAnyMid($Url);
@@ -646,6 +647,7 @@
 			$trandaily['bank_amt_deposit']=$this->op->bank_amt_deposit($dte);
 			$trandaily['bank_amt_WITHDRAWL']=$this->op->bank_amt_WITHDRAWL($dte);
 			$trandaily['daily_rep_all_charges']=$this->op->daily_rep_all_charges($dte);
+			$trandaily['b2b_opp_adj_db']=$this->op->b2b_opp_adj_db($dte);
 			
 			//$trandaily['branch_to_branch']=$this->op->show_branch_to_branch($dte);
 			

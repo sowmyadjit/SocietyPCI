@@ -4014,9 +4014,6 @@
 					"all_charges.tran_table",
 					"all_charges.tran_id",
 					"all_charges.SubLedgerId",
-					"all_charges.all_charges_id",
-					"all_charges.all_charges_id",
-					"all_charges.all_charges_id",
 					DB::raw(" '' as 'name' "),
 					DB::raw(" '' as 'acc_no' "),
 					DB::raw(" '' as 'uid' ")
@@ -4226,6 +4223,52 @@
 			/*************** FFETCH USER INFO ****************/
 
 			// print_r($ret_data);//exit();
+			return $ret_data;
+		}
+
+		public function b2b_opp_adj_db($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$subhead_list = DB::table("branch_to_branch")
+				->select("SubLedgerId")
+				->where("deleted",0)
+				->where("Branch_Branch2_Id",$BID)
+				->where("Branch_Tran_Date",$date)
+				->groupBy("SubLedgerId")
+				->get();
+			//print_r($subhead_list);exit();
+			
+			foreach($subhead_list as $key_sub => $row_sub) {
+				$sa = array(
+					"branch_to_branch.Branch_Id",
+					"branch_to_branch.Branch_Tran_Date",
+					"branch_to_branch.Branch_payment_Mode",
+					"branch_to_branch.Branch_Amount",
+					"branch_to_branch.Branch_per",
+					"branch_to_branch.SubLedgerId",
+					DB::raw(" '' as 'name' "),
+					DB::raw(" '' as 'acc_no' "),
+					DB::raw(" '' as 'uid' ")
+				);
+				$subhead_tran_list = DB::table("branch_to_branch")
+					->select($sa)
+					->where("SubLedgerId",$row_sub->SubLedgerId)
+					->where("Branch_Tran_Date",$date)
+					->where("Branch_Branch2_Id",$BID)
+					->whereNotIn("Branch_payment_Mode",["CASH","INHAND"])
+					->where("deleted",0)
+					->get();
+					$ret_data[$row_sub->SubLedgerId]["subhead_tran"] = $subhead_tran_list;
+					$ret_data[$row_sub->SubLedgerId]["subhead_name"] = DB::table("legder")
+						->where("lid",$row_sub->SubLedgerId)
+						->value("lname");
+			}
+
+			if(empty($ret_data)) {
+				$ret_data = [];
+			}
+
+			// print_r($ret_data);exit();
 			return $ret_data;
 		}
 		

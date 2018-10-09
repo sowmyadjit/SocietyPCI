@@ -3361,6 +3361,8 @@
 
 
 
+
+<!-- ------------------------------- b 2 b ------------------------------- -->
 					<?php
 						$b2b_name = "Branch to Branch";
 						if($trandaily["bid"] == 6) {
@@ -3479,10 +3481,7 @@
 						$b2b_adj_db_total += $value;
 					?>
 					@endforeach //*/?>
-					
-					
-					
-					
+				
 		<?php	/*		
 					@foreach ($trandaily['Bank_Branch_extra'] as $branch_branch_tran)
 						
@@ -3501,18 +3500,7 @@
 						
 					@endforeach
 					
-					*/?>
-					
-					
-					
-					
-					
-					
-						
-						
-						
-						
-						
+					*/?>	
 						
 					<tr>
 						<th colspan =3>Branch To Branch </th>
@@ -3530,7 +3518,11 @@
 						$gt_adj_cr += $b2b_adj_cr_total;
 						$gt_adj_db += $b2b_adj_db_total;
 					?>
+<!-- ------------------------------- b 2 b ------------------------------- -->
 
+
+
+<!-- ------------------------------- b 2 b - HO Account ------------------------------- -->
 
 <?php if($trandaily['bid'] == 6) {?>
 					<?php /***************** HO ACCOUNT *********************/ ?>
@@ -3601,13 +3593,85 @@
 										$gt_adj_db += $adj_db_total;
 									?>
 				<?php /***************** HO ACCOUNT *********************/ ?>
-			
 <?php } ?>
+<!-- ------------------------------- b 2 b - HO Account ------------------------------- -->
 
 
-				<?php /***************** BONUS *********************/ ?>
+<!-- ------------------------------- B2B - OPPOSITE ENTRTY (ADJ DEBIT) ------------------------------- -->
+		<?php /***************** B2B - OPPOSITE ENTRTY (ADJ DEBIT) *********************/ ?>
+				<tr><td colspan="10"><h5><b><center>ADJUSTMENTS<center></b></h5></td></tr>
+				<?php foreach($trandaily["b2b_opp_adj_db"] as $key_allch => $row_allch) {?>
+					<tr><td colspan="10"><b><center>{{$row_allch["subhead_name"]}}<center></b></td></tr>
+						
+					<?php
+							$cash_cr = 0;
+							$cash_db = 0;
+							$adj_cr = 0;
+							$adj_db = 0;
+							$cash_cr_total = 0;
+							$cash_db_total = 0;
+							$adj_cr_total = 0;
+							$adj_db_total = 0;
+						?>
+
+						<?php foreach($row_allch["subhead_tran"] as $key_tran => $row_tran) { //print_r($row_tran); ?>
+							<?php
+								$tran_id = $row_tran->Branch_Id;
+								$amt = $row_tran->Branch_Amount;
+								$acc_no = $row_tran->acc_no;
+								$date = $row_tran->Branch_Tran_Date;
+								$particulars = $row_tran->Branch_per;
+								$name = $row_tran->name;
+								$uid = $row_tran->uid;
+								$rv_cr = "";
+								$rv_db = "";
+								$rv_adj = "";
+							?>
+							<?php //ADJ ?>
+											<?php
+												$adj_db = $amt;
+												$adj_db_total += $adj_db;
+											?>
+											<tr>
+												<td title="{{$tran_id}}">{{$date}}</td>
+												<td>{{$acc_no}}</td>
+												<td>{{$particulars}}</td>
+												<td>-</td>
+												<td>-</td>
+												<td>-</td>
+												<td>{{ $adj_db }}</td>
+												<td>{{$rv_cr}}</td>
+												<td>{{$rv_db}}</td>
+												<td>{{$rv_adj}}</td>
+											</tr>
+						<?php } ?>
+						
+						<tr>
+							<th colspan =3>Total {{$row_allch["subhead_name"]}}</th>
+							<td><?php echo $cash_cr_total; ?></td>
+							<td><?php echo $cash_db_total; ?></td>
+							<td><?php echo $adj_cr_total; ?></td>
+							<td><?php echo $adj_db_total; ?></td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+						</tr>
+						<?php
+							$gt_cash_cr += $cash_cr_total;
+							$gt_cash_db += $cash_db_total;
+							$gt_adj_cr += $adj_cr_total;
+							$gt_adj_db += $adj_db_total;
+						?>
+
+				<?php }?>
+		<?php /***************** B2B - OPPOSITE ENTRTY (ADJ DEBIT) *********************/ ?>
+<!-- ------------------------------- B2B - OPPOSITE ENTRTY (ADJ DEBIT) ------------------------------- -->
+
+
+<!-- ------------------------------- BONUS ------------------------------- -->
+				<?php /***************** BONUS ********************* / ?>
 								<tr><td colspan="10"><h5><b><center>BONUS<center></b></h5></td></tr>
-								<?php
+								< ?php
 									$cash_cr = 0;
 									$cash_db = 0;
 									$adj_cr = 0;
@@ -3618,8 +3682,8 @@
 									$adj_db_total = 0;
 								?>
 								@foreach($trandaily['branch_branch_tran_credit'] as $row)
-									<?php if($row->SubLedgerId == 197) {?>
-														<?php
+									< ?php if($row->SubLedgerId == 197) {?>
+														< ?php
 															$adj_db = $row->Branch_Amount;
 															$adj_db_total += $adj_db;
 														?>
@@ -3635,25 +3699,29 @@
 															<td>-</td>
 															<td>-</td>
 														</tr>
-									<?php } ?>
+									< ?php } ?>
 								@endforeach
 								<tr>
 									<th colspan =3>Total BONUS</th>
-									<td><?php echo $cash_cr_total; ?></td>
-									<td><?php echo $cash_db_total; ?></td>
-									<td><?php echo $adj_cr_total; ?></td>
-									<td><?php echo $adj_db_total; ?></td>
+									<td>< ?php echo $cash_cr_total; ?></td>
+									<td>< ?php echo $cash_db_total; ?></td>
+									<td>< ?php echo $adj_cr_total; ?></td>
+									<td>< ?php echo $adj_db_total; ?></td>
 									<td>-</td>
 									<td>-</td>
 									<td>-</td>
 								</tr>
-								<?php
+								< ?php
 									$gt_cash_cr += $cash_cr_total;
 									$gt_cash_db += $cash_db_total;
 									$gt_adj_cr += $adj_cr_total;
 									$gt_adj_db += $adj_db_total;
 								?>
-				<?php /***************** BONUS *********************/ ?>
+				< ?php /***************** BONUS *********************/ ?>
+*/ ?>
+<!-- ------------------------------- BONUS ------------------------------- -->
+
+
 
 					
 					
