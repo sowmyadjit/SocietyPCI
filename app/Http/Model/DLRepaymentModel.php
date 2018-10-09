@@ -306,6 +306,7 @@
 			$arr_index = -1;
 			$z = 0;
 			$chargsum=0;
+			$insert_ids = [];
 			for($i=1;$i<$n;$i++)
 			{
 				
@@ -979,6 +980,7 @@
 			$ifsc=$id['ifsccode_pl'];
 			
 			$arr_index = -1;
+			$insert_ids = [];
 			$z=0;
 			$chargsum=0;
 			for($i=1;$i<$n;$i++)
@@ -1213,6 +1215,7 @@
 			}
 			
 			$arr_index = -1;
+			$insert_ids = [];
 			$z=0;
 			$chargsum=0;
 			for($i=1;$i<$n;$i++)
@@ -1400,6 +1403,7 @@
 /*********************** sl charegs  ************************/
 
 			$arr_index = -1;
+			$insert_ids = [];
 			$z=0;
 			$n = $id['xsl'];
 			$chargid = $id['charges'];
