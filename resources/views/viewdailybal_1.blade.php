@@ -3601,7 +3601,7 @@
 		<?php /***************** B2B - OPPOSITE ENTRTY (ADJ DEBIT) *********************/ ?>
 				<tr><td colspan="10"><h5><b><center>ADJUSTMENTS<center></b></h5></td></tr>
 				<?php foreach($trandaily["b2b_opp_adj_db"] as $key_allch => $row_allch) {?>
-					<tr><td colspan="10"><b><center>{{$row_allch["subhead_name"]}}<center></b></td></tr>
+					<tr><td colspan="10" title="{{$key_allch}}"><b><center>{{$row_allch["subhead_name"]}}<center></b></td></tr>
 						
 					<?php
 							$cash_cr = 0;

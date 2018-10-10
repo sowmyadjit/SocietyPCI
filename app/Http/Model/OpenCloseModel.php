@@ -4229,11 +4229,27 @@
 		public function b2b_opp_adj_db($date)
 		{
 			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			$exclude_array = array(
+				172,
+				61,
+				62,
+				63,
+				64,
+				65,
+				173,
+				207,
+				208,
+				246,
+				156,
+				144,
+				283
+			);
 			$subhead_list = DB::table("branch_to_branch")
 				->select("SubLedgerId")
 				->where("deleted",0)
 				->where("Branch_Branch2_Id",$BID)
 				->where("Branch_Tran_Date",$date)
+				->whereNotIn("SubLedgerId",$exclude_array) // ALREADY DISPLAYED THESE ENTRIES UNDER SALARY
 				->groupBy("SubLedgerId")
 				->get();
 			//print_r($subhead_list);exit();

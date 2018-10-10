@@ -568,7 +568,7 @@
 			if(!in_array($BID,[1,2,3,4,5,6])) { // CHECK FOR LOGIN
 				return "NOT LOGGED IN";
 			}
-			$fd["from_date"] = "2018-08-01";
+			$fd["from_date"] = "2018-08-30";
 			$this->loan_charges_to_all_charges($fd);
 			$this->customer_charges_to_all_charges($fd);
 			$this->dl_charges_to_all_charges($fd);
