@@ -119,6 +119,7 @@
 				$personalloan_repay = DB::table('personalloan_repay')
 					->select()
 					->where('PLRepay_PLAllocID','=',$pid)
+					->where("deleted",0)
 					->get();
 				$n = count($personalloan_repay);
 				if($n == 0) {
@@ -128,6 +129,7 @@
 				$depositeloan_repay = DB::table('depositeloan_repay')
 					->select()
 					->where('DLRepay_DepAllocID','=',$did)
+					->where("deleted",0)
 					->get();
 				$n = count($depositeloan_repay);
 				if($n == 0) {
