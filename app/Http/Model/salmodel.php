@@ -613,7 +613,7 @@
 				$subhead=$head_sub->subhead;
 				
 				
-				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$loannum,'bid'=>$BID,'charg_tran_date'=>$RepayDte,'loantype'=>"SL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$loannum,'bid'=>$BID,'charg_tran_date'=>$RepayDte,'loantype'=>"PL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
