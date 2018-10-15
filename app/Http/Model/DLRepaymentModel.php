@@ -1990,6 +1990,54 @@
 				return 0;
 			}
 		}
+
+		public function check_for_duplicate_loan_repay($data)
+		{
+			$flag = false;
+			switch($data["loan_type"]) {
+				case "JL":
+						$table = "jewelloan_repay";
+						$allocation_id_field = "JLRepay_JLAllocID";
+						$date_field = "JLRepay_Date";
+						$total_amt_paid_field = "JLRepay_PaidAmt";
+						$deleted_field = "deleted";
+						break;
+				case "SL":
+						$table = "staffloan_repay";
+						$allocation_id_field = "SLRepay_SLAllocID";
+						$date_field = "SLRepay_Date";
+						$total_amt_paid_field = "SLRepay_PaidAmt";
+						$deleted_field = "deleted";
+						break;
+				case "PL":
+						$table = "personalloan_repay";
+						$allocation_id_field = "PLRepay_PLAllocID";
+						$date_field = "PLRepay_Date";
+						$total_amt_paid_field = "PLRepay_PaidAmt";
+						$deleted_field = "deleted";
+						break;
+				case "DL":
+						$table = "depositeloan_repay";
+						$allocation_id_field = "DLRepay_DepAllocID";
+						$date_field = "DLRepay_Date";
+						$total_amt_paid_field = "DLRepay_PaidAmt";
+						$deleted_field = "deleted";
+						break;
+				
+			}
+			$count = DB::table($table)
+				->where($allocation_id_field,$data["allocation_id"])
+				->where($date_field,$data["date"])
+				->where($total_amt_paid_field,$data["total_amt_paid"])
+				->where($deleted_field,0)
+				->count();
+			if($count > 0) {
+				$flag = true;
+			}
+			var_dump(http_build_query($data,null,", "));
+			// var_dump($flag);
+			return $flag;
+		}
 		
 
 	}

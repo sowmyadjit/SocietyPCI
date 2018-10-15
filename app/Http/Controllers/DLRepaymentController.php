@@ -232,8 +232,39 @@
 			$PgDL['FDAccNumFDL']=$request->input('FDAccNumFDL');
 			$PgDL['fdamt']=$request->input('fdamt');
 			
+			/******************** CHECK FOR DUPLICATE ENTRY ********************/
+			$dl_type=$PgDL['dltype'];
+			switch($dl_type) {
+				case "pygmy DL":
+						$allocation_id_key = "DLAlloc";
+						break;
+				case "RD DL":
+						$allocation_id_key = "RDDLAlloc";
+						break;
+				case "FD DL":
+						$allocation_id_key = "FDDLAlloc";
+						break;
+			}
+			unset($fd);
+			$fd["loan_type"] = "DL";
+			$fd["allocation_id"] = $PgDL[$allocation_id_key];
+			$fd["date"] = date('Y-m-d');
+			$fd["total_amt_paid"] = $PgDL['fdpayamt'];
+			if(empty($fd["allocation_id"])) {
+				$fd["allocation_id"] = 0;
+			}
+			if(empty($fd["date"])) {
+				$fd["date"] = date("Y-m-d");
+			}
+			if(empty($fd["total_amt_paid"])) {
+				$fd["total_amt_paid"] = 0;
+			}
+			if($this->pigmtDLrepay->check_for_duplicate_loan_repay($fd)) {
+				return "duplicate entry!";
+			}
+			/******************** CHECK FOR DUPLICATE ENTRY ********************/
 			$id=$this->pigmtDLrepay->createPigmyDL($PgDL);
-			return redirect('/');
+			// return redirect('/');
 		}
 		
 		public function createDL_renew(Request $request)
@@ -416,8 +447,27 @@
 			$plall['adid']=$request->input('adid');
 			$plall['interest_upto_pl']=$request->input('interest_upto_pl');
 			$plall['rec_date_pl']=$request->input('rec_date_pl');//receipt date
+			/******************** CHECK FOR DUPLICATE ENTRY ********************/
+			unset($fd);
+			$fd["loan_type"] = "PL";
+			$fd["allocation_id"] = $plall['plAlloc'];
+			$fd["date"] = date('Y-m-d',strtotime($plall["rec_date_pl"]));
+			$fd["total_amt_paid"] = $plall['plpayamt'];
+			if(empty($fd["allocation_id"])) {
+				$fd["allocation_id"] = 0;
+			}
+			if(empty($fd["date"])) {
+				$fd["date"] = date("Y-m-d");
+			}
+			if(empty($fd["total_amt_paid"])) {
+				$fd["total_amt_paid"] = 0;
+			}
+			if($this->pigmtDLrepay->check_for_duplicate_loan_repay($fd)) {
+				return "duplicate entry!";
+			}
+			/******************** CHECK FOR DUPLICATE ENTRY ********************/
 			$id=$this->pigmtDLrepay->PersonalLoanRepay($plall);
-			return redirect('/');
+			// return redirect('/');
 		}
 		public function JewelLoanRepay(Request $request)
 		{
@@ -450,6 +500,25 @@
 			$jlall['rec_date_jl']=$request->input('rec_date_jl');
 												  
 			$jlall['auc_amt']=$request->input('auc_amt');
+			/******************** CHECK FOR DUPLICATE ENTRY ********************/
+			unset($fd);
+			$fd["loan_type"] = "JL";
+			$fd["allocation_id"] = $jlall['jlAlloc'];
+			$fd["date"] = date('Y-m-d',strtotime($jlall["rec_date_jl"]));
+			$fd["total_amt_paid"] = $jlall['jlpayamt'];
+			if(empty($fd["allocation_id"])) {
+				$fd["allocation_id"] = 0;
+			}
+			if(empty($fd["date"])) {
+				$fd["date"] = date("Y-m-d");
+			}
+			if(empty($fd["total_amt_paid"])) {
+				$fd["total_amt_paid"] = 0;
+			}
+			if($this->pigmtDLrepay->check_for_duplicate_loan_repay($fd)) {
+				return "duplicate entry!";
+			}
+			/******************** CHECK FOR DUPLICATE ENTRY ********************/
 			$id=$this->pigmtDLrepay->JewelLoanRepay($jlall);
 	
 			$auc_amt=$request->input('auc_amt');
@@ -484,8 +553,27 @@
 			$slall['xsl']=$request->input('xsl');
 			$slall['slintamt']=$request->input('slintamt');
 			
+			/******************** CHECK FOR DUPLICATE ENTRY ********************/
+			unset($fd);
+			$fd["loan_type"] = "SL";
+			$fd["allocation_id"] = $slall['slAlloc'];
+			$fd["date"] = date('Y-m-d');
+			$fd["total_amt_paid"] = $slall['slpayamt'];
+			if(empty($fd["allocation_id"])) {
+				$fd["allocation_id"] = 0;
+			}
+			if(empty($fd["date"])) {
+				$fd["date"] = date("Y-m-d");
+			}
+			if(empty($fd["total_amt_paid"])) {
+				$fd["total_amt_paid"] = 0;
+			}
+			if($this->pigmtDLrepay->check_for_duplicate_loan_repay($fd)) {
+				return "duplicate entry!";
+			}
+			/******************** CHECK FOR DUPLICATE ENTRY ********************/
 			$id=$this->pigmtDLrepay->StaffLoanRepay($slall);
-			return redirect('/');
+			// return redirect('/');
 		}
 		public function loanrepayReceipt($id)
 		{
