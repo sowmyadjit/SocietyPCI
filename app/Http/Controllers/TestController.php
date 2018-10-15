@@ -568,7 +568,7 @@
 			if(!in_array($BID,[1,2,3,4,5,6])) { // CHECK FOR LOGIN
 				return "NOT LOGGED IN";
 			}
-			$fd["from_date"] = "2018-08-30";
+			$fd["from_date"] = "2018-04-01";
 			$this->loan_charges_to_all_charges($fd);
 			$this->customer_charges_to_all_charges($fd);
 			$this->dl_charges_to_all_charges($fd);
@@ -1068,7 +1068,7 @@
 			);
 			$data = DB::table("pigmi_prewithdrawal")
 				->select($sa)
-				->leftJoin("pigmi_payamount","pigmi_payamount.PayAmount_PigmiAccNum","=","pigmi_prewithdrawal.PigmiAcc_No")
+				->join("pigmi_payamount","pigmi_payamount.PayAmount_PigmiAccNum","=","pigmi_prewithdrawal.PigmiAcc_No")
 				->leftJoin("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_prewithdrawal.PigmiAcc_No")
 				->where($date_field,">=",$from_date)
 				->groupBy("pigmi_prewithdrawal.PigmiAcc_No")
@@ -1091,9 +1091,10 @@
 					$temp_tran_id = $row_pgpre->PayId;
 					$temp_date = $row_pgpre->PayAmountReport_PayDate;
 				} else {
-					$temp_tran_table = 31; // pigmi_prewithdrawal
-					$temp_tran_id = $row_pgpre->PgmPrewithdraw_ID;
-					$temp_date = $row_pgpre->Withdraw_Date;
+					continue;
+					// $temp_tran_table = 31; // pigmi_prewithdrawal
+					// $temp_tran_id = $row_pgpre->PgmPrewithdraw_ID;
+					// $temp_date = $row_pgpre->Withdraw_Date;
 				}
 
 				/************** CHECK FOR EXISTING ENTRIES *********************/
