@@ -830,11 +830,33 @@
 				DB::table('addbank')->where('Bankid','=',$bnkid)
 				->update(['TotalAmt'=>$ResultAmt]);
 			}
-			
-			
+			/************************** dont update Request_LoanAllocated on part payment *************************/
+			$allocated_loan_amt = DB::table("personalloan_payment")
+				->where("pl_allocation_id",$perslid)
+				->sum("paid_amount");
+			var_dump($allocated_loan_amt);
+
+			$total_loan_amt = DB::table("request_loan")
+				->where("PersLoanAllocID",$id["request_id"])
+				->value("Requested_LoanAmt");
+			var_dump($total_loan_amt);
+
+			if(empty($allocated_loan_amt)) {
+				$allocated_loan_amt = 0;
+			}
+			if(empty($total_loan_amt)) {
+				$total_loan_amt = 0;
+			}
+			if($allocated_loan_amt < $total_loan_amt) {
+				$loan_allocation_completed = "NO";
+			} else {
+				$loan_allocation_completed = "YES";
+			}
+			/************************** dont update Request_LoanAllocated on part payment *************************/
+
 			DB::table('request_loan')
 			->where('PersLoanAllocID','=',$id["request_id"])
-			->update(['Request_LoanAllocated'=>"YES",'Request_LoanAllocted_Id'=>$perslid]);
+			->update(['Request_LoanAllocated'=>$loan_allocation_completed,'Request_LoanAllocted_Id'=>$perslid]);
 			
 			
 			return $id;
