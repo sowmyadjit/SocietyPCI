@@ -1604,7 +1604,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('jewelloan_repay')->where('JLRepay_Date',$dte)->where('JLRepay_Bid',$BranchId)->sum('JLRepay_PaidAmt');
+			$id=DB::table('jewelloan_repay')->where('JLRepay_Date',$dte)->where('JLRepay_Bid',$BranchId)->where("jewelloan_repay.deleted",0)->sum('JLRepay_PaidAmt');
 			
 			return $id;
 		}
@@ -3235,6 +3235,7 @@
 											->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 											->where("receipt_voucher.transaction_category",23)
 											->where('JLRepay_Id','=',$row->repay_id)
+											->where("jewelloan_repay.deleted",0)
 											->first();
 											
 											$loan_charge[$key]->pay_mode = $alloc_row->JLRepay_PayMode;
@@ -3248,6 +3249,7 @@
 											->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
 											->where('JLRepay_Date','=',$date)
 											->where('JLRepay_JLAllocID','=',$row->loanid)
+											->where("jewelloan_repay.deleted",0)
 											->first();
 
 											if(!empty($alloc_row)) {
@@ -4058,6 +4060,7 @@
 										->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_JLAllocID")
 										->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
 										->where("jewelloan_repay.JLRepay_Id",$row_tran->tran_id)
+										->where("jewelloan_repay.deleted",0)
 										->first();
 									if(!empty($user_info)) {
 										$temp_name = $user_info->name;

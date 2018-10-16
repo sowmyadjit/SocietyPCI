@@ -100,6 +100,7 @@
 			->where('JL_Status','=',"1")
 			->where('JLRepay_Bid','=',$BID)
 			->where('JLRepay_PayMode','=',"CHEQUE")
+			->where("jewelloan_repay.deleted",0)
 			->get();
 		}
 		

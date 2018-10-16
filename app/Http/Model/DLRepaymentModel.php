@@ -902,6 +902,7 @@
 				if($is_jl_first_repay_done == 1) {
 					$jewelloan_repay = DB::table("jewelloan_repay")
 						->where("JLRepay_JLAllocID","=",$jid)
+						->where("jewelloan_repay.deleted",0)
 						->orderBy("JLRepay_Date","desc")
 						->first();
 					$last_date = $jewelloan_repay->interest_paid_upto;
@@ -1729,6 +1730,7 @@
 				->leftJoin('jewelloan_allocation', 'jewelloan_allocation.JewelLoanId', '=' , 'jewelloan_repay.JLRepay_JLAllocID')
 				->leftJoin('user', 'user.Uid', '=' , 'jewelloan_allocation.JewelLoan_Uid')
 				->whereRaw("DATE(jewelloan_repay.JLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
+				->where("jewelloan_repay.deleted",0)
 				// ->paginate(20);
 				->get();
 				return $id;
@@ -1981,6 +1983,7 @@
 			$jl_repay = DB::table('jewelloan_repay')
 				->select()
 				->where('JLRepay_JLAllocID','=',$jlaccid)
+				->where("jewelloan_repay.deleted",0)
 				->get();
 			$n = count($jl_repay);
 			//var_dump($n);

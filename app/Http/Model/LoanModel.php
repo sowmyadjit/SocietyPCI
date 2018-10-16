@@ -2406,6 +2406,7 @@
 				$jewelloan_repay = DB::table("jewelloan_repay")
 					->select()
 					->where("jewelloan_repay.JLRepay_JLAllocID","=",$row_jew->JewelLoanId)
+					->where("jewelloan_repay.deleted",0)
 					->get();
 				
 				foreach($jewelloan_repay as $key_pay => $row_pay) {
@@ -2595,6 +2596,7 @@
 						)
 				->join("jewelloan_allocation","jewelloan_allocation.JewelLoanId","=","jewelloan_repay.JLRepay_JLAllocID")
 				->where("jewelloan_allocation.JewelLoanId","=",$allocation->JewelLoanId)
+				->where("{$table}.deleted",0)
 				->orderBy("JLRepay_Id","asc")
 				->get();
 				
@@ -2694,6 +2696,7 @@
 				->select(DB::Raw('sum(`JLRepay_PaidAmt`) as total_loan_repay'))
 				->where("JLRepay_JLAllocID","=",$jewel_allocation_id)
 				->where("repay_through_auction","=","1")
+				->where("jewelloan_repay.deleted",0)
 				->first();
 			$total_loan_repayment = $jewelloan_repay->total_loan_repay;
 			
@@ -3323,6 +3326,7 @@
 				
 			$max_jewelloan_repay = DB::table("jewelloan_repay")
 				->where("JLRepay_JLAllocID","=",$JewelLoanId)
+				->where("jewelloan_repay.deleted",0)
 				->orderBy("JLRepay_Id","desc")
 				->first();
 				
@@ -3391,6 +3395,7 @@
 			if($is_jl_first_repay_done) {
 				$jewelloan_repay = DB::table("jewelloan_repay")
 					->where("JLRepay_JLAllocID","=",$loan_allocation_id)
+					->where("jewelloan_repay.deleted",0)
 					->orderBy("","desc")
 					->first();
 				$last_date = $jewelloan_repay->interest_paid_upto;
@@ -3470,6 +3475,7 @@
 			$jl_repay = DB::table('jewelloan_repay')
 				->select()
 				->where('JLRepay_JLAllocID','=',$jlaccid)
+				->where("jewelloan_repay.deleted",0)
 				->get();
 			$n = count($jl_repay);
 //			var_dump($n);
@@ -3602,6 +3608,7 @@
 				$personalloan_repay = DB::table("personalloan_repay")
 					->where("PLRepay_PLAllocID","=",$loan_allocation_id)
 					->where("PL_ChequeStatus","=",0)
+					->where("personalloan_repay.deleted","=",0)
 					->orderBy("PLRepay_Date","desc")
 					->first();
 				$last_date = $personalloan_repay->interest_paid_upto;
@@ -3622,6 +3629,7 @@
 				->where("PLRepay_PLAllocID","=",$loan_allocation_id)
 				->where("PL_ChequeStatus","=",0)
 				->where("PLRepay_Amtpaidtoprincpalamt",">",0)
+				->where("personalloan_repay.deleted","=",0)
 				->orderBy("PLRepay_Date","desc")
 				->first();
 					
@@ -3651,12 +3659,14 @@
 						->select()
 						->where("PLRepay_PLAllocID","=",$loan_allocation_id)
 						->where("PL_ChequeStatus","=",0)
+						->where("personalloan_repay.deleted","=",0)
 						->orderBy("PLRepay_Date","desc")
 						->first();
 					$last_repay_date = $personalloan_repay->PLRepay_Date;
 					$total_repay_amount = DB::table("personalloan_repay")
 						->where("PLRepay_PLAllocID","=",$loan_allocation_id)
 						->where("PL_ChequeStatus","=",0)
+						->where("personalloan_repay.deleted","=",0)
 						->sum("PLRepay_Amtpaidtoprincpalamt");
 						
 					$total_paid_before_last_repayment = DB::table("personalloan_payment")
@@ -3885,6 +3895,7 @@
 				->select()
 				->where($loan_id_field,'=',$loan_allocation_id)
 				->where($cheque_cleared_status_field,'=',0)
+				->where("{$table}.deleted",0)
 				->get();
 			$n = count($repay);
 			if($n > 0) {
@@ -3931,6 +3942,7 @@
 					->select("{$principle_amount_field} as principle_amount_paid")
 					->where($loan_id_field,'=',$loan_allocation_id)
 					->where($cheque_cleared_status_field,'=',0)//*cheque cleared
+					->where("{$table}.deleted",0)
 					->get();
 				foreach($repay as $key_repay => $row_repay) {
 					$sum += $row_repay->principle_amount_paid;
@@ -4067,6 +4079,7 @@
 				$repay = DB::table($table)
 					->where($loan_id_field,"=",$data['loan_id'])
 					->where($cheque_cleared_status_field,"=",0)
+					->where("{$table}.deleted",0)
 					->orderBy($date_field,"desc")
 					->first();
 				$interest_paid_upto = $repay->interest_paid_upto;
@@ -4091,6 +4104,7 @@
 					}
 					$interest_paid_upto = DB::table($table)
 						->where($loan_id_field,"=",$data['loan_id'])
+						->where("{$table}.deleted",0)
 						->value($start_date_field);
 				} else {
 					$interest_paid_upto = $data['start_date'];
