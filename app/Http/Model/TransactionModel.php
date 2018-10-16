@@ -715,7 +715,8 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("depositeloan_repay.deleted",0);
 			if($data["tran_list"] == "YES") {
 				$ret_data = $ret_data->get();
 			} else {
@@ -781,7 +782,8 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("staffloan_repay.deleted",0);
 			if($data["tran_list"] == "YES") {
 				$ret_data = $ret_data->get();
 			} else {
@@ -848,7 +850,8 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("personalloan_repay.deleted",0);
 			if($data["tran_list"] == "YES") {
 				$ret_data = $ret_data->get();
 			} else {

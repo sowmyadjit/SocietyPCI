@@ -69,6 +69,7 @@
 			->where('Dl_Cheque_Status','=',"1")
 			->where('DLRepay_Bid','=',$BID)
 			->where('DLRepay_PayMode','=',"CHEQUE")
+			->where("depositeloan_repay.deleted",0)
 			->get();
 		}
 		public function get_plcheque()
@@ -84,6 +85,7 @@
 			->where('PL_ChequeStatus','=',"1")
 			->where('PLRepay_Bid','=',$BID)
 			->where('PLRepay_PayMode','=',"CHEQUE")
+			->where("personalloan_repay.deleted",0)
 			->get();
 		}
 		

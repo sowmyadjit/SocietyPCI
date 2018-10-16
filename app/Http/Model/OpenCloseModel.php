@@ -1466,6 +1466,7 @@
 			->where('DLRepay_Date',$dte)
 			->where('DLRepay_Bid',$BranchId)
 			->where('DLRepay_PayMode','=',"CASH")
+			->where("depositeloan_repay.deleted",0)
 			->sum('DLRepay_PaidAmt');
 			
 			return $id;
@@ -1499,7 +1500,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('depositeloan_repay')->where('DLRepay_Date',$dte)->where('DLRepay_Bid',$BranchId)->where('DLRepay_PayMode','<>',"CASH")->sum('DLRepay_PaidAmt');
+			$id=DB::table('depositeloan_repay')->where('DLRepay_Date',$dte)->where('DLRepay_Bid',$BranchId)->where('DLRepay_PayMode','<>',"CASH")->where("depositeloan_repay.deleted",0)->sum('DLRepay_PaidAmt');
 			
 			return $id;
 		}
@@ -1534,7 +1535,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('personalloan_repay')->where('PLRepay_PayMode','=',"CASH")->where('PLRepay_Date',$dte)->where('PLRepay_Bid',$BranchId)->sum('PLRepay_PaidAmt');
+			$id=DB::table('personalloan_repay')->where('PLRepay_PayMode','=',"CASH")->where('PLRepay_Date',$dte)->where('PLRepay_Bid',$BranchId)->where("personalloan_repay.deleted",0)->sum('PLRepay_PaidAmt');
 			
 			return $id;
 		}
@@ -1546,7 +1547,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('personalloan_repay')->where('PLRepay_PayMode','<>',"CASH")->where('PLRepay_Date',$dte)->where('PLRepay_Bid',$BranchId)->sum('PLRepay_PaidAmt');
+			$id=DB::table('personalloan_repay')->where('PLRepay_PayMode','<>',"CASH")->where('PLRepay_Date',$dte)->where('PLRepay_Bid',$BranchId)->where("personalloan_repay.deleted",0)->sum('PLRepay_PaidAmt');
 			
 			return $id;
 		}
@@ -1648,7 +1649,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('staffloan_repay')->where('SLRepay_Date',$dte)->where('SLRepay_Bid',$BranchId)->sum('SLRepay_PaidAmt');
+			$id=DB::table('staffloan_repay')->where('SLRepay_Date',$dte)->where('SLRepay_Bid',$BranchId)->where("staffloan_repay.deleted",0)->sum('SLRepay_PaidAmt');
 			
 			return $id;
 		}
@@ -3334,6 +3335,7 @@
 											->join("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
 											->where('DLRepay_Date','=',$date)
 											->where('DLRepay_DepAllocID','=',$row->loanid)
+											->where("depositeloan_repay.deleted",0)
 											->first();
 
 											if(!empty($alloc_row)) {

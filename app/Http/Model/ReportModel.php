@@ -2098,6 +2098,7 @@
 		{
 			return DB::table('personalloan_repay')->select('PLRepay_Id','PLRepay_Date','PLRepay_PaidAmt','PLRepay_CalculatedInterest','personalloan_repay.RemainingInterest_Amt','PLRepay_PaidInterest','PLRepay_Amtpaidtoprincpalamt','PLRepay_EMIremaining','personalloan_allocation.RemainingLoan_Amt','PersLoan_Number')
 			->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
+			->where("personalloan_repay.deleted",0)
 			->get();
 		}
 		public function GetSBPassModule()

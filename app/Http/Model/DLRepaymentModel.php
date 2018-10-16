@@ -119,7 +119,7 @@
 				$personalloan_repay = DB::table('personalloan_repay')
 					->select()
 					->where('PLRepay_PLAllocID','=',$pid)
-					->where("deleted",0)
+					->where("personalloan_repay.deleted",0)
 					->get();
 				$n = count($personalloan_repay);
 				if($n == 0) {
@@ -129,7 +129,7 @@
 				$depositeloan_repay = DB::table('depositeloan_repay')
 					->select()
 					->where('DLRepay_DepAllocID','=',$did)
-					->where("deleted",0)
+					->where("depositeloan_repay.deleted",0)
 					->get();
 				$n = count($depositeloan_repay);
 				if($n == 0) {
@@ -1620,6 +1620,7 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
+					->where("personalloan_repay.deleted",0)
 					// ->paginate(20);
 					->get();
 					return $id;
@@ -1632,6 +1633,7 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
+					->where("personalloan_repay.deleted",0)
 					// ->paginate(20);
 					->get();
 					return $id;
@@ -1644,6 +1646,7 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
+					->where("personalloan_repay.deleted",0)
 					// ->paginate(20);
 					->get();
 					return $id;
@@ -1656,6 +1659,7 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->where('personalloan_allocation.LoanType_ID',$pltid)
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
+					->where("personalloan_repay.deleted",0)
 					// ->paginate(20);
 					->get();
 					return $id;
@@ -1666,6 +1670,7 @@
 					$id=DB::table('personalloan_repay')->select('PLRepay_Id','PLRepay_Date','PLRepay_PaidAmt','PLRepay_CalculatedInterest','personalloan_repay.RemainingInterest_Amt','PLRepay_PaidInterest','PLRepay_Amtpaidtoprincpalamt','PLRepay_EMIremaining','personalloan_allocation.RemainingLoan_Amt','PersLoan_Number')
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
+					->where("personalloan_repay.deleted",0)
 					// ->paginate(20);
 					->get();
 					return $id;
@@ -1678,6 +1683,7 @@
 					->leftJoin('personalloan_allocation','personalloan_allocation.PersLoanAllocID', '=' ,'personalloan_repay.PLRepay_PLAllocID')
 					->whereRaw("DATE(personalloan_repay.PLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
 					->where('PLRepay_PLAllocID','=',$loanrepayid)
+					->where("personalloan_repay.deleted",0)
 					// ->paginate(20);
 					->get();
 					return $id;
@@ -1694,6 +1700,7 @@
 					->leftJoin('depositeloan_allocation', 'depositeloan_allocation.DepLoanAllocId', '=' , 'depositeloan_repay.DLRepay_DepAllocID')
 					->leftJoin('user', 'user.Uid', '=' , 'depositeloan_allocation.DepLoan_Uid')
 					->whereRaw("DATE(depositeloan_repay.DLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
+					->where("depositeloan_repay.deleted",0)
 					// ->paginate(20);
 					->get();
 					return $id;
@@ -1706,6 +1713,7 @@
 					->leftJoin('user', 'user.Uid', '=' , 'depositeloan_allocation.DepLoan_Uid')
 					->whereRaw("DATE(depositeloan_repay.DLRepay_Date) BETWEEN '".$start."' AND '".$end."'")
 					->where('DLRepay_DepAllocID','=',$loanrepayid)
+					->where("depositeloan_repay.deleted",0)
 					// ->paginate(20);
 					->get();
 					return $id;
