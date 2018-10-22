@@ -725,7 +725,7 @@
 						<tr>
 							<td>{{ $fdamt->Created_Date }}</td>
 							<td>{{ $fdamt->Fd_CertificateNum }}</td>
-							<td>FD Deposit Amount</td>
+							<td>FD Deposit Amount - {{ $fdamt->name }}({{ $fdamt->Uid }})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>{{ $fdamt->Fd_DepositAmt }}</td>
@@ -4705,7 +4705,7 @@
 										<tr>
 											<td title="{{$row_tran->all_charges_id}}">{{$date}}</td>
 											<td>{{$acc_no}}</td>
-											<td>{{$particulars}} - {{ $name }}({{$uid}})</td>
+											<td><?php /*{{$particulars}} - */?>{{ $name }}({{$uid}})</td>
 											<td>{{ $cash_cr }}</td>
 											<td>-</td>
 											<td>-</td>
@@ -4722,7 +4722,7 @@
 										<tr>
 											<td title="{{$row_tran->all_charges_id}}">{{$date}}</td>
 											<td>{{$acc_no}}</td>
-											<td>{{$particulars}} - {{ $name }}({{$uid}})</td>
+											<td><?php /*{{$particulars}} - */?>{{ $name }}({{$uid}})</td>
 											<td>-</td>
 											<td>-</td>
 											<td>{{ $adj_cr }}</td>

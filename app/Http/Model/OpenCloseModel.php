@@ -1222,7 +1222,8 @@
 			$BranchId=$uname->Bid;
 			
 			$id=DB::table('fdallocation')
-			->select('fdallocation.Fdid','Fd_CertificateNum','Fd_DepositAmt','Created_Date','FD_resp_No',DB::raw(" '' as 'adj_no' ") )
+			->select('fdallocation.Fdid','Fd_CertificateNum','Fd_DepositAmt','Created_Date','FD_resp_No',DB::raw(" '' as 'adj_no' "),'user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name") )
+			->leftjoin("user","user.Uid","=","fdallocation.Uid")
 			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
 			->where('Created_Date',$dte)
 			->where('FDPayment_Mode','<>',"CASH")
