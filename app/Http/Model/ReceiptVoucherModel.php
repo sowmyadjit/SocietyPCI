@@ -54,6 +54,7 @@
 		const AGENT_COMMISSION_PAYMENT = 27;
 		const CUSTOMER_FEE = 28;
 		const CDSD_TRAN = 29;
+		const LOAN_TRAN = 30;
 
 		
 		const DELETED = 1;

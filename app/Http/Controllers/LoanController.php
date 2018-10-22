@@ -447,7 +447,7 @@
 			
 			
 			$id=$this->loan->CreatePersonalLoan($PersLoan);
-			return redirect('/home');
+			// return redirect('/home');
 		}	
 		
 		    
@@ -579,7 +579,7 @@
 			
 			$id=$this->loan->JewelLoanAllocation($JewelLoanParam);
 			
-			return redirect('/');
+			// return redirect('/');
 			
 		}
 		

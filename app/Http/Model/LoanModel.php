@@ -10,6 +10,7 @@
 	use App\Http\Model\SettingsModel;
 	use App\Http\Model\AccountModel;
 	use App\Http\Model\AllChargesModel;
+	use App\Http\Model\LoanTransactionModel;
 	
 	class LoanModel extends Model
 	{
@@ -20,6 +21,7 @@
 				$this->rv_no = new ReceiptVoucherController;
 				$this->settings = new SettingsModel;
 				$this->all_ch = new AllChargesModel;
+				$this->loan_tran = new LoanTransactionModel;
 		}
 		
 		public function getaccname($id)
@@ -157,6 +159,46 @@
 			}
 			$lid = DB::table('depositeloan_allocation')->insertGetId(['DepLoan_DepositeType'=> $deptyp,'DepLoan_LoanTypeID'=>$id['DepLoanType'],'DepLoan_Branch'=>$AccBID,'DepLoan_AccNum'=>$id['DepositAccountNum'],'DepLoan_LoanAmount'=>$id['DepLoanAmt'],'DepLoan_RemailningAmt'=>$id['DepLoanAmt'],'DepLoan_LoanCharge'=>$id['LoanCharge'],'DepLoan_LoanStartDate'=>$id['DepLoanStartDate'],'DepLoan_LoanEndDate'=>$id['DepLoanEndDate'],'DepLoan_LoanDurationDays'=>$id['emimonth'],'DepLoan_PaymentMode'=>$id['DepLoanPayMode'],'DepLoan_ChequeNumber'=>$id['DepLoanChequeNum'],'DepLoan_ChequeDate'=>$id['DepLoanChequeDte'],'DepLoan_BankId'=>$id['LoanBankId'],'DepLoan_LoanNum'=>$paccno,'DepLoan_SbTranId'=>$sbtran,'DepLoan_Uid'=>$Uidfi,'DepLoan_AuthBy'=>$UID,'EMI_Amount'=>$id['EMIAmount'],'DepLoan_lastpaiddate'=>$id['DepLoanStartDate'],'Old_loan_number'=>$id['old'], 'SubLedgerId'=>55 ]);
 			
+			if(strcasecmp($id['DepLoanPayMode'], "CHEQUE") == 0) {
+				$loan_transaction_cheque_cleared = 1;
+			} else {
+				$loan_transaction_cheque_cleared = 0;
+			}
+
+
+			/*************** loan transaction ****************/
+			unset($fd);
+			$fd["loan_transaction_category"] = 1; // DL
+			$fd["loan_transaction_date"] = $id['DepLoanStartDate'];
+			$fd["loan_transaction_bid"] = $AccBID;
+			$fd["loan_transaction_loan_id"] = $lid;
+			$fd["loan_transaction_principle_amount"] = $id['DepLoanAmt'];
+			$fd["loan_transaction_principle_subhead_id"] = 55; // DEPOSIT LOAN(49-MEMBERS LOAN)
+			$fd["loan_transaction_interest_amount"] = 0;
+			$fd["loan_transaction_interest_subhead_id"] = 0;
+			$fd["loan_transaction_paid"] = 1;
+			$fd["loan_transaction_type"] = 2; // DEBIT
+			$fd["loan_transaction_payment_mode"] = $id['DepLoanPayMode'];
+			$fd["loan_transaction_particulars"] = "DL ALLOCATION ({$paccno})";
+			$fd["loan_transaction_cheque_cleared"] = $loan_transaction_cheque_cleared;
+			$fd["loan_transaction_cheque_no"] = $id['DepLoanChequeNum'];
+			$fd["loan_transaction_cheque_date"] = $id['DepLoanChequeDte'];
+			$fd["loan_transaction_bank_id"] = $id['LoanBankId'];
+			$fd["loan_transaction_interest_paid_till"] = "0-0-0";
+			$fd["loan_transaction_sb_tran_id"] = 0;
+			$fd["loan_transaction_repay_through_auction"] = 0;
+			$fd["loan_transaction_created_by"] = $UID;
+			$fd["loan_transaction_deleted"] = 0;
+
+			$this->loan_tran->clear_row_data();
+			$this->loan_tran->set_row_data($fd);
+			$this->loan_tran->print_row_data($fd);
+			$loan_tran_insert_id = $this->loan_tran->insert($fd);
+			/*************** loan transaction ****************/
+
+			
+			// ReceiptVoucherModel::LOAN_TRAN
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
 				$fn_data["rv_transaction_id"] = $lid;
@@ -611,6 +653,7 @@
 			$ln_amt = $id['PersLoanAmt'];
 			$ln_type = $Persloantypeid;
 			$subhead = DB::table("loan_type")->where("LoanType_ID","=",$ln_type)->value("SubLedgerId");
+
 			$personalloan_payment_id = DB::table('personalloan_payment')->insertGetId([
 																	"pl_payment_date"=>date("Y-m-d"),
 																	"pl_allocation_id"=>$perslid,
@@ -626,12 +669,50 @@
 																	"SubLedgerId"=>$subhead,
 																	"deleted"=>"0",
 																]);
-			
+																
+			if(strcasecmp($paymode, "CHEQUE") == 0) {
+				$loan_transaction_cheque_cleared = 1;
+			} else {
+				$loan_transaction_cheque_cleared = 0;
+			}
+
+
+			/*************** loan transaction ****************/
+			unset($fd);
+			$fd["loan_transaction_category"] = 2; // PL
+			$fd["loan_transaction_date"] = date("Y-m-d");
+			$fd["loan_transaction_bid"] = $id['PLBranchID'];
+			$fd["loan_transaction_loan_id"] = $perslid;
+			$fd["loan_transaction_principle_amount"] = $ln_amt;
+			$fd["loan_transaction_principle_subhead_id"] = $subhead; // ASL|CSL|AMTL|CMTL(49-MEMBERS LOAN)
+			$fd["loan_transaction_interest_amount"] = 0;
+			$fd["loan_transaction_interest_subhead_id"] = 0;
+			$fd["loan_transaction_paid"] = 1;
+			$fd["loan_transaction_type"] = 2;
+			$fd["loan_transaction_payment_mode"] = $paymode;
+			$fd["loan_transaction_particulars"] = "PL ALLOCATION ({$count_inc})";
+			$fd["loan_transaction_cheque_cleared"] = $loan_transaction_cheque_cleared;
+			$fd["loan_transaction_cheque_no"] = $id['PersLoanChequeNum'];
+			$fd["loan_transaction_cheque_date"] = $id['PersLoanChequeDte'];
+			$fd["loan_transaction_bank_id"] = $id['PersLoanBankID'];
+			$fd["loan_transaction_interest_paid_till"] = "0-0-0";
+			$fd["loan_transaction_sb_tran_id"] = 0;
+			$fd["loan_transaction_repay_through_auction"] = 0;
+			$fd["loan_transaction_created_by"] = $UID;
+			$fd["loan_transaction_deleted"] = 0;
+
+			$this->loan_tran->clear_row_data();
+			$this->loan_tran->set_row_data($fd);
+			$this->loan_tran->print_row_data($fd);
+			$loan_tran_insert_id = $this->loan_tran->insert($fd);
+			/*************** loan transaction ****************/
+
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
-				$fn_data["rv_transaction_id"] = $personalloan_payment_id;
+				$fn_data["rv_transaction_id"] = $loan_tran_insert_id; // $personalloan_payment_id;
 				$fn_data["rv_transaction_type"] = "DEBIT";
-				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PL_ALLOCATION;//constant PL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::LOAN_TRAN; // ReceiptVoucherModel::PL_ALLOCATION;//constant PL_ALLOCATION is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = date("Y-m-d");
 				$fn_data["rv_bid"] = null;
 				$this->rv_no->save_rv_no($fn_data);
@@ -646,8 +727,8 @@
 				$fd["amount"] = $id['PersOthrChrges'];
 				$fd["particulars"] = "OTHER INCOME";
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $personalloan_payment_id;
+				$fd["tran_table"] = 37; //loan_transaction // 30; personalloan_payment
+				$fd["tran_id"] = $loan_tran_insert_id; // $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 88; // OTHER INCOME
 				$fd["deleted"] = 0;
@@ -664,8 +745,8 @@
 				$fd["amount"] = $id['PersBkfrmChrg'];
 				$fd["particulars"] = "BOOKS AND FORMS";
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $personalloan_payment_id;
+				$fd["tran_table"] = 37; //loan_transaction // 30; personalloan_payment
+				$fd["tran_id"] = $loan_tran_insert_id; // $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 90;
 				$fd["deleted"] = 0;
@@ -705,8 +786,8 @@
 				$fd["amount"] = $id['PersAdjChrg'];
 				$fd["particulars"] = $temp_subhead_name;
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $personalloan_payment_id;
+				$fd["tran_table"] = 37; //loan_transaction // 30; personalloan_payment
+				$fd["tran_id"] = $loan_tran_insert_id; // $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = $temp_subhead_id;
 				$fd["deleted"] = 0;
@@ -746,8 +827,8 @@
 				$fd["amount"] = $id['PersShrChrg'];
 				$fd["particulars"] = $temp_subhead_name;
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $personalloan_payment_id;
+				$fd["tran_table"] = 37; //loan_transaction // 30; personalloan_payment
+				$fd["tran_id"] = $loan_tran_insert_id; // $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = $temp_subhead_id;
 				$fd["deleted"] = 0;
@@ -764,8 +845,8 @@
 				$fd["amount"] = $id['Insurance'];
 				$fd["particulars"] = "INSURANCE";
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 30; // personalloan_payment
-				$fd["tran_id"] = $personalloan_payment_id;
+				$fd["tran_table"] = 37; //loan_transaction //  30; personalloan_payment
+				$fd["tran_id"] =$loan_tran_insert_id; //  $personalloan_payment_id;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 93; // INSURANCE
 				$fd["deleted"] = 0;
@@ -831,9 +912,15 @@
 				->update(['TotalAmt'=>$ResultAmt]);
 			}
 			/************************** dont update Request_LoanAllocated on part payment *************************/
-			$allocated_loan_amt = DB::table("personalloan_payment")
+			/* $allocated_loan_amt = DB::table("personalloan_payment")
 				->where("pl_allocation_id",$perslid)
 				->sum("paid_amount");
+			var_dump($allocated_loan_amt); */
+			$allocated_loan_amt = DB::table("loan_transaction")
+				->where("loan_transaction_loan_id",$perslid)
+				->where("loan_transaction_deleted", 0)
+				->where("loan_transaction_paid",1)
+				->sum("loan_transaction_principle_amount");
 			var_dump($allocated_loan_amt);
 
 			$total_loan_amt = DB::table("request_loan")
@@ -926,11 +1013,47 @@
 			
 			$jid=DB::table('jewelloan_allocation')->InsertGetId(['JewelLoan_LoanNumber'=>$count_inc,'JewelLoan_LoanTypeId'=>$id['loantyp'],'JewelLoan_Bid'=>$BranchId,'JewelLoan_Uid'=>$id['jeweluid'],'JewelLoan_AppraisalValue'=>$id['Jewelappval'],'JewelLoan_LoanDuration'=>$id['Jewelduration'],'JewelLoan_LoanAmount'=>$id['JewelAmt'],'JewelLoan_SaraparaCharge'=>$id['JewelspacomVal'],'JewelLoan_InsuranceCharge'=>$id['JewelinsuVal'],'JewelLoan_BookAndFormCharge'=>$id['JewelBkfrmChrgVal'],'JewelLoan_OtherCharge'=>$id['JewelOthrChrges'],'JewelLoan_LoanAmountAfterDeduct'=>$id['JewelPayAmountAfter'],'JewelLoan_StartDate'=>$id['JewelStartDate'],'JewelLoan_EndDate'=>$coneDate,'JewelLoan_PaymentMode'=>$id['JewelPayMode'],'JewelLoan_ChqNum'=>$id['JewelChequeNum'],'JewelLoan_ChqDate'=>$id['JewelChequeDte'],'JewelLoan_Bankid'=>$id['BankId'],'JewelLoan_CreatedBy'=>$UID,'JewelLoan_LoanRemainingAmount'=>$id['JewelAmt'],'JewelLoan_lastpaiddate'=>$id['JewelStartDate'],'jewelloan_Description'=>$id['Jewel_Description'],'jewelloan_Oldloan_No'=>$id['old'],'jewelloan_RequestID'=>$id['PersLoanAllocID'], 'SubLedgerId'=>54 ]);
 			
+
+			if(strcasecmp($id['JewelPayMode'], "CHEQUE") == 0) {
+				$loan_transaction_cheque_cleared = 1;
+			} else {
+				$loan_transaction_cheque_cleared = 0;
+			}
+			/*************** loan transaction ****************/
+			unset($fd);
+			$fd["loan_transaction_category"] = 4; // JEWEL
+			$fd["loan_transaction_date"] = $id['JewelStartDate'];
+			$fd["loan_transaction_bid"] = $BranchId;
+			$fd["loan_transaction_loan_id"] = $jid;
+			$fd["loan_transaction_principle_amount"] = $id['JewelAmt'];
+			$fd["loan_transaction_principle_subhead_id"] = 54; // JEWEL LOAN(49-MEMBERS LOAN)
+			$fd["loan_transaction_interest_amount"] = 0;
+			$fd["loan_transaction_interest_subhead_id"] = 0;
+			$fd["loan_transaction_paid"] = 1;
+			$fd["loan_transaction_type"] = 2; // DEBIT
+			$fd["loan_transaction_payment_mode"] = $id['JewelPayMode'];
+			$fd["loan_transaction_particulars"] = "JL ALLOCATION ({$count_inc})";
+			$fd["loan_transaction_cheque_cleared"] = $loan_transaction_cheque_cleared;
+			$fd["loan_transaction_cheque_no"] = $id['JewelChequeNum'];
+			$fd["loan_transaction_cheque_date"] = $id['JewelChequeDte'];
+			$fd["loan_transaction_bank_id"] = $id['BankId'];
+			$fd["loan_transaction_interest_paid_till"] = "0-0-0";
+			$fd["loan_transaction_sb_tran_id"] = 0;
+			$fd["loan_transaction_repay_through_auction"] = 0;
+			$fd["loan_transaction_created_by"] = $UID;
+			$fd["loan_transaction_deleted"] = 0;
+
+			$this->loan_tran->clear_row_data();
+			$this->loan_tran->set_row_data($fd);
+			$this->loan_tran->print_row_data($fd);
+			$loan_tran_insert_id = $this->loan_tran->insert($fd);
+			/*************** loan transaction ****************/
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $id['JewelPayMode'];
-				$fn_data["rv_transaction_id"] = $jid;
+				$fn_data["rv_transaction_id"] = $loan_tran_insert_id; // $jid;
 				$fn_data["rv_transaction_type"] = "DEBIT";
-				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_ALLOCATION;//constant JL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::LOAN_TRAN; //ReceiptVoucherModel::JL_ALLOCATION;//constant JL_ALLOCATION is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $dte;
 				$fn_data["rv_bid"] = null;
 				$this->rv_no->save_rv_no($fn_data);
@@ -938,9 +1061,9 @@
 				/***********/
 				/***********/
 				$fn_data["rv_payment_mode"] = $id['JewelPayMode'];
-				$fn_data["rv_transaction_id"] = $jid;
+				$fn_data["rv_transaction_id"] = $loan_tran_insert_id; // $jid;
 				$fn_data["rv_transaction_type"] = "CREDIT";
-				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_ALLOCATION;//constant JL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::LOAN_TRAN; //ReceiptVoucherModel::JL_ALLOCATION;//constant JL_ALLOCATION is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $dte;
 				$fn_data["rv_bid"] = null;
 				$this->rv_no->save_rv_no($fn_data);
@@ -955,8 +1078,9 @@
 				$fd["amount"] = $id['JewelspacomVal'];
 				$fd["particulars"] = "APPRAISER COMMISSION";
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 35; // personalloan_repay
-				$fd["tran_id"] = $jid;
+				// $fd["tran_table"] = 35; // personalloan_repay
+				$fd["tran_table"] = 37; // loan_transaction
+				$fd["tran_id"] = $loan_tran_insert_id; // $jid;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 66;
 				$fd["deleted"] = 0;
@@ -973,8 +1097,9 @@
 				$fd["amount"] = $id['JewelinsuVal'];
 				$fd["particulars"] = "INSURANCE";
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 35; // personalloan_repay
-				$fd["tran_id"] = $jid;
+				// $fd["tran_table"] = 35; // personalloan_repay
+				$fd["tran_table"] = 37; // loan_transaction
+				$fd["tran_id"] = $loan_tran_insert_id; // $jid;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 93;
 				$fd["deleted"] = 0;
@@ -991,8 +1116,9 @@
 				$fd["amount"] = $id['JewelBkfrmChrgVal'];
 				$fd["particulars"] = "BOOKS AND FORMS";
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 35; // personalloan_repay
-				$fd["tran_id"] = $jid;
+				// $fd["tran_table"] = 35; // personalloan_repay
+				$fd["tran_table"] = 37; // loan_transaction
+				$fd["tran_id"] = $loan_tran_insert_id; // $jid;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 90;
 				$fd["deleted"] = 0;
@@ -1009,8 +1135,9 @@
 				$fd["amount"] = $id['JewelOthrChrges'];
 				$fd["particulars"] = "OTHER INCOME";
 				$fd["paid"] = 1;
-				$fd["tran_table"] = 35; // personalloan_repay
-				$fd["tran_id"] = $jid;
+				// $fd["tran_table"] = 35; // personalloan_repay
+				$fd["tran_table"] = 37; // loan_transaction
+				$fd["tran_id"] = $loan_tran_insert_id; // $jid;
 				$fd["created_by"] = $UID;
 				$fd["SubLedgerId"] = 88;
 				$fd["deleted"] = 0;
@@ -1329,11 +1456,46 @@
 			
 			$perslid = DB::table('staffloan_allocation')->insertGetId(['StfLoan_Number'=> $count_inc,'Bid'=> $AccBID,'DocId'=>$docid,'Uid'=>/*$id['StaffID']*/$EmpUid,'LoanAmt'=>$id['Stfamttopay'],'otherCharges'=>$id['StfOthrChrge'],'Book_FormCharges'=>$id['StfBkfrmChrg'],'AjustmentCharges'=>$id['Compulsory_Deposit'],'ShareCharges'=>$id['staffcharge'],'PayableAmt'=>$id['StfPayAmt'],'LoandurationYears'=>$id['LoanDurationYears'],'LoanduratiobDays'=>$id['LoanDurationDays'],'Staff_Surety'=>$id['suretyid'],'Loan_Type'=>$id['StfLoanType'],'StartDate'=>$consDate,'EndDate'=>$coneDate,'PayMode'=>$paymode,'accid'=>$id['StfLoanSBAccid'],'CreadtedBY'=>$UID,'BankID'=>$id['StfBankId'],'ChequeDate'=>$id['StfLoanChequeDte'],'ChequeNumber'=>$id['StfLoanChequeNum'],'StaffLoan_LoanRemainingAmount'=>$id['Stfamttopay'],'cd_id'=>$cd_id,'LedgerHeadId'=>'49','SubLedgerId'=>'56']);
 			
+			if(strcasecmp($paymode, "CHEQUE") == 0) {
+				$loan_transaction_cheque_cleared = 1;
+			} else {
+				$loan_transaction_cheque_cleared = 0;
+			}
+			/*************** loan transaction ****************/
+			unset($fd);
+			$fd["loan_transaction_category"] = 3; // SL
+			$fd["loan_transaction_date"] = $consDate;
+			$fd["loan_transaction_bid"] = $AccBID;
+			$fd["loan_transaction_loan_id"] = $perslid;
+			$fd["loan_transaction_principle_amount"] = $id['Stfamttopay'];
+			$fd["loan_transaction_principle_subhead_id"] = 56; // STAFF LOAN(49-MEMBERS LOAN)
+			$fd["loan_transaction_interest_amount"] = 0;
+			$fd["loan_transaction_interest_subhead_id"] = 0;
+			$fd["loan_transaction_paid"] = 1;
+			$fd["loan_transaction_type"] = 2;
+			$fd["loan_transaction_payment_mode"] = $paymode;
+			$fd["loan_transaction_particulars"] = "SL ALLOCATION ({$count_inc})";
+			$fd["loan_transaction_cheque_cleared"] = $loan_transaction_cheque_cleared;
+			$fd["loan_transaction_cheque_no"] = $id['StfLoanChequeNum'];
+			$fd["loan_transaction_cheque_date"] = $id['StfLoanChequeDte'];
+			$fd["loan_transaction_bank_id"] = $id['StfBankId'];
+			$fd["loan_transaction_interest_paid_till"] = "0-0-0";
+			$fd["loan_transaction_sb_tran_id"] = 0;
+			$fd["loan_transaction_repay_through_auction"] = 0;
+			$fd["loan_transaction_created_by"] = $UID;
+			$fd["loan_transaction_deleted"] = 0;
+
+			$this->loan_tran->clear_row_data();
+			$this->loan_tran->set_row_data($fd);
+			$this->loan_tran->print_row_data($fd);
+			$loan_tran_insert_id = $this->loan_tran->insert($fd);
+			/*************** loan transaction ****************/
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
-				$fn_data["rv_transaction_id"] = $perslid;
+				$fn_data["rv_transaction_id"] = $loan_tran_insert_id; // $perslid;
 				$fn_data["rv_transaction_type"] = "DEBIT";
-				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SL_ALLOCATION;//constant SL_ALLOCATION is declared in ReceiptVoucherModel
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::LOAN_TRAN; // ReceiptVoucherModel::SL_ALLOCATION;//constant SL_ALLOCATION is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $dte;
 				$fn_data["rv_bid"] = null;
 				$this->rv_no->save_rv_no($fn_data);
