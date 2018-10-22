@@ -1852,7 +1852,7 @@
 						<tr>
 							<td>{{ $dlallocation->DepLoan_LoanStartDate }}</td>
 							<td>{{ $dlallocation->DepLoan_LoanNum }}</td>
-							<td> - {{ $dlallocation->name }}({{$dlallocation->Uid}})</td>
+							<td>{{ $dlallocation->name }}({{$dlallocation->Uid}})</td>
 							<td>-</td>
 							<td>{{ $dlallocation->DepLoan_LoanAmount }}</td>
 							<td>-</td>
@@ -1870,7 +1870,7 @@
 						<tr>
 							<td>{{ $dlallocation->DepLoan_LoanStartDate }}</td>
 							<td>{{ $dlallocation->DepLoan_LoanNum }}</td>
-							<td>-</td>
+							<td>{{ $dlallocation->name }}({{$dlallocation->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -2083,7 +2083,7 @@
 						<tr>
 							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
-							<td> - {{ $plallocation->name }}({{$plallocation->Uid}})</td>
+							<td>{{ $plallocation->name }}({{$plallocation->Uid}})</td>
 							<td>-</td>
 							<td>{{ $plallocation->paid_amount }}</td>
 							<td>-</td>
@@ -2101,7 +2101,7 @@
 						<tr>
 							<td>{{ $plallocation->pl_payment_date }}</td>
 							<td>{{ $plallocation->PersLoan_Number }}</td>
-							<td>-</td>
+							<td>{{ $plallocation->name }}({{$plallocation->Uid}})</td>
 							<td>-</td>
 							<td>-</td>
 							<td>-</td>
@@ -3718,7 +3718,7 @@
 									$gt_adj_db += $adj_db_total;
 								?>
 				< ?php /***************** BONUS *********************/ ?>
-*/ ?>
+
 <!-- ------------------------------- BONUS ------------------------------- -->
 
 

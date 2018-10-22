@@ -2114,7 +2114,8 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
-			return DB::table('depositeloan_allocation')->select('DepLoan_LoanNum','DepLoan_AccNum','DepLoan_LoanStartDate','DepLoan_LoanAmount','receipt_voucher_no as adj_no')
+			return DB::table('depositeloan_allocation')->select('DepLoan_LoanNum','DepLoan_AccNum','DepLoan_LoanStartDate','DepLoan_LoanAmount','receipt_voucher_no as adj_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+			->leftjoin("user","user.Uid","=","depositeloan_allocation.DepLoan_Uid")
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","depositeloan_allocation.DepLoanAllocId")
 			->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
 			->where("receipt_voucher.transaction_category",17)
