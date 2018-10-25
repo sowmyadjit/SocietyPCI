@@ -4249,7 +4249,12 @@
 				246,
 				156,
 				144,
-				283
+				283,
+				297, // branch account kul
+				298,
+				299,
+				300,
+				301
 			);
 			$subhead_list = DB::table("branch_to_branch")
 				->select("SubLedgerId")
