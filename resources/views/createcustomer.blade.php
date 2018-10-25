@@ -50,7 +50,7 @@
 								<div class="form-group">
 									<label class="control-label col-sm-4">FATHER NAME:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="fthrname" name="fthrname" placeholder="FATHER NAME" required>
+										<input type="text" class="form-control" id="fthrname" name="fthrname" placeholder="FATHER NAME" >
 									</div>
 								</div>
 								
