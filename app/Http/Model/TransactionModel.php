@@ -1071,7 +1071,7 @@
 					DB::raw(" pigmi_prewithdrawal.Deduct_Commission + pigmi_prewithdrawal.Deduct_Amount as amount "),
 					DB::raw(" 'Commission and other income' as particulars"),
 					"pigmi_prewithdrawal.Deduct_Commission as commission",
-					"pigmi_prewithdrawal.Deduct_Commission as other_income",
+					"pigmi_prewithdrawal.Deduct_Amount as other_income",
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
 					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
