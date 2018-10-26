@@ -637,9 +637,22 @@
 			$c['module']=$this->Modules->GetAnyMid($Url);
 			$id=$request->input('hai');
 			$c['data']=$this->customer->GetSearchData1();
-			return view('DclassCustomerSearch',compact('c'));
+			// return view('DclassCustomerSearch',compact('c'));
+			return view('DclassCustomerSearch2',compact('c'));
 			
 		}
+
+		public function D_class_custm_data(Request $request)
+		{
+			$Url="customer";
+			$c['module']=$this->Modules->GetAnyMid($Url);
+			$id=$request->input('hai');
+			$c['data']=$this->customer->GetSearchData1();
+			
+			return view('DclassCustomerSearch2_data',compact('c'));
+			
+		}
+
 		public function userdetails($id,$type=null){
 			
 			$ud['user']=$this->customer->userdetails($id);

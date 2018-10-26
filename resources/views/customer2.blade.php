@@ -66,7 +66,16 @@
 
 				
 				<div class="b_back">
-					<center><button class="btn-sm btn-info ">back</button></center>
+					<center><button class="btn-sm btn-info ">Back to Customer</button></center>
+					<?php /*<a href="#top"><button class="btn btn-info btn-sm" id="back" >TOP</button></a> */?>
+					<div id="temp_loading_img" class="hide">
+						<div>
+							<center>
+								<img src="img\\loading2.gif" width="100px" height="100px"/>
+							</center>
+						</div>
+					</div>
+				</div>
 				</div>
 
 
@@ -81,9 +90,12 @@
 	</div>
 </div>
 
-
-
-
+<script>
+	function show_loading_img(selector) {
+		var loading_img = $("#temp_loading_img").html();
+		$(selector).html(loading_img);
+	}
+</script>
 
 <script>
 		$("document").ready(function() {
@@ -91,13 +103,7 @@
 		});
 	
 		function load_data(customer_id) {
-			var loading_img = `
-				<div>
-					<center>
-						<img src="img\\loading2.gif" width="50px" height="50px"/>
-					</center>
-				</div>`;
-			$("#table_data").html(loading_img);
+			show_loading_img("#table_data");
 			$.ajax({
 				url: "customer_data",
 				type: "post",
@@ -147,6 +153,7 @@
 		// console.log("is_day_open:", is_day_open);
 	
 		function load_url(url,check_day_open=true) {
+			show_loading_img(".b_sub_1");
 			if(is_day_open == "yes" || !check_day_open) {
 				$(".b_main").hide();
 				$(".b_sub_1").load(url);
@@ -159,7 +166,7 @@
 	<script>
 		$(".b_back").click(function() {
 			$(".b_main").show();
-			$(".b_sub_1").html("b_sub_1");
+			$(".b_sub_1").html("");
 		});
 	</script>
 	

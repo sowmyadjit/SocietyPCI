@@ -160,6 +160,7 @@
 				Route::get('/CustomerReceipt/{id}','CustomerController@CustomerReceipt'); //M 13-4-16
 				Route::get('/CustSearchView','CustomerController@CustSearchView'); //M 13-4-16
 				Route::get('/D_class_custm','CustomerController@D_class_custm');
+				Route::post('/D_class_custm_data','CustomerController@D_class_custm_data');
 				
 				
 				//DesignationController
@@ -649,6 +650,7 @@
 				Route::get('/GetSuretyName','SearchController@GetSuretyName');
 				Route::get('/SearchCustomer','SearchController@SearchCustomer');//M 19-04-16 For Customer.blade
 				Route::get('/SearchCustomer2','SearchController@SearchCustomer2');
+				Route::get('/SearchCustomer_d_class','SearchController@SearchCustomer_d_class');
 				Route::get('/SearchCustomer_usertable','SearchController@SearchCustomer_usertable');
 				Route::get('/SearchFdAllocation','SearchController@SearchFdAllocation');//M 19-04-16 For fdallocation.blade
 				Route::get('/SearchKCCAllocation','SearchController@SearchKCCAllocation');

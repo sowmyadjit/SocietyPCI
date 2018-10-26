@@ -427,6 +427,12 @@
 		{
 			return ($this->get_cust->SearchCustomer2($request->search));
 		}
+		
+		public function SearchCustomer_d_class(Request $request)//M 19-4-16 Comman Search For Customer
+		{
+			return ($this->get_cust->SearchCustomer_d_class($request->search));
+		}
+
 		public function SearchCustomer_usertable(Request $request)//M 19-4-16 Comman Search For Customer
 		{
 			return ($this->get_cust->SearchCustomer_usertable($request->search));
