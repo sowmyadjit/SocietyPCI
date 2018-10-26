@@ -1209,13 +1209,13 @@
 			
 			//$LoanRem=$id['jlremtotamt'];
 			
-			$x=DB::table('jewelloan_allocation')->select('JewelLoan_remaininginterest')	->where('JewelLoanId',$DepAlID)->first();
+			/* $x=DB::table('jewelloan_allocation')->select('JewelLoan_remaininginterest')	->where('JewelLoanId',$DepAlID)->first();
 			
 			$x1=$x->JewelLoan_remaininginterest;
 			if(!(empty($x1)))
 			{
 				$Loaninterest=$x1+$Loaninterest;
-			}
+			} */
 			
 			$arr_index = -1;
 			$insert_ids = [];
