@@ -636,7 +636,7 @@
 			$Url="customer";
 			$c['module']=$this->Modules->GetAnyMid($Url);
 			$id=$request->input('hai');
-			$c['data']=$this->customer->GetSearchData1();
+			$c['data']=$this->customer->GetSearchData1([]);
 			// return view('DclassCustomerSearch',compact('c'));
 			return view('DclassCustomerSearch2',compact('c'));
 			
@@ -644,10 +644,11 @@
 
 		public function D_class_custm_data(Request $request)
 		{
+			$fd["customer_id"] = $request->input("customer_id");
 			$Url="customer";
 			$c['module']=$this->Modules->GetAnyMid($Url);
 			$id=$request->input('hai');
-			$c['data']=$this->customer->GetSearchData1();
+			$c['data']=$this->customer->GetSearchData1($fd);
 			
 			return view('DclassCustomerSearch2_data',compact('c'));
 			

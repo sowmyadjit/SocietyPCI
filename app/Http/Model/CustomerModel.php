@@ -307,7 +307,8 @@
 			$ret_data =  DB::table('customer')
 			->select(DB::raw('customer.Custid as id, CONCAT(`customer`.`Uid`,"/",`Custid`,"-",customer.`FirstName`,"-",customer.`MiddleName`,"-",customer.`LastName`," , ",`FatherName`,"(Father)","-",COALESCE(`Address`,"")) as name'))
 			->leftJoin('address','address.Aid','=','customer.Aid')
-			->leftJoin('user','user.Uid','=','customer.Uid');
+			->leftJoin('user','user.Uid','=','customer.Uid')
+			->where('custtyp','=',"CLASS D");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("customer.Bid",$BID);
 			}
@@ -328,7 +329,7 @@
 		
 			
 		}
-		public function GetSearchData1()
+		public function GetSearchData1($data)
 		{
 			$uname='';
 			if(Auth::user())
@@ -340,9 +341,12 @@
 			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid')
 			->where('custtyp','=',"CLASS D")
 			->where('user.Bid','=',$BID)
-			->where('customer.AuthStatus','AUTHORISED')
+			->where('customer.AuthStatus','AUTHORISED');
+			if(!empty($data["customer_id"])) {
+				$id = $id->where("Custid",$data["customer_id"]);
+			}
 			//->orderBy('Member_No','desc')
-			->orderBy('Custid','desc')
+			$id = $id->orderBy('Custid','desc')
 			->get();
 			return $id;
 		}
