@@ -850,6 +850,7 @@
 			return DB::table('branch_to_branch')
 			->leftJoin('branch','branch.Bid','=','branch_to_branch.Branch_Branch1_Id')
 			->where('Branch_Branch2_Id','=',$BID)
+			->where("branch_to_branch.deleted",0)
 			->orderBy("Branch_Id",'desc')
 			->get();
 			
