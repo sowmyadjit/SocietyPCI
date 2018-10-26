@@ -648,6 +648,7 @@
 				Route::get('/GetMembersForPersLoan','SearchController@GetMembersForPersLoan');
 				Route::get('/GetSuretyName','SearchController@GetSuretyName');
 				Route::get('/SearchCustomer','SearchController@SearchCustomer');//M 19-04-16 For Customer.blade
+				Route::get('/SearchCustomer2','SearchController@SearchCustomer2');
 				Route::get('/SearchCustomer_usertable','SearchController@SearchCustomer_usertable');
 				Route::get('/SearchFdAllocation','SearchController@SearchFdAllocation');//M 19-04-16 For fdallocation.blade
 				Route::get('/SearchKCCAllocation','SearchController@SearchKCCAllocation');

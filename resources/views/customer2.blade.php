@@ -87,10 +87,10 @@
 
 <script>
 		$("document").ready(function() {
-			load_data();
+			load_data("");
 		});
 	
-		function load_data() {
+		function load_data(customer_id) {
 			var loading_img = `
 				<div>
 					<center>
@@ -101,17 +101,32 @@
 			$.ajax({
 				url: "customer_data",
 				type: "post",
-				data: "",
+				data: "&customer_id="+customer_id,
 				success: function(data) {
 					$("#table_data").html(data);
 				}
 			});
 		}
 	</script>
+
+	<script>
+		$('input.SearchTypeahead').typeahead({
+			ajax: '/SearchCustomer2'
+		});
+	</script>
 	
 	<script>
 		$(".refresh_data").click(function() {
-			load_data();
+			load_data("");
+		});
+	</script>
+	
+	<script>
+		$("#SearchCust").change(function() {
+			$("#SearchCust").val("");
+			var customer_id = $(this).attr("data-value");
+			console.log(customer_id);
+			load_data(customer_id);
 		});
 	</script>
 	

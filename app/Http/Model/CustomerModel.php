@@ -177,7 +177,7 @@
 			return $id;
 		}
 		
-		public function GetData()
+		public function GetData($data)
 		{
 			$uname='';
 			if(Auth::user())
@@ -189,6 +189,9 @@
 			->leftJoin('user', 'user.Uid', '=' , 'customer.Uid');
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$id = $id->where('customer.Bid','=',$BID);
+			}
+			if(!empty($data["customer_id"])) {
+				$id = $id->where("Custid",$data["customer_id"]);
 			}
 			$id = $id->where("customer.AuthStatus","AUTHORISED")
 				->orderBy('Custid','desc')
@@ -256,14 +259,44 @@
 		
 		public function SearchCustomer($q)//M 19-4-16 For Cutomer.blade to search customer
 		{
-			
-			return DB::table('customer')
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+
+			$ret_data =  DB::table('customer')
 			->select(DB::raw('Custid as id, CONCAT(`Uid`,"-",customer.`FirstName`,"-",customer.`MiddleName`,"-",customer.`LastName`," , ",`FatherName`,"(Father)","-",`Address`) as name'))
-			->join('address','address.Aid','=','customer.Aid')
-			->get();
+			->join('address','address.Aid','=','customer.Aid');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("Bid",$BID);
+			}
+			$ret_data = $ret_data->get();
 		
+			return $ret_data;
 			
 		}
+		
+		public function SearchCustomer2($q)//M 19-4-16 For Cutomer.blade to search customer
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$BID=$uname->Bid;
+			
+			$ret_data =  DB::table('customer')
+			->select(DB::raw('customer.Custid as id, CONCAT(`customer`.`Uid`,"/",`Custid`,"-",customer.`FirstName`,"-",customer.`MiddleName`,"-",customer.`LastName`," , ",`FatherName`,"(Father)","-",COALESCE(`Address`,"")) as name'))
+			->leftJoin('address','address.Aid','=','customer.Aid')
+			->leftJoin('user','user.Uid','=','customer.Uid');
+			if($this->settings->get_value("allow_inter_branch") == 0) {
+				$ret_data = $ret_data->where("customer.Bid",$BID);
+			}
+			$ret_data = $ret_data//->where("customer.Uid","like","%{$q}%")
+				->get();
+		
+			return $ret_data;
+			
+		}
+
 		public function SearchCustomer_usertable($q)//M 19-4-16 For Cutomer.blade to search customer
 		{
 			

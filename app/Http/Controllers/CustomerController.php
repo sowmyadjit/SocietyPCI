@@ -30,7 +30,7 @@
 			
 			$id['open']=$this->OP_model->openstate();
 			$id['close']=$this->OP_model->openclosestate();
-			$id['customer']=$this->customer->GetData();
+			$id['customer']=$this->customer->GetData([]);
 			if(empty($id['open']))
 			{
 				$id['open']=0;
@@ -57,14 +57,15 @@
 			return view('customer2',compact('id'));
 		}
 
-		public function customer_data()
+		public function customer_data(Request $request)
 		{
+			$fd["customer_id"] = $request->input("customer_id");
 			$Url="customer";
 			$id['module']=$this->Modules->GetAnyMid($Url);
 			
 			$id['open']=$this->OP_model->openstate();
 			$id['close']=$this->OP_model->openclosestate();
-			$id['customer']=$this->customer->GetData();
+			$id['customer']=$this->customer->GetData($fd);
 			if(empty($id['open']))
 			{
 				$id['open']=0;
