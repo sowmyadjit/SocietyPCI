@@ -230,6 +230,16 @@
 				$this->rv_no->save_rv_no($fn_data);
 				unset($fn_data);
 				/***********/
+				/****** for prewithdrawal charges *****/
+				$fn_data["rv_payment_mode"] = $RDPayMode;
+				$fn_data["rv_transaction_id"] = $rd_payamount_id;
+				$fn_data["rv_transaction_type"] = "CREDIT";
+				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::RD_PAYAMOUNT;//constant RD_PAYAMOUNT is declared in ReceiptVoucherModel
+				$fn_data["rv_date"] = $paydatereport;
+				$fn_data["rv_bid"] = null;
+				$this->rv_no->save_rv_no($fn_data);
+				unset($fn_data);
+				/***********/
 				/******************** PREWITHDRAWAL CHARGES **************************/
 				$prewithdrawal_charges = DB::table("rd_prewithdrawal")
 					->where("RdAcc_No", $RDAccNum)

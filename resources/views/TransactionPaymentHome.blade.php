@@ -8,7 +8,7 @@
 								<select class="form-control ReceiptTypeDD"  id="ReceiptTypeDD" name="ReceiptTypeDD">  
 									<option value=""> SELECT PAYMENT TYPE</option>
 									<option value="SB"> SB PAYMENT </option>
-									<option value="RD"> RD PAYMENT </option>
+							<?php /*<option value="RD"> RD PAYMENT </option> */?>
 									<option value="JL"> JL ALLOCATE </option>
 									<option value="DL"> DL ALLOCATE </option>
 									<option value="SL"> SL ALLOCATE </option>

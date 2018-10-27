@@ -571,7 +571,7 @@
 				$fd["payment_mode"] = "";
 				$fd["amount"] = $rd_deduct_amt;
 				$fd["particulars"] = "OTHER INCOME";
-				$fd["paid"] = 0; //										--later will bbe replaced with 1
+				$fd["paid"] = 0; //										--later will be replaced with 1
 				$fd["tran_table"] = 32; // rd_prewithdrawal 			--later will be updated with   33-rd_payamount
 				$fd["tran_id"] = $rd_prewithdrawal_id; // 				--later will be updated with rd pay amt tran id
 				$fd["created_by"] = $UID;
