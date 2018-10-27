@@ -963,6 +963,7 @@
 					"createaccount.Old_AccNo as old_acc_no",
 					"{$table}.RDPayAmtReport_PayDate as date",
 					"rd_prewithdrawal.Deduct_Amt as amount",
+					"rd_prewithdrawal.Deduct_Amt",
 					DB::raw(" 'RD Deduct Amount' as particulars"),
 					DB::raw("'CREDIT' as transaction_type"),
 					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
@@ -986,6 +987,7 @@
 				$ret_data->tran_category_name = "RD PAY AMOUNT";
 				$ret_data->account_head = "RD";
 				$ret_data->tran_category = $data["tran_category"];
+				$ret_data->sub_amt["Other Income"] = $ret_data->Deduct_Amt;
 			}
 			return $ret_data;
 		}
