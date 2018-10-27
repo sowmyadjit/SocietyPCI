@@ -305,7 +305,7 @@
 			$BID=$uname->Bid;
 			
 			$ret_data =  DB::table('customer')
-			->select(DB::raw('customer.Custid as id, CONCAT(`customer`.`Uid`,"/",`Custid`,"-",customer.`FirstName`,"-",customer.`MiddleName`,"-",customer.`LastName`," , ",`FatherName`,"(Father)","-",COALESCE(`Address`,"")) as name'))
+			->select(DB::raw('customer.Custid as id, CONCAT(`customer`.`Uid`,"/",`Member_No`,"-",customer.`FirstName`,"-",customer.`MiddleName`,"-",customer.`LastName`," , ",`FatherName`,"(Father)","-",COALESCE(`Address`,"")) as name'))
 			->leftJoin('address','address.Aid','=','customer.Aid')
 			->leftJoin('user','user.Uid','=','customer.Uid')
 			->where('custtyp','=',"CLASS D");
