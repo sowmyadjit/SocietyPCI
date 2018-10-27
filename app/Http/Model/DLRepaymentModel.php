@@ -1726,6 +1726,7 @@
 				->select('staffloan_allocation.Uid','StfLoan_Number','staffloan_allocation.Bid','LoanAmt','otherCharges','Book_FormCharges','AjustmentCharges','ShareCharges','PayableAmt','LoandurationYears','LoanduratiobDays','Staff_Surety','Loan_Type','StartDate','EndDate','StaffLoan_LoanRemainingAmount','EMI_Amount','StfLoanAllocID')
 				->leftJoin('user', 'user.Uid', '=' , 'staffloan_allocation.Uid')
 				->whereRaw("DATE(staffloan_allocation.StartDate) BETWEEN '".$start."' AND '".$end."'")
+				->where("staffloan_allocation.deleted",0)
 				// ->paginate(20);
 				->get();
 				return $id;
