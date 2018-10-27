@@ -592,6 +592,14 @@
 										break;
 				case "B2B_DB"		:	$data = $this->TranModel->rv_print_b2b_db($in_data);
 										break;
+				case "FD_ALLOC"		:	
+										$in_data["fd_type"] = "FD";
+										$data = $this->TranModel->rv_print_fd_kcc_alloc($in_data);
+										break;
+				case "KCC_ALLOC"	:	
+										$in_data["fd_type"] = "KCC";
+										$data = $this->TranModel->rv_print_fd_kcc_alloc($in_data);
+										break;
 			}
 			if(empty($in_data["tran_id"])) {
 				// return $data;

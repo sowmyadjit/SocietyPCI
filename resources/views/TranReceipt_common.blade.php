@@ -163,7 +163,7 @@ table td {
 				</tr>
 			@endif
 
-			@if(strcasecmp($data->transaction_type, "DEBIT") == 0 || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 )
+			@if(strcasecmp($data->transaction_type, "DEBIT") == 0 || strcasecmp($data->tran_category, "INCOME") == 0 || strcasecmp($data->tran_category, "EXPENSE") == 0 || strcasecmp($data->tran_category, "BANK_DEP") == 0 || strcasecmp($data->tran_category, "BANK_WID") == 0 || strcasecmp($data->tran_category, "FD_ALLOC") == 0 || strcasecmp($data->tran_category, "KCC_ALLOC") == 0 )
 				<tr>
 					<td>Account Head:</td>
 					<td>

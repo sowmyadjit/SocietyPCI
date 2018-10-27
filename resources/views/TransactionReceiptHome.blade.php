@@ -16,7 +16,8 @@
 									<option value="DL_PAY"> DL REPAY RECEIPT </option>
 									<option value="SL_PAY"> SL REPAY RECEIPT </option>
 									<option value="PL_PAY"> PL REPAY RECEIPT </option>
-									<option value="FD_PAY_AMT"> FD PAY RECEIPT </option>
+									<option value="FD_ALLOC"> FD RECEIPT </option>
+									<option value="KCC_ALLOC"> KCC RECEIPT </option>
 									<option value="RD_PAY_AMT"> RD PAY RECEIPT </option>
 									<option value="PG_PAY_AMT"> PG PAY RECEIPT </option>
 									<option value="MEM_FEE"> MEMBER FEE RECEIPT </option>

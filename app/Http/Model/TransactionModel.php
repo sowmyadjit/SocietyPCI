@@ -1225,7 +1225,7 @@
 			$ret_data = DB::table($table)
 				->select(
 					"{$table}.Custid as tran_id",
-					"{$table}.Custid as acc_no",
+					"user.Member_No as acc_no",
 					DB::raw("'' as old_acc_no"),
 					"{$table}.Created_on as date",
 					"{$table}.Customer_Fee as amount",
@@ -1318,7 +1318,7 @@
 				->select(
 					"{$table}.PURSH_Pid as tran_id",
 					// "{$table}. as acc_no",
-					DB::raw(" '' as acc_no "),
+					DB::raw(" members.Memid as acc_no "),
 					// "{$table}. as old_acc_no",
 					DB::raw(" '' as old_acc_no "),
 					"{$table}.PURSH_Date as date",
@@ -1630,6 +1630,61 @@
 				$ret_data->account_head = "HEAD OFFICE";
 				$ret_data->tran_category = $data["tran_category"];
 			}
+			return $ret_data;
+		}
+
+		public function rv_print_fd_kcc_alloc($data)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid;
+
+			$table = "fdallocation";
+			if($data["tran_type"] == "CREDIT") {
+				$receipt_voucher_type = [1];
+			} else {
+				$receipt_voucher_type = [2,3];
+			}
+			$transaction_category = 8;
+
+			$ret_data = '';
+			$ret_data = DB::table($table)
+				->select(
+					"{$table}.Fdid as tran_id",
+					"{$table}.Fd_CertificateNum as acc_no",
+					"{$table}.Fd_OldCertificateNum as old_acc_no",
+					"{$table}.FdReport_StartDate as date",
+					"{$table}.Fd_DepositAmt as amount",
+					DB::raw(" '' as particulars"),
+					// DB::raw(" 'SB DEPOSIT' as particulars"),
+					DB::raw(" 'CREDIT' as transaction_type"),
+					"receipt_voucher.receipt_voucher_no as receipt_voucher_no",
+					"receipt_voucher.receipt_voucher_type as receipt_voucher_type",
+					"user.Uid as uid",
+					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
+				)
+				->join("user","user.Uid","=","{$table}.Uid")
+				->join("receipt_voucher","receipt_voucher.transaction_id","=","fdallocation.Fdid")
+				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
+				->where("receipt_voucher.transaction_category",$transaction_category)
+				->where("receipt_voucher.bid",$BID)
+				->where("receipt_voucher.deleted",0);
+			if($data["fd_type"] == "KCC") {
+				$ret_data = $ret_data->where("fdallocation.FdTid",1);
+			}
+			if($data["tran_list"] == "YES") {
+				$ret_data = $ret_data->get();
+			} else {
+				$ret_data = $ret_data->where("{$table}.Fdid",$data["tran_id"])
+					->first();
+				if($data["fd_type"] == "KCC") {
+					$ret_data->tran_category_name = "KCC";
+					$ret_data->account_head = "KCC";
+				} else {
+					$ret_data->tran_category_name = "FD";
+					$ret_data->account_head = "FD";
+				}
+				$ret_data->tran_category = $data["tran_category"];
+			}
+
 			return $ret_data;
 		}
 		
