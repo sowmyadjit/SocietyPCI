@@ -152,6 +152,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('status','=',"UNAUTHORISED")
+			->where("createaccount.deleted",0)
 			->where('createaccount.JointUid','=',"");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$id = $id->where('createaccount.Bid','=',$BID);
@@ -172,6 +173,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('status','=',"UNAUTHORISED")
+			->where("createaccount.deleted",0)
 			->where('createaccount.JointUid','!=',"");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$id = $id->where('createaccount.Bid','=',$BID);
@@ -205,6 +207,7 @@
 			->leftJoin('nominee', 'nominee.Nid', '=' , 'createaccount.nid')
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
+			->where("createaccount.deleted",0)
 			->where('status','=',"rejected");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$id = $id->where('createaccount.Bid','=',$BID);
@@ -517,6 +520,7 @@
 			->join('createaccount','createaccount.Accid','=','loan_allocation.Accid')
 			->join('user','user.Uid','=','createaccount.Uid')
 			->where('loan_allocation.status','=',"UNAUTHORISED")
+			->where("createaccount.deleted",0)
 			->get();
 		}
 		

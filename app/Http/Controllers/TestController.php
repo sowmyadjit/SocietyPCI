@@ -1201,6 +1201,7 @@
 				->leftJoin("rd_payamount","rd_payamount.RDPayAmt_AccNum","=","rd_prewithdrawal.RdAcc_No")
 				->leftJoin("createaccount","createaccount.AccNum","=","rd_prewithdrawal.RdAcc_No")
 				->where($date_field,">=",$from_date)
+				->where("createaccount.deleted",0)
 				->groupBy("rd_prewithdrawal.RdAcc_No")
 				// ->orderBy("RdPrewithdraw_ID", "desc")
 				// ->limit(10)

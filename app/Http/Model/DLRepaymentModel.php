@@ -166,6 +166,7 @@
 			->select('createaccount.Accid','createaccount.AccNum','createaccount.AccTid','createaccount.Total_Amount')
 			->join('createaccount','createaccount.Uid','=','depositeloan_allocation.DepLoan_Uid')
 			->where('depositeloan_allocation.DepLoan_AccNum','=',$id)
+			->where("createaccount.deleted",0)
 			->first();
 		}
 		
@@ -452,6 +453,7 @@
 					{
 						DB::table('createaccount')
 						->where('AccNum',$PgAccNo)
+						->where("createaccount.deleted",0)
 						->update(['Loan_Allocated'=>"NO"]);
 					}
 					else if($loantype=="FD DL")
@@ -667,6 +669,7 @@
 			
 			$ret_data = DB::table('createaccount')
 				->select(DB::raw('Accid as id, AccNum as name'))
+				->where("createaccount.deleted",0)
 				->where('AccNum','like','%SB%');
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("createaccount.Bid",$BID);

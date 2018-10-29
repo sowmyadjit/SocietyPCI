@@ -513,6 +513,7 @@ class DepositModel extends Model
 								$acc_no_field = "AccNum";
 								$acc_id = DB::table($table)
 									->where($acc_no_field,"=",$data["sb_acc_no"])
+									->where("createaccount.deleted",0)
 									->value("Accid");
 								
 								$table = "sb_transaction";
@@ -902,6 +903,7 @@ class DepositModel extends Model
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
 				->leftJoin("createaccount","createaccount.Accid","=","cdsd_account.sb_acc_id")
+				->where("createaccount.deleted",0)
 				->where("cdsd_type","=",$data["cdsd_type"])
 				->where($deleted_field,"=",0);
 				if($this->settings->get_value("allow_inter_branch") == 0) {

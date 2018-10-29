@@ -53,8 +53,8 @@
 			}
 			$count_inc;
 			
-			$maxid=DB::table('createaccount')->where('Bid','=',$BID)->where('AccTid','=',$actid)->max('Accid');
-			$accnum1=DB::table('createaccount')->select('AccNum')->where('Accid','=',$maxid)->first();
+			$maxid=DB::table('createaccount')->where('Bid','=',$BID)->where('AccTid','=',$actid)->where("createaccount.deleted",0)->max('Accid');
+			$accnum1=DB::table('createaccount')->select('AccNum')->where('Accid','=',$maxid)->where("createaccount.deleted",0)->first();
 			$accnum=$accnum1->AccNum;
 			//print_r($accnum);
 			$paccno1=preg_match('#([a-z]+)([\d]+)#i',$accnum,$matches);
@@ -112,7 +112,7 @@
 						$SBAccountNum=$id['SBAccountNum'];
 						$SBAvailhidn=$id['SBAvailhidn'];
 					$updateamt=$SBAvailhidn-$amount1;
-					DB::table('createaccount')->where('AccNum','=',$SBAccountNum)
+					DB::table('createaccount')->where('AccNum','=',$SBAccountNum)->where("createaccount.deleted",0)
 					->update(['Total_Amount'=>$updateamt]);
 					$sb_id2 = DB::table('sb_transaction')->insertGetId(['Accid'=> $Accid_sb_,'AccTid' => "1",'TransactionType' => "DEBIT",'particulars' =>"SB ACCOUNT",'Amount' =>$amount1,'CurrentBalance' => $SBAvailhidn,'Total_Bal' => $updateamt,'tran_Date' =>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'Bid'=>$BID,'SB_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'Payment_Mode'=>"SB"]);
 				}
@@ -164,7 +164,7 @@
 					$SBAccountNum=$id['SBAccountNum'];
 					$SBAvailhidn=$id['SBAvailhidn'];
 					$updateamt=$SBAvailhidn-$amount1;
-					DB::table('createaccount')->where('AccNum','=',$SBAccountNum)
+					DB::table('createaccount')->where('AccNum','=',$SBAccountNum)->where("createaccount.deleted",0)
 					->update(['Total_Amount'=>$updateamt]);
 					$sb_id3 = DB::table('sb_transaction')->insertGetId(['Accid'=> $Accid_sb_,'AccTid' => "1",'TransactionType' => "DEBIT",'particulars' =>"SB ACCOUNT",'Amount' =>$amount1,'CurrentBalance' => $SBAvailhidn,'Total_Bal' => $updateamt,'tran_Date' =>$dte,'SBReport_TranDate'=>$dte,'Month'=>$mnt,'Year'=>$year,'CreatedBy'=>$u,'Bid'=>$BID,'SB_resp_No'=>$r,'LedgerHeadId'=>"38",'SubLedgerId'=>"42",'Payment_Mode'=>"SB"]);
 				}
@@ -219,6 +219,7 @@
 			$ret_data =  DB::table('createaccount')
 			->select(DB::raw('Accid as id, CONCAT(`Old_AccNo`,"-",`AccNum`) as name'))
 			->where('AccNum','like','%SB%')
+			->where("createaccount.deleted",0)
 			->where('Status','=',"AUTHORISED");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where('createaccount.Bid','=',$BID);
@@ -257,6 +258,7 @@
 			->leftJoin('nominee', 'nominee.Nid', '=' , 'createaccount.nid')
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
+			->where("createaccount.deleted",0)
 			
 //			->paginate(10);
 			->get();
@@ -283,6 +285,7 @@
 			->leftJoin('nominee', 'nominee.Nid', '=' , 'createaccount.nid')
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
+			->where("createaccount.deleted",0)
 			->get();
 			
 			foreach($id as $key => $row) {
@@ -308,6 +311,7 @@
 			->where('AccNum','like','%SB%')
 //			->where('createaccount.JointUid','=',"")
 			->where('createaccount.Bid','=',$BID)
+			->where("createaccount.deleted",0)
 			->get();
 			
 			foreach($id as $key => $row) {
@@ -333,6 +337,7 @@
 			->where('AccNum','like','%SB%')
 			->where('createaccount.JointUid','!=',"")
 			->where('createaccount.Bid','=',$BID)
+			->where("createaccount.deleted",0)
 		//	->paginate(10);
 			->get();
 			
@@ -363,6 +368,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('AccNum','like','%RD%')
+			->where("createaccount.deleted",0)
 			->paginate(10);
 			
 			return $id;
@@ -378,6 +384,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('AccNum','like','%RD%')
+			->where("createaccount.deleted",0)
 			->get();
 			return $id;
 		}
@@ -392,6 +399,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('Accid',$id1)
+			->where("createaccount.deleted",0)
 			->get();
 			$asd=DB::table('createaccount')->select('Uid')->where('Accid',$id1)->first();
 			$uid=$asd->Uid;
@@ -426,6 +434,7 @@
 			->leftJoin('user', 'user.Uid', '=' , DB::Raw("$uid2"))
 			->leftJoin('address', 'address.Aid', '=' , 'user.Aid')
 			->where('Accid',$id1)
+			->where("createaccount.deleted",0)
 			->get();
 			
 			$cust_num=DB::table('customer')->where('Uid',$uid2)->count('Custid');
@@ -479,6 +488,7 @@
 			->select('createaccount.Total_Amount','accounttype.Acc_Type','user.FirstName','user.MiddleName','user.LastName','accounttype.AccTid','user.Uid')
 			->where('sb_transaction.Accid','=',$id)
 			->where('createaccount.Bid','=',$BID)
+			->where("createaccount.deleted",0)
 			//->where('sb_transaction.Tranid','=',$query1)
 			->first();
 		//	return $id;
@@ -899,6 +909,7 @@
 			$ret_data = DB::table('createaccount')
 			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
 			->where('AccNum','like','%RD%')
+			->where("createaccount.deleted",0)
 			->where('Status','=',"AUTHORISED");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where('createaccount.Bid','=',$BID);
@@ -919,6 +930,7 @@
 				->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
 				->where('AccNum','like','%RD%')
 				->where('Status','=',"AUTHORISED")
+				->where("createaccount.deleted",0)
 				->where('createaccount.Closed','=',"NO");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("createaccount.Bid",$BID);
@@ -940,6 +952,7 @@
 			->select(DB::raw('Accid as id, CONCAT(`Old_AccNo`,"-",`AccNum`,"-",`FirstName`,"  ",`MiddleName`,"  ",`LastName`) as name'))
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->where('Status','=',"AUTHORISED")
+			->where("createaccount.deleted",0)
 			
 			->get();
 		}
@@ -950,6 +963,7 @@
 			return DB::table('createaccount')
 			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`Old_AccNo`) as name'))
 			->where('Status','=',"AUTHORISED")
+			->where("createaccount.deleted",0)
 			->get();
 		}
 		
@@ -961,6 +975,7 @@
 			->join('user','user.Uid','=','createaccount.Uid')
 			->where('createaccount.Uid','=',$id['userid'])
 			->where('AccTid','=',"1")
+			->where("createaccount.deleted",0)
 			->first();
 			return $id;
 		}
@@ -1000,6 +1015,7 @@
 			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
 			//->where('AccNum','like','%SB%')
 			//->where('Bid','=',$id)
+			->where("createaccount.deleted",0)
 			->get();
 		}
 		
@@ -1017,7 +1033,7 @@
 		public function GetSeachedSbAcc($q) 
 		{
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `Accid` LIKE '%".$q."%' ");
-			return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%SB%' ");
+			return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%SB%' AND `createaccount`.`deleted`=0 ");
 			
 		}
 		
@@ -1034,7 +1050,7 @@
                WHEN 'YES' THEN 'Closed'
                WHEN 'NO' THEN 'Active'
               ELSE Closed
-		END) as name FROM `createaccount` where `AccNum` LIKE '%SB%' {$check_branch}");
+		END) as name FROM `createaccount` where `AccNum` LIKE '%SB%' {$check_branch} AND `createaccount`.`deleted`=0 ");
 			
 		}
 		
@@ -1045,7 +1061,7 @@
                WHEN 'YES' THEN 'Closed'
                WHEN 'NO' THEN 'Active'
               ELSE Closed
-            END) as name FROM `createaccount` where `AccNum` LIKE '%RD%' ");
+            END) as name FROM `createaccount` where `AccNum` LIKE '%RD%' AND  `createaccount`.`deleted`=0 ");
 			
 		}
 		
@@ -1054,7 +1070,7 @@
 		public function GetSeachedRdAcc($q) 
 		{
 			//return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `Accid` LIKE '%".$q."%' ");
-			return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%RD%' ");
+			return DB::select("SELECT `Accid` as id, CONCAT(`Accid`,'-',`AccNum`) as name FROM `createaccount` where `AccNum` LIKE '%RD%' AND  `createaccount`.`deleted`=0 ");
 			
 		}
 		
@@ -1120,6 +1136,7 @@
 			$count_inc;
 			$accno = DB::table('createaccount')
 			->where('AccNum','like','%'.$accountnm.'%')
+			->where("createaccount.deleted",0)
 			->count();
 			
 			if($type=="SB")
@@ -1287,6 +1304,7 @@
 			->select(DB::raw('Accid as id,AccNum as name'))
 			->where('Closed','<>',"YES")
 			->where('Loan_Allocated','=',"NO")
+			->where("createaccount.deleted",0)
 			->where('AccNum','like','%RD%');
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("createaccount.Bid", $BID);
@@ -1350,6 +1368,7 @@
 //				->where("sb_transaction.SBReport_TranDate","<",$start)
 //				->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '0000-00-00' AND '".$start."'")
 				->where("sb_transaction.deleted","=",0)
+				->where("createaccount.deleted",0)
 				->orderBy('SBReport_TranDate','asc')
 				->orderBy('Tranid','asc')
 				->get();
@@ -1439,6 +1458,7 @@
 				->select($select_array)
 				->join("user","user.Uid","=","{$table}.Uid")
 				->join("accounttype","accounttype.AccTid","=","{$table}.AccTid")
+				->where("createaccount.deleted",0)
 				->where("status","AUTHORISED");
 				if($this->settings->get_value("allow_inter_branch") == 0) {
 					$account_list = $account_list->where($branch_id_field,"=",$BranchId);

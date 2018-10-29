@@ -264,6 +264,7 @@
 			->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
 			->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
 			->where('Fdid',$id)
+			->where("createaccount.deleted",0)
 			->get();
 			// print_r($id[0]);exit();
 
@@ -588,6 +589,7 @@
 				->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
 				->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
 				->where('Fdid',$fdmatur)
+				->where("createaccount.deleted",0)
 				->first();
 				//print_r($id);
 
@@ -637,6 +639,7 @@
 					->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
 					->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
 					->where('Fdid',$fdmatur)
+					->where("createaccount.deleted",0)
 					->first();
 
 				$mature_date = $id->FdReport_MatureDate;

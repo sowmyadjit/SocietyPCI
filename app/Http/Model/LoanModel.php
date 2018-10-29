@@ -30,6 +30,7 @@
 			->leftJoin('user','user.Uid','=','createaccount.Uid')
 			->select('user.FirstName','user.Uid')
 			->where('createaccount.Accid','=',$id['act'])
+			->where("createaccount.deleted",0)
 			->first();
 		}
 		
@@ -152,6 +153,7 @@
 				$Uidfi1=DB::table('createaccount')
 				->select('Uid')
 				->where('AccNum','=',$deploannum)
+				->where("createaccount.deleted",0)
 				->first();
 				
 				$Uidfi=$Uidfi1->Uid;
@@ -261,6 +263,7 @@
 			{
 				$alid = DB::table('createaccount')
 				->where('AccNum',$deploannum)
+				->where("createaccount.deleted",0)
 				->update(['Loan_Allocated'=> "YES"]);
 			}
 			
@@ -303,6 +306,7 @@
 			->select(DB::raw('loan_allocation.Accid as id, AccNum as name'))
 			->where('AccNum','like','%'.$q.'%')
 			->where('loan_allocation.status','=',"AUTHORISED")
+			->where("createaccount.deleted",0)
 			->get();
 		}
 		
@@ -331,6 +335,7 @@
 			->join('loanremaining_balance','loanremaining_balance.Accid','=','loan_allocation.Accid')
 			->select('FirstName','LoanType_Name','LoanAlloc_Duration','LoanAlloc_LoanAmt','Loan_TotalRem')
 			->where('loan_allocation.Accid','=',$id)
+			->where("createaccount.deleted",0)
 			->first();
 			//}
 			return $res;
@@ -441,6 +446,7 @@
 				$q1=DB::table('createaccount')
 				->select('Uid')
 				->where('AccNum','=',$accnum)
+				->where("createaccount.deleted",0)
 				->first();
 				$q=$q1->Uid;
 			}
@@ -448,6 +454,7 @@
 			->select('createaccount.AccNum','createaccount.Total_Amount','createaccount.Accid','createaccount.AccTid')
 			->where('AccNum','like','%SB%')
 			->where('Uid','=',$q)
+			->where("createaccount.deleted",0)
 			->first();
 			return $id;
 		}
@@ -471,6 +478,7 @@
 			->join('members','members.Uid','=','createaccount.Uid')
 			->where('AccNum','like','%SB%')
 			->where('members.Memid','=',$id)
+			->where("createaccount.deleted",0)
 			->first();
 			//print_r($id);
 			return $id;
@@ -1615,6 +1623,7 @@
 			->join('createaccount','createaccount.AccNum','=','request_loan.DepLoan_AccNo')
 			->where('Loan_Allocated','=',"NO")
 			->where('Closed','=',"NO")
+			->where("createaccount.deleted",0)
 			->where('DepLoan_AccNo','like','%RD%');
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("request_loan.Bid",$BID);
@@ -1666,6 +1675,7 @@
 			->join('branch','branch.Bid','=','request_loan.Bid')
 			->where('request_loan.DepLoan_AccNo','like','%RD%')
 			->where('PersLoanAllocID','=',$id)
+			->where("createaccount.deleted",0)
 			->first();
 			return $id;
 		}
@@ -1898,7 +1908,7 @@
 			
 			$uiddd=DB::table('request_loan')->select('Uid')->where('PersLoanAllocID',$id)->first();
 			$uidd=$uiddd->Uid;
-			$x=DB::table('createaccount')->select('AccNum','Total_Amount')->where('Uid',$uidd)->first();
+			$x=DB::table('createaccount')->select('AccNum','Total_Amount')->where('Uid',$uidd)->where("createaccount.deleted",0)->first();
 			return $x;
 		}
 		public function CreatePersLoanAllocation_renewal($id)

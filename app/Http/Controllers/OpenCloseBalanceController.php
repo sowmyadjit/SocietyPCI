@@ -697,6 +697,7 @@
 			$data=DB::table('sb_int')
 			->where('sb_int.Bid','=',$Branchid)
 			->join('createaccount','createaccount.AccNum','=','sb_int.accno')
+			->where("createaccount.deleted",0)
 			->get();
 			return view('Sb_int',compact('data'));
 		}

@@ -540,6 +540,7 @@
 				->where('createaccount.AccNum','=',$acno)
 				->where('sb_transaction.Month','=',$m)
 				->where('sb_transaction.Year','=',$yr)
+				->where("createaccount.deleted",0)
 				//->where('sb_transaction.Cleared_State','=',"CLEARED")
 				->max('Tranid');
 				if($maxtot>0)
@@ -572,6 +573,7 @@
 			$interest=DB::table('createaccount')->select('Intrest')
 			->leftJoin('accounttype','accounttype.AccTid','=','createaccount.AccTid')
 			->where('AccNum','=',$acno)
+			->where("createaccount.deleted",0)
 			->first();
 			return $interest;
 		}
@@ -795,6 +797,7 @@
 			$interest=DB::table('createaccount')->select('Intrest','Duration','Total_Amount','Maturity_Date','Created_on','Accid')
 			->leftJoin('accounttype','accounttype.AccTid','=','createaccount.AccTid')
 			->where('AccNum','=',$acno)
+			->where("createaccount.deleted",0)
 			->first();
 			
 			return $interest;
@@ -805,6 +808,7 @@
 			->leftJoin('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$edate."'")
 			->where('createaccount.AccNum','=',$acno)
+			->where("createaccount.deleted",0)
 			->get();
 			return $rddate;
 		}
@@ -814,6 +818,7 @@
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$edate."'")
 			->join('createaccount','rd_transaction.Accid','=','createaccount.Accid')
 			->where('createaccount.AccNum','=',$acno)
+			->where("createaccount.deleted",0)
 			->count('RDReport_TranDate');
 			return $rddate1;
 		}
@@ -822,7 +827,7 @@
 		{
 			$rdopenbal=DB::table('createaccount')->select('opening_blance')
 			->where('createaccount.AccNum','=',$acno)
-			
+			->where("createaccount.deleted",0)
 			->first();
 			return $rdopenbal;
 		}
@@ -849,6 +854,7 @@
 			$actid=DB::table('createaccount')
 			->select('Accid')
 			->where('AccNum','=',$acno)
+			->where("createaccount.deleted",0)
 			->first();
 			
 			$accid=$actid->Accid;
@@ -856,6 +862,7 @@
 			$rdgetvalue=DB::table('rd_transaction')
 			->join('createaccount','createaccount.Accid','=','createaccount.Accid')
 			->where('rd_transaction.Accid','=',$accid)
+			->where("createaccount.deleted",0)
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$dte."'")
 			->max('RD_TransID');
 			return $rdgetvalue;
@@ -868,6 +875,7 @@
 			$accnid=DB::table('createaccount')
 			->select('Accid')
 			->where('AccNum','=',$acno)
+			->where("createaccount.deleted",0)
 			->first();
 			
 			$accid=$accnid->Accid;
@@ -875,6 +883,7 @@
 			$rd_transaction = DB::table('rd_transaction')
 			->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 			->where('rd_transaction.Accid','=',$accid)
+			->where("createaccount.deleted",0)
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$dte."'")
 			->groupBy('rd_transaction.RD_Month')
 			->selectRaw('min(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')	//	CHANGE sum TO min
@@ -883,6 +892,7 @@
 			$rd_transaction_sum = DB::table('rd_transaction')
 			->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 			->where('rd_transaction.Accid','=',$accid)
+			->where("createaccount.deleted",0)
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$dte."'")
 			->groupBy('rd_transaction.RD_Month')
 			->selectRaw('max(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')	//	CHANGE sum TO min
@@ -928,6 +938,7 @@
 			// print_r($acno);exit();
 			$acc_info = DB::table('createaccount')
 				->where('AccNum','=',$acno)
+				->where("createaccount.deleted",0)
 				->first();
 			$accid = $acc_info->Accid;
 			// $dur = $acc_info->Duration;
@@ -945,12 +956,14 @@
 					->selectRaw('min(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')
 					->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 					->where('rd_transaction.Accid','=',$accid)
+					->where("createaccount.deleted",0)
 					->where("rd_transaction.RDReport_TranDate","like","%{$temp_date}%")
 					->min("RD_Total_Bal");
 				$monthly_max = DB::table('rd_transaction')
 					->selectRaw('min(rd_transaction.RD_Total_Bal) as sum,rd_transaction.RD_Month')
 					->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 					->where('rd_transaction.Accid','=',$accid)
+					->where("createaccount.deleted",0)
 					->where("rd_transaction.RDReport_TranDate","like","%{$temp_date}%")
 					->max("RD_Total_Bal");
 				// echo "{$temp_date} : {$monthly_min} <br />\n";
@@ -1166,6 +1179,7 @@
 				->where('Closed','=',"NO")
 				->where('Bid','=',$BID)
 				->where('Status','=',"AUTHORISED")
+				->where("createaccount.deleted",0)
 				// ->where('Accid','=',"4138")
 				->where('last_interest_calculated_till','<',$interest_calculation_date)
 //				->limit(5)
@@ -1282,6 +1296,7 @@
 					->where("tran_reversed","=","NO")
 					->where("SBReport_TranDate","like","%{$temp_date}%")
 					->where("sb_transaction.deleted","=",0)
+					->where("createaccount.deleted",0)
 					->orderBy('SBReport_TranDate','asc')
 					->orderBy('Tranid','asc')
 					->get();
@@ -1339,6 +1354,7 @@
 				->where('Bid','=',$BID)
 				->where('Closed','=',"NO")
 				->where('last_service_charge_calculated_till','<',$caculation_date)
+				->where("createaccount.deleted",0)
 //				->limit(5)
 				->get();
 				
