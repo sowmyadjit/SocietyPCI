@@ -1136,7 +1136,8 @@
 					"pigmiallocation.PigmiAcc_No as acc_no",
 					"pigmiallocation.old_pigmiaccno as old_acc_no",
 					"{$table}.PayAmountReport_PayDate as date",
-					"{$table}.PayAmount_PayableAmount as amount",
+					// "{$table}.PayAmount_PayableAmount as amount",
+					DB::raw(" IF(`pigmi_payamount`.`PayAmount_IntType` = 'PREWITHDRAWAL', `pigmi_prewithdrawal`.`PgmTotal_Amt`, `pigmi_payamount`.`PayAmount_PayableAmount`) as amount "),
 					DB::raw(" '' as particulars"),
 					"{$table}.PayAmount_IntType as int_type",
 					DB::raw("'DEBIT' as transaction_type"),
@@ -1146,7 +1147,7 @@
 					DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name")
 				)
 				->join("pigmiallocation","pigmiallocation.PigmiAcc_No","=","{$table}.PayAmount_PigmiAccNum")
-				// ->join("pigmi_prewithdrawal","pigmi_prewithdrawal.PigmiAcc_No","=","{$table}.PayAmount_PigmiAccNum")
+				->leftJoin("pigmi_prewithdrawal","pigmi_prewithdrawal.PigmiAcc_No","=","{$table}.PayAmount_PigmiAccNum")
 				->join("user","user.Uid","=","pigmiallocation.UID")
 				->join("receipt_voucher","receipt_voucher.transaction_id","=","{$table}.PayId")
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
