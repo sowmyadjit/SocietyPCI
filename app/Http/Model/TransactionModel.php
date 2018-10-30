@@ -125,7 +125,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.SBReport_TranDate","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Tranid",$data["tran_id"])
 					->first();
@@ -175,7 +176,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				if($data["tran_list"] == "YES") {
-					$ret_data = $ret_data->get();
+					$ret_data = $ret_data->orderBy("{$table}.RDReport_TranDate","DESC")
+						->get();
 				} else {
 					$ret_data = $ret_data->where("{$table}.RD_TransID",$data["tran_id"])
 						->first();
@@ -226,7 +228,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				if($data["tran_list"] == "YES") {
-					$ret_data = $ret_data->get();
+					$ret_data = $ret_data->orderBy("{$table}.JewelLoan_StartDate","DESC")
+						->get();
 					foreach($ret_data as $key_jl=>$row_jl) {
 						if($row_jl->receipt_voucher_type == 1) {
 							$ret_data[$key_jl]->amount = $row_jl->charges_sum;
@@ -386,7 +389,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				if($data["tran_list"] == "YES") {
-					$ret_data = $ret_data->get();
+					$ret_data = $ret_data->orderBy("{$table}.DepLoan_LoanStartDate","DESC")
+						->get();
 					foreach($ret_data as $key_dl=>$row_dl) {
 						if($row_dl->receipt_voucher_type == 1) {
 							$ret_data[$key_dl]->amount = $row_dl->charges_sum;
@@ -554,7 +558,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				if($data["tran_list"] == "YES") {
-					$ret_data = $ret_data->get();
+					$ret_data = $ret_data->orderBy("{$table}.StartDate","DESC")
+						->get();
 				} else {
 					$ret_data = $ret_data->where("{$table}.StfLoanAllocID",$data["tran_id"])
 						->first();
@@ -601,7 +606,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.StartDate","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.PersLoanAllocID",$data["tran_id"])
 					->first();
@@ -651,7 +657,8 @@
 				->where("receipt_voucher.deleted",0)
 				->where("jewelloan_repay.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.JLRepay_Date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.JLRepay_Id",$data["tran_id"])
 					->first();
@@ -718,7 +725,8 @@
 				->where("receipt_voucher.deleted",0)
 				->where("depositeloan_repay.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.DLRepay_Date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.DLRepay_ID",$data["tran_id"])
 					->first();
@@ -785,7 +793,8 @@
 				->where("receipt_voucher.deleted",0)
 				->where("staffloan_repay.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.SLRepay_Date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.SLRepay_Id",$data["tran_id"])
 					->first();
@@ -853,7 +862,8 @@
 				->where("receipt_voucher.deleted",0)
 				->where("personalloan_repay.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.PLRepay_Date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.PLRepay_Id",$data["tran_id"])
 					->first();
@@ -921,7 +931,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.FDPayAmtReport_PayDate","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.FDPayId",$data["tran_id"])
 					->first();
@@ -980,7 +991,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.RDPayAmtReport_PayDate","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.RDPayId",$data["tran_id"])
 					->first();
@@ -1028,7 +1040,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.RDPayAmtReport_PayDate","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.RDPayId",$data["tran_id"])
 					->first();
@@ -1089,7 +1102,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				if($data["tran_list"] == "YES") {
-					$ret_data = $ret_data->get();
+					$ret_data = $ret_data->orderBy("{$table}.PayAmountReport_PayDate","DESC")
+						->get();
 				} else {
 					$ret_data = $ret_data->where("{$table}.PayId",$data["tran_id"])
 						->first();
@@ -1140,7 +1154,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 				if($data["tran_list"] == "YES") {
-					$ret_data = $ret_data->get();
+					$ret_data = $ret_data->orderBy("{$table}.PayAmountReport_PayDate","DESC")
+						->get();
 				} else {
 					$ret_data = $ret_data->where("{$table}.PayId",$data["tran_id"])
 						->first();
@@ -1201,7 +1216,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.CreatedDate","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Memid",$data["tran_id"])
 					->first();
@@ -1246,7 +1262,8 @@
 				->where("receipt_voucher.deleted",0)
 				->where("{$table}.Customer_Fee","!=",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.Created_on","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Custid",$data["tran_id"])
 					->first();
@@ -1292,7 +1309,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.PendPigmy_ReceivedDate","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.PpId",$data["tran_id"])
 					->first();
@@ -1340,7 +1358,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.PURSH_Date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.PURSH_Pid",$data["tran_id"])
 					->first();
@@ -1388,7 +1407,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.Income_date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Income_id",$data["tran_id"])
 					->first();
@@ -1437,7 +1457,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.e_date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.id",$data["tran_id"])
 					->first();
@@ -1485,7 +1506,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.d_id",$data["tran_id"])
 					->first();
@@ -1532,7 +1554,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.d_id",$data["tran_id"])
 					->first();
@@ -1578,7 +1601,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.Branch_Tran_Date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Branch_Id",$data["tran_id"])
 					->first();
@@ -1624,7 +1648,8 @@
 				->where("receipt_voucher.bid",$BID)
 				->where("receipt_voucher.deleted",0);
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.Branch_Tran_Date","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Branch_Id",$data["tran_id"])
 					->first();
@@ -1673,7 +1698,8 @@
 				$ret_data = $ret_data->where("fdallocation.FdTid",1);
 			}
 			if($data["tran_list"] == "YES") {
-				$ret_data = $ret_data->get();
+				$ret_data = $ret_data->orderBy("{$table}.FdReport_StartDate","DESC")
+					->get();
 			} else {
 				$ret_data = $ret_data->where("{$table}.Fdid",$data["tran_id"])
 					->first();
