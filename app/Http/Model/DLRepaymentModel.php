@@ -8,6 +8,7 @@
 	use App\Http\Controllers\ReceiptVoucherController;
 	use App\Http\Model\SettingsModel;
 	use App\Http\Model\AllChargesModel;
+	use App\Http\Model\LoanTransactionModel;
 	
 	class DLRepaymentModel extends Model
 	{
@@ -17,6 +18,7 @@
 			$this->rv_no = new ReceiptVoucherController;
 			$this->settings = new SettingsModel;
 			$this->all_ch = new AllChargesModel;
+			$this->loan_tran = new LoanTransactionModel();
 		}
 		
 		public function pigmydlacc()
@@ -394,6 +396,8 @@
 				->value("SubLedgerId");
 				/*************** SUB HEAD ID ***********/
 				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['DLAlloc'],'DLRepay_PaidAmt'=>$id['pgpayamt'],'DLRepay_PayMode'=>$id['PgPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1", 'SubLedgerId'=>$temp_subhead_id ]);
+				$loan_alloc_id = $id['DLAlloc'];
+				$loan_pay_mode = $id['PgPayMode'];
 			}
 			else if($loantype=="RD DL")
 			{
@@ -403,6 +407,8 @@
 				->value("SubLedgerId");
 				/*************** SUB HEAD ID ***********/
 				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['RDDLAlloc'],'DLRepay_PaidAmt'=>$id['rdpayamt'],'DLRepay_PayMode'=>$id['RdPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1", 'SubLedgerId'=>$temp_subhead_id ]);
+				$loan_alloc_id = $id['RDDLAlloc'];
+				$loan_pay_mode = $id['RdPayMode'];
 			}
 			else if($loantype=="FD DL")
 			{
@@ -412,11 +418,49 @@
 				->value("SubLedgerId");
 				/*************** SUB HEAD ID ***********/
 				$DLTran=DB::table('depositeloan_repay')->InsertGetId(['DLRepay_DepAllocID'=>$id['FDDLAlloc'],'DLRepay_PaidAmt'=>$id['fdpayamt'],'DLRepay_PayMode'=>$id['FdPayMode'],'DLRepay_Bid'=>$branch,'Created_By'=>$UID,'DLRepay_Date'=>$RepayDte,'DLRepay_Interestcalculated'=>$loanintrest,'DLRepay_InterestPaid'=>$intrestpaid,'DLRepay_InterestPending'=>$intrestremaining,'DLRepay_PrincipalPaid'=>$payAmt,'Dl_Cheque_No'=>$chequeno,'Dl_Cheque_Date'=>$chequedate,'Dl_BankName'=>$bankname,'Dl_BankBranch'=>$bankbranch,'Dl_IFSC'=>$ifsc,'Dl_CreditBank'=>$bankid,'Dl_Cheque_Status'=>"1", 'SubLedgerId'=>$temp_subhead_id ]);
+				$loan_alloc_id = $id['FDDLAlloc'];
+				$loan_pay_mode = $id['FdPayMode'];
 			}
 			
+			$dl_alloc_no = DB::table("depositeloan_allocation")->where("DepLoanAllocId",$loan_alloc_id)->value("DepLoan_LoanNum");
+			if(strcasecmp($id['FdPayMode'], "CHEQUE") == 0) {
+				$loan_transaction_cheque_cleared = 1;
+			} else {
+				$loan_transaction_cheque_cleared = 0;
+			}
+			/*************** loan transaction ****************/
+			unset($fd);
+			$fd["loan_transaction_category"] = 2; // DL
+			$fd["loan_transaction_date"] = $RepayDte;
+			$fd["loan_transaction_bid"] = $branch;
+			$fd["loan_transaction_loan_id"] = $loan_alloc_id;
+			$fd["loan_transaction_principle_amount"] = $payAmt;
+			$fd["loan_transaction_principle_subhead_id"] = 0;
+			$fd["loan_transaction_interest_amount"] = $intrestpaid;
+			$fd["loan_transaction_interest_subhead_id"] = 0;
+			$fd["loan_transaction_paid"] = 1;
+			$fd["loan_transaction_type"] = 1; // CREDIT
+			$fd["loan_transaction_payment_mode"] = $loan_pay_mode;
+			$fd["loan_transaction_particulars"] = "DL REPAY ({$dl_alloc_no})";
+			$fd["loan_transaction_cheque_cleared"] = $loan_transaction_cheque_cleared;
+			$fd["loan_transaction_cheque_no"] = $chequeno;
+			$fd["loan_transaction_cheque_date"] = $chequedate;
+			$fd["loan_transaction_bank_id"] = $bankid;
+			$fd["loan_transaction_interest_paid_till"] = "0-0-0";
+			$fd["loan_transaction_sb_tran_id"] = 0;
+			$fd["loan_transaction_repay_through_auction"] = 0;
+			$fd["loan_transaction_created_by"] = $UID;
+			$fd["loan_transaction_deleted"] = 0;
+
+			$this->loan_tran->clear_row_data();
+			$this->loan_tran->set_row_data($fd);
+			// $this->loan_tran->print_row_data($fd);
+			$loan_tran_insert_id = $this->loan_tran->insert($fd);
+			/*************** loan transaction ****************/
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
-				$fn_data["rv_transaction_id"] = $DLTran;
+				$fn_data["rv_transaction_id"] = $loan_tran_insert_id;
 				$fn_data["rv_transaction_type"] = "CREDIT";
 				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::DL_REPAY;//constant DL_REPAY is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $RepayDte;
@@ -428,7 +472,7 @@
 				/************ UPDATE TRAN ID OF CHARGES ************/
 				DB::table("all_charges")
 					->whereIn("all_charges_id", $insert_ids)
-					->update(["tran_id"=>$DLTran]);
+					->update(["tran_id"=>$loan_tran_insert_id]);
 				/************ UPDATE TRAN ID OF CHARGES ************/
 
 			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="PIGMI ACCOUNT"||$paymode=="FD_ACCOUNT")
@@ -1101,9 +1145,45 @@
 			/******************** */
 			$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$DepAlID,'PLRepay_PaidAmt'=>$id['plpayamt'],'PLRepay_PayMode'=>$id['plPayMode'],'PLRepay_Bid'=>$branch,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$RepayDte,'PLRepay_CalculatedInterest'=>$loaninterest,'RemainingInterest_Amt'=>$remaininginterst,'PLRepay_PaidInterest'=>$paidinterest,'PLRepay_Amtpaidtoprincpalamt'=>$payAmt,'PLRepay_EMIremaining'=>$remainigemi,'PL_ReceiptNum'=>$r,'PL_ChequeNO'=>$chequeno,'PL_ChequeDate'=>$chequedate,'PL_BankName'=>$bankname,'PL_BankBranch'=>$bankbranch,'PL_IFSC'=>$ifsc,'PL_CreditBank'=>$bankid,'interest_paid_upto'=>$interest_upto_pl, 'pigmy_commission'=>$pigmycommision,  'SubLedgerId'=>$pl_subhead_id ]);
 			
+			$pl_alloc_no = DB::table("personalloan_allocation")->where("PersLoanAllocID",$DepAlID)->value("PersLoan_Number");
+			if(strcasecmp($id['plPayMode'], "CHEQUE") == 0) {
+				$loan_transaction_cheque_cleared = 1;
+			} else {
+				$loan_transaction_cheque_cleared = 0;
+			}
+			/*************** loan transaction ****************/
+			unset($fd);
+			$fd["loan_transaction_category"] = 1; // PL
+			$fd["loan_transaction_date"] = $RepayDte;
+			$fd["loan_transaction_bid"] = $branch;
+			$fd["loan_transaction_loan_id"] = $DepAlID;
+			$fd["loan_transaction_principle_amount"] = $payAmt;
+			$fd["loan_transaction_principle_subhead_id"] = 0;
+			$fd["loan_transaction_interest_amount"] = $paidinterest;
+			$fd["loan_transaction_interest_subhead_id"] = 0;
+			$fd["loan_transaction_paid"] = 1;
+			$fd["loan_transaction_type"] = 1; // CREDIT
+			$fd["loan_transaction_payment_mode"] = $id['plPayMode'];
+			$fd["loan_transaction_particulars"] = "PL REPAY ({$pl_alloc_no})";
+			$fd["loan_transaction_cheque_cleared"] = $loan_transaction_cheque_cleared;
+			$fd["loan_transaction_cheque_no"] = $chequeno;
+			$fd["loan_transaction_cheque_date"] = $chequedate;
+			$fd["loan_transaction_bank_id"] = $bankbranch;
+			$fd["loan_transaction_interest_paid_till"] = $interest_upto_pl;
+			$fd["loan_transaction_sb_tran_id"] = 0;
+			$fd["loan_transaction_repay_through_auction"] = 0;
+			$fd["loan_transaction_created_by"] = $UID;
+			$fd["loan_transaction_deleted"] = 0;
+
+			$this->loan_tran->clear_row_data();
+			$this->loan_tran->set_row_data($fd);
+			$this->loan_tran->print_row_data($fd);
+			$loan_tran_insert_id = $this->loan_tran->insert($fd);
+			/*************** loan transaction ****************/
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
-				$fn_data["rv_transaction_id"] = $plTran;
+				$fn_data["rv_transaction_id"] = $loan_tran_insert_id;
 				$fn_data["rv_transaction_type"] = "CREDIT";
 				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::PL_REPAY;//constant PL_REPAY is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $RepayDte;
@@ -1115,7 +1195,7 @@
 				/************ UPDATE TRAN ID OF CHARGES ************/
 				DB::table("all_charges")
 					->whereIn("all_charges_id", $insert_ids)
-					->update(["tran_id"=>$plTran]);
+					->update(["tran_id"=>$loan_tran_insert_id]);
 				/************ UPDATE TRAN ID OF CHARGES ************/
 			
 			if($paymode=="CASH"||$paymode=="SB ACCOUNT"||$paymode=="PYGMY ACCOUNT"||$paymode=="ADJUSTMENT")
@@ -1309,9 +1389,45 @@
 			
 			$jlTran=DB::table('jewelloan_repay')->InsertGetId(['JLRepay_JLAllocID'=>$DepAlID,'JLRepay_PaidAmt'=>$id['jlpayamt'],'JLRepay_PayMode'=>$paymode,'JLRepay_Bid'=>$bid,'JLRepay_Created_By'=>$UID,'JLRepay_Date'=>$RepayDte,'JLRepay_interestcalculated'=>$Loaninterest,'JLRepay_interestpaid'=>$paidinterest,'JLRepay_interestpending'=>$remaininginterst,'JLRepay_paidtoprincipalamt'=>$payAmt,'JL_ChequeNo'=>$chequeno,'JL_ChequeDate'=>$chequedate,'JL_BankName'=>$bankname,'JL_BankBranch'=>$bankbranch,'JL_CreditBank'=>$bankid,'JL_IFSC'=>$ifsc,'repay_through_auction'=>$repay_through_auction,'interest_paid_upto'=>$interest_upto, 'SubLedgerId'=>54 ]);
 			
+			$jl_alloc_no = DB::table("jewelloan_allocation")->where("JewelLoanId",$DepAlID)->where("deleted",0)->value("JewelLoan_LoanNumber");
+			if(strcasecmp($paymode, "CHEQUE") == 0) {
+				$loan_transaction_cheque_cleared = 1;
+			} else {
+				$loan_transaction_cheque_cleared = 0;
+			}
+			/*************** loan transaction ****************/
+			unset($fd);
+			$fd["loan_transaction_category"] = 4; // JEWEL
+			$fd["loan_transaction_date"] = $RepayDte;
+			$fd["loan_transaction_bid"] = $bid;
+			$fd["loan_transaction_loan_id"] = $DepAlID;
+			$fd["loan_transaction_principle_amount"] = $payAmt;
+			$fd["loan_transaction_principle_subhead_id"] = 54; // JEWEL LOAN(49-MEMBERS LOAN)
+			$fd["loan_transaction_interest_amount"] = $paidinterest;
+			$fd["loan_transaction_interest_subhead_id"] = 76; // JEWEL LOAN (71-INTEREST PAID)
+			$fd["loan_transaction_paid"] = 1;
+			$fd["loan_transaction_type"] = 1; // CREDIT
+			$fd["loan_transaction_payment_mode"] = $paymode;
+			$fd["loan_transaction_particulars"] = "JL REPAY ({$jl_alloc_no})";
+			$fd["loan_transaction_cheque_cleared"] = $loan_transaction_cheque_cleared;
+			$fd["loan_transaction_cheque_no"] = $chequeno;
+			$fd["loan_transaction_cheque_date"] = $chequedate;
+			$fd["loan_transaction_bank_id"] = $bankbranch;
+			$fd["loan_transaction_interest_paid_till"] = $interest_upto;
+			$fd["loan_transaction_sb_tran_id"] = 0;
+			$fd["loan_transaction_repay_through_auction"] = $repay_through_auction;
+			$fd["loan_transaction_created_by"] = $UID;
+			$fd["loan_transaction_deleted"] = 0;
+
+			$this->loan_tran->clear_row_data();
+			$this->loan_tran->set_row_data($fd);
+			$this->loan_tran->print_row_data($fd);
+			$loan_tran_insert_id = $this->loan_tran->insert($fd);
+			/*************** loan transaction ****************/
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
-				$fn_data["rv_transaction_id"] = $jlTran;
+				$fn_data["rv_transaction_id"] = $loan_tran_insert_id; // $jlTran;
 				$fn_data["rv_transaction_type"] = "CREDIT";
 				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::JL_REPAY;//constant JL_REPAY is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $RepayDte;
@@ -1323,7 +1439,7 @@
 				/************ UPDATE TRAN ID OF CHARGES ************/
 				DB::table("all_charges")
 					->whereIn("all_charges_id", $insert_ids)
-					->update(["tran_id"=>$jlTran]);
+					->update(["tran_id"=>$loan_tran_insert_id /*$jlTran*/ ]);
 				/************ UPDATE TRAN ID OF CHARGES ************/
 
 			DB::table('jewelloan_allocation')
@@ -1493,9 +1609,45 @@
 
 			$slTran=DB::table('staffloan_repay')->InsertGetId(['SLRepay_SLAllocID'=>$DepAlID,'SLRepay_PaidAmt'=>$id['slpayamt'],'SLRepay_PayMode'=>$id['slPayMode'],'SLRepay_Bid'=>$branch,'SLRepay_Created_By'=>$UID,'SLRepay_Date'=>$RepayDte,'SLRepay_Interest'=>$interest_paid,'paid_principle'=>$principle_paid, 'SubLedgerId'=>$temp_subhead_id ]);
 
+			$sl_alloc_no = DB::table("staffloan_allocation")->where("StfLoanAllocID",$DepAlID)->value("StfLoan_Number");
+			/* if(strcasecmp($paymode, "CHEQUE") == 0) {
+				$loan_transaction_cheque_cleared = 1;
+			} else {
+				$loan_transaction_cheque_cleared = 0;
+			} */
+			/*************** loan transaction ****************/
+			unset($fd);
+			$fd["loan_transaction_category"] = 3; // SL
+			$fd["loan_transaction_date"] = $RepayDte;
+			$fd["loan_transaction_bid"] = $branch;
+			$fd["loan_transaction_loan_id"] = $DepAlID;
+			$fd["loan_transaction_principle_amount"] = $principle_paid;
+			$fd["loan_transaction_principle_subhead_id"] = 0;
+			$fd["loan_transaction_interest_amount"] = $interest_paid;
+			$fd["loan_transaction_interest_subhead_id"] = 0;
+			$fd["loan_transaction_paid"] = 1;
+			$fd["loan_transaction_type"] = 1; // CREDIT
+			$fd["loan_transaction_payment_mode"] = $id['slPayMode'];
+			$fd["loan_transaction_particulars"] = "SL REPAY ({$sl_alloc_no})";
+			$fd["loan_transaction_cheque_cleared"] = 0; // $loan_transaction_cheque_cleared;
+			$fd["loan_transaction_cheque_no"] = "";
+			$fd["loan_transaction_cheque_date"] = "";
+			$fd["loan_transaction_bank_id"] = 0;
+			$fd["loan_transaction_interest_paid_till"] = "0-0-0";
+			$fd["loan_transaction_sb_tran_id"] = 0;
+			$fd["loan_transaction_repay_through_auction"] = 0;
+			$fd["loan_transaction_created_by"] = $UID;
+			$fd["loan_transaction_deleted"] = 0;
+
+			$this->loan_tran->clear_row_data();
+			$this->loan_tran->set_row_data($fd);
+			// $this->loan_tran->print_row_data($fd);
+			$loan_tran_insert_id = $this->loan_tran->insert($fd);
+			/*************** loan transaction ****************/
+
 				/***********/
 				$fn_data["rv_payment_mode"] = $paymode;
-				$fn_data["rv_transaction_id"] = $slTran;
+				$fn_data["rv_transaction_id"] = $loan_tran_insert_id;
 				$fn_data["rv_transaction_type"] = "CREDIT";
 				$fn_data["rv_transaction_category"] = ReceiptVoucherModel::SL_REPAY;//constant SL_REPAY is declared in ReceiptVoucherModel
 				$fn_data["rv_date"] = $RepayDte;
@@ -1507,7 +1659,7 @@
 				/************ UPDATE TRAN ID OF CHARGES ************/
 				DB::table("all_charges")
 					->whereIn("all_charges_id", $insert_ids)
-					->update(["tran_id"=>$slTran]);
+					->update(["tran_id"=>$loan_tran_insert_id]);
 				/************ UPDATE TRAN ID OF CHARGES ************/
 
 			// print_r($chargtabid);
