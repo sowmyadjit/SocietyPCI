@@ -2589,21 +2589,22 @@
 				->where("receipt_voucher.receipt_voucher_type",1)
 				->where('JewelLoan_LoanNumber',$jl)
 				->first();
-				
-				$JewelLoan_SaraparaCharge=$jldetails1->JewelLoan_SaraparaCharge;
-				$JewelLoan_InsuranceCharge=$jldetails1->JewelLoan_InsuranceCharge;
-				$JewelLoan_BookAndFormCharge=$jldetails1->JewelLoan_BookAndFormCharge;
-				$JewelLoan_OtherCharge=$jldetails1->JewelLoan_OtherCharge;
-				
-				$tot=$JewelLoan_SaraparaCharge+$JewelLoan_InsuranceCharge+$JewelLoan_BookAndFormCharge+$JewelLoan_OtherCharge;
-				$acc=$jldetails1->JewelLoan_LoanNumber;
-				$temp[]=$acc;
-				
-				$temp1[$acc]=$tot;
-				$temp_rec[$acc] = $jldetails1->receipt_no;
-				$temp_name[$acc] = $jldetails1->name;
-				$temp_Uid[$acc] = $jldetails1->Uid;
-				$sum=$sum+$tot;
+				if(!empty($jldetails1)) {
+					$JewelLoan_SaraparaCharge=$jldetails1->JewelLoan_SaraparaCharge;
+					$JewelLoan_InsuranceCharge=$jldetails1->JewelLoan_InsuranceCharge;
+					$JewelLoan_BookAndFormCharge=$jldetails1->JewelLoan_BookAndFormCharge;
+					$JewelLoan_OtherCharge=$jldetails1->JewelLoan_OtherCharge;
+					
+					$tot=$JewelLoan_SaraparaCharge+$JewelLoan_InsuranceCharge+$JewelLoan_BookAndFormCharge+$JewelLoan_OtherCharge;
+					$acc=$jldetails1->JewelLoan_LoanNumber;
+					$temp[]=$acc;
+					
+					$temp1[$acc]=$tot;
+					$temp_rec[$acc] = $jldetails1->receipt_no;
+					$temp_name[$acc] = $jldetails1->name;
+					$temp_Uid[$acc] = $jldetails1->Uid;
+					$sum=$sum+$tot;
+				}
 			}
 			$temp2['num']=$temp;
 			$temp2['val']=$temp1;

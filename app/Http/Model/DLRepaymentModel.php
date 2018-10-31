@@ -1145,6 +1145,24 @@
 			/******************** */
 			$plTran=DB::table('personalloan_repay')->InsertGetId(['PLRepay_PLAllocID'=>$DepAlID,'PLRepay_PaidAmt'=>$id['plpayamt'],'PLRepay_PayMode'=>$id['plPayMode'],'PLRepay_Bid'=>$branch,'PLRepay_Created_By'=>$UID,'PLRepay_Date'=>$RepayDte,'PLRepay_CalculatedInterest'=>$loaninterest,'RemainingInterest_Amt'=>$remaininginterst,'PLRepay_PaidInterest'=>$paidinterest,'PLRepay_Amtpaidtoprincpalamt'=>$payAmt,'PLRepay_EMIremaining'=>$remainigemi,'PL_ReceiptNum'=>$r,'PL_ChequeNO'=>$chequeno,'PL_ChequeDate'=>$chequedate,'PL_BankName'=>$bankname,'PL_BankBranch'=>$bankbranch,'PL_IFSC'=>$ifsc,'PL_CreditBank'=>$bankid,'interest_paid_upto'=>$interest_upto_pl, 'pigmy_commission'=>$pigmycommision,  'SubLedgerId'=>$pl_subhead_id ]);
 			
+			$ln_type = DB::table("personalloan_allocation")->where("PersLoanAllocID",$DepAlID)->value("LoanType_ID");
+			$subhead_principle = DB::table("loan_type")->where("LoanType_ID","=",$ln_type)->value("SubLedgerId");
+			switch($subhead_principle) {
+				case 50: // A CLASS SURETY LOAN
+						$subhead_interest = 72; // A CLASS SURETY LOAN(71-INTEREST RECIEVED )
+						break;
+				case 51: // C CLASS SURETY LOAN
+						$subhead_interest = 73; // C CLASS SURETY LOAN(71-INTEREST RECIEVED )
+						break;
+				case 52: // A CLASS MEDIUM TERM LOAN
+						$subhead_interest = 74; // A CLASS MEDIUM TERM LOAN(71-INTEREST RECIEVED )
+						break;
+				case 53: // C CLASS MEDIUM TERM LOAN
+						$subhead_interest = 75; // C CLASS MEDIUM TERM LOAN(71-INTEREST RECIEVED )
+						break;
+				default: 
+						$subhead_interest = 0;
+			}
 			$pl_alloc_no = DB::table("personalloan_allocation")->where("PersLoanAllocID",$DepAlID)->value("PersLoan_Number");
 			if(strcasecmp($id['plPayMode'], "CHEQUE") == 0) {
 				$loan_transaction_cheque_cleared = 1;
@@ -1158,9 +1176,9 @@
 			$fd["loan_transaction_bid"] = $branch;
 			$fd["loan_transaction_loan_id"] = $DepAlID;
 			$fd["loan_transaction_principle_amount"] = $payAmt;
-			$fd["loan_transaction_principle_subhead_id"] = 0;
+			$fd["loan_transaction_principle_subhead_id"] = $subhead_principle;
 			$fd["loan_transaction_interest_amount"] = $paidinterest;
-			$fd["loan_transaction_interest_subhead_id"] = 0;
+			$fd["loan_transaction_interest_subhead_id"] = $subhead_interest;
 			$fd["loan_transaction_paid"] = 1;
 			$fd["loan_transaction_type"] = 1; // CREDIT
 			$fd["loan_transaction_payment_mode"] = $id['plPayMode'];

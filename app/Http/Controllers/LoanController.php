@@ -447,7 +447,7 @@
 			
 			
 			$id=$this->loan->CreatePersonalLoan($PersLoan);
-			// return redirect('/home');
+			return redirect('/home');
 		}	
 		
 		    
