@@ -226,9 +226,11 @@
 
 
 
+
 					
 					
 					
+<?php /****************** RD TRANSACTION ********************/ ?>
 					<tr><td colspan="10"><h5><b><center>RD TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$rd_cash_cr = 0;
@@ -240,6 +242,7 @@
 						$rd_adj_cr_total = 0;
 						$rd_adj_db_total = 0;
 					?>
+				<?php /****************** RD TRAN ********************/ ?>
 					@foreach ($trandaily['rd'] as $rd)
 						<tr>	
 							<td>{{ $rd->RDReport_TranDate }}</td>
@@ -300,24 +303,68 @@
 							<td>{{ $rd->adj_no }}</td>
 						</tr>
 					@endforeach
-					<tr>
-						<th colspan =3>RD Total</th>
-						<td class="text-right"><?php echo $rd_cash_cr_total ?></td>
-						<td class="text-right"><?php echo $rd_cash_db_total ?></td>
-						<td class="text-right"><?php echo $rd_adj_cr_total ?></td>
-						<td class="text-right"><?php echo $rd_adj_db_total ?></td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-					</tr>
-					<?php
-						$gt_cash_cr += $rd_cash_cr_total;
-						$gt_cash_db += $rd_cash_db_total;
-						$gt_adj_cr += $rd_adj_cr_total;
-						$gt_adj_db += $rd_adj_db_total;
-					?>
-						
-						
+				<?php /****************** RD TRAN ********************/ ?>
+				<?php /****************** RD PAY AMT ********************/ ?>
+					@foreach ($trandaily['rdpayamt'] as $rdamt)
+						@if(strcasecmp($rdamt->RDPayAmt_PaymentMode, 'CASH') == 0)
+							<?php
+								$rd_cash_db = $rdamt->RDPayAmt_PayableAmount;
+								$rd_cash_db_total += $rd_cash_db;
+							?>
+							<tr>
+								<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
+								<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
+								<td>RD Paid Amount - {{ $rdamt->name }}({{ $rdamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $rdamt->RD_PayAmount_pamentvoucher }}</td>
+							</tr>
+						@else
+							<?php
+								$rd_adj_db = $rdamt->RDPayAmt_PayableAmount;
+								$rd_adj_db_total += $rd_adj_db;
+							?>
+							<tr>
+								<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
+								<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
+								<td>RD Paid Amount</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $rdamt->adj_no }}</td>
+							</tr>
+						@endif
+					@endforeach
+				<?php /****************** RD PAY AMT ********************/ ?>
+				<tr>
+					<th colspan =3>RD Total</th>
+					<td class="text-right"><?php echo $rd_cash_cr_total ?></td>
+					<td class="text-right"><?php echo $rd_cash_db_total ?></td>
+					<td class="text-right"><?php echo $rd_adj_cr_total ?></td>
+					<td class="text-right"><?php echo $rd_adj_db_total ?></td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				<?php
+					$gt_cash_cr += $rd_cash_cr_total;
+					$gt_cash_db += $rd_cash_db_total;
+					$gt_adj_cr += $rd_adj_cr_total;
+					$gt_adj_db += $rd_adj_db_total;
+				?>
+<?php /****************** RD TRANSACTION ********************/ ?>
+
+
+
+
+
+				<?php /********************** PG ************************/?>
 					<tr><td colspan="10"><h5><b><center>PIGMY TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$pigmy_cash_cr = 0;
@@ -329,7 +376,8 @@
 						$pigmy_adj_cr_total = 0;
 						$pigmy_adj_db_total = 0;
 					?>
-							
+
+					<?php /********************** PG TRAN ************************/?>
 					@foreach ($trandaily['pigmycash'] as $pigmy)
 						<tr>
 							<td>{{ $pigmy->PigReport_TranDate }}</td>
@@ -408,44 +456,16 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					
-					<tr>
-						<th colspan =3>Pigmy Total</th>
-						<td class="text-right"><?php echo $pigmy_cash_cr_total ?></td>
-						<td class="text-right"><?php echo $pigmy_cash_db_total ?></td>
-						<td class="text-right"><?php echo $pigmy_adj_cr_total ?></td>
-						<td class="text-right"><?php echo $pigmy_adj_db_total ?></td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-					</tr>
-					<?php
-						$gt_cash_cr += $pigmy_cash_cr_total;
-						$gt_cash_db += $pigmy_cash_db_total;
-						$gt_adj_cr += $pigmy_adj_cr_total;
-						$gt_adj_db += $pigmy_adj_db_total;
-					?>
-					
-					
-					
-					
-					<tr><td colspan="10"><h5><b><center>PIGMY PAID AMOUNT<center></b></h5></td></tr>
-					<?php
-						$pigmypay_cash_db = 0;
-						$pigmypay_adj_db = 0;
-						
-						$pigmypay_cash_cr_total = 0;
-						$pigmypay_cash_db_total = 0;
-						$pigmypay_adj_cr_total = 0;
-						$pigmypay_adj_db_total = 0;
-					?>
+					<?php /********************** PG TRAN ************************/?>
+
+					<?php /********************** PG PAY ************************/?>
 					@foreach ($trandaily['pigmypayamt'] as $pigmyamt)	<?php /* CASH - INTEREST */?>
 						<?php
-							$pigmypay_cash_db = $pigmyamt->PayAmount_PayableAmount;
-							if($pigmypay_cash_db <= 0) {
+							$pigmy_cash_db = $pigmyamt->PayAmount_PayableAmount;
+							if($pigmy_cash_db <= 0) {
 								continue;
 							}
-							$pigmypay_cash_db_total += $pigmypay_cash_db;
+							$pigmy_cash_db_total += $pigmy_cash_db;
 						?>
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
@@ -462,11 +482,11 @@
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_per'] as $pigmyamt) <?php /* CASH - PREWITHDRAWAL */?>
 						<?php
-							$pigmypay_cash_db = $pigmyamt->PgmTotal_Amt;
-							if($pigmypay_cash_db <= 0) {
+							$pigmy_cash_db = $pigmyamt->PgmTotal_Amt;
+							if($pigmy_cash_db <= 0) {
 								continue;
 							}
-							$pigmypay_cash_db_total += $pigmypay_cash_db;
+							$pigmy_cash_db_total += $pigmy_cash_db;
 						?>
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
@@ -483,11 +503,11 @@
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_adjust'] as $pigmyamt) <?php /* ADJUSTMENT - INTEREST */?>
 						<?php
-							$pigmypay_adj_db = $pigmyamt->PayAmount_PayableAmount;
-							if($pigmypay_adj_db <= 0) {
+							$pigmy_adj_db = $pigmyamt->PayAmount_PayableAmount;
+							if($pigmy_adj_db <= 0) {
 								continue;
 							}
-							$pigmypay_adj_db_total += $pigmypay_adj_db;
+							$pigmy_adj_db_total += $pigmy_adj_db;
 						?>
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
@@ -504,11 +524,11 @@
 					@endforeach
 					@foreach ($trandaily['pigmypayamt_per_adjust'] as $pigmyamt) <?php /* ADJUSTMENT - PREWITHDRAWAL */?>
 						<?php
-							$pigmypay_adj_db = $pigmyamt->PayAmount_PayableAmount;
-							if($pigmypay_adj_db <= 0) {
+							$pigmy_adj_db = $pigmyamt->PayAmount_PayableAmount;
+							if($pigmy_adj_db <= 0) {
 								continue;
 							}
-							$pigmypay_adj_db_total += $pigmypay_adj_db;
+							$pigmy_adj_db_total += $pigmy_adj_db;
 						?>
 						<tr>
 							<td>{{ $pigmyamt->PayAmountReport_PayDate }}</td>
@@ -523,8 +543,8 @@
 							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
-		<?php /*	@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) <?php // CASH - PREWITHDRAWAL - DEDUCT COMMISSION ?>
-						<?php
+		<?php /*	@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) < ?php // CASH - PREWITHDRAWAL - DEDUCT COMMISSION ?>
+						< ?php
 							$pigmypay_cash_cr = $pigmyamt->Deduct_Commission;
 							if($pigmypay_cash_cr <= 0) {
 								continue;
@@ -544,8 +564,8 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) <?php // CASH - PREWITHDRAWAL - DEDUCT AMOUNT ?>
-						<?php
+					@foreach ($trandaily['show_pigmicharg'] as $pigmyamt) < ?php // CASH - PREWITHDRAWAL - DEDUCT AMOUNT ?>
+						< ?php
 							$pigmypay_cash_cr = $pigmyamt->Deduct_Amount;
 							if($pigmypay_cash_cr <= 0) {
 								continue;
@@ -565,8 +585,8 @@
 							<td>-</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) <?php // ADJUSTMENT - PREWITHDRAWAL - DEDUCT COMMISSION ?>
-						<?php
+					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) < ?php // ADJUSTMENT - PREWITHDRAWAL - DEDUCT COMMISSION ?>
+						< ?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Commission;
 							if($pigmypay_adj_cr <= 0) {
 								continue;
@@ -586,8 +606,8 @@
 							<td>{{ $pigmyamt->adj_no }}</td>
 						</tr>
 					@endforeach
-					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) <?php // ADJUSTMENT - PREWITHDRAWAL - DEDUCT AMOUNT ?>
-						<?php
+					@foreach ($trandaily['show_pigmicharg_adjust'] as $pigmyamt) < ?php // ADJUSTMENT - PREWITHDRAWAL - DEDUCT AMOUNT ?>
+						< ?php
 							$pigmypay_adj_cr = $pigmyamt->Deduct_Amount;
 							if($pigmypay_adj_cr <= 0) {
 								continue;
@@ -608,97 +628,46 @@
 						</tr>
 					@endforeach  
 */?>
+					<?php /********************** PG PAY ************************/?>
+					
+					<tr>
+						<th colspan =3>Pigmy Total</th>
+						<td class="text-right"><?php echo $pigmy_cash_cr_total ?></td>
+						<td class="text-right"><?php echo $pigmy_cash_db_total ?></td>
+						<td class="text-right"><?php echo $pigmy_adj_cr_total ?></td>
+						<td class="text-right"><?php echo $pigmy_adj_db_total ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $pigmy_cash_cr_total;
+						$gt_cash_db += $pigmy_cash_db_total;
+						$gt_adj_cr += $pigmy_adj_cr_total;
+						$gt_adj_db += $pigmy_adj_db_total;
+					?>
+				<?php /********************** PG ************************/?>
 
-					<tr>
-						<th colspan =3>Pigmy Amount Paid</th>
-						<td><?php echo $pigmypay_cash_cr_total; ?></td>
-						<td><?php echo $pigmypay_cash_db_total; ?></td>
-						<td><?php echo $pigmypay_adj_cr_total; ?></td>
-						<td><?php echo $pigmypay_adj_db_total; ?></td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-					</tr>
-					<?php
-						$gt_cash_cr += $pigmypay_cash_cr_total;
-						$gt_cash_db += $pigmypay_cash_db_total;
-						$gt_adj_cr += $pigmypay_adj_cr_total;
-						$gt_adj_db += $pigmypay_adj_db_total;
-					?>
+
 					
 					
 					
-					
-					<tr><td colspan="10"><h5><b><center>RD PAID AMOUNT<center></b></h5></td></tr>
-					<?php
-						$rd_cash_db = 0;
-						$rd_adj_db = 0;
-						
-						$rd_cash_db_total = 0;
-						$rd_adj_db_total = 0;
-					?>
-					@foreach ($trandaily['rdpayamt'] as $rdamt)
-						@if(strcasecmp($rdamt->RDPayAmt_PaymentMode, 'CASH') == 0)
-							<?php
-								$rd_cash_db = $rdamt->RDPayAmt_PayableAmount;
-								$rd_cash_db_total += $rd_cash_db;
-							?>
-							<tr>
-								<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
-								<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
-								<td>RD Paid Amount - {{ $rdamt->name }}({{ $rdamt->Uid }})</td>
-								<td>-</td>
-								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $rdamt->RD_PayAmount_pamentvoucher }}</td>
-							</tr>
-						@else
-							<?php
-								$rd_adj_db = $rdamt->RDPayAmt_PayableAmount;
-								$rd_adj_db_total += $rd_adj_db;
-							?>
-							<tr>
-								<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
-								<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
-								<td>RD Paid Amount</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $rdamt->RDPayAmt_PayableAmount }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $rdamt->adj_no }}</td>
-							</tr>
-						@endif
-					@endforeach
-					<tr>
-						<th colspan =3>RD Amount Paid</th>
-						<td>-</td>
-						<td><?php echo $rd_cash_db_total; ?></td>
-						<td>-</td>
-						<td><?php echo $rd_adj_db_total; ?></td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-					</tr>
-					<?php
-						$gt_cash_db += $rd_cash_db_total;
-						$gt_adj_db += $rd_adj_db_total;
-					?>
-					
-					
-					
-					
-					<tr><td colspan="10"><h5><b><center>FD DEPOSIT AMOUNT<center></b></h5></td></tr>
+
+
+				<?php /****************** FD ****************/?>
+					<tr><td colspan="10"><h5><b><center>FD TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$fd_cash_cr = 0;
 						$fd_adj_cr = 0;
+						$fd_cash_db = 0;
+						$fd_adj_db = 0;
 						
 						$fd_cash_cr_total = 0;
 						$fd_adj_cr_total = 0;
+						$fd_cash_db_total = 0;
+						$fd_adj_db_total = 0;
 					?>
+					<?php /***************** FD ALLOCATION *******************/?>
 					@foreach ($trandaily['fdallocamt'] as $fdamt)
 						<?php
 							$fd_cash_cr = $fdamt->Fd_DepositAmt;
@@ -734,13 +703,89 @@
 							<td>-</td>
 							<td>{{ $fdamt->adj_no }}</td>
 						</tr>
-					@endforeach	
+					@endforeach
+					<?php /***************** FD ALLOCATION *******************/?>
+					
+					<?php /***************** FD PAID AMT *******************/?>
+					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
+						@if($fdpayamt->FdTid != 1)
+							<?php
+								$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_cash_db_total += $fd_cash_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+							</tr>
+						@endif
+					@endforeach
+					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
+						@if($fdpayamt->FdTid != 1)
+							<?php
+								$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_adj_db_total += $fd_adj_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->adj_no }}</td>
+							</tr>
+						@endif
+					@endforeach
+					<?php /***************** FD PAID AMT *******************/?>
+
+					<!------------------ FD monthly int  -------------------->
+						<?php
+							$fd_in_adj_db = 0;
+							
+							$fd_in_adj_db_total = 0;
+						?>
+						@foreach ($trandaily['fd_monthly_int'] as $row)
+							<?php
+								$fd_in_adj_db = $row->amount;
+								$fd_in_adj_db_total += $fd_in_adj_db;
+							?>
+							<tr>
+								<td>{{$row->FD_Date}}</td>
+								<td>{{$row->fdnum}}</td>
+								<td>FD Interest  - {{ $row->name }}({{$row->Uid}})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{$row->amount}}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+							</tr>
+						@endforeach
+						<?php
+						
+								$fd_tot = $fd_in_adj_db_total + $fd_adj_db_total
+						?>
+					<!------------------ FD monthly int  -------------------->
+
 					<tr>
-						<th colspan =3>Total FD Deposit Amount </th>
+						<th colspan =3>Total FD Amount </th>
 						<td><?php echo $fd_cash_cr_total; ?></td>
-						<td>-</td>
+						<td><?php echo $fd_cash_db_total; ?></td>
 						<td><?php echo $fd_adj_cr_total; ?></td>
-						<td>-</td>
+		<?php /*		<td><?php echo $fd_adj_db_total; ?></td> */?>
+						<td><?php echo $fd_tot; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -748,20 +793,31 @@
 					<?php
 						$gt_cash_cr += $fd_cash_cr_total;
 						$gt_adj_cr += $fd_adj_cr_total;
+						$gt_cash_db += $fd_cash_db_total;
+						// $gt_adj_db += $fd_adj_db_total;
+						$gt_adj_db += $fd_tot;
 					?>
+				<?php /****************** FD ****************/?>
+					
+
 					
 
 
-
-					
-					<tr><td colspan="10"><h5><b><center>KCC DEPOSIT AMOUNT<center></b></h5></td></tr>
+				<?php /****************** KCC ****************/?>
+					<tr><td colspan="10"><h5><b><center>KCC TRANSACTION<center></b></h5></td></tr>
 					<?php
 						$fd_cash_cr = 0;
 						$fd_adj_cr = 0;
+						$fd_cash_db = 0;
+						$fd_adj_db = 0;
 						
 						$fd_cash_cr_total = 0;
 						$fd_adj_cr_total = 0;
+						$fd_cash_db_total = 0;
+						$fd_adj_db_total = 0;
 					?>
+					
+					<?php /****************** KCC ALLOCATION ****************/?>
 					@foreach ($trandaily['kccallocamt'] as $fdamt)
 						<?php
 							$fd_cash_cr = $fdamt->Fd_DepositAmt;
@@ -797,203 +853,71 @@
 							<td>-</td>
 							<td>{{ $fdamt->adj_no }}</td>
 						</tr>
-					@endforeach	
+					@endforeach
+					<?php /****************** KCC ALLOCATION ****************/?>
+
+					<?php /****************** KCC PAID AMT ****************/?>
+					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
+						@if($fdpayamt->FdTid == 1)
+							<?php
+								$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_cash_db_total += $fd_cash_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>KCC Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+							</tr>
+						@endif
+					@endforeach
+					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
+						@if($fdpayamt->FdTid == 1)
+							<?php
+								$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
+								$fd_adj_db_total += $fd_adj_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>KCC Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->adj_no }}</td>
+							</tr>
+						@endif
+					@endforeach
+					<?php /****************** KCC PAID AMT ****************/?>
+
 					<tr>
-						<th colspan =3>Total KCC Deposit Amount </th>
-						<td><?php echo $fd_cash_cr_total; ?></td>
+						<th colspan =3>Total KCC Amount</th>
 						<td>-</td>
-						<td><?php echo $fd_adj_cr_total; ?></td>
-						<td>-</td>
-						<td>-</td>
+						<td><?php echo $fd_cash_db_total; ?></td>
+						<td><?php echo $cash_db_total; ?></td>
+						<td><?php echo $fd_adj_db_total; ?></td>
+						<td><?php echo $adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 					</tr>
 					<?php
 						$gt_cash_cr += $fd_cash_cr_total;
 						$gt_adj_cr += $fd_adj_cr_total;
-					?>
-					
-					
-					
-					
-					
-					
-					<tr><td colspan="10"><h5><b><center>FD PAID AMOUNT<center></b></h5></td></tr>
-					<?php
-						$fd_cash_db = 0;
-						$fd_adj_db = 0;
-						
-						$fd_cash_db_total = 0;
-						$fd_adj_db_total = 0;
-					?>
-					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
-						@if($fdpayamt->FdTid != 1)
-							<?php
-								$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
-								$fd_cash_db_total += $fd_cash_db;
-							?>
-							<tr>
-								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
-								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
-								<td>-</td>
-								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
-								<td>-</td>
-							</tr>
-						@endif
-					@endforeach
-					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
-						@if($fdpayamt->FdTid != 1)
-							<?php
-								$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
-								$fd_adj_db_total += $fd_adj_db;
-							?>
-							<tr>
-								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
-								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $fdpayamt->adj_no }}</td>
-							</tr>
-						@endif
-					@endforeach
-					
-					
-					
-					
-				
-				<!------------------ FD monthly int  -------------------->
-				
-				
-					<?php
-						$fd_in_adj_db = 0;
-						
-						$fd_in_adj_db_total = 0;
-					?>
-					@foreach ($trandaily['fd_monthly_int'] as $row)
-						<?php
-							$fd_in_adj_db = $row->amount;
-							$fd_in_adj_db_total += $fd_in_adj_db;
-						?>
-						<tr>
-							<td>{{$row->FD_Date}}</td>
-							<td>{{$row->fdnum}}</td>
-							<td>FD Interest  - {{ $row->name }}({{$row->Uid}})</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>{{$row->amount}}</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-						</tr>
-					@endforeach
-	
-	
-				
-				<?php
-				
-						$fd_tot = $fd_in_adj_db_total + $fd_adj_db_total
-				?>
-				<!------------------ FD monthly int  -------------------->	
-					
-					
-					
-					<tr>
-						<th colspan =3>FD Amount Paid</th>
-						<td>-</td>
-						<td><?php echo $fd_cash_db_total; ?></td>
-						<td>-</td>
-				<?php /*		<td><?php echo $fd_adj_db_total; ?></td> */?>
-						<td><?php echo $fd_tot; ?></td>
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-					</tr>
-					<?php
-						$gt_cash_db += $fd_cash_db_total;
-				//		$gt_adj_db += $fd_adj_db_total;
-						$gt_adj_db += $fd_tot;
-					?>
-					
-					
-					
-					
-				<!------------------ KCC PAID AMOUNT  -------------------->
-					<tr><td colspan="10"><h5><b><center>KCC PAID AMOUNT<center></b></h5></td></tr>
-					<?php
-						$fd_cash_db = 0;
-						$fd_adj_db = 0;
-						
-						$fd_cash_db_total = 0;
-						$fd_adj_db_total = 0;
-					?>
-					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
-						@if($fdpayamt->FdTid == 1)
-							<?php
-								$fd_cash_db = $fdpayamt->FDPayAmt_PayableAmount;
-								$fd_cash_db_total += $fd_cash_db;
-							?>
-							<tr>
-								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
-								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-								<td>KCC Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
-								<td>-</td>
-								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
-								<td>-</td>
-							</tr>
-						@endif
-					@endforeach
-					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
-						@if($fdpayamt->FdTid == 1)
-							<?php
-								$fd_adj_db = $fdpayamt->FDPayAmt_PayableAmount;
-								$fd_adj_db_total += $fd_adj_db;
-							?>
-							<tr>
-								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
-								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
-								<td>KCC Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
-								<td>-</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $fdpayamt->FDPayAmt_PayableAmount }}</td>
-								<td>-</td>
-								<td>-</td>
-								<td>{{ $fdpayamt->adj_no }}</td>
-							</tr>
-						@endif
-					@endforeach
-
-					<tr>
-						<th colspan =3>KCC Amount Paid</th>
-						<td>-</td>
-						<td><?php echo $fd_cash_db_total; ?></td>
-						<td>-</td>
-						<td><?php echo $fd_adj_db_total; ?></td> 
-						<td>-</td>
-						<td>-</td>
-						<td>-</td>
-					</tr>
-					<?php
 						$gt_cash_db += $fd_cash_db_total;
 						$gt_adj_db += $fd_adj_db_total;
 					?>
-				<!------------------ KCC PAID AMOUNT  -------------------->
-					
+				<?php /****************** KCC ****************/?>
+
+
 					
 		
 					
@@ -1581,7 +1505,7 @@
 
 
 
-					<tr><td colspan="10"><h5><b><center>Expence<center></b></h5></td></tr>
+					<tr><td colspan="10"><h5><b><center>Expense<center></b></h5></td></tr>
 					<?php
 						$exp_cash_db = 0;
 						$exp_adj_db = 0;
