@@ -665,7 +665,7 @@
 		{
 			$dte=date('Y-m-d');
 			$accno=DB::table('fdallocation')->select('Fd_CertificateNum','FdReport_StartDate','FdReport_MatureDate','Fd_DepositAmt')
-			->where('Fdid','=',$id)
+			->where('Fdid','=',$id["fdaccount"])
 			->first();
 			
 			
@@ -693,7 +693,7 @@
 			
 			
 			$countofrow=DB::table('fdprewithdrawl')->count('fdprewithdraw_Id');
-			for($i=1;$i<$countofrow;$i++)
+			for($i=1;$i<=$countofrow;$i++)
 			{
 				$xx1=DB::table('fdprewithdrawl')->select('prewitdraw_Days')->where('fdprewithdraw_Id','=',$i)->first();
 				$x1=$xx1->prewitdraw_Days;
