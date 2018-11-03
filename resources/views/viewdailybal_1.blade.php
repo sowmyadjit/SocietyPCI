@@ -227,9 +227,8 @@
 
 
 
-					
-					
-					
+
+
 <?php /****************** RD TRANSACTION ********************/ ?>
 					<tr><td colspan="10"><h5><b><center>RD TRANSACTION<center></b></h5></td></tr>
 					<?php
@@ -360,6 +359,77 @@
 				?>
 <?php /****************** RD TRANSACTION ********************/ ?>
 
+
+
+					
+					
+<?php /****************** RD INTEREST ********************/ ?>
+					<tr><td colspan="10"><h5><b><center>RD INTEREST<center></b></h5></td></tr>
+					<?php
+						$rd_cash_cr = 0;
+						$rd_cash_db = 0;
+						$rd_adj_cr = 0;
+						$rd_adj_db = 0;
+						$rd_cash_cr_total = 0;
+						$rd_cash_db_total = 0;
+						$rd_adj_cr_total = 0;
+						$rd_adj_db_total = 0;
+					?>
+					<?php /****************** RD PAY AMT - INTEREST ********************/ ?>
+						@foreach ($trandaily['rdpayamt'] as $rdamt)
+							@if(strcasecmp($rdamt->RDPayAmt_PaymentMode, 'CASH') == 0)
+								<?php
+									$rd_cash_db = $rdamt->Interest_Amt;
+									$rd_cash_db_total += $rd_cash_db;
+								?>
+								<tr>
+									<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
+									<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
+									<td>RD Paid Amount - {{ $rdamt->name }}({{ $rdamt->Uid }})</td>
+									<td>-</td>
+									<td>{{ $rdamt->Interest_Amt }}</td>
+									<td>-</td>
+									<td>-</td>
+									<td>-</td>
+									<td>{{ $rdamt->RD_PayAmount_pamentvoucher }}</td>
+								</tr>
+							@else
+								<?php
+									$rd_adj_db = $rdamt->Interest_Amt;
+									$rd_adj_db_total += $rd_adj_db;
+								?>
+								<tr>
+									<td>{{ $rdamt->RDPayAmtReport_PayDate }}</td>
+									<td>{{ $rdamt->RDPayAmt_AccNum }}</td>
+									<td>RD Paid Amount</td>
+									<td>-</td>
+									<td>-</td>
+									<td>-</td>
+									<td>{{ $rdamt->Interest_Amt }}</td>
+									<td>-</td>
+									<td>-</td>
+									<td>{{ $rdamt->adj_no }}</td>
+								</tr>
+							@endif
+						@endforeach
+					<?php /****************** RD PAY AMT - INTEREST ********************/ ?>
+				<tr>
+					<th colspan =3>RD INTEREST TOTAL</th>
+					<td class="text-right"><?php echo $rd_cash_cr_total ?></td>
+					<td class="text-right"><?php echo $rd_cash_db_total ?></td>
+					<td class="text-right"><?php echo $rd_adj_cr_total ?></td>
+					<td class="text-right"><?php echo $rd_adj_db_total ?></td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+				<?php
+					$gt_cash_cr += $rd_cash_cr_total;
+					$gt_cash_db += $rd_cash_db_total;
+					$gt_adj_cr += $rd_adj_cr_total;
+					$gt_adj_db += $rd_adj_db_total;
+				?>
+<?php /****************** RD INTEREST ********************/ ?>
 
 
 
@@ -749,16 +819,92 @@
 					@endforeach
 					<?php /***************** FD PAID AMT *******************/?>
 
-					<!------------------ FD monthly int  -------------------->
-						<?php
-							$fd_in_adj_db = 0;
-							
-							$fd_in_adj_db_total = 0;
-						?>
+					<tr>
+						<th colspan =3>Total FD Amount </th>
+						<td><?php echo $fd_cash_cr_total; ?></td>
+						<td><?php echo $fd_cash_db_total; ?></td>
+						<td><?php echo $fd_adj_cr_total; ?></td>
+						<td><?php echo $fd_adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $fd_cash_cr_total;
+						$gt_adj_cr += $fd_adj_cr_total;
+						$gt_cash_db += $fd_cash_db_total;
+						$gt_adj_db += $fd_adj_db_total;
+					?>
+				<?php /****************** FD ****************/?>
+
+
+
+
+
+
+				
+				<?php /****************** FD INTEREST ****************/?>
+					<tr><td colspan="10"><h5><b><center>FD INTEREST<center></b></h5></td></tr>
+					<?php
+						$fd_cash_cr = 0;
+						$fd_adj_cr = 0;
+						$fd_cash_db = 0;
+						$fd_adj_db = 0;
+						
+						$fd_cash_cr_total = 0;
+						$fd_adj_cr_total = 0;
+						$fd_cash_db_total = 0;
+						$fd_adj_db_total = 0;
+					?>
+					
+					
+					<?php /***************** FD PAID AMT - INTEREST *******************/?>
+					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
+						@if($fdpayamt->FdTid != 1)
+							<?php
+								$fd_cash_db = $fdpayamt->interest_amount;
+								$fd_cash_db_total += $fd_cash_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->interest_amount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+							</tr>
+						@endif
+					@endforeach
+					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
+						@if($fdpayamt->FdTid != 1)
+							<?php
+								$fd_adj_db = $fdpayamt->interest_amount;
+								$fd_adj_db_total += $fd_adj_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->interest_amount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->adj_no }}</td>
+							</tr>
+						@endif
+					@endforeach
+					<?php /***************** FD PAID AMT - INTEREST *******************/?>
+					<?php /***************** FD monthly int *******************/?>
 						@foreach ($trandaily['fd_monthly_int'] as $row)
 							<?php
-								$fd_in_adj_db = $row->amount;
-								$fd_in_adj_db_total += $fd_in_adj_db;
+								$fd_adj_db = $row->amount;
+								$fd_adj_db_total += $fd_adj_db;
 							?>
 							<tr>
 								<td>{{$row->FD_Date}}</td>
@@ -773,19 +919,14 @@
 								<td>-</td>
 							</tr>
 						@endforeach
-						<?php
-						
-								$fd_tot = $fd_in_adj_db_total + $fd_adj_db_total
-						?>
-					<!------------------ FD monthly int  -------------------->
+						<?php /***************** FD monthly int *******************/?>
 
 					<tr>
-						<th colspan =3>Total FD Amount </th>
+						<th colspan =3>Total FD INTEREST AMOUNT </th>
 						<td><?php echo $fd_cash_cr_total; ?></td>
 						<td><?php echo $fd_cash_db_total; ?></td>
 						<td><?php echo $fd_adj_cr_total; ?></td>
-		<?php /*		<td><?php echo $fd_adj_db_total; ?></td> */?>
-						<td><?php echo $fd_tot; ?></td>
+						<td><?php echo $fd_adj_db_total; ?></td>
 						<td>-</td>
 						<td>-</td>
 						<td>-</td>
@@ -794,10 +935,9 @@
 						$gt_cash_cr += $fd_cash_cr_total;
 						$gt_adj_cr += $fd_adj_cr_total;
 						$gt_cash_db += $fd_cash_db_total;
-						// $gt_adj_db += $fd_adj_db_total;
-						$gt_adj_db += $fd_tot;
+						$gt_adj_db += $fd_adj_db_total;
 					?>
-				<?php /****************** FD ****************/?>
+				<?php /****************** FD INTEREST ****************/?>
 					
 
 					
@@ -916,6 +1056,85 @@
 						$gt_adj_db += $fd_adj_db_total;
 					?>
 				<?php /****************** KCC ****************/?>
+
+
+
+				
+				<?php /****************** KCC INTEREST ****************/?>
+					<tr><td colspan="10"><h5><b><center>KCC INTEREST<center></b></h5></td></tr>
+					<?php
+						$fd_cash_cr = 0;
+						$fd_adj_cr = 0;
+						$fd_cash_db = 0;
+						$fd_adj_db = 0;
+						
+						$fd_cash_cr_total = 0;
+						$fd_adj_cr_total = 0;
+						$fd_cash_db_total = 0;
+						$fd_adj_db_total = 0;
+					?>
+					
+					
+					<?php /***************** KCC PAID AMT - INTEREST *******************/?>
+					@foreach ($trandaily['fdpayamt'] as $fdpayamt)
+						@if($fdpayamt->FdTid == 1)
+							<?php
+								$fd_cash_db = $fdpayamt->interest_amount;
+								$fd_cash_db_total += $fd_cash_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>FD Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->interest_amount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->FD_PayAmount_pamentvoucher }}</td>
+								<td>-</td>
+							</tr>
+						@endif
+					@endforeach
+					@foreach ($trandaily['fdpayamt_adjust'] as $fdpayamt)
+						@if($fdpayamt->FdTid == 1)
+							<?php
+								$fd_adj_db = $fdpayamt->interest_amount;
+								$fd_adj_db_total += $fd_adj_db;
+							?>
+							<tr>
+								<td>{{ $fdpayamt->FDPayAmtReport_PayDate }}</td>
+								<td>{{ $fdpayamt->FDPayAmt_AccNum }}</td>
+								<td>KCC Paid Amount - {{ $fdpayamt->name }}({{ $fdpayamt->Uid }})</td>
+								<td>-</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->interest_amount }}</td>
+								<td>-</td>
+								<td>-</td>
+								<td>{{ $fdpayamt->adj_no }}</td>
+							</tr>
+						@endif
+					@endforeach
+					<?php /***************** KCC PAID AMT - INTEREST *******************/?>
+					<tr>
+						<th colspan =3>Total KCC INTEREST AMOUNT </th>
+						<td><?php echo $fd_cash_cr_total; ?></td>
+						<td><?php echo $fd_cash_db_total; ?></td>
+						<td><?php echo $fd_adj_cr_total; ?></td>
+						<td><?php echo $fd_adj_db_total; ?></td>
+						<td>-</td>
+						<td>-</td>
+						<td>-</td>
+					</tr>
+					<?php
+						$gt_cash_cr += $fd_cash_cr_total;
+						$gt_adj_cr += $fd_adj_cr_total;
+						$gt_cash_db += $fd_cash_db_total;
+						$gt_adj_db += $fd_adj_db_total;
+					?>
+				<?php /****************** KCC INTEREST ****************/?>
+					
 
 
 					

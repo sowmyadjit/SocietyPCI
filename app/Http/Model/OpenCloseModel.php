@@ -1105,8 +1105,9 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('rd_payamount')->select('rd_payamount.RDPayId','RDPayAmt_AccNum','RDPayAmt_PayableAmount','RDPayAmtReport_PayDate',DB::raw(" '' as 'RD_PayAmount_pamentvoucher' "), 'RDPayAmt_PaymentMode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),DB::raw(" '' as 'adj_no' ") )
+			$id=DB::table('rd_payamount')->select('rd_payamount.RDPayId','RDPayAmt_AccNum','RDPayAmt_PayableAmount','RDPayAmtReport_PayDate',DB::raw(" '' as 'RD_PayAmount_pamentvoucher' "), 'RDPayAmt_PaymentMode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),DB::raw(" '' as 'adj_no' "), DB::raw(" IF(`rd_interest`.`Interest_Amt` IS NULL,0,`rd_interest`.`Interest_Amt`) as Interest_Amt ") )
 			->join('createaccount','createaccount.AccNum','=','rd_payamount.RDPayAmt_AccNum')
+			->leftJoin('rd_interest','rd_interest.RdAcc_No','=','createaccount.AccNum')
 			// ->join("receipt_voucher","receipt_voucher.transaction_id","=","rd_payamount.RDPayId")
 			->join("user","user.Uid","=","createaccount.Uid")
 			// ->where("receipt_voucher.transaction_category",15)
@@ -1133,6 +1134,12 @@
 			$fd["rv_fields"] = ["RD_PayAmount_pamentvoucher","adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
 			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
 			/********************** APPEND RV ADJ NO **************************/
+
+			/********************** SUBTRACT INT AMT **************************/
+			foreach($id as $key=>$row) {
+				$id[$key]->RDPayAmt_PayableAmount -= $row->Interest_Amt;
+			}
+			/********************** SUBTRACT INT AMT **************************/
 			return $id;
 		}
 		public function show_dailyrdpayamttotbalance($dte)
@@ -1286,7 +1293,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','receipt_voucher_no as FD_PayAmount_pamentvoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'fdallocation.FdTid')
+			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','receipt_voucher_no as FD_PayAmount_pamentvoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'fdallocation.FdTid','fdallocation.interest_amount')
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
 			->join("user","user.Uid","=","fdallocation.Uid")
@@ -1297,6 +1304,12 @@
 			->where('FDPayAmtReport_PayDate',$dte)
 			->where('fd_payamount.deleted',0)
 			->get();
+			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
+			foreach($id as $key => $row) {
+				$id[$key]->FDPayAmt_PayableAmount -= $row->interest_amount;
+			}
+			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
+
 			return $id;
 		}
 		public function show_dailyfdpayamttotbalance($dte)
@@ -1322,7 +1335,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','FD_PayAmount_pamentvoucher',"user.Uid",DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no','fdallocation.FdTid')
+			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','FD_PayAmount_pamentvoucher',"user.Uid",DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no','fdallocation.FdTid','fdallocation.interest_amount')
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->join("user","user.Uid","=","fdallocation.Uid")
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
@@ -1348,6 +1361,12 @@
 				}
 			}
 			/************************** SINGLE ENTRY FOR FD PAY AMOUNT **********************************/
+
+			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
+			foreach($id as $key => $row) {
+				$id[$key]->FDPayAmt_PayableAmount -= $row->interest_amount;
+			}
+			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
 
 			return $id;
 		}
@@ -1663,18 +1682,18 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id1 = DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','receipt_voucher_no as receipt_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id1 = DB::table('staffloan_repay')->select('staffloan_repay.SLRepay_Id','StfLoan_Number','SLRepay_Date','SLRepay_PaidAmt','paid_principle','SLRepay_PayMode',/*'receipt_voucher_no as receipt_no'*/DB::RAW(" '' AS 'receipt_no' "),'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),/*'receipt_voucher_no as adj_no'*/DB::raw(" '' as 'adj_no' ") )
 			->join('staffloan_allocation','staffloan_allocation.StfLoanAllocID','=','SLRepay_SLAllocID')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","staffloan_repay.SLRepay_Id")
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","staffloan_repay.SLRepay_Id")
 			->join("user","user.Uid","=","staffloan_allocation.Uid")
-			->where("receipt_voucher.transaction_category",24)
+			// ->where("receipt_voucher.transaction_category",24)
 			->where('SLRepay_Date',$dte)
 			->where('SLRepay_Bid',$BranchId)
 			->where('staffloan_repay.SLRepay_PayMode', "=", "CASH")
 			->where('staffloan_repay.deleted', "=", 0)
 			->get();
 			
-			$id2 = DB::table('staffloan_repay')->select('StfLoan_Number','SLRepay_Date','SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' ") )
+			$id2 = DB::table('staffloan_repay')->select('staffloan_repay.SLRepay_Id','StfLoan_Number','SLRepay_Date','SLRepay_PaidAmt','paid_principle','SLRepay_PayMode','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"), DB::raw(" '' as 'adj_no' "), DB::raw(" '' as 'receipt_no' ") )
 			->join('staffloan_allocation','staffloan_allocation.StfLoanAllocID','=','SLRepay_SLAllocID')
 			->join("user","user.Uid","=","staffloan_allocation.Uid")
 			->where('SLRepay_Date',$dte)
@@ -1684,6 +1703,16 @@
 			->get();
 
 			$id = array_merge($id1, $id2);
+
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "SLRepay_Id";
+			$fd["transaction_category"] = 24;
+			$fd["receipt_voucher_type"] = 1;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["receipt_no","adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
 			
 			return $id;
 		}
@@ -2417,18 +2446,29 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
-			return DB::table('jewelloan_allocation')->select('JewelLoan_LoanNumber','JewelLoan_LoanAmount','JewelLoan_StartDate','JewelLoan_Bid','receipt_voucher_no as voucher_no','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
+			$id = DB::table('jewelloan_allocation')->select('JewelLoanId','JewelLoan_LoanNumber','JewelLoan_LoanAmount','JewelLoan_StartDate','JewelLoan_Bid',DB::raw(" '' as voucher_no ") ,'user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"))
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
 			->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
-			->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
-			->where("receipt_voucher.transaction_category",20)
-			->where("receipt_voucher.receipt_voucher_type",2)
+			// ->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
+			// ->where("receipt_voucher.transaction_category",20)
+			// ->where("receipt_voucher.receipt_voucher_type",2)
 			->where('JewelLoan_PaymentMode','=',"CASH")
 			->where('JewelLoan_StartDate',$dte)
 			->where('JewelLoan_Bid',$BranchId)
 			->where('jewelloan_allocation.deleted',0)
 			->get();
 			
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "JewelLoanId";
+			$fd["transaction_category"] = 20;
+			$fd["receipt_voucher_type"] = 1;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["voucher_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
+
+			return $id;
 			
 		}
 		public function show_jlallocationbalance($dte)
@@ -2453,18 +2493,29 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
-			return DB::table('jewelloan_allocation')->select('JewelLoan_LoanNumber','JewelLoan_LoanAmount','JewelLoan_StartDate','JewelLoan_Bid','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id =  DB::table('jewelloan_allocation')->select('JewelLoanId','JewelLoan_LoanNumber','JewelLoan_LoanAmount','JewelLoan_StartDate','JewelLoan_Bid','user.Uid',DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),DB::raw(" '' as 'adj_no' ") )
 			->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
-			->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
-			->where("receipt_voucher.transaction_category",20)
-			->where("receipt_voucher.receipt_voucher_type",3)
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","jewelloan_allocation.JewelLoanId")
+			// ->where("receipt_voucher.deleted", ReceiptVoucherModel::NOT_DELETED)
+			// ->where("receipt_voucher.transaction_category",20)
+			// ->where("receipt_voucher.receipt_voucher_type",3)
 			->where('JewelLoan_PaymentMode','<>',"CASH")
 			->where('JewelLoan_StartDate',$dte)
 			->where('JewelLoan_Bid',$BranchId)
 			->where('jewelloan_allocation.deleted',0)
 			->get();
 			
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "JewelLoanId";
+			$fd["transaction_category"] = 20;
+			$fd["receipt_voucher_type"] = 3;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
+
+			return $id;
 			
 		}
 		public function show_jlallocationbalance_adjust($dte)
@@ -4215,6 +4266,28 @@
 										$temp_uid = $user_info->Uid;
 									}
 									break;
+							/*case 37: // LOAN TRANSACTION
+
+									$loan_category = DB::table("loan_transaction")
+										->where("loan_transaction_id",$row_tran->tran_id)
+										->value("loan_transaction_category");
+									switch($loan_category) {
+										case 4:
+												$user_info = DB::table("")
+													->where()
+													->first();
+									}
+									$user_info = DB::table("jewelloan_allocation")
+										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'JewelLoan_LoanNumber' )
+										->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
+										->where("jewelloan_allocation.JewelLoanId",$row_tran->tran_id)
+										->first();
+									if(!empty($user_info)) {
+										$temp_name = $user_info->name;
+										$temp_acc_no = $user_info->JewelLoan_LoanNumber;
+										$temp_uid = $user_info->Uid;
+									}
+									break;*/
 							default:
 									$temp_name = "";
 									$temp_acc_no = "";
