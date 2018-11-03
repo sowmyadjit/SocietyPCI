@@ -158,7 +158,7 @@
 								<div class="form-group">
 									<label class="control-label col-sm-4">Opening Blance:</label>
 									<div class="col-md-8">
-										<input type="text" class="form-control" id="ob" name="ob" placeholder="Opening Balance">
+										<input type="text" class="form-control" id="ob" name="ob" value=""  placeholder="Opening Balance">
 									</div>
 								</div>
 								
@@ -705,6 +705,22 @@
 					}
 				});
 			});
+		}
+	});
+</script>
+
+<script>
+	$("#actyp").change(function() {
+		var acc_tid = $(this).attr("data-value");
+		// console.log("changed:"+acc_tid);
+
+		if(acc_tid == 1) {
+			// console.log("SB");
+			$("#ob").val(250);
+			$("#ob").prop("readonly",true);
+		} else {
+			$("#ob").val("");
+			$("#ob").prop("readonly",false);
 		}
 	});
 </script>
