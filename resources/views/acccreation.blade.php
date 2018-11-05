@@ -710,7 +710,7 @@
 </script>
 
 <script>
-	$("#actyp").change(function() {
+	/* $("#actyp").change(function() {
 		var acc_tid = $(this).attr("data-value");
 		// console.log("changed:"+acc_tid);
 
@@ -722,6 +722,6 @@
 			$("#ob").val("");
 			$("#ob").prop("readonly",false);
 		}
-	});
+	}); */
 </script>
 
