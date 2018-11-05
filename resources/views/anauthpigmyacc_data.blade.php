@@ -65,6 +65,7 @@
 	{
 		var url = $(this).attr('href');
 		var pg_id = $(this).attr('data');
+		disable_row(pg_id);
 		// console.log("url: "+url);
 		var parent = $(this).parent();
 		var opening_balance = $("#opening_balance_"+pg_id).val();
