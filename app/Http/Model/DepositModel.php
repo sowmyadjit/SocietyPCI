@@ -302,7 +302,8 @@ class DepositModel extends Model
 			} else {
 				$deposit_account_list = $deposit_account_list->where($closed_field,"=",$data['closed']);
 			}
-			$deposit_account_list = $deposit_account_list//->limit(1)
+			$deposit_account_list = $deposit_account_list->where("fdallocation.deleted",0)
+										//->limit(1)
 										->get();
 				
 			if(empty($deposit_account_list)) {
@@ -903,9 +904,9 @@ class DepositModel extends Model
 				->select($select_array)
 				->join("user","user.Uid","=","{$user_id_field}")
 				->leftJoin("createaccount","createaccount.Accid","=","cdsd_account.sb_acc_id")
-				->where("createaccount.deleted",0)
+				// ->where("createaccount.deleted",0)
 				->where("cdsd_type","=",$data["cdsd_type"])
-				->where($deleted_field,"=",0);
+				->where("{$this->cdsd->tbl}.{$deleted_field}","=",0);
 				if($this->settings->get_value("allow_inter_branch") == 0) {
 					$deposit_account_list = $deposit_account_list->where($branch_id_field,"=",$BID);
 				}

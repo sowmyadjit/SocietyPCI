@@ -70,7 +70,7 @@
 			}
 			*/
 			
-			$maxid=DB::table('fdallocation')->where('FDkcc','<>',"KCC")->where('Bid','=',$bid)->max('Fdid');
+			$maxid=DB::table('fdallocation')->where('FDkcc','<>',"KCC")->where('Bid','=',$bid)->where("fdallocation.deleted",0)->max('Fdid');
 			$accnum1=DB::table('fdallocation')->select('Fd_CertificateNum')->where('Fdid','=',$maxid)->first();
 			$accnum=$accnum1->Fd_CertificateNum;
 		//	print_r($accnum);
@@ -85,6 +85,7 @@
 				while(!$got_unique) {
 					$existing_count = DB::table("fdallocation")
 						->where("Fd_CertificateNum",$fdcertnum)
+						->where("fdallocation.deleted",0)
 						->count();
 					if($existing_count > 0) {
 						$paccno3++;
@@ -187,6 +188,7 @@
 			//->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
 			->leftJoin('user','user.Uid','=','fdallocation.Uid')
 			->where('fdallocation.Bid','=',$BID)
+			->where("fdallocation.deleted",0)
 			->orderby('Fdid','desc')
 //			->paginate(15);
 			->get();
@@ -204,6 +206,7 @@
 			//->join('createaccount','createaccount.Accid','=','fdallocation.Accid')
 			->leftJoin('user','user.Uid','=','fdallocation.Uid')
 			->where('fdallocation.Bid','=',$BID)
+			->where("fdallocation.deleted",0)
 			->orderby('Fdid','desc')
 			->get();
 		}
@@ -256,7 +259,10 @@
 		{
 			$id = DB::table('fdallocation')->select('Fdid','fdallocation.Accid','fdallocation.FdTid','fdallocation.Nid','fdallocation.Bid','user.Uid','Custid','createaccount.AccNum','createaccount.AccTid','user.FirstName','user.MiddleName','user.LastName','user.Aid','Gender','MaritalStatus','Occupation','Age','Birthdate','address.Email','Address','City','District','State','PhoneNo','MobileNo','Pincode','BName','FdType','NumberOfDays','FdInterest','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_state','Fd_DepositAmt','Fd_StartDate','FdReport_StartDate','Fd_MatureDate','FdReport_MatureDate','Fd_CertificateNum','Fd_TotalAmt','Fd_Remarks','FDPayment_Mode','FDChq_No','FDChq_Date','FDBnk_Name','FDIFSC_Code','FDSB_Amt','FDBnk_Branch','FDUnclear_Bal','FDCleared_State','FatherName','SpouseName','CustomerType','FD_ReceiptNum','Fd_CertiPrint','FDkcc','Days')
 			->leftJoin('createaccount','createaccount.Accid', '=' , 'fdallocation.Accid')
-			->leftJoin('user','user.Uid', '=' , 'fdallocation.Uid')
+			->leftJoin('user',function ($join) {
+				$join->on('user.Uid', '=' , 'fdallocation.Uid')
+				->where("createaccount.deleted","=",0);
+			})
 			//->leftJoin('user','user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('customer','customer.Uid', '=' , 'user.Uid')
 			->leftJoin('address','address.Aid', '=' , 'user.Aid')
@@ -264,7 +270,6 @@
 			->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
 			->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
 			->where('Fdid',$id)
-			->where("createaccount.deleted",0)
 			->get();
 			// print_r($id[0]);exit();
 
@@ -301,7 +306,7 @@
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
 			}
-			$ret_data = $ret_data->get();
+			$ret_data = $ret_data->where("fdallocation.deleted",0)->get();
 
 			return $ret_data;
 		}
@@ -321,7 +326,7 @@
 			}
 			//->where('Loan_Allocated','=',"NO")
 			//->where('Status','=',"AUTHORISED")
-			$ret_data = $ret_data->get();
+			$ret_data = $ret_data->where("fdallocation.deleted",0)->get();
 			return $ret_data;
 			
 		}
@@ -340,7 +345,7 @@
 			}
 			//->where('Loan_Allocated','=',"NO")
 			//->where('Status','=',"AUTHORISED")
-			$ret_data = $ret_data->get();
+			$ret_data = $ret_data->where("fdallocation.deleted",0)->get();
 			return $ret_data;
 			
 		}
@@ -356,7 +361,7 @@
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("fdallocation.Bid",$BID);
 			}
-			$ret_data = $ret_data->get();
+			$ret_data = $ret_data->where("fdallocation.deleted",0)->get();
 			return $ret_data;
 			
 		}
@@ -369,7 +374,7 @@
 			WHEN 'YES' THEN 'Closed'
 			WHEN 'NO' THEN 'Active'
 			ELSE Closed
-            END) as name FROM `fdallocation` where `Fd_CertificateNum` LIKE '%FD%' ");
+            END) as name FROM `fdallocation` where `Fd_CertificateNum` LIKE '%FD%' AND fdallocation.deleted = 0 ");
 			
 		}
 		
@@ -384,6 +389,7 @@
 			->leftJoin('user','user.Uid','=','fdallocation.Uid')
 			->select(DB::raw('Fdid as id, CONCAT(`FirstName`,"-",`MiddleName`,"-",`LastName`," , ",`Fd_CertificateNum`," / ",`Fd_OldCertificateNum`) as name'))
 			->where('fdallocation.Bid',$BID)
+			->where("fdallocation.deleted",0)
 			->get();
 		}
 		
@@ -399,6 +405,7 @@
 			->select(DB::raw('Fdid as id, CONCAT(`FirstName`,"-",`MiddleName`,"-",`LastName`," , ",`Fd_CertificateNum`," / ",`Fd_OldCertificateNum`) as name'))
 			->where('fdallocation.Bid',$BID)
 			->where('fdallocation.FdTid','1')
+			->where("fdallocation.deleted",0)
 			->get();
 		}
 		
@@ -470,7 +477,7 @@
 				$FdReceipt=$branchcd.$RecYear."FDA-".($countfdal+1);
 			}*/
 			
-			$maxid=DB::table('fdallocation')->where('Bid','=',$BID)->where('FDkcc','=',"KCC")->max('Fdid');
+			$maxid=DB::table('fdallocation')->where('Bid','=',$BID)->where('FDkcc','=',"KCC")->where("fdallocation.deleted",0)->max('Fdid');
 			if($maxid==0)
 			{
 				
@@ -568,6 +575,7 @@
 			->leftJoin('customer','customer.Uid','=','fdallocation.Uid')
 			->where('fdallocation.Bid','=',$BID)
 			->where('FDkcc','=',"KCC")
+			->where("fdallocation.deleted",0)
 			->orderby('Fdid','desc')
 			->get();
 		}
@@ -589,7 +597,7 @@
 				->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
 				->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
 				->where('Fdid',$fdmatur)
-				->where("createaccount.deleted",0)
+				->where("fdallocation.deleted",0)
 				->first();
 				//print_r($id);
 
@@ -639,7 +647,8 @@
 					->leftJoin('fdtype', 'fdtype.FdTid', '=' , 'fdallocation.FdTid')
 					->leftJoin('nominee', 'nominee.Nid', '=' , 'fdallocation.Nid')
 					->where('Fdid',$fdmatur)
-					->where("createaccount.deleted",0)
+					// ->where("createaccount.deleted",0)
+					->where("fdallocation.deleted",0)
 					->first();
 
 				$mature_date = $id->FdReport_MatureDate;
@@ -713,6 +722,7 @@
 				while(!$got_unique) {
 					$existing_count = DB::table("fdallocation")
 						->where("Fd_CertificateNum",$fdcertnum)
+						->where("fdallocation.deleted",0)
 						->count();
 					if($existing_count > 0) {
 						$paccno3++;
@@ -791,7 +801,7 @@
 			$reportenddate=date('Y-m-d',strtotime($consDate));
 			
 
-			$maxid=DB::table('fdallocation')->where('Bid','=',$BID)->where('FDkcc','=',"KCC")->max('Fdid');
+			$maxid=DB::table('fdallocation')->where('Bid','=',$BID)->where('FDkcc','=',"KCC")->where("fdallocation.deleted",0)->max('Fdid');
 			if($maxid==0)
 			{
 				$paccno3=1;
@@ -812,6 +822,7 @@
 				while(!$got_unique) {
 					$existing_count = DB::table("fdallocation")
 						->where("Fd_CertificateNum",$fdcertnum)
+						->where("fdallocation.deleted",0)
 						->count();
 					if($existing_count > 0) {
 						$paccno3++;

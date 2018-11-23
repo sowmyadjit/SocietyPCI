@@ -155,6 +155,14 @@
 		
 		public function create_cust(Request $request)
 		{
+			$fd["first_name"] = $request->input('fname');
+			$fd["middle_name"] = $request->input('mname');
+			$fd["last_name"] = $request->input('lname');
+			$fd["created_on"] = date("Y-m-d");
+			$entry_exists = $this->customer->check_for_existing_entry($fd);
+			if($entry_exists) {
+				return "duplicate entry! - entry already exists";
+			}
 			//
 			//$customer['acno']=$request->input('acno');
 			//$customer['opbal']=$request->input('opbal');

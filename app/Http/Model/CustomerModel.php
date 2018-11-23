@@ -365,4 +365,19 @@
 			return $id;
 			
 		}
+
+		public function check_for_existing_entry($data)
+		{
+			$count = DB::table("customer")
+				->where("customer.FirstName",$data["first_name"])
+				->where("customer.MiddleName",$data["middle_name"])
+				->where("customer.LastName",$data["last_name"])
+				->where("customer.Created_on",$data["created_on"])
+				->count();
+			if($count > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}

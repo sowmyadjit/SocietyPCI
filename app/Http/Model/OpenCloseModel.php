@@ -202,6 +202,7 @@
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
 			->join("user","user.Uid","=","createaccount.Uid")
 			->where("createaccount.Status","AUTHORISED")
+			->where("createaccount.deleted",0)
 			->where('SBReport_TranDate',$sbtoday)
 			->where('sb_transaction.Bid','=',$BranchId)
 			->where('Payment_Mode','=',"CASH")
@@ -267,6 +268,7 @@
 			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","sb_transaction.Tranid")
 			// ->where("receipt_voucher.transaction_category",1)
 			->where("createaccount.Status","AUTHORISED")
+			->where("createaccount.deleted",0)
 			->where('SBReport_TranDate',$sbtoday)
 			->where('sb_transaction.Bid','=',$BranchId)
 			->where('Payment_Mode','<>',"CASH")
@@ -345,6 +347,7 @@
 				->where("sb_transaction.Amount",">",0)
 				->where("sb_transaction.particulars", "SB INTEREST")
 				->where("sb_transaction.SBReport_TranDate", $date)
+				->where("createaccount.deleted",0)
 				->orderBy('SBReport_TranDate','desc')
 				->orderBy('Tranid','desc')
 				->get();
@@ -372,6 +375,7 @@
 			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","rd_transaction.RD_TransID")
 			->join("user","user.Uid","=","createaccount.Uid")
 			->where("createaccount.Status","AUTHORISED")
+			->where("createaccount.deleted",0)
 			// ->where("receipt_voucher.transaction_category",2)
 			->where('RDReport_TranDate',$dtoday)
 			->where('rd_transaction.Bid','=',$BranchId)
@@ -471,12 +475,13 @@
 			
 			//$dtoday=date('Y-m-d');
 			$dtoday=$dte;
-			$id = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum','receipt_voucher_no as RD_resp_No','RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'receipt_voucher_no as adj_no')
+			$id = DB::table('rd_transaction')->select('RD_TransID','RDReport_TranDate','RD_Time','rd_transaction.Accid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_CurrentBalance','RD_Month','RD_Year','RD_Total_Bal','AccNum',DB::raw(" '' as RD_resp_No")/*'receipt_voucher_no as RD_resp_No'*/,'RDPayment_Mode','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),DB::raw(" '' as adj_no ")/*'receipt_voucher_no as adj_no'*/)
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'rd_transaction.Accid')
 			->join("user","user.Uid","=","createaccount.Uid")
-			->join("receipt_voucher","receipt_voucher.transaction_id","=","rd_transaction.RD_TransID")
-			->where("receipt_voucher.bid",$BranchId)
+			// ->join("receipt_voucher","receipt_voucher.transaction_id","=","rd_transaction.RD_TransID")
+			// ->where("receipt_voucher.bid",$BranchId)
 			->where("createaccount.Status","AUTHORISED")
+			->where("createaccount.deleted",0)
 			->where('RDReport_TranDate',$dtoday)
 			->where('rd_transaction.Bid','=',$BranchId)
 			->where('RDPayment_Mode','<>',"CASH")
@@ -485,6 +490,16 @@
 			//->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->get();
+			/********************** APPEND RV ADJ NO **************************/
+			unset($fd);
+			$fd["transaction_id"] = "RD_TransID";
+			$fd["transaction_category"] = 2;
+			// $fd["receipt_voucher_type"] = ;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["RD_resp_No","adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
+			// print_r($id);exit();
 			return $id;
 			
 		}
@@ -1113,6 +1128,7 @@
 			// ->where("receipt_voucher.transaction_category",15)
 			->where('createaccount.Bid',$BranchId)
 			->where('RDPayAmtReport_PayDate',$dte)
+			->where("createaccount.deleted",0)
 			->where('rd_payamount.deleted',0)
 			->get();
 			
@@ -1151,7 +1167,8 @@
 			$BranchId=$uname->Bid;
 			
 			$id=DB::table('rd_payamount')->where('RDPayAmtReport_PayDate',$dte)->join('createaccount','createaccount.AccNum','=','rd_payamount.RDPayAmt_AccNum')
-			->where('createaccount.Bid',$BranchId)->sum('RDPayAmt_PayableAmount');
+			->where('createaccount.Bid',$BranchId)
+			->where("createaccount.deleted",0)->sum('RDPayAmt_PayableAmount');
 			
 			return $id;
 		}
@@ -1172,6 +1189,7 @@
 			->where('FDPayment_Mode','=',"CASH")
 			->where('FdTid','!=',1)
 			->where('fdallocation.Bid',$BranchId)
+			->where('fdallocation.deleted',0)
 			->get();
 			
 			/********************** APPEND RV ADJ NO **************************/
@@ -1204,6 +1222,7 @@
 			->where('FdTid','=',1)
 			
 			->where('fdallocation.Bid',$BranchId)
+			->where('fdallocation.deleted',0)
 			->get();
 			return $id;
 		}
@@ -1216,7 +1235,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fdallocation')->where('Created_Date',$dte)->where('Bid',$BranchId)->where('FDPayment_Mode','=',"CASH")->sum('Fd_DepositAmt');
+			$id=DB::table('fdallocation')->where('Created_Date',$dte)->where('Bid',$BranchId)->where('FDPayment_Mode','=',"CASH")->where('fdallocation.deleted',0)->sum('Fd_DepositAmt');
 			
 			return $id;
 		}
@@ -1236,6 +1255,7 @@
 			->where('FDPayment_Mode','<>',"CASH")
 			->where('FdTid','!=',1)
 			->where('fdallocation.Bid',$BranchId)
+			->where('fdallocation.deleted',0)
 			->get();
 
 			/********************** APPEND RV ADJ NO **************************/
@@ -1267,6 +1287,7 @@
 			->where('FdTid','=',1)
 			
 			->where('fdallocation.Bid',$BranchId)
+			->where('fdallocation.deleted',0)
 			->get();
 			return $id;
 		}
@@ -1279,7 +1300,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fdallocation')->where('Created_Date',$dte)->where('Bid',$BranchId)->where('FDPayment_Mode','<>',"CASH")->sum('Fd_DepositAmt');
+			$id=DB::table('fdallocation')->where('Created_Date',$dte)->where('Bid',$BranchId)->where('FDPayment_Mode','<>',"CASH")->where('fdallocation.deleted',0)->sum('Fd_DepositAmt');
 			
 			return $id;
 		}
@@ -1293,7 +1314,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','receipt_voucher_no as FD_PayAmount_pamentvoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'fdallocation.FdTid','fdallocation.interest_amount')
+			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','receipt_voucher_no as FD_PayAmount_pamentvoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'fdallocation.FdTid','fdallocation.interest_amount',"Paid_State")
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
 			->join("user","user.Uid","=","fdallocation.Uid")
@@ -1303,10 +1324,13 @@
 			->where('FDPayAmt_PaymentMode','=',"CASH")
 			->where('FDPayAmtReport_PayDate',$dte)
 			->where('fd_payamount.deleted',0)
+			->where('fdallocation.deleted',0)
 			->get();
 			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
 			foreach($id as $key => $row) {
-				$id[$key]->FDPayAmt_PayableAmount -= $row->interest_amount;
+				if(strcasecmp($row->Paid_State, "PAID") == 0) {
+					$id[$key]->FDPayAmt_PayableAmount -= $row->interest_amount;
+				}
 			}
 			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
 
@@ -1323,7 +1347,8 @@
 			
 			$id=DB::table('fd_payamount')->where('FDPayAmtReport_PayDate',$dte)->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->where('FDPayAmt_PaymentMode','=',"CASH")
-			->where('fdallocation.Bid',$BranchId)->sum('FDPayAmt_PayableAmount');
+			->where('fdallocation.Bid',$BranchId)
+			->where('fdallocation.deleted',0)->sum('FDPayAmt_PayableAmount');
 			
 			return $id;
 		}
@@ -1335,7 +1360,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','FD_PayAmount_pamentvoucher',"user.Uid",DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no','fdallocation.FdTid','fdallocation.interest_amount')
+			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','FD_PayAmount_pamentvoucher',"user.Uid",DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no','fdallocation.FdTid','fdallocation.interest_amount','Paid_State')
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->join("user","user.Uid","=","fdallocation.Uid")
 			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
@@ -1345,6 +1370,7 @@
 			->where('FDPayAmt_PaymentMode','<>',"CASH")
 			->where('FDPayAmtReport_PayDate',$dte)
 			->where('fd_payamount.deleted',0)
+			->where('fdallocation.deleted',0)
 			->get();
 
 			/************************** SINGLE ENTRY FOR FD PAY AMOUNT **********************************/
@@ -1364,7 +1390,20 @@
 
 			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
 			foreach($id as $key => $row) {
-				$id[$key]->FDPayAmt_PayableAmount -= $row->interest_amount;
+				$cash_int_count = DB::table("fd_payamount")
+					->where("FDPayAmt_AccNum",$row->FDPayAmt_AccNum)
+					->where("FDPayAmt_PayableAmount",$row->interest_amount)
+					->where("FDPayAmt_PaymentMode","CASH")
+					->count();
+				if($cash_int_count > 0) {
+					$interest_paid_through_cash = true;
+					$id[$key]->interest_amount = 0;
+				} else {
+					$interest_paid_through_cash = false;
+				}
+				if(strcasecmp($row->Paid_State, "PAID") == 0 && !$interest_paid_through_cash) {
+					$id[$key]->FDPayAmt_PayableAmount -= $row->interest_amount;
+				}
 			}
 			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
 
@@ -1381,7 +1420,8 @@
 			
 			$id=DB::table('fd_payamount')->where('FDPayAmtReport_PayDate',$dte)->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->where('FDPayAmt_PaymentMode','<>',"CASH")
-			->where('fdallocation.Bid',$BranchId)->sum('FDPayAmt_PayableAmount');
+			->where('fdallocation.Bid',$BranchId)
+			->where('fdallocation.deleted',0)->sum('FDPayAmt_PayableAmount');
 			
 			return $id;
 		}
@@ -1458,6 +1498,7 @@
 			->where('customer.Bid',$BranchId)
 			->where('custtyp', 'CLASS D')
 			->where('customer.AuthStatus', 'AUTHORISED')
+			->where("customer.deleted",0)
 			->get();
 			return $id;
 		}
@@ -1468,7 +1509,7 @@
 			if(Auth::user())
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
-			$id=DB::table('customer')->where('Created_on',$dte)->where('Bid',$BranchId)->sum('Customer_Fee');
+			$id=DB::table('customer')->where('Created_on',$dte)->where('Bid',$BranchId)->where("customer.deleted",0)->sum('Customer_Fee');
 			
 			return $id;
 		}	
@@ -2824,6 +2865,7 @@
 				->where('Closed',"NO")
 				->where('Bid',$Branchid)
 				->where('fdallocation.FdReport_MatureDate',">=",date("Y-m-d"))
+				->where('fdallocation.deleted',0)
 				->get();
 			// print_r($fdaccno);
 			foreach($fdaccno as $accno)
@@ -2837,6 +2879,7 @@
 				{
 					$fddetails=DB::table('fdallocation')->select('Accid','lastinterestpaid','fdmonth','interstmonth','Fd_DepositAmt','FdTid','Fd_CertificateNum','FdReport_StartDate')
 					->where('Fd_CertificateNum',$accno1)
+					->where('fdallocation.deleted',0)
 					->first();
 					$fdmonth=$fddetails->fdmonth;
 			/*******************/
@@ -3000,6 +3043,7 @@
 					$sbid=DB::table('sb_transaction')->insertGetId(['Accid'=>$accid,'AccTid'=>"1",'TransactionType'=>"CREDIT",'particulars'=>$sb_particulars,'Amount' =>$totamt,'CurrentBalance'=>$sbtotamt,'Total_Bal'=>$totamount,'tran_Date'=>$dte,'SBReport_TranDate'=>$dte,'Month'=>$month,'Year'=>$yer,'Payment_Mode'=>"FD Interest",'Bid'=>$Branchid,'CreatedBy'=>$UID,'ignore_for_service_charge'=>1]); 
 					
 					DB::table('fdallocation')->where('Fd_CertificateNum',$accno1)
+					->where('fdallocation.deleted',0)
 					->update(['lastinterestpaid'=>$dte]);
 					/*DB::table('fd_interest')->insert(['FD_Interest_date'=>$dte,'FD_Interest_AccountNo'=>$accno1,'FD_Interest_SB_Accid'=>$accid,'FD_Interest_Amount'=>$totamt,'FD_Interest_Bid'=>$Branchid,'FD_Interest_Sb_Tranid'=>$sbid]);*/
 				} else {
@@ -3184,6 +3228,7 @@
 				->where('FD_Date','=',$date)
 				->where('fd_monthly_interest.Bid','=',$bid)
 				->where('fd_monthly_interest.id','=',0)
+				->where('fdallocation.deleted',0)
 				->get();
 				
 		/* 	if(empty($fd_int)) {
@@ -4091,7 +4136,7 @@
 
 			/*************** FFETCH USER INFO ****************/
 			foreach($ret_data as $key_ret => $row_ret) {
-				foreach($row_ret["subhead_tran"]	 as $key_tran => $row_tran) {
+				foreach($row_ret["subhead_tran"] as $key_tran => $row_tran) {
 					// print_r($ret_data[$key_ret]["subhead_tran"][$key_tran]);
 					if(!empty($row_tran->tran_table) && !empty($row_tran->tran_id)) {
 						// $base_table = DB::table("tablenames") ->where("Tid",$row_tran->tran_table) ->value("TName");
@@ -4103,6 +4148,7 @@
 									$user_info = DB::table("customer")
 										->select("FirstName","MiddleName","LastName","Uid")
 										->where("Custid",$row_tran->tran_id)
+										->where("customer.deleted",0)
 										->first();
 									if(!empty($user_info)) {
 										$temp_name = "{$user_info->FirstName} {$user_info->MiddleName} {$user_info->LastName}";
@@ -4222,6 +4268,7 @@
 										->join("createaccount","createaccount.AccNum","=","rd_prewithdrawal.RdAcc_No")
 										->join("user","user.Uid","=","createaccount.Uid")
 										->where("rd_prewithdrawal.RdPrewithdraw_ID",$row_tran->tran_id)
+										->where("createaccount.deleted",0)
 										->first();
 									if(!empty($user_info)) {
 										$temp_name = $user_info->name;
@@ -4235,6 +4282,7 @@
 										->join("createaccount","createaccount.AccNum","=","rd_payamount.RDPayAmt_AccNum")
 										->join("user","user.Uid","=","createaccount.Uid")
 										->where("rd_payamount.RDPayId",$row_tran->tran_id)
+										->where("createaccount.deleted",0)
 										->first();
 									if(!empty($user_info)) {
 										$temp_name = $user_info->name;
@@ -4373,6 +4421,39 @@
 			// print_r($ret_data);exit();
 			return $ret_data;
 		}
+
+		/*public function daily_rep_loan_transaction($date)
+		{
+			$uname=''; if(Auth::user()) $uname= Auth::user(); $BID=$uname->Bid; $UID=$uname->Uid;
+			
+			$subhead_list1 = DB::table("all_charges")
+				->where("deleted",0)
+				->where("bid",$BID)
+				->where("date",$date)
+				->groupBy("loan_transaction_principle_subhead_id")
+				->lists("loan_transaction_principle_subhead_id","loan_transaction_interest_subhead_id");
+				
+			$subhead_list2 = DB::table("all_charges")
+				->where("deleted",0)
+				->where("bid",$BID)
+				->where("date",$date)
+				->groupBy("loan_transaction_principle_subhead_id")
+				->lists("loan_transaction_interest_subhead_id");
+
+			$subhead_list = array_merge($subhead_list1,$subhead_list2);
+
+			DB::table("legder")
+				->selectRaw("
+					loan_transaction_id,
+					loan_transaction_category,
+					loan_transaction_loan_id,
+					loan_transaction_date,
+					loan_transaction_principle_amount
+				")
+				->join("loan_transaction","loan_transaction.loan_transaction_principle_amount","=","legder.lid")
+				->where("loan_transaction_date",$date)
+				->get();
+		}*/
 		
 		
 	}
