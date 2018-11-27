@@ -851,7 +851,7 @@
 			->get();
 
 			/********************** APPEND RV ADJ NO **************************/
-			unset($fd);
+			$fd = [];
 			$fd["transaction_id"] = "PayId";
 			$fd["transaction_category"] = 14;
 			$fd["receipt_voucher_type"] = 2;
@@ -1314,18 +1314,31 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','receipt_voucher_no as FD_PayAmount_pamentvoucher','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'fdallocation.FdTid','fdallocation.interest_amount',"Paid_State")
+			$id=DB::table('fd_payamount')->select('FDPayId','FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate',DB::raw(" '' as FD_PayAmount_pamentvoucher ")/*'receipt_voucher_no as FD_PayAmount_pamentvoucher'*/,'user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"),'fdallocation.FdTid','fdallocation.interest_amount',"Paid_State")
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
 			->join("user","user.Uid","=","fdallocation.Uid")
-			->where("receipt_voucher.transaction_category",16)
-			->where("receipt_voucher.bid",$BranchId)
+			// ->where("receipt_voucher.transaction_category",16)
+			// ->where("receipt_voucher.bid",$BranchId)
 			->where('fdallocation.Bid',$BranchId)
 			->where('FDPayAmt_PaymentMode','=',"CASH")
 			->where('FDPayAmtReport_PayDate',$dte)
 			->where('fd_payamount.deleted',0)
 			->where('fdallocation.deleted',0)
 			->get();
+
+			
+			/********************** APPEND RV ADJ NO **************************/
+			$fd = [];
+			$fd["transaction_id"] = "FDPayId";
+			$fd["transaction_category"] = 16;
+			// $fd["receipt_voucher_type"] = ;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["FD_PayAmount_pamentvoucher"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
+
+
 			/************************** SEPARATE PAYMENT ENTRY FOR INTEREST - SO DEDUCT INT AMT FROM PRINCIPLE **********************************/
 			foreach($id as $key => $row) {
 				if(strcasecmp($row->Paid_State, "PAID") == 0) {
@@ -1360,18 +1373,29 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-			$id=DB::table('fd_payamount')->select('FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','FD_PayAmount_pamentvoucher',"user.Uid",DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),'receipt_voucher_no as adj_no','fdallocation.FdTid','fdallocation.interest_amount','Paid_State')
+			$id=DB::table('fd_payamount')->select('FDPayId','FDPayAmt_AccNum','FDPayAmt_PayableAmount','FDPayAmtReport_PayDate','FD_PayAmount_pamentvoucher',"user.Uid",DB::raw("concat(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as name"),DB::raw(" '' as adj_no ")/*'receipt_voucher_no as adj_no'*/,'fdallocation.FdTid','fdallocation.interest_amount','Paid_State')
 			->join('fdallocation','fdallocation.Fd_CertificateNum','=','fd_payamount.FDPayAmt_AccNum')
 			->join("user","user.Uid","=","fdallocation.Uid")
-			->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
-			->where('receipt_voucher.transaction_category',16)//16-fd pay amt
-			->where('receipt_voucher.bid', $BranchId)
+			// ->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","fd_payamount.FDPayId")
+			// ->where('receipt_voucher.transaction_category',16)//16-fd pay amt
+			// ->where('receipt_voucher.bid', $BranchId)
 			->where('fdallocation.Bid',$BranchId)
 			->where('FDPayAmt_PaymentMode','<>',"CASH")
 			->where('FDPayAmtReport_PayDate',$dte)
 			->where('fd_payamount.deleted',0)
 			->where('fdallocation.deleted',0)
 			->get();
+
+			
+			/********************** APPEND RV ADJ NO **************************/
+			$fd = [];
+			$fd["transaction_id"] = "FDPayId";
+			$fd["transaction_category"] = 16;
+			// $fd["receipt_voucher_type"] = ;
+			$fd["bid"] = $BranchId;
+			$fd["rv_fields"] = ["adj_no"]; // FIELD NAMES TO BE ASSIGNED WITH RV / ADJ  NO
+			$this->daily_rep_rv_adj_no($id,$fd); // $id is passed through reference
+			/********************** APPEND RV ADJ NO **************************/
 
 			/************************** SINGLE ENTRY FOR FD PAY AMOUNT **********************************/
 			$temp_list = array();

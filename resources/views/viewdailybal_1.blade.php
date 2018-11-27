@@ -863,6 +863,9 @@
 						@if($fdpayamt->FdTid != 1)
 							<?php
 								$fd_cash_db = $fdpayamt->interest_amount;
+								if($fd_cash_db == 0) {
+									continue;
+								}
 								$fd_cash_db_total += $fd_cash_db;
 							?>
 							<tr>
@@ -883,6 +886,9 @@
 						@if($fdpayamt->FdTid != 1)
 							<?php
 								$fd_adj_db = $fdpayamt->interest_amount;
+								if($fd_adj_db == 0) {
+									continue;
+								}
 								$fd_adj_db_total += $fd_adj_db;
 							?>
 							<tr>
@@ -2944,6 +2950,20 @@
 */?>
 					
 					
+<?php /***************************** LOAN TRANSACTION ******************************* / ?>
+					<tr><td colspan="10"><h5><b><center>LOAN TRANSACTION<center></b></h5></td></tr>
+					< ?php
+						$cash_cr = 0;
+						$cash_db = 0;
+						$adj_cr = 0;
+						$adj_db = 0;
+						
+						$cash_cr_total = 0;
+						$cash_db_total = 0;
+						$adj_cr_total = 0;
+						$adj_db_total = 0;
+					?>
+< ?php /***************************** LOAN TRANSACTION *******************************/ ?>
 					
 					<tr><td colspan="10"><h5><b><center>JL REPAY<center></b></h5></td></tr>
 					<?php
