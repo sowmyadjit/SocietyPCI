@@ -636,7 +636,7 @@
                         {
                         
                                 $PigmiAcc_No=$dataa->PigmiAcc_No;
-                                $num_count=DB::table('pigmi_payamount')->where('PayAmountReport_PayDate','=',$pigtoday)->where('PayAmount_PigmiAccNum','=',$PigmiAcc_No)->count('PayId');
+                                $num_count=DB::table('pigmi_payamount')->where('PayAmountReport_PayDate','=',$pigtoday)->where('PayAmount_PigmiAccNum','=',$PigmiAcc_No)->where("pigmi_payamount.deleted",0)->count('PayId');
                                 //print_r($num_count);
                                 if($num_count==0)
                                 {
@@ -723,6 +723,7 @@
 			->where('PayAmount_PaymentMode','=',"CASH")
 			->where('PayAmount_IntType','=',"INTEREST")
 			->where('pigmi_payamount.deleted',0)
+			->where("pigmiallocation.deleted",0)
 			->get();
 
 			
@@ -754,6 +755,8 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_IntType','=',"INTEREST")
 			->where('PayAmount_PaymentMode',"CASH")
+			->where("pigmiallocation.deleted",0)
+			->where("pigmi_payamount.deleted",0)
 			->sum('PayAmount_PayableAmount');
 			
 			return $id;
@@ -778,6 +781,7 @@
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"INTEREST")
 			->where('pigmi_payamount.deleted',0)
+			->where("pigmiallocation.deleted",0)
 			->get();
 
 			/**************************** pigmi paid amount single entry ***************************/
@@ -822,6 +826,8 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_IntType','=',"INTEREST")
 			->where('PayAmount_PaymentMode','<>',"CASH")
+			->where("pigmiallocation.deleted",0)
+			->where("pigmi_payamount.deleted",0)
 			->sum('PayAmount_PayableAmount');
 			
 			return $id;
@@ -848,6 +854,7 @@
 			->where('PayAmount_PaymentMode',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
 			->where('pigmi_payamount.deleted',0)
+			->where("pigmiallocation.deleted",0)
 			->get();
 
 			/********************** APPEND RV ADJ NO **************************/
@@ -878,6 +885,8 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where("pigmiallocation.deleted",0)
+			->where("pigmi_payamount.deleted",0)
 			->sum('PgmTotal_Amt');
 			
 			return $id;
@@ -900,6 +909,7 @@
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
 			->where('pigmi_payamount.deleted',0)
+			->where("pigmiallocation.deleted",0)
 			->get();
 			
 			/**************************** pigmi paid amount single entry ***************************/
@@ -963,6 +973,7 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where("pigmi_payamount.deleted",0)
 			->sum('PayAmount_PayableAmount');
 			
 			return $id;
@@ -990,6 +1001,7 @@
 			->where('PayAmount_PaymentMode','=',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
 			->where('pigmi_payamount.deleted',0)
+			->where("pigmiallocation.deleted",0)
 			->get();
 			return $id;
 		}
@@ -1009,6 +1021,8 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			//->where('PayAmount_PaymentMode','=',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where("pigmiallocation.deleted",0)
+			->where("pigmi_payamount.deleted",0)
 			->sum('Deduct_Commission');
 			return $id;
 		}public function show_pigmichargtot_amt($dte)
@@ -1027,6 +1041,8 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','=',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where("pigmiallocation.deleted",0)
+			->where("pigmi_payamount.deleted",0)
 			->sum('Deduct_Amount');
 			return $id;
 		}
@@ -1048,6 +1064,7 @@
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
 			->where('pigmi_payamount.deleted',0)
+			->where("pigmiallocation.deleted",0)
 			->get();
 			
 			
@@ -1089,6 +1106,8 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where("pigmiallocation.deleted",0)
+			->where("pigmi_payamount.deleted",0)
 			->sum('Deduct_Commission');
 			return $id;
 		}public function show_pigmichargtot_amt_adjust($dte)
@@ -1107,6 +1126,8 @@
 			->where('pigmiallocation.Bid',$BranchId)
 			->where('PayAmount_PaymentMode','<>',"CASH")
 			->where('PayAmount_IntType','=',"PREWITHDRAWAL")
+			->where("pigmiallocation.deleted",0)
+			->where("pigmi_payamount.deleted",0)
 			->sum('Deduct_Amount');
 			return $id;
 		}
@@ -2897,7 +2918,7 @@
 				$saleem=0;
 				$accno1=$accno->Fd_CertificateNum;
 				
-				$fdcou=DB::table('fd_monthly_interest')->where('fdnum',$accno1)->where('id','=',"1")->count('FD_ID');
+				$fdcou=DB::table('fd_monthly_interest')->where('fdnum',$accno1)->where('id','=',"1")->where("fd_monthly_interest.deleted",0)->count('FD_ID');
 				
 				if($fdcou==0)
 				{
@@ -3044,7 +3065,7 @@
 			$month=date('m');
 			$yer=date('Y');
 			
-			$Adata=DB::table('fd_monthly_interest')->select('FD_ID','Accid','amount','fdnum','id','Bid')->where('id','=',"1")->where('Bid',$Branchid)->get();
+			$Adata=DB::table('fd_monthly_interest')->select('FD_ID','Accid','amount','fdnum','id','Bid')->where('id','=',"1")->where('Bid',$Branchid)->where("fd_monthly_interest.deleted",0)->get();
 
 			$failed = array();
 			$i = 0;
@@ -3074,7 +3095,7 @@
 					$failed[$i++] = $ada->FD_ID;
 				}
 			}
-			DB::table('fd_monthly_interest')->where('Bid',$Branchid)->whereNotIn("fd_monthly_interest.FD_ID",$failed)->update(['id'=>"0"]);
+			DB::table('fd_monthly_interest')->where('Bid',$Branchid)->whereNotIn("fd_monthly_interest.FD_ID",$failed)->where("fd_monthly_interest.deleted",0)->update(['id'=>"0"]);
 		}
 		public function editFDdata($id)
 		{
@@ -3253,6 +3274,7 @@
 				->where('fd_monthly_interest.Bid','=',$bid)
 				->where('fd_monthly_interest.id','=',0)
 				->where('fdallocation.deleted',0)
+				->where("fd_monthly_interest.deleted",0)
 				->get();
 				
 		/* 	if(empty($fd_int)) {
@@ -4084,11 +4106,13 @@
 				->where("pigmi_prewithdrawal.Withdraw_Date",$date)
 				->where("pigmi_prewithdrawal.CashPaid_State","PAID")
 				->where("pigmiallocation.Bid",$BID)
+				->where("pigmiallocation.deleted",0)
 				->get();
 
 			foreach($ret_data as $key => $row) {
 				$temp_pay_mode = DB::table("pigmi_payamount")
 					->where("pigmi_payamount.PayAmount_PigmiAccNum",$row->PigmiAcc_No)
+					->where("pigmi_payamount.deleted",0)
 					->value("PayAmount_PaymentMode");
 
 				$ret_data[$key]->PayAmount_PaymentMode = $temp_pay_mode;
@@ -4240,6 +4264,8 @@
 										->join("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_payamount.PayAmount_PigmiAccNum")
 										->join("user","user.Uid","=","pigmiallocation.UID")
 										->where("pigmi_payamount.PayId",$row_tran->tran_id)
+										->where("pigmiallocation.deleted",0)
+										->where("pigmi_payamount.deleted",0)
 										->first();
 									if(!empty($user_info)) {
 										$temp_name = $user_info->name;
@@ -4279,6 +4305,7 @@
 										->join("pigmiallocation","pigmiallocation.PigmiAcc_No","=","pigmi_prewithdrawal.PigmiAcc_No")
 										->join("user","user.Uid","=","pigmiallocation.UID")
 										->where("pigmi_prewithdrawal.PgmPrewithdraw_ID",$row_tran->tran_id)
+										->where("pigmiallocation.deleted",0)
 										->first();
 									if(!empty($user_info)) {
 										$temp_name = $user_info->name;
@@ -4301,7 +4328,7 @@
 									}
 									break;
 							case 33: // rd_payamount TABLE
-									$user_info = DB::table("rd_prewithdrawal")
+									$user_info = DB::table("rd_payamount")
 										->select("user.Uid",DB::raw(" CONCAT(`user`.`FirstName`,' ',`user`.`MiddleName`,' ',`user`.`LastName`) as 'name' "), 'createaccount.AccNum')
 										->join("createaccount","createaccount.AccNum","=","rd_payamount.RDPayAmt_AccNum")
 										->join("user","user.Uid","=","createaccount.Uid")
