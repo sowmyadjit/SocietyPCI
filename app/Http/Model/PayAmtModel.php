@@ -46,6 +46,7 @@
 			
 			$MaxReceipt=DB::table('pigmi_payamount')
 			->where('PayAmount_ReceiptNum','LIKE','%'.$Bcode.'%')
+			->where("pigmi_payamount.deleted",0)
 			//->where('FD_PayAmount_ReceiptNum','<>',"0")
 			->count('PayId');
 			$RecYear=date('my');
@@ -420,6 +421,8 @@
 			{
 				DB::table('fd_prewithdrawal')->where('FdAcc_No','=',$id['fdaccount'])
 				->update(['CashPaid_State'=>"PAID"]);
+				DB::table('fdallocation')->where('Fd_CertificateNum','=',$id['fdaccount'])
+				->update(['Paid_State'=>"PAID"]);
 			}
 			else//For Interest
 			{
@@ -513,6 +516,7 @@
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','pigmi_prewithdrawal.PigmiAcc_No')
 			->join('user','user.Uid','=','pigmiallocation.UID')
 			->where('pigmi_prewithdrawal.PigmiAcc_No','=',$id)
+			->where("pigmiallocation.deleted",0)
 			//->where('pigmiallocation.Bid',$BID)
 			//->where('pigmi_prewithdrawal.PigmiAcc_No','like',$id)
 			->first();
@@ -537,6 +541,7 @@
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','pigmi_interest.PigmiAcc_No')
 			->join('user','user.Uid','=','pigmiallocation.UID')
 			->where('pigmi_interest.PigmiAcc_No','=',$id)
+			->where("pigmiallocation.deleted",0)
 			//->where('Bid',$BID)
 			->first();
 			return $id;
@@ -548,6 +553,7 @@
 			->select('createaccount.AccNum','createaccount.Total_Amount','createaccount.Accid','createaccount.AccTid')
 			->where('AccNum','like','%SB%')
 			->where('Uid','=',$id)
+			->where("createaccount.deleted",0)
 			->first();
 			return $id;
 		}
@@ -646,6 +652,7 @@
 			->leftJoin('createaccount','createaccount.AccNum','=','rd_interest.RdAcc_No')
 			->leftJoin('user','user.Uid','=','createaccount.UID')
 			->where('rd_interest.RdAcc_No','=',$id)
+			->where("createaccount.deleted",0)
 			->first();
 			
 			return $id;
@@ -669,6 +676,7 @@
 			->leftJoin('createaccount','createaccount.AccNum','=','rd_prewithdrawal.RdAcc_No')
 			->leftJoin('user','user.Uid','=','createaccount.UID')
 			->where('rd_prewithdrawal.RdAcc_No','=',$id)
+			->where("createaccount.deleted",0)
 			
 			->first();
 			return $id;
@@ -786,6 +794,8 @@
 			->leftJoin('pigmiallocation', 'pigmiallocation.PigmiAcc_No', '=' , 'pigmi_payamount.PayAmount_PigmiAccNum')
 			->leftJoin('pigmitype', 'pigmitype.PigmiTypeid', '=' , 'pigmiallocation.PigmiTypeid')
 			->leftJoin('user', 'user.Uid', '=' , 'pigmiallocation.Uid')
+			->where("pigmiallocation.deleted",0)
+			->where("pigmi_payamount.deleted",0)
 			//->where('PayAmount_IntType','=','PREWITHDRAWAL')
 			->orderBy('PayId','desc')
 			//->where('PayAmount_ReceiptNum','=',"0")
@@ -803,7 +813,9 @@
 			$ret_data = DB::table('pigmi_payamount')->select('PayId','PayAmountReport_PayDate','PayAmount_PigmiAccNum','FirstName','MiddleName','LastName','Pigmi_Type')
 				->leftJoin('pigmiallocation', 'pigmiallocation.PigmiAcc_No', '=' , 'pigmi_payamount.PayAmount_PigmiAccNum')
 				->leftJoin('pigmitype', 'pigmitype.PigmiTypeid', '=' , 'pigmiallocation.PigmiTypeid')
-				->leftJoin('user', 'user.Uid', '=' , 'pigmiallocation.Uid');
+				->leftJoin('user', 'user.Uid', '=' , 'pigmiallocation.Uid')
+				->where("pigmi_payamount.deleted",0)
+				->where("pigmiallocation.deleted",0);
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("pigmi_payamount.Bid",$BID);
 			}
@@ -828,6 +840,8 @@
 			->leftJoin('branch', 'branch.Bid', '=' , 'user.Bid')
 			//->where('PayAmount_IntType','=','PREWITHDRAWAL')
 			->where('PayId',$id)
+			->where("pigmi_payamount.deleted",0)
+			->where("pigmiallocation.deleted",0)
 			->get();
 			//print_r($id);
 			return $id;
@@ -843,6 +857,7 @@
 			//->where('RDPayAmt_IntType','=','PREWITHDRAWAL')
 			->orderBy('RDPayId','desc')
 			//->where('RD_PayAmount_ReceiptNum','=',"0")
+			->where("createaccount.deleted",0)
 			->paginate(15);
 			//->get();
 			//print_r($id);
@@ -859,6 +874,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('branch', 'branch.Bid', '=' , 'user.Bid')
 			//->where('RDPayAmt_IntType','=','PREWITHDRAWAL')
+			->where("createaccount.deleted",0)
 			->where('RDPayId',$id)
 			->get();
 			//print_r($id);
@@ -926,7 +942,9 @@
 			$ret_data = DB::table('pigmi_payamount')
 			->select(DB::raw('PayId as id, CONCAT(`FirstName`," ",`MiddleName`," ",`LastName`,"  -  ",`PigmiAcc_No`," / ",`old_pigmiaccno`) as name'))
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','pigmi_payamount.PayAmount_PigmiAccNum')
-			->join('user','user.Uid','=','pigmiallocation.Uid');
+			->join('user','user.Uid','=','pigmiallocation.Uid')
+			->where("pigmi_payamount.deleted",0)
+			->where("pigmiallocation.deleted",0);
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("pigmi_payamount.Bid",$BID);
 			}
@@ -943,6 +961,8 @@
 			->leftJoin('user', 'user.Uid', '=' , 'pigmiallocation.Uid')
 			//->where('PayAmount_IntType','=','PREWITHDRAWAL')
 			->where('PayId','=',$id)
+			->where("pigmi_payamount.deleted",0)
+			->where("pigmiallocation.deleted",0)
 			->get();
 			
 			return $id;
@@ -959,6 +979,7 @@
 			->select(DB::raw('RDPayId as id, CONCAT(`FirstName`,"-",`MiddleName`,"-",`LastName`," , ",`AccNum`,"  /  ",`Old_AccNo`," , ",`RD_PayAmount_ReceiptNum`) as name'))
 			->leftJoin('createaccount','createaccount.AccNum','=','rd_payamount.RDPayAmt_AccNum')
 			->leftJoin('user','user.Uid','=','createaccount.Uid')
+			->where("createaccount.deleted",0)
 			->get();
 		}
 		
@@ -970,6 +991,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->where('RDPayAmt_IntType','=','PREWITHDRAWAL')
 			->where('RDPayId','=',$id)
+			->where("createaccount.deleted",0)
 			->get();
 			
 			return $id;
