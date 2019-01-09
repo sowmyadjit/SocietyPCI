@@ -22,6 +22,7 @@
 			->where('sb_transaction.Accid','=',$acid)
 			->where('SBReport_TranDate','=',$dat)
 			->where('tran_reversed','=',"NO")
+			->where("createaccount.deleted",0)
 			->paginate(10);
 										
 			
@@ -61,6 +62,7 @@
 			$sbdetails=DB::table('sb_transaction')->select('sb_transaction.Accid','sb_transaction.AccTid','TransactionType','particulars','Amount','tran_Date','Total_Bal','Total_Amount','SBReport_TranDate','Time','Month','Year','sb_transaction.Bid')
 													->leftJoin('createaccount','createaccount.Accid','=','sb_transaction.Accid')
 													->where('Tranid','=',$tran)
+													->where("createaccount.deleted",0)
 													->first();
 			$trntype=$sbdetails->TransactionType;
 			$amt=$sbdetails->Amount;
@@ -232,6 +234,7 @@
 										->where('rd_transaction.Accid','=',$acid)
 										->where('RDReport_TranDate','=',$dat)
 										->where('tran_reversed','=',"NO")
+										->where("createaccount.deleted",0)
 										//->paginate(10);
 										->get();
 										//print_r($id);
@@ -251,6 +254,7 @@
 			$sbdetails=DB::table('rd_transaction')->select('RD_TransID','RD_Date','rd_transaction.Accid','rd_transaction.AccTid','RD_Trans_Type','RD_Particulars','RD_Amount','RD_Total_Bal','Total_Amount','AccNum','rd_transaction.Bid')
 													->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 													->where('RD_TransID','=',$tran)
+													->where("createaccount.deleted",0)
 													->first();
 			$trntype=$sbdetails->RD_Trans_Type;
 			$amt=$sbdetails->RD_Amount;

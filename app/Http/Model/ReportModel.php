@@ -32,6 +32,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->where('SBReport_TranDate',$sbtoday)
 			->where('sb_transaction.Bid','=',$BranchId)
+			->where("createaccount.deleted",0)
 			->orderBy('SBReport_TranDate','desc')
 			->orderBy('Tranid','desc')
 			->paginate(10);
@@ -53,6 +54,7 @@
 			->leftJoin('user', 'user.Uid', '=' , 'createaccount.Uid')
 			->where('RDReport_TranDate',$dtoday)
 			->where('rd_transaction.Bid','=',$BranchId)
+			->where("createaccount.deleted",0)
 			->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->paginate(10);
@@ -68,6 +70,7 @@
 			->leftJoin('branch','branch.Bid','=','loan_transaction.Bid')
 			->leftJoin('createaccount','createaccount.Accid','=','loan_transaction.Accid')
 			->leftJoin('user','user.Uid','=','createaccount.Uid')
+			->where("createaccount.deleted",0)
 			->orderBy('LoanReport_TranDate','desc')
 			->orderBy('LoanTrans_ID','desc')
 			->paginate(10);
@@ -151,6 +154,7 @@
 			->where('sb_transaction.Accid',$sbaid)
 			->where('sb_transaction.Bid','=',$BranchId)
 			->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+			->where("createaccount.deleted",0)
 			->orderBy('SBReport_TranDate','desc')
 			->orderBy('Tranid','desc')
 			->paginate(10);
@@ -178,6 +182,7 @@
 			->where('createaccount.Bid','=',$BranchId)
 			->where('rd_transaction.Accid',$rdaid)
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+			->where("createaccount.deleted",0)
 			->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
 			->paginate(20);
@@ -211,6 +216,7 @@
 			->leftJoin('accounttype','accounttype.AccTid','=','rd_transaction.AccTid')
 			->where('rd_transaction.Accid',$rdaid)
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+			->where("createaccount.deleted",0)
 			->orderBy('RDReport_TranDate','desc')
 			->orderBy('LoanTrans_ID','desc')
 			->paginate(10);
@@ -370,6 +376,7 @@
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
 			->leftJoin('branch','branch.Bid','=','sb_transaction.Bid')
 			->where('SBReport_TranDate',$sbtoday)
+			->where("createaccount.deleted",0)
 			->orderBy('sb_transaction.Bid','asc')
 			->orderBy('SBReport_TranDate','desc')
 			->orderBy('Tranid','desc')
@@ -747,6 +754,7 @@
 					->leftJoin('branch','branch.Bid','=','sb_transaction.Bid')
 					//->where('sb_transaction.Bid',$BranchID)
 					->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+					->where("createaccount.deleted",0)
 					->orderBy('sb_transaction.Bid','asc')
 					->orderBy('sb_transaction.Accid','asc')
 					->orderBy('SBReport_TranDate','desc')
@@ -761,6 +769,7 @@
 					->leftJoin('branch','branch.Bid','=','sb_transaction.Bid')
 					->where('sb_transaction.Accid',$SBAccNum)
 					->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+					->where("createaccount.deleted",0)
 					->orderBy('sb_transaction.Bid','asc')
 					->orderBy('sb_transaction.Accid','asc')
 					->orderBy('SBReport_TranDate','desc')
@@ -778,6 +787,7 @@
 					->leftJoin('branch','branch.Bid','=','sb_transaction.Bid')
 					->where('sb_transaction.Bid',$BranchID)
 					->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+					->where("createaccount.deleted",0)
 					->orderBy('sb_transaction.Bid','asc')
 					->orderBy('sb_transaction.Accid','asc')
 					->orderBy('SBReport_TranDate','desc')
@@ -794,6 +804,7 @@
 					->where('sb_transaction.Bid',$BranchID)
 					->where('sb_transaction.Accid',$SBAccNum)
 					->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+					->where("createaccount.deleted",0)
 					->orderBy('sb_transaction.Bid','asc')
 					->orderBy('sb_transaction.Accid','asc')
 					->orderBy('SBReport_TranDate','desc')
@@ -834,6 +845,7 @@
 			->leftJoin('createaccount', 'createaccount.Accid', '=' , 'rd_transaction.Accid')
 			->leftJoin('branch','branch.Bid','=','rd_transaction.Bid')
 			->where('RDReport_TranDate',$sbtoday)
+			->where("createaccount.deleted",0)
 			->orderBy('rd_transaction.Bid','asc')
 			->orderBy('RDReport_TranDate','desc')
 			->orderBy('RD_TransID','desc')
@@ -873,6 +885,7 @@
 					->leftJoin('branch','branch.Bid','=','rd_transaction.Bid')
 					//->where('sb_transaction.Bid',$BranchID)
 					->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+					->where("createaccount.deleted",0)
 					->orderBy('rd_transaction.Bid','asc')
 					->orderBy('rd_transaction.Accid','asc')
 					->orderBy('RDReport_TranDate','desc')
@@ -887,6 +900,7 @@
 					->leftJoin('branch','branch.Bid','=','rd_transaction.Bid')
 					->where('rd_transaction.Accid',$RDAccNum)
 					->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+					->where("createaccount.deleted",0)
 					->orderBy('rd_transaction.Bid','asc')
 					->orderBy('rd_transaction.Accid','asc')
 					->orderBy('RDReport_TranDate','desc')
@@ -904,6 +918,7 @@
 					->leftJoin('branch','branch.Bid','=','rd_transaction.Bid')
 					->where('rd_transaction.Bid',$BranchID)
 					->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+					->where("createaccount.deleted",0)
 					->orderBy('rd_transaction.Bid','asc')
 					->orderBy('rd_transaction.Accid','asc')
 					->orderBy('RDReport_TranDate','desc')
@@ -920,6 +935,7 @@
 					->where('rd_transaction.Bid',$BranchID)
 					->where('rd_transaction.Accid',$RDAccNum)
 					->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+					->where("createaccount.deleted",0)
 					->orderBy('rd_transaction.Bid','asc')
 					->orderBy('rd_transaction.Accid','asc')
 					->orderBy('RDReport_TranDate','desc')
@@ -1027,6 +1043,7 @@
 				//->leftJoin('user','user.Uid','=','pigmiallocation.Uid')
 				->whereRaw("DATE(pigmi_interest.PgmInt_Date) BETWEEN '".$start."' AND '".$end."'")
 				->where('user.Bid','=',$BranchId)
+				->where("pigmiallocation.deleted",0)
 				//->orderBy('user.Bid','asc')
 				->orderBy('PgmInt_Date','desc')
 				->paginate(10);
@@ -1043,6 +1060,7 @@
 				->whereRaw("DATE(pigmi_interest.PgmInt_Date) BETWEEN '".$start."' AND '".$end."'")
 				->where('pigmi_interest.PigmiAcc_No','=',$AccId)
 				->where('user.Bid','=',$BranchId)
+				->where("pigmiallocation.deleted",0)
 				//->orderBy('user.Bid','asc')
 				->orderBy('PgmInt_Date','desc')
 				->paginate(10);
@@ -1072,6 +1090,7 @@
 				//->leftJoin('user','user.Uid','=','pigmiallocation.Uid')
 				->whereRaw("DATE(pigmi_prewithdrawal.Withdraw_Date) BETWEEN '".$start."' AND '".$end."'")
 				->where('user.Bid','=',$BranchId)
+				->where("pigmiallocation.deleted",0)
 				//->orderBy('user.Bid','asc')
 				->orderBy('Withdraw_Date','desc')
 				->paginate(10);
@@ -1088,6 +1107,7 @@
 				->whereRaw("DATE(pigmi_prewithdrawal.Withdraw_Date) BETWEEN '".$start."' AND '".$end."'")
 				->where('pigmi_prewithdrawal.PigmiAcc_No','=',$AccId)
 				->where('user.Bid','=',$BranchId)
+				->where("pigmiallocation.deleted",0)
 				//->orderBy('user.Bid','asc')
 				->orderBy('Withdraw_Date','desc')
 				->paginate(10);
@@ -1163,6 +1183,7 @@
 				->where("Amount","!=","0")
 				->where("sb_transaction.deleted",0)
 				->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+				->where("createaccount.deleted",0)
 				->orderBy('SBReport_TranDate','asc')
 				->orderBy('Tranid','asc')
 				->get();
@@ -1201,6 +1222,7 @@
 				->where("Uncleared_Bal","=",0)
 				->where("sb_transaction.deleted",0)
 				->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+				->where("createaccount.deleted",0)
 				->orderBy('SBReport_TranDate','asc')
 				->orderBy('Tranid','asc')
 				->get();
@@ -1236,6 +1258,7 @@
 //				->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '0000-00-00' AND '".$start."'")
 				->where("sb_transaction.SBReport_TranDate","<",$start)
 				->where("sb_transaction.deleted",0)
+				->where("createaccount.deleted",0)
 				->orderBy('SBReport_TranDate','asc')
 				->orderBy('Tranid','asc')
 				->get();
@@ -2087,6 +2110,7 @@
 			->leftJoin('user','user.Uid', '=' ,'pigmiallocation.UID')
 			->where('pigmiallocation.Agentid',$age)
 			->where('pigmiallocation.Closed','=',"NO")
+			->where("pigmiallocation.deleted",0)
 			//->where('purchaseshare.PURSH_Shrclass',"CLASS_C")
 			->orderBy('pigmiallocation.PigmiAllocID','asc')
 			//->orderBy('PURSH_Shrclass','asc')
@@ -2379,7 +2403,7 @@
 			
 			$amt['rd']=DB::table('createaccount')->where('AccTid','=',"2")->where('Status','=',"AUTHORISED")->where('Bid','=',$BID)->where('Closed','<>',"YES")->sum('Total_Amount');
 			
-			$amt['pigmy']=DB::table('pigmiallocation')->where('Closed','<>',"YES")->where('Bid','=',$BID)->sum('Total_Amount');
+			$amt['pigmy']=DB::table('pigmiallocation')->where('Closed','<>',"YES")->where('Bid','=',$BID)->where("pigmiallocation.deleted",0)->sum('Total_Amount');
 			
 			$amt['fd']=DB::table('fdallocation')->where('FDkcc','<>',"YES")->where('Bid','=',$BID)->where('Closed','=',"NO")->sum('Fd_DepositAmt');
 			
@@ -2426,7 +2450,7 @@
 			
 			$amt['rd']=DB::table('createaccount')->where('AccTid','=',"2")->where('Status','=',"AUTHORISED")->where('Bid','=',$BID)->where('Closed','<>',"YES")->sum('Total_Amount');
 			
-			$amt['pigmy']=DB::table('pigmiallocation')->where('Closed','<>',"YES")->where('Bid','=',$BID)->sum('Total_Amount');
+			$amt['pigmy']=DB::table('pigmiallocation')->where('Closed','<>',"YES")->where('Bid','=',$BID)->where("pigmiallocation.deleted",0)->sum('Total_Amount');
 			
 			$amt['fd']=DB::table('fdallocation')->where('FDkcc','<>',"YES")->where('Bid','=',$BID)->where('Closed','=',"NO")->sum('Fd_DepositAmt');
 			
@@ -2465,6 +2489,7 @@
 			->join('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
 			
 			->where('pigmiallocation.UID',$id)
+			->where("pigmiallocation.deleted",0)
 			->get();
 			
 			$accdetails['user']=DB::table('user')->select('user.FirstName','user.MiddleName','user.LastName','address.Gender','address.MaritalStatus','address.Occupation','address.Age','address.Birthdate','address.Email','address.Address','address.City','address.District','address.State','address.PhoneNo','address.MobileNo','address.Pincode')
@@ -2476,6 +2501,7 @@
 			
 			$accdetails['sb']=DB::table('createaccount')->select('AccNum','Old_AccNo','opening_blance','Created_on','Total_Amount','Closed')
 			->where('Uid',$id)
+			->where("createaccount.deleted",0)
 			->get();
 			
 			$accdetails['fd']=DB::table('fdallocation')->select('Fd_DepositAmt','Fd_StartDate','Fd_MatureDate','Fd_CertificateNum','Fd_OldCertificateNum','Fd_TotalAmt','Closed','Paid_State','FdType','NumberOfYears','FdInterest')
@@ -2512,6 +2538,7 @@
 			$perticulars="DELETED";
 			
 			$pigmyid1=DB::table('pigmiallocation')->select('PigmiAllocID')->where('PigmiAcc_No',$id)
+			->where("pigmiallocation.deleted",0)
 			->first();
 			$pigmyid=$pigmyid1->PigmiAllocID;
 			
@@ -2562,6 +2589,7 @@
 					->update(['tran_reversed'=>"YES"]);
 				}
 				DB::table('pigmiallocation')->where('PigmiAcc_No',$id)
+				->where("pigmiallocation.deleted",0)
 				->update(['Deleted'=>"YES"]);
 			}
 			else
@@ -2616,6 +2644,7 @@
 					}
 				}
 				DB::table('pigmiallocation')->where('PigmiAcc_No',$id)
+				->where("pigmiallocation.deleted",0)
 				->update(['Deleted'=>"YES"]);
 			}
 			
@@ -2787,6 +2816,7 @@
 					//->where("Closed","=","NO")
 					->where("{$table}.Bid","=",$Bid)
 					->where("PigmiAllocID","=",$data["allocation_id"])
+					->where("pigmiallocation.deleted",0)
 					->get();
 			} else {
 				$pigmiallocation = DB::table($table)
@@ -2804,6 +2834,7 @@
 					->where("Agentid","=",$data["agent_uid"])
 					->where("{$table}.Bid","=",$Bid)
 					->where("{$table}.Status","=","AUTHORISED")
+					->where("pigmiallocation.deleted",0)
 					//->limit(500)
 					->get();
 			}
@@ -3068,6 +3099,7 @@
 				->select($select_array)
 				->where("{$table}.JewelLoan_StartDate","like","%{$data['year_month']}%")
 				->where("{$table}.JewelLoan_Bid",$BID)
+				->where("jewelloan_allocation.deleted",0)
 				->get();
 				
 			$loan_amount_total_sum = 0;

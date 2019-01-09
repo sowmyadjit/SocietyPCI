@@ -85,6 +85,7 @@
 			$allocation_list = DB::table("pigmiallocation")
 			->select("PigmiAcc_No")
 				->where("Bid",$BID)
+				->where("pigmiallocation.deleted",0)
 				->get();
 			
 			$max_number = 0;
@@ -184,6 +185,7 @@
 			->where('Agentid','=',$pigmiallocation)
 			->where('Status','=',"AUTHORISED")
 			->where('Closed','=',"NO")
+			->where("pigmiallocation.deleted",0)
 			->get();
 			return $pigmiallocation;
 		}
@@ -209,6 +211,7 @@
 			->join('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
 			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.Total_Amount','pigmitype.PigmiTypeid','pigmiallocation.PigmiAllocID')
 			->where('PigmiAllocID','=',$id)
+			->where("pigmiallocation.deleted",0)
 			->first();
 		}
 		public function getallocdetail()
@@ -226,6 +229,7 @@
 			->select('user.FirstName','user.MiddleName','user.LastName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','pigmiallocation.old_pigmiaccno','pigmiallocation.Total_Amount','user.Uid')
 			->where('pigmiallocation.Bid','=',$bid)
 			->where('Status','=',"AUTHORISED")
+			->where("pigmiallocation.deleted",0)
 			->get();
 		}
 		
@@ -237,7 +241,7 @@
 			$uname= Auth::user();
 			$BID=$uname->Bid;
 
-			return DB::select("SELECT `PigmiAllocID` as id, CONCAT(`PigmiAllocID`,'-',`PigmiAcc_No`) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%".$q."%' AND `pigmiallocation`.`Bid`={$BID}");
+			return DB::select("SELECT `PigmiAllocID` as id, CONCAT(`PigmiAllocID`,'-',`PigmiAcc_No`) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%".$q."%' AND `pigmiallocation`.`Bid`={$BID} AND pigmiallocation.deleted = 0 ");
 			
 			
 		/*	$uname='';
@@ -255,7 +259,7 @@
 		}
 		public function GetpigmyAcc($q)
 		{
-			return DB::select("SELECT `PigmiAllocID` as id, CONCAT(`old_pigmiaccno`,'-',`PigmiAcc_No`) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%".$q."%' ");
+			return DB::select("SELECT `PigmiAllocID` as id, CONCAT(`old_pigmiaccno`,'-',`PigmiAcc_No`) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%".$q."%' AND pigmiallocation.deleted=0 ");
 			
 			/*$uname='';
 			if(Auth::user())
@@ -288,6 +292,7 @@
 			->select(DB::raw('PigmiAllocID as id, PigmiAcc_No as name'))
 			->where('Status','=',"AUTHORISED")
 			->where('Loan_Allocated','=',"NO")
+			->where("pigmiallocation.deleted",0)
 			->where('Closed','=',"NO");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("pigmiallocation.Bid",$BID);
@@ -390,7 +395,7 @@
 			WHEN 'YES' THEN 'Closed'
 			WHEN 'NO' THEN 'Active'
 			ELSE Closed
-            END) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%PG%' ");
+            END) as name FROM `pigmiallocation` where `PigmiAcc_No` LIKE '%PG%' AND pigmiallocation.deleted=0");
 			
 		}
 		
@@ -404,6 +409,7 @@
 			->select(DB::raw('PigmiAllocID as id, CONCAT(user.`FirstName`,"  ",user.`MiddleName`,"  ",user.`LastName`,"  , ",pigmiallocation.`PigmiAcc_No`,"  /  ",pigmiallocation.`old_pigmiaccno`) as name'))
 			->Join('user','user.Uid','=','pigmiallocation.Uid')
 			->where('pigmiallocation.Bid','=',$bid)
+			->where("pigmiallocation.deleted",0)
 			->get();
 		}
 		
@@ -414,6 +420,7 @@
 			->join('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
 			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','pigmiallocation.old_pigmiaccno','pigmiallocation.Total_Amount')
 			->where('PigmiAllocID','=',$id)
+			->where("pigmiallocation.deleted",0)
 			->get();
 		}
 		public function ViewPigallocEdit($id)
@@ -421,6 +428,7 @@
 			return DB::table('pigmiallocation')->select('AllocationDate','StartDate','EndDate','Total_Amount','PigmiAcc_No','old_pigmiaccno','FirstName','MiddleName','LastName','PigmiAllocID')
 			->leftJoin('user','user.Uid','=','pigmiallocation.Uid')
 			->where('PigmiAllocID','=',$id)
+			->where("pigmiallocation.deleted",0)
 			->first();
 			
 		}
@@ -455,6 +463,7 @@
             END) as name'))
 			->leftJoin('user','user.Uid','=','pigmiallocation.Uid')
 			->where('pigmiallocation.Agentid',$UID)
+			->where("pigmiallocation.deleted",0)
 			->get();
 		}
 		
@@ -475,6 +484,7 @@
 			->leftJoin('branch','branch.Bid','=','user.Bid')
 			->leftJoin('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
 			->select('user.FirstName','user.MiddleName','user.LastName','address.MobileNo','BName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','pigmiallocation.old_pigmiaccno','pigmiallocation.Total_Amount')
+			->where("pigmiallocation.deleted",0)
 			//->get();
 			->paginate(20);
 			//print_r($id);
@@ -497,6 +507,7 @@
 			
 			->where('user.Bid','=',$BranchId)
 			->where('pigmiallocation.Closed','=',"NO")
+			->where("pigmiallocation.deleted",0)
 			//->where('EndDate','<',$dte)
 			->get();
 			
@@ -541,6 +552,7 @@
 			$agent2=$id['agent2'];
 			
 			DB::table('pigmiallocation')->where('Agentid',$agent1)
+			->where("pigmiallocation.deleted",0)
 			->update(['Agentid'=>$agent2]);
 			
 		}
@@ -551,6 +563,7 @@
 			->leftJoin('user','user.Uid','=','pigmiallocation.UID')
 			->where('Agentid',$agent1)
 			->where('Closed',"NO")
+			->where("pigmiallocation.deleted",0)
 			->get();
 			
 		}
@@ -568,6 +581,7 @@
 				
 				$y=$acid[$z];
 				DB::table('pigmiallocation')->where('PigmiAllocID',$y)
+				->where("pigmiallocation.deleted",0)
 				->update(['Agentid'=>$agent2]);
 				$z++;
 				

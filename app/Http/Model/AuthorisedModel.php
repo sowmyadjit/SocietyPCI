@@ -287,7 +287,8 @@
 			->join('user','pigmiallocation.Uid','=','user.Uid')
 			->join('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
 			->select('user.FirstName','pigmitype.Pigmi_Type','pigmiallocation.AllocationDate','pigmiallocation.StartDate','pigmiallocation.EndDate','pigmiallocation.PigmiAllocID','pigmiallocation.PigmiTypeid','pigmiallocation.PigmiAcc_No','Interest','max_Interest','Max_Commission','LastName','MiddleName','Agentid')
-			->where('status','=','UNAUTHORISED');
+			->where('status','=','UNAUTHORISED')
+			->where("pigmiallocation.deleted",0);
 			// ->where('pigmiallocation.Bid',$BID)
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where('pigmiallocation.Bid',$BID);

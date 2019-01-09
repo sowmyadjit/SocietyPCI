@@ -170,7 +170,7 @@
 			
 			$tran = DB::table('pigmi_transaction')->insertGetId(['Trans_Date'=>$dte,'PigReport_TranDate'=>$reportdte,'Trans_Time'=>$time,'PigmiAllocID'=>$pgaloc,'Current_Balance'=>$totalamount,'Transaction_Type'=>"CREDIT",'Amount'=>$totamt,'Particulars'=>"Pygmy Interest Calculated",'PigmiTypeid'=>$pgtypeid,'Total_Amount'=>$amtpay,'Month'=>$mnt,'Year'=>$year,'PgmPayment_Mode'=>"INTEREST AMOUNT",'CreatedBy'=>$UID,'Bid'=>$b]);
 			
-			DB::table('pigmiallocation')->where('PigmiAcc_No','=',$acno)
+			DB::table('pigmiallocation')->where('PigmiAcc_No','=',$acno)->where("pigmiallocation.deleted",0)
 			->update(['Closed'=>"YES",'Total_Amount'=>$amtpay]);
 			//}
 			/*else
@@ -200,6 +200,7 @@
 			->leftJoin('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
 			->select('pigmitype.Pigmi_Type','pigmitype.Interest','StartDate','EndDate','Agentid','pigmitype.PigmiTypeid','pigmiallocation.PigmiAllocID')
 			->where('pigmiallocation.PigmiAcc_No','=',$acno)
+			->where("pigmiallocation.deleted",0)
 			->first();
 			
 			return $ptype;
@@ -209,6 +210,7 @@
 		{
 			return DB::table('pigmiallocation')
 			->where('pigmiallocation.PigmiAcc_No','=',$acno)
+			->where("pigmiallocation.deleted",0)
 			->select('Total_Amount')
 			->first();
 		}
@@ -241,6 +243,7 @@
 			$actid=DB::table('pigmiallocation')
 			->select('PigmiAllocID')
 			->where('PigmiAcc_No','=',$acno)
+			->where("pigmiallocation.deleted",0)
 			->first();
 			
 			$pgalid=$actid->PigmiAllocID;
@@ -306,6 +309,7 @@
 			$actid=DB::table('pigmiallocation')
 			->select('PigmiAllocID')
 			->where('PigmiAcc_No','=',$acno)
+			->where("pigmiallocation.deleted",0)
 			->first();
 			
 			$pgalid=$actid->PigmiAllocID;
@@ -540,7 +544,6 @@
 				->where('createaccount.AccNum','=',$acno)
 				->where('sb_transaction.Month','=',$m)
 				->where('sb_transaction.Year','=',$yr)
-				->where("createaccount.deleted",0)
 				//->where('sb_transaction.Cleared_State','=',"CLEARED")
 				->max('Tranid');
 				if($maxtot>0)
@@ -808,7 +811,6 @@
 			->leftJoin('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$edate."'")
 			->where('createaccount.AccNum','=',$acno)
-			->where("createaccount.deleted",0)
 			->get();
 			return $rddate;
 		}
@@ -818,7 +820,6 @@
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$sdate."' AND '".$edate."'")
 			->join('createaccount','rd_transaction.Accid','=','createaccount.Accid')
 			->where('createaccount.AccNum','=',$acno)
-			->where("createaccount.deleted",0)
 			->count('RDReport_TranDate');
 			return $rddate1;
 		}
@@ -1015,6 +1016,7 @@
 					"FdReport_MatureDate"
 					)
 				->where('Fdid','=',$id["fdalocid"])
+				->where("fdallocation.deleted",0)
 				->first();
 			
 			if($dte > $fdallocation_row->FdReport_MatureDate) {
@@ -1024,13 +1026,13 @@
 			} echo "end_date = {$end_date} ";
 
 			echo "-0-";
-			if(strcasecmp($fdallocation_row->intrest_needed, "YES") == 0) {echo "-1-";
+			if(strcasecmp($fdallocation_row->intrest_needed, "YES") == 0) {//echo "-1-";
 				//calc int // $fd_rem_interest
 
 						$fddetails = $fdallocation_row;
 						$accno1 = $fdallocation_row->Fd_CertificateNum;
 						/***************************/
-							$fdcou=DB::table('fd_monthly_interest')->where('fdnum',$accno1)->where('id','=',"1")->count('FD_ID');
+							$fdcou=DB::table('fd_monthly_interest')->where('fdnum',$accno1)->where('id','=',"1")->where("fd_monthly_interest.deleted",0)->count('FD_ID');
 							if($fdcou==0) {echo "-2-";
 										/*******************/
 										$temp = DB::table("fd_monthly_interest")
@@ -1040,7 +1042,7 @@
 										->orderBy("FD_Date","desc")
 										->first();//print_r($temp);exit();
 										
-										if(!empty($temp) && $temp->FD_Date != "0000-00-00") {echo "-3-";
+										if(!empty($temp) && $temp->FD_Date != "0000-00-00") {//echo "-3-";
 											$last_interest_paid_date = $temp->FD_Date;
 											$first_interest = false;
 										} else {echo "-4-";
@@ -1296,7 +1298,6 @@
 					->where("tran_reversed","=","NO")
 					->where("SBReport_TranDate","like","%{$temp_date}%")
 					->where("sb_transaction.deleted","=",0)
-					->where("createaccount.deleted",0)
 					->orderBy('SBReport_TranDate','asc')
 					->orderBy('Tranid','asc')
 					->get();
@@ -1428,6 +1429,7 @@
 						)
 				->where('Bid','=',$BID)
 				->where('Closed','=',"NO")
+				->where("pigmiallocation.deleted",0)
 				->where('last_service_charge_calculated_till','<',$caculation_date)
 				->get();
 				

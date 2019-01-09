@@ -28,6 +28,7 @@
 			->where('Cleared_State','=','UNCLEARED')
 			->where('TransactionType','=','CREDIT')
 			->where('sb_transaction.Bid','=',$BID)
+			->where("createaccount.deleted",0)
 			->get();
 		} 
 		
@@ -40,6 +41,7 @@
 			->join('user','createaccount.Uid','=','user.Uid')
 			->select('RD_Date','AccNum','FirstName','MiddleName','LastName','RDCheque_Number','RDCheque_Date','RDBank_Name','RDBank_Branch','RDIFSC_Code','RDUncleared_Bal','RD_TransID','createaccount.Accid','user.Uid','RD_Trans_Type','RDCleared_State')
 			->where('RDCleared_State','=','UNCLEARED')
+			->where("createaccount.deleted",0)
 			->get();
 		}
 		

@@ -717,7 +717,7 @@
 		}
 		public function pigmidirectclose($pigno)
 		{
-			DB::table('pigmiallocation')->where('PigmiAcc_No',$pigno)
+			DB::table('pigmiallocation')->where('PigmiAcc_No',$pigno)->where("pigmiallocation.deleted",0)
 			->update(['Closed'=>"YES"]);
 			
 		}

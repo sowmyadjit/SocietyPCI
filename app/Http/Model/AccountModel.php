@@ -489,6 +489,7 @@
 			->where('sb_transaction.Accid','=',$id)
 			->where('createaccount.Bid','=',$BID)
 			->where("createaccount.deleted",0)
+			->where("sb_transaction.deleted",0)
 			//->where('sb_transaction.Tranid','=',$query1)
 			->first();
 		//	return $id;
@@ -868,7 +869,7 @@
 			    $sbamt=$id['rdamount'];
 				
 			    $totalblnc=$Amount_total;
-				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $AccTid,'Bid' =>$bid,'Accid' => $sb_id,'TransactionType' => "DEBIT",'particulars' => "Amount debited for RD account",'Amount' =>$rdamt,'CurrentBalance' => $Amount_total,'tran_Date'=>date('Y-m-d'),'Time'=>$tm,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$totalAmount,'Payment_Mode'=>"SB ACCOUNT",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>'', 'SubLedgerId'=>42]);
+				$id = DB::table('sb_transaction')->insertGetId(['AccTid' => $AccTid,'Bid' =>$bid,'Accid' => $sb_id,'TransactionType' => "DEBIT",'particulars' => "Amount debited for RD account",'Amount' =>$rdamt,'CurrentBalance' => $Amount_total,'tran_Date'=>date('Y-m-d'),'Time'=>$tm,'Month'=>$mnt,'Year'=>$year,'Total_Bal'=>$totalAmount,'Payment_Mode'=>"SB ACCOUNT",'Cleared_State'=>"CLEARED",'Uncleared_Bal'=>'', 'SubLedgerId'=>42,'SBReport_TranDate'=>date('Y-m-d')]);
 				
 			}
 			return $rd_tran_id;
@@ -1328,6 +1329,7 @@
 				->select('Tranid','Amount','TransactionType')
 				->where('Accid','=',$acc_id)
 				->where('tran_reversed','=','NO')
+				->where("sb_transaction.deleted",0)
 				->orderBy('tran_Date','asc')
 				->get();
 				
@@ -1356,7 +1358,7 @@
 			$uname= Auth::user();
 			$BranchId=$uname->Bid;
 			
-				$trans = DB::table('sb_transaction')->select('sb_transaction.Accid','SBReport_TranDate','TransactionType','Amount','Total_Bal','Tranid','particulars','CurrentBalance','Cleared_State','CurrentBalance','Uncleared_Bal')
+				$trans = DB::table('sb_transaction')->select('sb_transaction.Accid','SBReport_TranDate','TransactionType','Amount','Total_Bal','Tranid','particulars','CurrentBalance','Cleared_State','CurrentBalance','Uncleared_Bal','sb_transaction.deleted')
 				->leftJoin('createaccount', 'createaccount.Accid', '=' , 'sb_transaction.Accid')
 				->leftJoin('accounttype','accounttype.AccTid','=','sb_transaction.AccTid')
 				->where('sb_transaction.Accid',$data["acc_id"])
@@ -1372,6 +1374,8 @@
 				->orderBy('SBReport_TranDate','asc')
 				->orderBy('Tranid','asc')
 				->get();
+
+				// print_r($trans);
 				
 				$total_amt = 0;
 				foreach($trans as $row) {
@@ -1397,6 +1401,7 @@
 			
 			$max_sb_tranid = DB::table("sb_transaction")
 				->select(DB::Raw('max(Tranid) as max_sb_tranid'))
+				->where("sb_transaction.deleted",0)
 				->value('max_sb_tranid');
 				
 			$temp_sb_tranid = $max_sb_tranid + 3;

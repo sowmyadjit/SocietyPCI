@@ -25,6 +25,7 @@
 			->where('Agentid',$agid)
 			->where('Closed','NO')
 			->where('pigmiallocation.Status','=',"AUTHORISED")
+			->where("pigmiallocation.deleted",0)
 			->get();
 			$WriteTo_Dfile='';
 			
@@ -166,7 +167,7 @@
 			$month=substr($trandate,3,2);
 			$year=substr($trandate,6,4);
 			$tranrepodate=$year.'-'.$month.'-'.$day;
-			$pigmydata=DB::table('pigmiallocation')->select('PigmiAllocID','Total_Amount','PigmiTypeid','Closed')->where('PigmiAcc_No','=',$Account_No)->first();
+			$pigmydata=DB::table('pigmiallocation')->select('PigmiAllocID','Total_Amount','PigmiTypeid','Closed')->where('PigmiAcc_No','=',$Account_No)->where("pigmiallocation.deleted",0)->first();
 			$pigmyallocationid=$pigmydata->PigmiAllocID;
 			$pigmyallocationtotamt=$pigmydata->Total_Amount;
 			$pigmyallocationPigmiTypeid=$pigmydata->PigmiTypeid;

@@ -24,6 +24,7 @@
 				->join('createaccount','createaccount.Accid','=','sb_transaction.Accid')
 				->join('user','user.Uid','=','createaccount.Uid')
 				->where('sb_transaction.Bid',$BID)
+				->where("createaccount.deleted",0)
 				->orderBy('Tranid','dsc')
 				->paginate(15);
 				//print_r($SBTRAN);
@@ -37,6 +38,7 @@
 				->join('createaccount','createaccount.Accid','=','rd_transaction.Accid')
 				->join('user','user.Uid','=','createaccount.Uid')
 				->where('rd_transaction.Bid',$BID)
+				->where("createaccount.deleted",0)
 				->orderBy('RD_TransID','dsc')
 				->paginate(15);
 				//print_r($SBTRAN);
@@ -66,6 +68,7 @@
 				->join('branch','branch.Bid','=','sb_transaction.Bid')
 				->leftjoin("receipt_voucher","receipt_voucher.transaction_id","=","sb_transaction.Tranid")
 				->where('Tranid',$id)
+				->where("createaccount.deleted",0)
 				->get();
 				//print_r($SbReceData);
 				return $SbReceData;
@@ -78,6 +81,7 @@
 				->join('user','user.Uid','=','createaccount.Uid')
 				->join('branch','branch.Bid','=','rd_transaction.Bid')
 				->where('RD_TransID',$id)
+				->where("createaccount.deleted",0)
 				->get();
 				//print_r($SBTRAN);
 				return $RDTRAN;
@@ -123,7 +127,8 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("createaccount.deleted",0);
 			if($data["tran_list"] == "YES") {
 				$ret_data = $ret_data->orderBy("{$table}.SBReport_TranDate","DESC")
 					->get();
@@ -174,7 +179,8 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("createaccount.deleted",0);
 				if($data["tran_list"] == "YES") {
 					$ret_data = $ret_data->orderBy("{$table}.RDReport_TranDate","DESC")
 						->get();
@@ -515,6 +521,7 @@
 					case "PIGMY"	:
 										$dep_acc_amt = DB::table("pigmiallocation")
 											->where("PigmiAcc_No",$ret_data->dep_acc_no)
+											->where("pigmiallocation.deleted",0)
 											->value("Total_Amount");
 										break;
 
@@ -989,7 +996,8 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("createaccount.deleted",0);
 			if($data["tran_list"] == "YES") {
 				$ret_data = $ret_data->orderBy("{$table}.RDPayAmtReport_PayDate","DESC")
 					->get();
@@ -1038,7 +1046,8 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("createaccount.deleted",0);
 			if($data["tran_list"] == "YES") {
 				$ret_data = $ret_data->orderBy("{$table}.RDPayAmtReport_PayDate","DESC")
 					->get();
@@ -1100,7 +1109,9 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("pigmi_payamount.deleted",0)
+				->where("pigmiallocation.deleted",0);
 				if($data["tran_list"] == "YES") {
 					$ret_data = $ret_data->orderBy("{$table}.PayAmountReport_PayDate","DESC")
 						->get();
@@ -1153,7 +1164,9 @@
 				->whereIn("receipt_voucher.receipt_voucher_type",$receipt_voucher_type)
 				->where("receipt_voucher.transaction_category",$transaction_category)
 				->where("receipt_voucher.bid",$BID)
-				->where("receipt_voucher.deleted",0);
+				->where("receipt_voucher.deleted",0)
+				->where("pigmi_payamount.deleted",0)
+				->where("pigmiallocation.deleted",0);
 				if($data["tran_list"] == "YES") {
 					$ret_data = $ret_data->orderBy("{$table}.PayAmountReport_PayDate","DESC")
 						->get();

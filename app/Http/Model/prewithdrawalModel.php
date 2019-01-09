@@ -37,6 +37,7 @@
 			->select(DB::raw('PigmiAllocID as id, CONCAT(`PigmiAllocID`,"-",`PigmiAcc_No`,"-",`old_pigmiaccno`,"-",`FirstName`,"-",`MiddleName`,"-",`LastName`) as name'))
 			->join('user','user.Uid','=','pigmiallocation.Uid')
 			->where('Status','=',"AUTHORISED")
+			->where("pigmiallocation.deleted",0)
 			//->where('EndDate','>',$dte)
 			->where('Closed','<>',"YES");
 			if($this->settings->get_value("allow_inter_branch") == 0) {
@@ -143,6 +144,7 @@
 				$tran = DB::table('pigmi_transaction')->insertGetId(['Trans_Date'=>$dte,'PigReport_TranDate'=>$reportdte,'Trans_Time'=>$time,'PigmiAllocID'=>$pgaloc,'Current_Balance'=>$total,'Transaction_Type'=>"CREDIT",'Amount'=>$pretot,'Particulars'=>"Withdrawal Between 1 to 6 Months",'PigmiTypeid'=>$pgtypeid,'Total_Amount'=>$totalamtpay,'Month'=>$mnt,'Year'=>$year,'PgmPayment_Mode'=>"PREWITHDRAWAL AMOUNT",'CreatedBy'=>$UID,'Bid'=>$b]);
 				
 				DB::table('pigmiallocation')->where('PigmiAcc_No','=',$acno)
+				->where("pigmiallocation.deleted",0)
 				->update(['Closed'=>"YES",'Total_Amount'=>$totalamtpay]);
 				
 			}
@@ -171,6 +173,7 @@
 				$tran = DB::table('pigmi_transaction')->insertGetId(['Trans_Date'=>$dte,'PigReport_TranDate'=>$reportdte,'Trans_Time'=>$time,'PigmiAllocID'=>$pgaloc,'Current_Balance'=>$total,'Transaction_Type'=>"CREDIT",'Amount'=>$deduct,'Particulars'=>"Pygmy Withdrawal Between 7 to 9 Months",'PigmiTypeid'=>$pgtypeid,'Total_Amount'=>$totalamtpay,'Month'=>$mnt,'Year'=>$year,'PgmPayment_Mode'=>"PREWITHDRAWAL AMOUNT",'CreatedBy'=>$UID,'Bid'=>$b]);
 				
 				DB::table('pigmiallocation')->where('PigmiAcc_No','=',$acno)
+				->where("pigmiallocation.deleted",0)
 				->update(['Closed'=>"YES",'Total_Amount'=>$totalamtpay]);
 				
 				
@@ -193,6 +196,7 @@
 				$tran = DB::table('pigmi_transaction')->insertGetId(['Trans_Date'=>$dte,'PigReport_TranDate'=>$reportdte,'Trans_Time'=>$time,'PigmiAllocID'=>$pgaloc,'Current_Balance'=>$total,'Transaction_Type'=>"CREDIT",'Amount'=>$deduct,'Particulars'=>"Pygmy Withdrawal Between 7 to 12 Months",'PigmiTypeid'=>$pgtypeid,'Total_Amount'=>$totalamtpay,'Month'=>$mnt,'Year'=>$year,'PgmPayment_Mode'=>"PREWITHDRAWAL AMOUNT",'CreatedBy'=>$UID,'Bid'=>$b]);
 				
 				DB::table('pigmiallocation')->where('PigmiAcc_No','=',$acno)
+				->where("pigmiallocation.deleted",0)
 				->update(['Closed'=>"YES",'Total_Amount'=>$totalamtpay]);
 				
 			}
@@ -247,6 +251,7 @@
 			->leftJoin('pigmitype','pigmitype.PigmiTypeid','=','pigmiallocation.PigmiTypeid')
 			->select('StartDate','EndDate','Agentid','pigmitype.PigmiTypeid','pigmiallocation.PigmiAllocID')
 			->where('pigmiallocation.PigmiAcc_No','=',$acno)
+			->where("pigmiallocation.deleted",0)
 			->first();
 			return $ptype;
 		}
@@ -254,6 +259,7 @@
 		{
 			return DB::table('pigmiallocation')
 			->where('pigmiallocation.PigmiAcc_No','=',$acno)
+			->where("pigmiallocation.deleted",0)
 			->select('Total_Amount')
 			->first();
 		}
@@ -652,7 +658,8 @@
 			->select(DB::raw('Accid as id, CONCAT(`Accid`,"-",`AccNum`) as name'))
 			->where('Status','=',"AUTHORISED")
 			->where('AccNum','like','%RD%')
-			->where('Closed','<>',"YES");
+			->where('Closed','<>',"YES")
+			->where("createaccount.deleted",0);
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("createaccount.Bid",$BID);
 			}
@@ -701,6 +708,8 @@
 				{
 					echo ("value is less than 30");
 					DB::table('fd_prewithdrawal')->insertGetId(['FdAcc_No'=>$acno,'FdTotal_Amt'=>$amt,'TotalAmt_Payable'=>$amt,'Withdraw_Date'=>$dte,'Interest_Amount'=>0,'Particulars'=>'FD PREWITHDRAWAL']);
+					DB::table('fdallocation')->where('Fd_CertificateNum',$acno)
+					->update(["interest_amount"=>$interestamt]);
 					//exit(0);
 				}
 				else if($x1>$days)
@@ -714,7 +723,7 @@
 					DB::table('fd_prewithdrawal')->insertGetId(['FdAcc_No'=>$acno,'FdTotal_Amt'=>$amt,'TotalAmt_Payable'=>$payableamt,'Withdraw_Date'=>$dte,'Interest_Amount'=>$interestamt,'Particulars'=>'FD PREWITHDRAWAL']);
 					
 					DB::table('fdallocation')->where('Fd_CertificateNum',$acno)
-					->update(['Closed'=>"YES"]);
+					->update(['Closed'=>"YES","interest_amount"=>$interestamt]);
 					exit(0);
 				}
 				

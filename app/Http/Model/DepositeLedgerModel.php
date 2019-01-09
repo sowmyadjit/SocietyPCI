@@ -25,8 +25,8 @@
 			->leftJoin('accounttype','accounttype.AccTid','=','sb_transaction.AccTid')
 			->where('sb_transaction.Accid',$sbaid)
 			->where('sb_transaction.Bid','=',$BranchId)
-			->where("createaccount.deleted",0)
 			->whereRaw("DATE(sb_transaction.SBReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+			->where("sb_transaction.deleted",0)
 			->orderBy('SBReport_TranDate','asc')
 			->orderBy('Tranid','asc')
 			//->get();
@@ -69,7 +69,6 @@
 			->leftJoin('accounttype','accounttype.AccTid','=','rd_transaction.AccTid')
 			->where('rd_transaction.Accid',$sbaid)
 			->where('rd_transaction.Bid','=',$BranchId)
-			->where("createaccount.deleted",0)
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
 			->orderBy('RDReport_TranDate','asc')
 			->orderBy('RD_TransID','asc')
@@ -235,6 +234,7 @@
 			->leftJoin('nominee','nominee.Nid','=','customer.Nid')
 			->where('pigmiallocation.PigmiAllocID',$pigaid)
 			->where('pigmiallocation.Bid','=',$BranchId)
+			->where("pigmiallocation.deleted",0)
 			->first();
 			
 			return $id;
