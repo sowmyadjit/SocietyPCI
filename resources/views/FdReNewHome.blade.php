@@ -425,24 +425,32 @@
 		
 	}	
 	
-	
+	var f=0;
 	$('.sbmbtn').click( function(e) {
 		
 		month=$('#fdintmonthly').val();
 		fdtype=$('#fdtype').data('value');
 		acc1=$('.acctypeahead1').data('value');
 		e.preventDefault();
-		$.ajax({
-			
-			url: 'fdrenewdetails',
-			type: 'post',
-			data: $('#form_fdalloc').serialize()+'&accid='+acc1+'&depositamount='+depositamt+'&intneeded='+intneeded+'&month='+month+'&fdtype='+fdtype,
-			success: function(data) {
-				alert('success');
-				$('.tranclassid').click();
+		if(f == 0) {
+			f=f+1;
+			$.ajax({
 				
-			}
-		});
+				url: 'fdrenewdetails',
+				type: 'post',
+				data: $('#form_fdalloc').serialize()+'&accid='+acc1+'&depositamount='+depositamt+'&intneeded='+intneeded+'&month='+month+'&fdtype='+fdtype,
+				success: function(data) {
+					alert('success');
+					$('.tranclassid').click();
+					
+				},
+				error: function() {
+					alert("FAILED!");
+					console.log("Ajax call failed!");
+					f = 0;
+				}
+			});
+		}
 	});
 	
 	

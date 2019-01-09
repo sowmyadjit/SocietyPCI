@@ -455,6 +455,11 @@ var year1=$('#NumberOfYears').val();
 					alert('success');
 					$('.kccallocclassid').click();
 					//window.location.reload(true);
+				},
+				error: function() {
+					alert("FAILED!");
+					console.log("Ajax call failed!");
+					f = 0;
 				}
 			});
 			

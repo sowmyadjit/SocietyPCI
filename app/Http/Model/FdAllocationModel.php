@@ -70,7 +70,7 @@
 			}
 			*/
 			
-			$maxid=DB::table('fdallocation')->where('FDkcc','<>',"KCC")->where('Bid','=',$bid)->where("fdallocation.deleted",0)->max('Fdid');
+			/* $maxid=DB::table('fdallocation')->where('FDkcc','<>',"KCC")->where('Bid','=',$bid)->where("fdallocation.deleted",0)->max('Fdid');
 			$accnum1=DB::table('fdallocation')->select('Fd_CertificateNum')->where('Fdid','=',$maxid)->first();
 			$accnum=$accnum1->Fd_CertificateNum;
 		//	print_r($accnum);
@@ -78,9 +78,9 @@
 				$paccno2=$matches[2];
 				
 				$paccno3=intval($paccno2)+1;
-				$fdcertnum="PCIS".$branchcd."FD".$paccno3;
+				$fdcertnum="PCIS".$branchcd."FD".$paccno3; */
 				
-				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. ***** /
 				$got_unique = false;
 				while(!$got_unique) {
 					$existing_count = DB::table("fdallocation")
@@ -95,6 +95,51 @@
 					}
 				}
 				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
+
+
+				
+			/********************* GET NEW FD NUMBER ***********************/
+			$account_number_list = DB::table("fdallocation")
+				->where("fdallocation.deleted",0)
+				->where("Bid",$BID)
+				->where("FdTid","!=",1) // 1 - KCC, other than 1 - FD
+				->where("Fd_CertificateNum","like","%FD%")
+				->lists("Fd_CertificateNum");
+			// vdln($account_number_list);
+			foreach($account_number_list as $key => $value) {
+				$account_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
+			}
+			
+			if(empty($account_number_list)) {
+				$account_number_list[0] = 0;
+			}
+
+			$int_part = max($account_number_list);
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_account_number = "PCIS{$branchcd}FD{$next_int}";
+				// vdln($next_account_number,'next_account_number');
+
+				$duplicate_count = DB::table("fdallocation")
+					->where("Fd_CertificateNum",$next_account_number)
+					->where("fdallocation.deleted",0)
+					->where("Bid",$BID)
+					->where("FdTid","!=",1) // 1 - KCC, other than 1 - FD
+					->where("Fd_CertificateNum","like","%FD%")
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$fdcertnum = $next_account_number;
+			$paccno3 = $next_int;
+			// vde();
+			/********************* GET NEW FD NUMBER ***********************/
 
 
 				$FdReceipt=$branchcd.$RecYear."FDA".$paccno3;
@@ -258,11 +303,11 @@
 		public function GetFdCertificate($id)
 		{
 			$id = DB::table('fdallocation')->select('Fdid','fdallocation.Accid','fdallocation.FdTid','fdallocation.Nid','fdallocation.Bid','user.Uid','Custid','createaccount.AccNum','createaccount.AccTid','user.FirstName','user.MiddleName','user.LastName','user.Aid','Gender','MaritalStatus','Occupation','Age','Birthdate','address.Email','Address','City','District','State','PhoneNo','MobileNo','Pincode','BName','FdType','NumberOfDays','FdInterest','Nom_FirstName','Nom_MiddleName','Nom_LastName','Relationship','Nom_Address','Nom_Age','Nom_Birthdate','Nom_City','Nom_District','Nom_Email','Nom_Gender','Nom_Marital_Status','Nom_MobNo','Nom_Occupation','Nom_PhoneNo','Nom_Pincode','Nom_state','Fd_DepositAmt','Fd_StartDate','FdReport_StartDate','Fd_MatureDate','FdReport_MatureDate','Fd_CertificateNum','Fd_TotalAmt','Fd_Remarks','FDPayment_Mode','FDChq_No','FDChq_Date','FDBnk_Name','FDIFSC_Code','FDSB_Amt','FDBnk_Branch','FDUnclear_Bal','FDCleared_State','FatherName','SpouseName','CustomerType','FD_ReceiptNum','Fd_CertiPrint','FDkcc','Days')
-			->leftJoin('createaccount','createaccount.Accid', '=' , 'fdallocation.Accid')
-			->leftJoin('user',function ($join) {
-				$join->on('user.Uid', '=' , 'fdallocation.Uid')
+			->leftJoin('createaccount',function ($join) {
+				$join->on('createaccount.Accid', '=' , 'fdallocation.Accid')
 				->where("createaccount.deleted","=",0);
 			})
+			->leftJoin('user','user.Uid', '=' , 'fdallocation.Uid')
 			//->leftJoin('user','user.Uid', '=' , 'createaccount.Uid')
 			->leftJoin('customer','customer.Uid', '=' , 'user.Uid')
 			->leftJoin('address','address.Aid', '=' , 'user.Aid')
@@ -477,7 +522,7 @@
 				$FdReceipt=$branchcd.$RecYear."FDA-".($countfdal+1);
 			}*/
 			
-			$maxid=DB::table('fdallocation')->where('Bid','=',$BID)->where('FDkcc','=',"KCC")->where("fdallocation.deleted",0)->max('Fdid');
+			/* $maxid=DB::table('fdallocation')->where('Bid','=',$BID)->where('FDkcc','=',"KCC")->where("fdallocation.deleted",0)->max('Fdid');
 			if($maxid==0)
 			{
 				
@@ -495,7 +540,51 @@
 			}
 			
 			
-			$fdcertnum="PCIS".$branchcd."KCC".$paccno3;
+			$fdcertnum="PCIS".$branchcd."KCC".$paccno3; */
+
+
+			
+			/********************* GET NEW KCC NUMBER ***********************/
+			$account_number_list = DB::table("fdallocation")
+				->where("fdallocation.deleted",0)
+				->where("Bid",$BID)
+				->where("FdTid",1) // 1 - KCC
+				->where("Fd_CertificateNum","like","%KCC%")
+				->lists("Fd_CertificateNum");
+			// vdln($account_number_list);
+			foreach($account_number_list as $key => $value) {
+				$account_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
+			}
+			
+			if(empty($account_number_list)) {
+				$account_number_list[0] = 0;
+			}
+
+			$int_part = max($account_number_list);
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_account_number = "PCIS{$branchcd}KCC{$next_int}";
+				// vdln($next_account_number,'next_account_number');
+
+				$duplicate_count = DB::table("fdallocation")
+					->where("Fd_CertificateNum",$next_account_number)
+					->where("fdallocation.deleted",0)
+					->where("Bid",$BID)
+					->where("FdTid",1) // 1 - KCC
+					->where("Fd_CertificateNum","like","%KCC%")
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$fdcertnum = $next_account_number;
+			// vde();
+			/********************* GET NEW KCC NUMBER ***********************/
 			
 			
 			
@@ -706,7 +795,7 @@
 			
 			
 			
-			$maxid=DB::table('fdallocation')->where('FDkcc','<>',"KCC")->where('Bid','=',$BID)->max('Fdid');
+			/* $maxid=DB::table('fdallocation')->where('FDkcc','<>',"KCC")->where('Bid','=',$BID)->max('Fdid');
 			$accnum1=DB::table('fdallocation')->select('Fd_CertificateNum')->where('Fdid','=',$maxid)->first();
 			$accnum=$accnum1->Fd_CertificateNum;
 		//	print_r($accnum);
@@ -714,10 +803,10 @@
 				$paccno2=$matches[2];
 				
 				$paccno3=intval($paccno2)+1;
-				$fdcertnum="PCIS".$branchcd."FD".$paccno3;
+				$fdcertnum="PCIS".$branchcd."FD".$paccno3; */
 				//$FdReceipt=$branchcd.$RecYear."FDA".$paccno3;
 				
-				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
+				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. ***** /
 				$got_unique = false;
 				while(!$got_unique) {
 					$existing_count = DB::table("fdallocation")
@@ -732,6 +821,50 @@
 					}
 				}
 				/***** PREVENT CREATION OF DUPLICATE FD CERTIFICATE NO. *****/
+
+				
+			/********************* GET NEW FD NUMBER ***********************/
+			$account_number_list = DB::table("fdallocation")
+				->where("fdallocation.deleted",0)
+				->where("Bid",$BID)
+				->where("FdTid","!=",1) // 1 - KCC, other than 1 - FD
+				->where("Fd_CertificateNum","like","%FD%")
+				->lists("Fd_CertificateNum");
+			// vdln($account_number_list);
+			foreach($account_number_list as $key => $value) {
+				$account_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
+			}
+			
+			if(empty($account_number_list)) {
+				$account_number_list[0] = 0;
+			}
+
+			$int_part = max($account_number_list);
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_account_number = "PCIS{$branchcd}FD{$next_int}";
+				// vdln($next_account_number,'next_account_number');
+
+				$duplicate_count = DB::table("fdallocation")
+					->where("Fd_CertificateNum",$next_account_number)
+					->where("fdallocation.deleted",0)
+					->where("Bid",$BID)
+					->where("FdTid","!=",1) // 1 - KCC, other than 1 - FD
+					->where("Fd_CertificateNum","like","%FD%")
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$fdcertnum = $next_account_number;
+			$paccno3 = $next_int;
+			// vde();
+			/********************* GET NEW FD NUMBER ***********************/
 			
 			
 			$depamt=$id['depositamount'];
@@ -817,7 +950,7 @@
 			}
 			$fdcertnum="PCIS".$branchcd."KCC".$paccno3;
 			
-				/***** PREVENT CREATION KCC DUPLICATE FD CERTIFICATE NO. *****/
+				/***** PREVENT CREATION KCC DUPLICATE FD CERTIFICATE NO. ***** /
 				$got_unique = false;
 				while(!$got_unique) {
 					$existing_count = DB::table("fdallocation")
@@ -832,6 +965,50 @@
 					}
 				}
 				/***** PREVENT CREATION OF DUPLICATE KCC CERTIFICATE NO. *****/
+
+				
+			/********************* GET NEW KCC NUMBER ***********************/
+			$account_number_list = DB::table("fdallocation")
+				->where("fdallocation.deleted",0)
+				->where("Bid",$BID)
+				->where("FdTid",1) // 1 - KCC
+				->where("Fd_CertificateNum","like","%KCC%")
+				->lists("Fd_CertificateNum");
+			// vdln($account_number_list);
+			foreach($account_number_list as $key => $value) {
+				$account_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
+			}
+			
+			if(empty($account_number_list)) {
+				$account_number_list[0] = 0;
+			}
+
+			$int_part = max($account_number_list);
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_account_number = "PCIS{$branchcd}KCC{$next_int}";
+				// vdln($next_account_number,'next_account_number');
+
+				$duplicate_count = DB::table("fdallocation")
+					->where("Fd_CertificateNum",$next_account_number)
+					->where("fdallocation.deleted",0)
+					->where("Bid",$BID)
+					->where("FdTid",1) // 1 - KCC
+					->where("Fd_CertificateNum","like","%KCC%")
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$fdcertnum = $next_account_number;
+			$paccno3 = $next_int;
+			// vde();
+			/********************* GET NEW KCC NUMBER ***********************/
 
 			
 			$depamt=$id['fddep'];
