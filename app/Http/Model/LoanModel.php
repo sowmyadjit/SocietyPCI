@@ -100,7 +100,7 @@
 			
 			
 			
-			$maxid=DB::table('depositeloan_allocation')->where('DepLoan_Branch','=',$bid)->max('DepLoanAllocId');
+			/* $maxid=DB::table('depositeloan_allocation')->where('DepLoan_Branch','=',$bid)->max('DepLoanAllocId');
 			
 			
 			$accnum1=DB::table('depositeloan_allocation')->select('DepLoan_LoanNum')->where('DepLoanAllocId','=',$maxid)->first();
@@ -110,7 +110,7 @@
 			$paccno2=$matches[2];
 			
 			$paccno3=intval($paccno2)+1;
-			$paccno="PCISDL".$b.$paccno3;
+			$paccno="PCISDL".$b.$paccno3; */
 			
 			
 			
@@ -133,6 +133,7 @@
 				$Uidfi1=DB::table('pigmiallocation')
 				->select('UID')
 				->where('PigmiAcc_No','=',$deploannum)
+				->where('pigmiallocation.deleted','=',0)
 				->first();
 				
 				$Uidfi=$Uidfi1->UID;
@@ -159,6 +160,60 @@
 				$Uidfi=$Uidfi1->Uid;
 				
 			}
+
+			
+			/********************* GET NEW DL NUMBER ***********************/
+			$loan_number_list = DB::table("depositeloan_allocation")
+				->where("depositeloan_allocation.deleted",0)
+				->where("DepLoan_Branch",$bid)
+				->lists("DepLoan_LoanNum");
+			foreach($loan_number_list as $key => $value) {
+				$loan_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
+			}
+			
+			if(empty($loan_number_list)) {
+				$loan_number_list[0] = 0;
+			}
+
+			$int_part = max($loan_number_list);
+
+			/* $last_dl_number = DB::table("depositeloan_allocation")
+				->where("depositeloan_allocation.deleted",0)
+				->where("DepLoan_Branch",$bid)
+				->orderByRaw("CAST(DepLoan_LoanNum AS UNSIGNED) desc")
+				->get();
+				// ->value("DepLoan_LoanNum");
+			if(empty($last_dl_number)) {
+				$last_dl_number = 0;
+			}
+			vdln($last_dl_number,"last_dl_number");
+			vde();
+			$int_part_str = preg_replace('/[^0-9]+/','',$last_dl_number);
+			vdln($int_part_str,"int_part_str");
+			$int_part = (int)$int_part_str; */
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_dl_number = "PCISDL{$BranchCode}{$next_int}";
+				// vdln($next_dl_number,'next_dl_number');
+
+				$duplicate_count = DB::table("depositeloan_allocation")
+					->where("DepLoan_LoanNum",$next_dl_number)
+					->where("depositeloan_allocation.deleted",0)
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$paccno = $next_dl_number;
+			// vde();
+			/********************* GET NEW DL NUMBER ***********************/
+
+
 			$lid = DB::table('depositeloan_allocation')->insertGetId(['DepLoan_DepositeType'=> $deptyp,'DepLoan_LoanTypeID'=>$id['DepLoanType'],'DepLoan_Branch'=>$AccBID,'DepLoan_AccNum'=>$id['DepositAccountNum'],'DepLoan_LoanAmount'=>$id['DepLoanAmt'],'DepLoan_RemailningAmt'=>$id['DepLoanAmt'],'DepLoan_LoanCharge'=>$id['LoanCharge'],'DepLoan_LoanStartDate'=>$id['DepLoanStartDate'],'DepLoan_LoanEndDate'=>$id['DepLoanEndDate'],'DepLoan_LoanDurationDays'=>$id['emimonth'],'DepLoan_PaymentMode'=>$id['DepLoanPayMode'],'DepLoan_ChequeNumber'=>$id['DepLoanChequeNum'],'DepLoan_ChequeDate'=>$id['DepLoanChequeDte'],'DepLoan_BankId'=>$id['LoanBankId'],'DepLoan_LoanNum'=>$paccno,'DepLoan_SbTranId'=>$sbtran,'DepLoan_Uid'=>$Uidfi,'DepLoan_AuthBy'=>$UID,'EMI_Amount'=>$id['EMIAmount'],'DepLoan_lastpaiddate'=>$id['DepLoanStartDate'],'Old_loan_number'=>$id['old'], 'SubLedgerId'=>55 ]);
 			
 			if(strcasecmp($id['DepLoanPayMode'], "CHEQUE") == 0) {
@@ -251,6 +306,7 @@
 			{
 				$alid = DB::table('pigmiallocation')
 				->where('PigmiAcc_No',$deploannum)
+				->where('pigmiallocation.deleted','=',0)
 				->update(['Loan_Allocated'=> "YES"]);
 			}
 			else if($deptyp=="FD")
@@ -429,6 +485,7 @@
 			{
 				$q1=DB::table('pigmiallocation')
 				->where('PigmiAcc_No','=',$accnum)
+				->where('pigmiallocation.deleted','=',0)
 				->select('UID')
 				->first();
 				$q=$q1->UID;
@@ -594,7 +651,7 @@
 			
 			$docid=DB::table('loan_document')->InsertGetId(['Loan_Security1'=>$id['sec1'],'Loan_Security2'=>$id['sec2'],'Loan_Security3'=>$id['sec3'],'Loan_Security4'=>$id['sec4']]);
 			
-			$count=1;
+			/* $count=1;
 			$cntrow=DB::table('personalloan_allocation')
 			->where('Bid',$bid)
 			->count('PersLoanAllocID');
@@ -606,7 +663,43 @@
 			else
 			{
 				$count_inc="PCIS"."PL".$BranchCode.($cntrow+1);
+			} */
+
+			/********************* GET NEW PL NUMBER ***********************/
+			$loan_number_list = DB::table("personalloan_allocation")
+				->where("personalloan_allocation.deleted",0)
+				->where("Bid",$bid)
+				->lists("PersLoan_Number");
+			foreach($loan_number_list as $key => $value) {
+				$loan_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
 			}
+			
+			if(empty($loan_number_list)) {
+				$loan_number_list[0] = 0;
+			}
+
+			$int_part = max($loan_number_list);
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_pl_number = "PCISPL{$BranchCode}{$next_int}";
+				// vdln($next_pl_number,'next_pl_number');
+
+				$duplicate_count = DB::table("personalloan_allocation")
+					->where("PersLoan_Number",$next_pl_number)
+					->where("personalloan_allocation.deleted",0)
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$count_inc = $next_pl_number;
+			// vde();
+			/********************* GET NEW PL NUMBER ***********************/
 			
 	/****************/
 			$update_allocation = false;
@@ -996,7 +1089,7 @@
 			
 			
 			
-			$maxid=DB::table('jewelloan_allocation')->where('JewelLoan_Bid','=',$BranchId)->max('JewelLoanId');
+			/* $maxid=DB::table('jewelloan_allocation')->where('JewelLoan_Bid','=',$BranchId)->max('JewelLoanId');
 			
 			
 			$accnum1=DB::table('jewelloan_allocation')->select('JewelLoan_LoanNumber')->where('JewelLoanId','=',$maxid)->first();
@@ -1006,7 +1099,7 @@
 			$paccno2=$matches[2];
 			
 			$paccno3=intval($paccno2)+1;
-			$count_inc="PCISJL".$branchcode.$paccno3;
+			$count_inc="PCISJL".$branchcode.$paccno3; */
 			
 			/*	if($accno==0)
 				{
@@ -1018,6 +1111,41 @@
 				$count_inc="PCIS".$branchcode."JL".($accno+1);
 			}*/
 			
+			/********************* GET NEW JL NUMBER ***********************/
+			$loan_number_list = DB::table("jewelloan_allocation")
+				->where("jewelloan_allocation.deleted",0)
+				->where("JewelLoan_Bid",$BID)
+				->lists("JewelLoan_LoanNumber");
+			foreach($loan_number_list as $key => $value) {
+				$loan_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
+			}
+			
+			if(empty($loan_number_list)) {
+				$loan_number_list[0] = 0;
+			}
+
+			$int_part = max($loan_number_list);
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_jl_number = "PCISJL{$branchcode}{$next_int}";
+				// vdln($next_jl_number,'next_jl_number');
+
+				$duplicate_count = DB::table("jewelloan_allocation")
+					->where("JewelLoan_LoanNumber",$next_jl_number)
+					->where("jewelloan_allocation.deleted",0)
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$count_inc = $next_jl_number;
+			// vde();
+			/********************* GET NEW JL NUMBER ***********************/
 			
 			$jid=DB::table('jewelloan_allocation')->InsertGetId(['JewelLoan_LoanNumber'=>$count_inc,'JewelLoan_LoanTypeId'=>$id['loantyp'],'JewelLoan_Bid'=>$BranchId,'JewelLoan_Uid'=>$id['jeweluid'],'JewelLoan_AppraisalValue'=>$id['Jewelappval'],'JewelLoan_LoanDuration'=>$id['Jewelduration'],'JewelLoan_LoanAmount'=>$id['JewelAmt'],'JewelLoan_SaraparaCharge'=>$id['JewelspacomVal'],'JewelLoan_InsuranceCharge'=>$id['JewelinsuVal'],'JewelLoan_BookAndFormCharge'=>$id['JewelBkfrmChrgVal'],'JewelLoan_OtherCharge'=>$id['JewelOthrChrges'],'JewelLoan_LoanAmountAfterDeduct'=>$id['JewelPayAmountAfter'],'JewelLoan_StartDate'=>$id['JewelStartDate'],'JewelLoan_EndDate'=>$coneDate,'JewelLoan_PaymentMode'=>$id['JewelPayMode'],'JewelLoan_ChqNum'=>$id['JewelChequeNum'],'JewelLoan_ChqDate'=>$id['JewelChequeDte'],'JewelLoan_Bankid'=>$id['BankId'],'JewelLoan_CreatedBy'=>$UID,'JewelLoan_LoanRemainingAmount'=>$id['JewelAmt'],'JewelLoan_lastpaiddate'=>$id['JewelStartDate'],'jewelloan_Description'=>$id['Jewel_Description'],'jewelloan_Oldloan_No'=>$id['old'],'jewelloan_RequestID'=>$id['PersLoanAllocID'], 'SubLedgerId'=>54 ]);
 			
@@ -1222,7 +1350,7 @@
 			
 			
 			
-			$maxid=DB::table('jewelloan_allocation')->where('JewelLoan_Bid','=',$BranchId)->max('JewelLoanId');
+			/* $maxid=DB::table('jewelloan_allocation')->where('JewelLoan_Bid','=',$BranchId)->max('JewelLoanId');
 			
 			
 			$accnum1=DB::table('jewelloan_allocation')->select('JewelLoan_LoanNumber')->where('JewelLoanId','=',$maxid)->first();
@@ -1232,7 +1360,7 @@
 			$paccno2=$matches[2];
 			
 			$paccno3=intval($paccno2)+1;
-			$count_inc="PCISJL".$branchcode.$paccno3;
+			$count_inc="PCISJL".$branchcode.$paccno3; */
 			
 			/*	if($accno==0)
 				{
@@ -1244,6 +1372,43 @@
 				$count_inc="PCIS".$branchcode."JL".($accno+1);
 			}*/
 			
+			/********************* GET NEW JL NUMBER ***********************/
+			$loan_number_list = DB::table("jewelloan_allocation")
+				->where("jewelloan_allocation.deleted",0)
+				->where("JewelLoan_Bid",$BID)
+				->lists("JewelLoan_LoanNumber");
+			foreach($loan_number_list as $key => $value) {
+				$loan_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
+			}
+			
+			if(empty($loan_number_list)) {
+				$loan_number_list[0] = 0;
+			}
+
+			$int_part = max($loan_number_list);
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_jl_number = "PCISJL{$branchcode}{$next_int}";
+				// vdln($next_jl_number,'next_jl_number');
+
+				$duplicate_count = DB::table("jewelloan_allocation")
+					->where("JewelLoan_LoanNumber",$next_jl_number)
+					->where("jewelloan_allocation.deleted",0)
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$count_inc = $next_jl_number;
+			// vde();
+			/********************* GET NEW JL NUMBER ***********************/
+
+
 			$jeweldata=DB::table('jewelloan_allocation')->where('JewelLoan_LoanNumber',$id['account_num'])->first();
 			
 			$JewelLoan_LoanTypeId=$jeweldata->JewelLoan_LoanTypeId;
@@ -1439,7 +1604,7 @@
 			{
 				$docid=DB::table('loan_document')->InsertGetId(['Loan_Security1'=>$id['stfsec1'],'Loan_Security2'=>$id['stfsec2'],'Loan_Security3'=>$id['stfsec3'],'Loan_Security4'=>$id['stfsec4']]);
 			}
-			$count=1;
+			/* $count=1;
 			$cntrow=DB::table('staffloan_allocation')->count('StfLoanAllocID');
 			if($cntrow==0)
 			{
@@ -1449,7 +1614,7 @@
 			else
 			{
 				$count_inc="PCIS"."SL".$BranchCode.($cntrow+1);
-			}
+			} */
 			$req_id = $id['StaffID'];
 			$EmpUid = DB::table("request_loan")->where("PersLoanAllocID",$req_id)->value("Uid");
 			// $EmpUid=$id['StaffID'];
@@ -1461,6 +1626,44 @@
 			
 			$tot_branch_cd=$Branch_CD+$amt_cd;
 			DB::table('branch')->where('Bid',$bid)->update(['CD'=>$tot_branch_cd]);
+
+			
+			/********************* GET NEW SL NUMBER ***********************/
+			$loan_number_list = DB::table("staffloan_allocation")
+				->where("staffloan_allocation.deleted",0)
+				->where("Bid",$bid)
+				->lists("StfLoan_Number");
+			foreach($loan_number_list as $key => $value) {
+				$loan_number_list[$key] = (int) preg_replace("/[^0-9]*/","",$value);
+			}
+			
+			if(empty($loan_number_list)) {
+				$loan_number_list[0] = 0;
+			}
+
+			$int_part = max($loan_number_list);
+			
+			$next_int = $int_part;
+			$first_check = true;
+			$duplicate_count = 0;
+			while($first_check || $duplicate_count > 0) {
+				// vdln("---while start---");
+				$first_check = false;
+				$next_int++;
+				// vdln($next_int,"next_int");
+				$next_sl_number = "PCISSL{$BranchCode}{$next_int}";
+				// vdln($next_sl_number,'next_sl_number');
+
+				$duplicate_count = DB::table("staffloan_allocation")
+					->where("StfLoan_Number",$next_sl_number)
+					->where("staffloan_allocation.deleted",0)
+					->count();
+				// vdln($duplicate_count,"duplicate_count");
+			}
+			$count_inc = $next_sl_number;
+			// vde();
+			/********************* GET NEW SL NUMBER ***********************/
+
 			
 			$perslid = DB::table('staffloan_allocation')->insertGetId(['StfLoan_Number'=> $count_inc,'Bid'=> $AccBID,'DocId'=>$docid,'Uid'=>/*$id['StaffID']*/$EmpUid,'LoanAmt'=>$id['Stfamttopay'],'otherCharges'=>$id['StfOthrChrge'],'Book_FormCharges'=>$id['StfBkfrmChrg'],'AjustmentCharges'=>$id['Compulsory_Deposit'],'ShareCharges'=>$id['staffcharge'],'PayableAmt'=>$id['StfPayAmt'],'LoandurationYears'=>$id['LoanDurationYears'],'LoanduratiobDays'=>$id['LoanDurationDays'],'Staff_Surety'=>$id['suretyid'],'Loan_Type'=>$id['StfLoanType'],'StartDate'=>$consDate,'EndDate'=>$coneDate,'PayMode'=>$paymode,'accid'=>$id['StfLoanSBAccid'],'CreadtedBY'=>$UID,'BankID'=>$id['StfBankId'],'ChequeDate'=>$id['StfLoanChequeDte'],'ChequeNumber'=>$id['StfLoanChequeNum'],'StaffLoan_LoanRemainingAmount'=>$id['Stfamttopay'],'cd_id'=>$cd_id,'LedgerHeadId'=>'49','SubLedgerId'=>'56']);
 			
@@ -1605,6 +1808,7 @@
 			->join('pigmiallocation','pigmiallocation.PigmiAcc_No','=','request_loan.DepLoan_AccNo')
 			->where('Loan_Allocated','=',"NO")
 			->where('Closed','=',"NO")
+			->where('pigmiallocation.deleted','=',0)
 			->where('DepLoan_AccNo','like','%PG%');
 			if($this->settings->get_value("allow_inter_branch") == 0) {
 				$ret_data = $ret_data->where("request_loan.Bid",$BID);
@@ -1661,6 +1865,7 @@
 			->join('branch','branch.Bid','=','request_loan.Bid')
 			->where('request_loan.DepLoan_AccNo','like','%PG%')
 			->where('PersLoanAllocID','=',$id)
+			->where('pigmiallocation.deleted','=',0)
 			->first();
 			return $id;
 		}
@@ -2568,6 +2773,7 @@
 				->join("user","user.Uid","=","jewelloan_allocation.JewelLoan_Uid")
 				->join("loan_type","loan_type.LoanType_ID","=","jewelloan_allocation.JewelLoan_LoanTypeId")
 				->join("branch","branch.Bid","=","jewelloan_allocation.JewelLoan_Bid")
+				->where("jewelloan_allocation.deleted",0)
 //				->take(5)
 				->get();
 				
