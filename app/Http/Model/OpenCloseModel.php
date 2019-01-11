@@ -43,6 +43,7 @@
 			$xxx=DB::table('dailyopenclose')->where('Daily_Date',$dte)
 			->where('Daily_Status','=',"OPEN")
 			->where('Daily_Bid','=',$Branchid)
+			->where("dailyopenclose.deleted",0)
 			->count('Dailyopenclose_Id');
 			
 			//print_r($xxx);						
@@ -54,6 +55,7 @@
 				->where('Daily_Date',$dte)
 				->where('Daily_Status','=','OPEN')
 				->where('Daily_Bid','=',$Branchid)
+				->where("dailyopenclose.deleted",0)
 				->get();
 				
 				return $id;
@@ -81,6 +83,7 @@
 				->where('Daily_Date',$dte)
 				->where('Daily_Status','=','OPEN')
 				->where('Daily_Bid','=',$Branchid)
+				->where("dailyopenclose.deleted",0)
 				->get();
 				/*$fdaccno=DB::table('fdallocation')->select('Fd_CertificateNum')->where('Closed','=',"NO")->where('intrest_needed','=',"YES")->where('Bid',$Branchid)->get();
 					foreach($fdaccno as $accno)
@@ -140,6 +143,7 @@
 			$xxx=DB::table('dailyopenclose')->where('Daily_Date',$dte)
 			->where('Daily_Status','=',"CLOSE")
 			->where('Daily_Bid','=',$Branchid)
+			->where("dailyopenclose.deleted",0)
 			->count('Dailyopenclose_Id');
 			
 			
@@ -151,6 +155,7 @@
 				->leftjoin('addbank','addbank.Bankid','=','dailyopenclose.Daily_Bankid')
 				->where('Daily_Date',$dte)
 				->where('Daily_Status','=','CLOSE')
+				->where("dailyopenclose.deleted",0)
 				->get();
 				
 				return $id;
@@ -177,6 +182,7 @@
 				->leftjoin('addbank','addbank.Bankid','=','dailyopenclose.Daily_Bankid')
 				->where('Daily_Date',$dte)
 				->where('Daily_Status','=','CLOSE')
+				->where("dailyopenclose.deleted",0)
 				->get();
 				
 				return $id;
@@ -2053,6 +2059,7 @@
 			$BranchId=$uname->Bid;
 			$dte=date('Y-m-d');
 			$id=DB::table('dailyopenclose')->where('Daily_Status','=',"OPEN")->where('Daily_Date','=',$dte)
+			->where("dailyopenclose.deleted",0)
 			->where('Daily_Bid',$BranchId)->count('Dailyopenclose_Id');
 			return $id;
 		}
@@ -2064,6 +2071,7 @@
 			$BranchId=$uname->Bid;
 			$dte=date('Y-m-d');
 			$id=DB::table('dailyopenclose')->where('Daily_Status','=',"CLOSE")->where('Daily_Date','=',$dte)
+			->where("dailyopenclose.deleted",0)
 			->where('Daily_Bid',$BranchId)->count('Dailyopenclose_Id');
 			return $id;
 		}
@@ -2077,6 +2085,7 @@
 			//	$dte=date('Y-m-d');
 			//print_r($dte);
 			$id1=DB::table('dailyopenclose')->select('Daily_TotBal')->where('Daily_Status','=',"OPEN")->where('Daily_Date','=',$dte)
+			->where("dailyopenclose.deleted",0)
 			->where('Daily_Bid',$BranchId)->first();
 			//print_r($id);
 			$id =$id1->Daily_TotBal;
@@ -2092,11 +2101,13 @@
 			
 			$countofclose=DB::table('dailyopenclose')->select('Daily_TotBal')->where('Daily_Status','=',"CLOSE")->where('Daily_Date','=',$dte)
 			->where('Daily_Bid',$BranchId)
+			->where("dailyopenclose.deleted",0)
 			->count('Dailyopenclose_Id');
 			
 			if($countofclose>0)
 			{
 				$id1=DB::table('dailyopenclose')->select('Daily_TotBal')->where('Daily_Status','=',"CLOSE")->where('Daily_Date','=',$dte)
+				->where("dailyopenclose.deleted",0)
 				->where('Daily_Bid',$BranchId)->first();
 				//print_r($id);
 				$id = $id1->Daily_TotBal;
@@ -3598,6 +3609,7 @@
 				->select()
 				->where("Daily_Date","=",$date)
 				->where("Daily_Bid","=",$bid)
+				->where("dailyopenclose.deleted",0)
 				->count();
 			
 			if($dailyopenclose_rows > 0)
@@ -3749,12 +3761,14 @@
 				->where($date_field,$data["date"])
 				->where($amount_type_field,"INHANDCASH")
 				->where($open_status,"OPEN")
+				->where("dailyopenclose.deleted",0)
 				->count();
 			$day_close_entry = DB::table($table)
 				->where($branch_id_field,$BID)
 				->where($date_field,$data["date"])
 				->where($amount_type_field,"INHANDCASH")
 				->where($open_status,"CLOSE")
+				->where("dailyopenclose.deleted",0)
 				->count();
 			
 			if($day_open_entry == 0) {
@@ -3803,6 +3817,7 @@
 				->where("Daily_Bid",$BID)
 				// ->where("Daily_Bankid",0)
 				->where("Daily_Status","CLOSE")
+				->where("dailyopenclose.deleted",0)
 				->count();
 
 			if($close_count > 0) {//if day is closed
@@ -4505,6 +4520,103 @@
 				->where("loan_transaction_date",$date)
 				->get();
 		}*/
+
+		public function day_open_close_details($data)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$bid=$uname->Bid;
+
+			$last_open_close_entry = DB::table("dailyopenclose")
+				->selectRaw("
+					Daily_Status,
+					Daily_Date
+				")
+				->where("dailyopenclose.deleted",0)
+				->where("Daily_Bid",$bid)
+				->orderBy("Daily_Date","desc")
+				->first();
+			// vde($last_open_close_entry,"last_open_close_entry");
+
+			$day_open_close_last_entries = DB::table("dailyopenclose")
+				->selectRaw("
+					Dailyopenclose_Id,
+					Daily_Date,
+					Daily_Status,
+					Daily_Description,
+					Daily_Bankid,
+					Daily_TotBal
+				")
+				->where("dailyopenclose.deleted",0)
+				->where("Daily_Bid",$bid)
+				->where("Daily_Status",$last_open_close_entry->Daily_Status)
+				->where("Daily_Date",$last_open_close_entry->Daily_Date)
+				->get();
+			// vde($day_open_close_last_entries,"day_open_close_last_entries");
+			return $day_open_close_last_entries;
+		}
+
+		public function daily_open_close_update_new_amount($data)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$bid=$uname->Bid;
+			$uid = $uname->Uid;
+			$updated_from = DB::table("dailyopenclose")
+				->where("Dailyopenclose_Id",$data["oc_id"])
+				->value("Daily_TotBal");
+			/************* DB UPDATE LOG ************/
+			$update_log = [];
+			// $update_log["log_time"] = date("Y-m-d H:i:s"); // CURRENT TIMESTAMP
+			$update_log["log_user_id"] = $uid;
+			$update_log["table_name"] = "dailyopenclose";
+			$update_log["pk_name"] = "Dailyopenclose_Id";
+			$update_log["pk_value"] = $data["oc_id"];
+			$update_log["field_name"] = "Daily_TotBal";
+			$update_log["updated_from"] = $updated_from;
+			$update_log["updated_to"] = $data["amount_new_value"];
+			DB::table("db_update_log")->insertGetId($update_log);
+			/************* DB UPDATE LOG ************/
+			DB::table("dailyopenclose")
+				->where("Dailyopenclose_Id",$data["oc_id"])
+				->update([ "Daily_TotBal"=>$data["amount_new_value"] ]);
+			return;
+		}
+
+		public function daily_open_close_delete_last_entries($data)
+		{
+			$uname='';
+			if(Auth::user())
+			$uname= Auth::user();
+			$bid=$uname->Bid;
+			$uid = $uname->Uid;
+
+			foreach($data["id_list"] as $key_id => $value_id) {
+				$updated_from = DB::table("dailyopenclose")
+					->where("Dailyopenclose_Id",$value_id)
+					->value("deleted");
+				/************* DB UPDATE LOG ************/
+				$update_log = [];
+				// $update_log["log_time"] = date("Y-m-d H:i:s"); // CURRENT TIMESTAMP
+				$update_log["log_user_id"] = $uid;
+				$update_log["table_name"] = "dailyopenclose";
+				$update_log["pk_name"] = "Dailyopenclose_Id";
+				$update_log["pk_value"] = $value_id;
+				$update_log["field_name"] = "deleted";
+				$update_log["updated_from"] = $updated_from;
+				$update_log["updated_to"] = 1;
+				DB::table("db_update_log")->insertGetId($update_log);
+				/************* DB UPDATE LOG ************/
+			}
+			
+
+			DB::table("dailyopenclose")
+				->whereIn("Dailyopenclose_Id",$data["id_list"])
+				->update([ "deleted"=>1 ]);
+			return;
+		}
 		
 		
 	}

@@ -786,6 +786,32 @@
 			return $ret_data;
 		}
 		
+		public function day_open_close_details(Request $request)
+		{
+			$data = array();
+			$data["day_open_close_details"] = $this->op->day_open_close_details([  ]);
+			return view("day_open_close_details",compact('data'));
+		}
+
+		public function daily_open_close_update_new_amount(Request $request)
+		{
+			$fd = [];
+			$fd["oc_id"] = $request->input("oc_id");
+			$fd["amount_new_value"] = $request->input("amount_new_value");
+			$this->op->daily_open_close_update_new_amount($fd);
+			return "done";
+		}
+
+		public function daily_open_close_delete_last_entries(Request $request)
+		{
+			$id_list_str = $request->input("id_list_str");
+			$id_list = explode(",",$id_list_str);
+			$fd = [];
+			$fd["id_list"] = $id_list;
+			$this->op->daily_open_close_delete_last_entries($fd);
+			return "done";
+		}
+		
 		
 	}
 

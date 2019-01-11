@@ -444,6 +444,9 @@
 				Route::post('/update_cash_details','OpenCloseBalanceController@update_cash_details');
 				Route::post('/check_day_open','OpenCloseBalanceController@check_day_open');
 				Route::post('/is_day_open','OpenCloseBalanceController@is_day_open');
+				Route::post('/day_open_close_details','OpenCloseBalanceController@day_open_close_details');
+				Route::post('/daily_open_close_update_new_amount','OpenCloseBalanceController@daily_open_close_update_new_amount');
+				Route::post('/daily_open_close_delete_last_entries','OpenCloseBalanceController@daily_open_close_delete_last_entries');
 				
 				
 				//PermissionController

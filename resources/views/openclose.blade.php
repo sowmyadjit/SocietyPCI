@@ -25,7 +25,7 @@
 						@if($OpCls['did'] != 2) <!--  Don't show this for clerks -->
 							<a href="fdinterstmonthly" style="margin-right:10px;" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>" data="FD_MONTHLY_INT">FD Month Pay</a>
 							<a href="viewFDInterest" class="btn btn-info DailyTranBtn<?php echo $OpCls['module']->Mid; ?>">View FD Interest</a>
-							<button id="refresh" class="btn-sm glyphicon glyphicon-refresh"></button>
+							<button id="refresh" class="btn-sm glyphicon glyphicon-refresh" title="REFRESH THIS PAGE"></button>
 							<a href="viewclosebal" style="margin-left:15px;" class="btn btn-danger pull-right ClsBalBtn<?php echo $OpCls['module']->Mid; ?>">Day Close</a>
 							<a href="viewbal"  class="btn btn-success pull-right OpenBalBtn<?php echo $OpCls['module']->Mid; ?>" >Day Open</a>
 						@endif
@@ -33,6 +33,8 @@
 					<div id="cash_details">
 					</div>
 					<div id="bank_details">
+					</div>
+					<div id="day_open_close_details">
 					</div>
 			</div>
 		</div>
@@ -139,5 +141,32 @@
 	}
 	$("#refresh").click(function() {
 		view_bank_details();
+		view_day_open_close_details();
 	});
+</script>
+
+
+<script>
+	view_day_open_close_details();
+	function view_day_open_close_details() {
+		var loading_img = `
+			<div>
+				<center>
+					<img src="img\\loading2.gif" width="50px" height="50px"/>
+				</center>
+			</div>`;
+		$("#day_open_close_details").html(loading_img);
+		$.ajax({
+					url:'/day_open_close_details',
+					type:'post',
+					data:'',
+					success:function(data)
+					{
+						$("#day_open_close_details").html(data);
+					},
+					error:function() {
+						// $("#day_open_close_details").html("RETRY AGAIN");
+					}
+		});
+	}
 </script>
