@@ -391,6 +391,8 @@
 				Route::get('/add_charges','LoanController@add_charges');
 				Route::post('/account_list','LoanController@account_list');
 				Route::post('/account_list_edit','LoanController@account_list_edit');
+				Route::post('/view_loan_data','LoanController@view_loan_data');
+				Route::post('/update_loan_data','LoanController@update_loan_data');
 				
 				
 				//ModulesController

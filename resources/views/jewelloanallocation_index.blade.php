@@ -75,7 +75,7 @@
 								
 					</div>
 				</div>
-				<div id="receipt_box"></div>
+				<div id="page_2"></div>
 				<button class="btn btn-info btn-sm" id="back" style="margin-left:47.5%;margin-bottom:50px;">BACK</button>
 			</div>
 		</div>
@@ -124,7 +124,7 @@
 </script>
 <script>
 	$("#back").click(function() {
-		$("#receipt_box").html("");
+		$("#page_2").html("");
 		$("#loan_details_box").show();
 	})
 </script>
@@ -135,7 +135,7 @@
 	{
 		e.preventDefault();
 		$("#loan_details_box").hide();
-		$('#receipt_box').load($(this).attr('href'));
+		$('#page_2').load($(this).attr('href'));
 	});
 </script>
 
