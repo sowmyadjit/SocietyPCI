@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 class LogModel extends Model
 {
-	protected $table = "update_log";
+	protected $table = "db_update_log";
 	
 	protected $log_user_id;
 	protected $table_name;
