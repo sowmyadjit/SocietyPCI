@@ -1,20 +1,23 @@
 <?php
     define("ALLOW_LOG",true);
-    define("ALLOW_FILE_LOG",true);
+    define("ALLOW_FILE_LOG",false);
 
     if (! function_exists('vd')) {
         function vd($var=null,$var_name=null)
         {
             try {
                 if(ALLOW_LOG) {
-                    echo "{$var_name}: ";
+                    if($var_name !== null) {
+                        echo "{$var_name}:\n";
+                    }
                     // $var_export_str = var_export($var,false);
                     if(is_array($var)) {
                         print_r($var);
                     } elseif(is_object($var)) {
                         print_r($var);
                     } else {
-                        var_export($var,false);
+                        // var_export($var,false);
+                        var_dump($var);
                     }
                 }
                 if(ALLOW_FILE_LOG) {
@@ -41,7 +44,7 @@
         {
             try {
                 vd($var,$var_name);
-                echo "<br />\n";
+                echo "\n";
             } catch(\Exception $e) {
             }
         }
