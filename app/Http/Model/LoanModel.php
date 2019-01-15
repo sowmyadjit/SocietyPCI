@@ -22,6 +22,10 @@
 				$this->settings = new SettingsModel;
 				$this->all_ch = new AllChargesModel;
 				$this->loan_tran = new LoanTransactionModel;
+				$this->tbl_pl_alloc = new TablePersonalLoanAllocationModel();
+				$this->tbl_dl_alloc = new TableDepositLoanAllocationModel();
+				$this->tbl_sl_alloc = new TableStaffLoanAllocationModel();
+				$this->tbl_jl_alloc = new TableJewelLoanAllocationModel();
 		}
 		
 		public function getaccname($id)
@@ -3669,8 +3673,8 @@
 				$fn_data["repay_interest_sum"] = $repay_interest_sum;
 //				$this->get_paid_upto($fn_data);
 				
-				$repay_principle_sum += $row_repay->paid_principle;
-				$repay_interest_sum += $row_repay->SLRepay_Interest;
+				$repay_principle_sum += (float)$row_repay->paid_principle;
+				$repay_interest_sum += (float)$row_repay->SLRepay_Interest;
 			}
 //		REPAYMENT DETAILS END
 			$ret_data["allocation_details"]["balance"] = $allocation->LoanAmt - $repay_principle_sum;
@@ -4323,7 +4327,7 @@
 					->where("{$table}.deleted",0)
 					->get();
 				foreach($repay as $key_repay => $row_repay) {
-					$sum += $row_repay->principle_amount_paid;
+					$sum += (float) $row_repay->principle_amount_paid;
 				}
 			}
 			//echo "sum: {$sum}<br />\n";
@@ -4512,9 +4516,10 @@
 									"user.LastName as last_name",
 									"{$table}.JewelLoan_LoanAmount as loan_amount",
 									"{$table}.JewelLoan_StartDate as start_date",
-									"{$table}.JewelLoan_EndDate as end_date",
+									DB::raw(" IF({$table}.JewelLoan_EndDate = '0000-00-00','',{$table}.JewelLoan_EndDate) as end_date "),
 									"{$table}.JewelLoan_LoanDuration as duration",
 									"{$table}.JewelLoan_Closed as closed",
+									DB::raw(" IF({$table}.JewelLoan_Closed_Date = '0000-00-00','',{$table}.JewelLoan_Closed_Date) as closed_date "),
 									"{$table}.auction_status as auction_status",
 									"{$table}.jewelloan_Description as jewel_description",
 									"{$table}.jewelloan_Net_weight as net_weight",
@@ -4553,6 +4558,7 @@
 				$ret_data['loan_details'][$i]['jewel_description'] = $row->jewel_description;
 				$ret_data['loan_details'][$i]['net_weight'] = $row->net_weight;
 				$ret_data['loan_details'][$i]['gross_weight'] = $row->gross_weight;
+				$ret_data['loan_details'][$i]['closed_date'] = $row->closed_date;
 				if($row->auction_status == 1 || $row->auction_status == 2) {
 					$ret_data['loan_details'][$i]['closed'] = "Auctioned";
 				} else {
@@ -4596,8 +4602,9 @@
 									"user.LastName as last_name",
 									"{$table}.LoanAmt as loan_amount",
 									"{$table}.StartDate as start_date",
-									"{$table}.EndDate as end_date",
+									DB::raw(" IF({$table}.EndDate = '0000-00-00','',{$table}.EndDate) as end_date "),
 									"{$table}.Closed as closed",
+									DB::raw(" IF({$table}.ClosedDate = '0000-00-00','',{$table}.ClosedDate) as closed_date "),
 									"{$table}.EMI_Amount as emi",
 									"{$table}.LoanType_ID as loan_type_id"
 								);
@@ -4649,6 +4656,7 @@
 				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
 				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
 				$ret_data['loan_details'][$i]['closed'] = $row->closed;
+				$ret_data['loan_details'][$i]['closed_date'] = $row->closed_date;
 				$ret_data['loan_details'][$i]['emi'] = $row->emi;
 				$ret_data['loan_details'][$i]['loan_type_id'] = $row->loan_type_id;
 				$ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
@@ -4708,8 +4716,9 @@
 									"{$table}.DepLoan_LoanAmount as loan_amount",
 									"{$table}.DepLoan_RemailningAmt as ramaining_amount",
 									"{$table}.DepLoan_LoanStartDate as start_date",
-									"{$table}.DepLoan_LoanEndDate as end_date",
-									"{$table}.LoanClosed_State as closed"
+									DB::raw(" IF({$table}.DepLoan_LoanEndDate = '0000-00-00','',{$table}.DepLoan_LoanEndDate) as end_date "),
+									"{$table}.LoanClosed_State as closed",
+									DB::raw(" IF({$table}.LoanClosed_Date = '0000-00-00','',{$table}.LoanClosed_Date) as closed_date ")
 								);
 			$account_list = DB::table($table)
 				->select($select_array)
@@ -4747,6 +4756,7 @@
 				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
 				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
 				$ret_data['loan_details'][$i]['closed'] = $row->closed;
+				$ret_data['loan_details'][$i]['closed_date'] = $row->closed_date;
 				/* $ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
 																								"loan_allocation_id"=>$row->loan_id,
 																								"loan_category"=>$data['category']
@@ -4848,7 +4858,8 @@
 									"user.LastName as last_name",
 									"{$table}.LoanAmt as loan_amount",
 									"{$table}.StartDate as start_date",
-									"{$table}.EndDate as end_date",
+									DB::raw(" IF({$table}.EndDate = '0000-00-00','',{$table}.EndDate) as end_date "),
+									DB::raw(" IF({$table}.ClosedDate = '0000-00-00','',{$table}.ClosedDate) as closed_date "),
 									"{$table}.StaffLoan_LoanRemainingAmount as ramaining_amount",
 									"{$table}.EMI_Amount as emi",
 									// "  as cd",
@@ -4881,6 +4892,7 @@
 				$ret_data['loan_details'][$i]['loan_amount'] = $row->loan_amount;
 				$ret_data['loan_details'][$i]['start_date'] = $row->start_date;
 				$ret_data['loan_details'][$i]['end_date'] = $row->end_date;
+				$ret_data['loan_details'][$i]['closed_date'] = $row->closed_date;
 			/* 	$ret_data['loan_details'][$i]['paid_principle_amt'] = $this->paid_principle_amt([
 																								"loan_allocation_id"=>$row->loan_id,
 																								"loan_category"=>$data['category']
@@ -4892,6 +4904,122 @@
 			}
 //			print_r($ret_data);exit();
 			return $ret_data;
+		}
+
+		public function update_loan_data_pl($data)
+		{
+			$loan_id = $data["loan_id"];
+			$loan_data_json = $data["loan_data_json"];
+			// vdln($loan_id,"loan_id");
+			// vdln($loan_data_json,"loan_data_json");
+			$loan_data = json_decode($loan_data_json,true);
+			// vde($loan_data,"loan_data");
+
+			$fd = [];
+			$fd["PersLoanAllocID"] = $loan_id;
+			$fd["EndDate"] = $loan_data["end_date"];
+			$fd["ClosedDate"] = $loan_data["closed_date"];
+			// vde();
+			$this->tbl_pl_alloc->update_row($fd);
+			return;
+		}
+
+		public function update_loan_data_dl($data)
+		{
+			$loan_id = $data["loan_id"];
+			$loan_data_json = $data["loan_data_json"];
+			// vdln($loan_id,"loan_id");
+			// vdln($loan_data_json,"loan_data_json");
+			$loan_data = json_decode($loan_data_json,true);
+			// vde($loan_data,"loan_data");
+
+			$fd = [];
+			$fd["DepLoanAllocId"] = $loan_id;
+			$fd["DepLoan_LoanEndDate"] = $loan_data["end_date"];
+			$fd["LoanClosed_Date"] = $loan_data["closed_date"];
+			// vde();
+			$this->tbl_dl_alloc->update_row($fd);
+			return;
+		}
+
+		public function update_loan_data_sl($data)
+		{
+			$loan_id = $data["loan_id"];
+			$loan_data_json = $data["loan_data_json"];
+			// vdln($loan_id,"loan_id");
+			// vdln($loan_data_json,"loan_data_json");
+			$loan_data = json_decode($loan_data_json,true);
+			// vde($loan_data,"loan_data");
+
+			$fd = [];
+			$fd["StfLoanAllocID"] = $loan_id;
+			$fd["EndDate"] = $loan_data["end_date"];
+			$fd["ClosedDate"] = $loan_data["closed_date"];
+			// vde();
+			$this->tbl_sl_alloc->update_row($fd);
+			return;
+		}
+
+		public function update_loan_data_jl($data)
+		{
+			$loan_id = $data["loan_id"];
+			$loan_data_json = $data["loan_data_json"];
+			// vdln($loan_id,"loan_id");
+			// vdln($loan_data_json,"loan_data_json");
+			$loan_data = json_decode($loan_data_json,true);
+			// vde($loan_data,"loan_data");
+
+			$fd = [];
+			$fd["JewelLoanId"] = $loan_id;
+			$fd["JewelLoan_EndDate"] = $loan_data["end_date"];
+			$fd["JewelLoan_Closed_Date"] = $loan_data["closed_date"];
+			// vde();
+			$this->tbl_jl_alloc->update_row($fd);
+			return;
+		}
+
+		public function save_end_date_jl($data)
+		{
+			DB::table("jewelloan_allocation")
+				->where("JewelLoanId",$data["loan_id"])
+				->update([ "JewelLoan_EndDate"=>$data["loan_end_date"] ]);
+			return;
+		}
+
+		public function save_loan_end_date_pl($data)
+		{
+			$fd = [];
+			$fd["PersLoanAllocID"] = $data["loan_id"];
+			$fd["EndDate"] = $data["loan_end_date"];
+			$this->tbl_pl_alloc->update_row($fd);
+			return;
+		}
+
+		public function save_loan_end_date_dl($data)
+		{
+			$fd = [];
+			$fd["DepLoanAllocId"] = $data["loan_id"];
+			$fd["DepLoan_LoanEndDate"] = $data["loan_end_date"];
+			$this->tbl_dl_alloc->update_row($fd);
+			return;
+		}
+
+		public function save_loan_end_date_sl($data)
+		{
+			$fd = [];
+			$fd["StfLoanAllocID"] = $data["loan_id"];
+			$fd["EndDate"] = $data["loan_end_date"];
+			$this->tbl_sl_alloc->update_row($fd);
+			return;
+		}
+
+		public function save_loan_end_date_jl($data)
+		{
+			$fd = [];
+			$fd["JewelLoanId"] = $data["loan_id"];
+			$fd["JewelLoan_EndDate"] = $data["loan_end_date"];
+			$this->tbl_jl_alloc->update_row($fd);
+			return;
 		}
 		
 	}

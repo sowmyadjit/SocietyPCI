@@ -579,7 +579,7 @@
 			
 			$id=$this->loan->JewelLoanAllocation($JewelLoanParam);
 			
-			// return redirect('/');
+			return redirect('/');
 			
 		}
 		
@@ -1426,6 +1426,96 @@
 				
 			}
 			return "deposit_account_edit: done";
+		}
+		
+		public function view_loan_data(Request $request)
+		{
+			$in_data['category'] = $request->input("category");
+			$in_data['loan_id'] = $request->input("loan_id");
+			switch($in_data['category']) {
+				case "PL":	
+							$temp = $this->loan->account_list_pl($in_data);
+							$loan_data = $temp["loan_details"][0];
+							// vdln($loan_data);
+							return view("view_loan_data_pl",compact('loan_data'));
+							break;
+				case "DL":	
+							$temp = $this->loan->account_list_dl($in_data);
+							// vdln($temp);
+							$loan_data = $temp["loan_details"][0];
+							return view("view_loan_data_dl",compact('loan_data'));
+							break;
+				case "SL":	
+							$temp = $this->loan->account_list_sl($in_data);
+							// vdln($temp);
+							$loan_data = $temp["loan_details"][0];
+							return view("view_loan_data_sl",compact('loan_data'));
+							break;
+				case "JL":	
+							$temp = $this->loan->account_list_jl($in_data);
+							// vdln($temp);
+							$loan_data = $temp["loan_details"][0];
+							return view("view_loan_data_jl",compact('loan_data'));
+							break;
+				
+			}
+		}
+		
+		public function update_loan_data(Request $request)
+		{
+			$in_data['category'] = $request->input("category");
+			$in_data['loan_id'] = $request->input("loan_id");
+			$in_data['loan_data_json'] = $request->input("loan_data_json");
+			switch($in_data['category']) {
+				case "PL":	
+							$temp = $this->loan->update_loan_data_pl($in_data);
+							break;
+				case "DL":	
+							$temp = $this->loan->update_loan_data_dl($in_data);
+							break;
+				case "SL":	
+							$temp = $this->loan->update_loan_data_sl($in_data);
+							break;
+				case "JL":	
+							$temp = $this->loan->update_loan_data_jl($in_data);
+							break;
+				
+			}
+		}
+		
+		public function save_end_date_jl(Request $request)
+		{
+			$fd = [];
+			$fd['loan_id'] = $request->input("loan_id");
+			$fd['loan_end_date'] = $request->input("loan_end_date");
+
+			$this->loan->save_end_date_jl($fd);
+
+			return "done";
+		}
+		
+		public function save_loan_end_date(Request $request)
+		{
+			$fd = [];
+			$fd['loan_category'] = $request->input("loan_category");
+			$fd['loan_id'] = $request->input("loan_id");
+			$fd['loan_end_date'] = $request->input("loan_end_date");
+
+			switch($fd["loan_category"]) {
+				case "PL":
+							$this->loan->save_loan_end_date_pl($fd);
+							break;
+				case "DL":
+							$this->loan->save_loan_end_date_dl($fd);
+							break;
+				case "SL":
+							$this->loan->save_loan_end_date_sl($fd);
+							break;
+				case "JL":
+							$this->loan->save_loan_end_date_jl($fd);
+							break;
+			}
+			return "done";
 		}
 		
 		
