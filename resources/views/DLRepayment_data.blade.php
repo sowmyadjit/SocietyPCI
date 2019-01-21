@@ -3227,6 +3227,7 @@ console.log("amt="+bal);
 		}
 	});
 	plsubindex=0;
+	check_before_insert = 1;
 	//SUBMIT FOR PERSONAL LOAN
 	$('.PLRPSbmBtn').click( function(e) {
 		var error_flag = check_submit_pl();
@@ -3274,10 +3275,21 @@ console.log("amt="+bal);
 				$.ajax({
 					url: 'PersonalLoanRepay',
 					type: 'post',
-					data: $('#form_dlrepay').serialize()+'&plAlloc='+plAlocID+'&branch='+Bidpl+'&plloanno='+plAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+x+'&bank_pl='+bank_pl+'&adid='+adid+'&interest_upto_pl='+interest_upto_pl+'&rec_date_pl='+rec_date_pl,
+					data: $('#form_dlrepay').serialize()+'&plAlloc='+plAlocID+'&branch='+Bidpl+'&plloanno='+plAccNo+'&charges='+temp+'&amount='+temp1+'&loopid='+x+'&bank_pl='+bank_pl+'&adid='+adid+'&interest_upto_pl='+interest_upto_pl+'&rec_date_pl='+rec_date_pl+'&check_before_insert='+check_before_insert,
 					success: function(data) {
-						alert('success');
-						$('.pigmidlrepayclassid').click();
+						// alert('success');
+						// $('.pigmidlrepayclassid').click();
+						if(data == -1) {
+							console.log("duplicate entry");
+							plsubindex = 0;
+							confirmed = confirm("Repayment with same amount already exists!\nDo you want to continue?");
+							if(confirmed) {
+								check_before_insert = 0;
+								$(".PLRPSbmBtn").trigger("click");
+							}
+						} else {
+							alert("success");
+						}
 					}
 				});
 			}
