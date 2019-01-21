@@ -616,8 +616,8 @@
 	$('.FDPayrenew').click( function(e) {
 		
 		fdtype=$('#FDPaymntMode').val();
-		fdaccno=$('#FDAccnum').data('value');
-		fdmatureaccno=$('#FDMatuAccnum').data('value');
+		fdaccno=$('#FDAccnum').attr('data-value');
+		fdmatureaccno=$('#FDMatuAccnum').attr('data-value');
 		
 		$.ajax({
 			url: 'fdrenew',
