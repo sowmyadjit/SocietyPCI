@@ -453,6 +453,7 @@
 			$fd["allocation_id"] = $plall['plAlloc'];
 			$fd["date"] = date('Y-m-d',strtotime($plall["rec_date_pl"]));
 			$fd["total_amt_paid"] = $plall['plpayamt'];
+			$fd['check_before_insert']=$request->input('check_before_insert');
 			if(empty($fd["allocation_id"])) {
 				$fd["allocation_id"] = 0;
 			}
@@ -462,8 +463,17 @@
 			if(empty($fd["total_amt_paid"])) {
 				$fd["total_amt_paid"] = 0;
 			}
-			if($this->pigmtDLrepay->check_for_duplicate_loan_repay($fd)) {
-				return "duplicate entry!";
+			if(!isset($fd["check_before_insert"])) {
+				$fd["check_before_insert"] = 1;
+			}
+			if($fd["check_before_insert"] == 1) {
+				$check_before_insert = true;
+			} else {
+				$check_before_insert = false;
+			}
+			if($check_before_insert && $this->pigmtDLrepay->check_for_duplicate_loan_repay($fd)) {
+				// return "duplicate entry!";
+				return -1;
 			}
 			/******************** CHECK FOR DUPLICATE ENTRY ********************/
 			$id=$this->pigmtDLrepay->PersonalLoanRepay($plall);
