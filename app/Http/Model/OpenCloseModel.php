@@ -623,20 +623,21 @@
                         
                         
                         $data = DB::table('pigmi_transaction')->select('PigReport_TranDate','Amount','Current_Balance','PigmiAcc_No','PigmiTrans_ID','Pigmi_Type','pigmi_transaction.Total_Amount','old_pigmiaccno','Trans_Date','Transaction_Type','Particulars','Pigmy_resp_No','user.Uid',DB::raw("concat(`FirstName`,' ',`MiddleName`,' ',`LastName`) as name"))
-                        ->leftJoin('pigmiallocation', 'pigmiallocation.PigmiAllocID', '=' , 'pigmi_transaction.PigmiAllocID')
-                        ->leftJoin('pigmitype','pigmiallocation.PigmiTypeid','=','pigmitype.PigmiTypeid')
-						->join("user","user.Uid","=","pigmiallocation.UID")
-                        ->where('PigReport_TranDate','=',$pigtoday)
-                        ->where('pigmi_transaction.Bid','=',$BranchId)
-                        ->where('pigmi_transaction.bill_no','=',"0")
-                        ->where('pigmi_transaction.Agentid','=',"0")
-                        ->where('pigmi_transaction.PgmPayment_Mode','<>',"CASH")
-                        ->where('pigmi_transaction.PgmPayment_Mode','<>',"INTEREST AMOUNT")
-                        ->where('pigmi_transaction.PgmPayment_Mode','<>',"PREWITHDRAWAL A")
-                        ->where('pigmi_transaction.Particulars','<>',"Opening Balance")
-                                ->orderBy('PigReport_TranDate','desc')
-                        ->orderBy('PigmiTrans_ID','desc')
-                        ->get();
+							->leftJoin('pigmiallocation', 'pigmiallocation.PigmiAllocID', '=' , 'pigmi_transaction.PigmiAllocID')
+							->leftJoin('pigmitype','pigmiallocation.PigmiTypeid','=','pigmitype.PigmiTypeid')
+							->join("user","user.Uid","=","pigmiallocation.UID")
+							->where('PigReport_TranDate','=',$pigtoday)
+							->where('pigmi_transaction.Bid','=',$BranchId)
+							->where('pigmi_transaction.bill_no','=',"0")
+							->where('pigmi_transaction.Agentid','=',"0")
+							->where('pigmi_transaction.PgmPayment_Mode','<>',"CASH")
+							->where('pigmi_transaction.PgmPayment_Mode','<>',"INTEREST AMOUNT")
+							->where('pigmi_transaction.PgmPayment_Mode','<>',"PREWITHDRAWAL A")
+							->where('pigmi_transaction.Particulars','<>',"Opening Balance")
+							->where('pigmi_transaction.deleted','=',"0")
+                            ->orderBy('PigReport_TranDate','desc')
+							->orderBy('PigmiTrans_ID','desc')
+							->get();
                         $temp=array();
                         foreach($data AS $dataa)
                         {
