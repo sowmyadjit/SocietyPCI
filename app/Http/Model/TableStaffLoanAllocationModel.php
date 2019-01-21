@@ -3,7 +3,7 @@ namespace App\Http\Model;
 
 use DB;
 
-class TableStaffLoanAllocationModel extends DBTAbleModel
+class TableStaffLoanAllocationModel extends DBTableModel
 {
     public $tbl = "staffloan_allocation";//table
     public $pk = "StfLoanAllocID";//primary key
