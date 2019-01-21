@@ -85,8 +85,16 @@
                 <td>
 					{{$data["allocation_details"]["sanctioned_amount"]}}
                 </td>
-                <td>
-					{{$data["allocation_details"]["end_date"]}}
+                <td style="user-select: none;">
+					<div id="div_end_date">
+                        {{$data["allocation_details"]["end_date"]}}
+                        <button id="btn_edit_end_date" class="btn btn-xs glyphicon glyphicon-pencil blue"></button>
+                    </div>
+                    <div id="edit_box_end_date" style="display: inline-flex;" >
+                        <input id="input_end_date" class="form-control datepicker" data-date-format="yyyy-mm-dd" value="{{$data['allocation_details']['end_date']}}" />
+                        <button id="btn_save_end_date" class="btn btn-sm glyphicon glyphicon-ok green" title="save" style="margin-left: 5px;" ></button>
+                        <button id="btn_cancel_end_date" class="btn btn-sm glyphicon glyphicon-remove red" title="cancel" style="margin-left: 5px;" ></button>
+                    </div>
                 </td>
                 <td>
 					{{$data["allocation_details"]["interest_rate"]}}
@@ -252,4 +260,71 @@
 				$('.receipt_print').show();
 				$('.receipt_print').load($(this).attr('href'));
 			});
+</script>
+
+<script>
+    hide_edit_box_end_date();
+	$('#btn_edit_end_date').click(function(e){
+        e.preventDefault();
+        show_edit_box_end_date();
+	});
+
+	$('#btn_save_end_date').click(function(e){
+        e.preventDefault();
+        // console.log("ok");
+        // var loan_category = "JL";
+        var loan_category = <?php echo "'{$data['loan_category']}'";?>;
+        if(loan_category == "JL") {
+            var loan_id = $(".JLAccNumTypeAhead").attr("data-value");
+            var refresh_btn_id = "refresh_jl";
+        } else if(loan_category == "SL") {
+            var loan_id = $(".SLAccNumTypeAhead").attr("data-value");
+            var refresh_btn_id = "refresh_sl";
+        } else if(loan_category == "DL") {
+            var dl_type = $("#dl").val();
+            // console.log("dl_type: "+ dl_type);
+            switch(dl_type) {
+                case "pygmy DL" :
+                    var loan_id = $(".PygmyAccNumTypeAhead").attr("data-value");
+                    var refresh_btn_id = "refresh_dl_pg";
+                case "RD DL" :
+                    var loan_id = $(".RDAccNumTypeAhead").attr("data-value");
+                    var refresh_btn_id = "refresh_dl_rd";
+                case "FD DL" :
+                    var loan_id = $(".FDAccNumTypeAhead").attr("data-value");
+                    var refresh_btn_id = "refresh_dl_fd";
+            }
+        }
+        var loan_end_date = $("#input_end_date").val();
+
+		$.ajax({
+			url:"save_loan_end_date",
+			type:"post",
+			data:"loan_category="+loan_category+"&loan_id="+loan_id+"&loan_end_date="+loan_end_date,
+			success: function() {
+				console.log("done");
+                hide_edit_box_end_date();
+                $("#"+refresh_btn_id).trigger("click");
+                setTimeout(() => {
+                    alert("SUCCESS");
+                }, 2000);
+			}
+		});
+
+	});
+
+	$('#btn_cancel_end_date').click(function(e){
+        e.preventDefault();
+        hide_edit_box_end_date();
+	});
+
+    function show_edit_box_end_date() {
+	    $('#div_end_date').hide();
+	    $('#edit_box_end_date').show();
+    }
+
+    function hide_edit_box_end_date() {
+	    $('#div_end_date').show();
+	    $('#edit_box_end_date').hide();
+    }
 </script>

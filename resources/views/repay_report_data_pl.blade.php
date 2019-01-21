@@ -142,7 +142,15 @@
 					{{$data["allocation_details"]["sanctioned_amount"]}}
                 </td>
                 <td>
-					{{$data["allocation_details"]["end_date"]}}
+					<div id="div_end_date">
+                        {{$data["allocation_details"]["end_date"]}}
+                        <button id="btn_edit_end_date" class="btn btn-xs glyphicon glyphicon-pencil blue"></button>
+                    </div>
+                    <div id="edit_box_end_date" style="display: inline-flex;" >
+                        <input id="input_end_date" class="form-control datepicker" data-date-format="yyyy-mm-dd" value="{{$data['allocation_details']['end_date']}}" />
+                        <button id="btn_save_end_date" class="btn btn-sm glyphicon glyphicon-ok green" title="save" style="margin-left: 5px;" ></button>
+                        <button id="btn_cancel_end_date" class="btn btn-sm glyphicon glyphicon-remove red" title="cancel" style="margin-left: 5px;" ></button>
+                    </div>
                 </td>
                 <td>
 					{{$data["allocation_details"]["emi"]}}
@@ -516,4 +524,50 @@
 				$('.receipt_print').show();
 				$('.receipt_print').load($(this).attr('href'));
 		});
+</script>
+
+<script>
+    hide_edit_box_end_date();
+	$('#btn_edit_end_date').click(function(e){
+        e.preventDefault();
+        show_edit_box_end_date();
+	});
+
+	$('#btn_save_end_date').click(function(e){
+        e.preventDefault();
+        // console.log("ok");
+        var loan_category = "PL"; //*
+        var loan_id = $(".PLAccNumTypeAhead").attr("data-value"); //*
+        var loan_end_date = $("#input_end_date").val();
+
+		$.ajax({
+			url:"save_loan_end_date",
+			type:"post",
+			data:"loan_category="+loan_category+"&loan_id="+loan_id+"&loan_end_date="+loan_end_date,
+			success: function() {
+				console.log("done");
+                hide_edit_box_end_date();
+                $("#refresh_pl").trigger("click"); //*
+                setTimeout(() => {
+                    alert("SUCCESS");
+                }, 2000);
+			}
+		});
+
+	});
+
+	$('#btn_cancel_end_date').click(function(e){
+        e.preventDefault();
+        hide_edit_box_end_date();
+	});
+
+    function show_edit_box_end_date() {
+	    $('#div_end_date').hide();
+	    $('#edit_box_end_date').show();
+    }
+
+    function hide_edit_box_end_date() {
+	    $('#div_end_date').show();
+	    $('#edit_box_end_date').hide();
+    }
 </script>

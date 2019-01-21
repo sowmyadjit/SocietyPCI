@@ -19,7 +19,7 @@
 										<th>Gross Weight</th>
 										<th>Net Weight</th>
 										<th>Edit</th>
-										<th></th>
+										<?php /* <th></th>*/?>
 									@endif
 								</tr>
 							</thead>
