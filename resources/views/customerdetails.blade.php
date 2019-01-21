@@ -291,6 +291,37 @@
 								</div>
 							</div>
 							
+						<?php
+							$cust_type = $customer->custtyp;
+							switch($cust_type) {
+								case "CUSTOMER":
+											$type_none_selected = "";
+											$type_customer_selected = "selected";
+											$type_class_d_selected = "";
+											break;
+								case "CLASS D":
+											$type_none_selected = "";
+											$type_customer_selected = "";
+											$type_class_d_selected = "selected";
+											break;
+								default:
+											$type_none_selected = "selected";
+											$type_customer_selected = "";
+											$type_class_d_selected = "";
+											break;
+							}
+						?>
+							<div class="form-group">
+							<label class="control-label col-sm-4">CUSTOMER TYPE:</label>
+						<div class="col-sm-8">
+							<select class="form-control" id="cust_type" name="cust_type" <?php if($edit=='edit'){}else {echo 'disabled	';} ?></select>>
+								<option value="" disabled {{$type_none_selected}} >--SELECT CUSTOMER TYPE--</option>
+								<option value="CUSTOMER" {{$type_customer_selected}}>CUSTOMER</option>
+								<option value="CLASS D" {{$type_class_d_selected}}>CLASS D</option>
+							</select>
+								</div>
+							</div>
+							
 							<div class="form-group">
 								<label class="control-label col-sm-4">MEMBER NO.:</label>
 								<div class="col-sm-8">

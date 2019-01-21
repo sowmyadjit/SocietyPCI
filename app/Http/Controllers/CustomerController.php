@@ -494,6 +494,7 @@
 			$customer['KaFather']=$request->input('KaFather');
 			$customer['spousenme']=$request->input('spousenme');
 			$customer['KaSpouse']=$request->input('KaSpouse');
+			$customer['custtyp']=$request->input('cust_type');
 			$customer['Member_No']=$request->input('mem_no');
 			$customer['Customer_Fee']=$request->input('cust_fee');
 			

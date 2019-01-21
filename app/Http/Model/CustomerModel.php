@@ -173,7 +173,7 @@
 			
 			
 			$id = DB::table('customer')->where('Uid',$id['uid'])//->where('Custid',$id['cid'])
-			->update(['Aid'=>$id['aid'],'FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Bid'=>$id['branchid'],'FatherName'=>$id['fthrnme'],'SpouseName'=>$id['spousenme'],'Kan_FatherName'=>$id['KaFather'],'Kan_SpouseName'=>$id['KaSpouse'],'Customer_Fee'=>$id['Customer_Fee']]);
+			->update(['Aid'=>$id['aid'],'FirstName'=> $id['fname'],'MiddleName' => $id['mname'],'LastName' => $id['lname'],'Bid'=>$id['branchid'],'FatherName'=>$id['fthrnme'],'SpouseName'=>$id['spousenme'],'Kan_FatherName'=>$id['KaFather'],'Kan_SpouseName'=>$id['KaSpouse'],'Customer_Fee'=>$id['Customer_Fee'],'custtyp'=>$id['custtyp'] ]);
 			return $id;
 		}
 		
