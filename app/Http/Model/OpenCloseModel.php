@@ -2216,6 +2216,7 @@
 			->where('DepLoan_PaymentMode','=',"CASH")
 			->where('DepLoan_LoanStartDate',$dte)
 			->where('DepLoan_Branch',$BranchId)
+			->where('depositeloan_allocation.deleted',0)
 			->get();
 			
 			

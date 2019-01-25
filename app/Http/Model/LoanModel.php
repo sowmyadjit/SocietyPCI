@@ -4735,7 +4735,7 @@
 					$account_list = $account_list->where($closed_field,"=",$data['closed']);
 				}
 			}
-			$account_list = $account_list//->limit(1)
+			$account_list = $account_list->where("depositeloan_allocation.deleted",0)//->limit(1)
 										->get();
 //			print_r($account_list);exit();
 			
