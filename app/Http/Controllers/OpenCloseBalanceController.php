@@ -660,7 +660,7 @@
 			$uname= Auth::user();
 			$Branchid=$uname->Bid;
 			$this->op->fdinterstmonthly();
-			$data=DB::table('fd_monthly_interest')->where('id','=',"1")->where('Bid','=',$Branchid)->get();
+			$data=DB::table('fd_monthly_interest')->where('id','=',"1")->where('Bid','=',$Branchid)->where("fd_monthly_interest.deleted",0)->get();
 			return view('fd_sb_data',compact('data'));
 			
 		}
