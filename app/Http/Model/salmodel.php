@@ -82,6 +82,7 @@
 				$loannum=$id['loannum'];
 				$chargsum=0;
 				$z=0;
+				$arr_index = -1;
 				for($i=1;$i<$n;$i++)
 				{
 					$charges=explode(",",$chargid);
@@ -97,6 +98,25 @@
 					
 					if($login_bid == $bid_of_loan_account) {	//SAME BRANCH - ADD REPAYMENT
 						$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$loannum,'bid'=>$id['bid'],'charg_tran_date'=>$RepayDte,'loantype'=>"sL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+						/******************** ALL CHARGES ******************/
+						$chareges_info = DB::table("chareges")->where("charges_id",$x)->first();
+						unset($fd);
+						$fd["date"] = $RepayDte;
+						$fd["bid"] = $id['bid'];
+						$fd["transaction_type"] = 2; // DEBIT
+						$fd["payment_mode"] = "ADJUSTMENT";
+						$fd["amount"] = $y;
+						$fd["particulars"] = $chareges_info->charges_name;
+						$fd["paid"] = 1;
+						$fd["tran_table"] = 26; // staff loan
+						$fd["tran_id"] = 0;
+						$fd["created_by"] = $UID;
+						$fd["SubLedgerId"] = $chareges_info->subhead;
+						$fd["deleted"] = 0;
+						$this->all_ch->clear_row_data();
+						$this->all_ch->set_row_data($fd);
+						$insert_ids[++$arr_index] = $this->all_ch->insert_row();
+						/******************** ALL CHARGES ******************/
 					}
 					$z++;
 					$chargsum=Floatval($y)+Floatval($chargsum);
@@ -120,7 +140,13 @@
 				if($login_bid == $bid_of_loan_account) {	//SAME BRANCH - ADD REPAYMENT
 					DB::table('staffloan_allocation')->where('StfLoanAllocID','=',$id['loannum'])->update(['StaffLoan_LoanRemainingAmount'=>$totamt,'LastPaidDate'=>$dte]);
 					
-					DB::table('staffloan_repay')->insertGetId(['SLRepay_Date'=>$dte,'SLRepay_SLAllocID'=>$id['loannum'],'SLRepay_PaidAmt'=>$total_paid,'SLRepay_PayMode'=>"SALARY",'SLRepay_Created_By'=>$id['uid'],'SLRepay_Bid'=>$id['bid'],'SLRepay_Interest'=>$id['slintamt'],'paid_principle'=>$EMI_Amount]);
+					$sl_repay_id = DB::table('staffloan_repay')->insertGetId(['SLRepay_Date'=>$dte,'SLRepay_SLAllocID'=>$id['loannum'],'SLRepay_PaidAmt'=>$total_paid,'SLRepay_PayMode'=>"SALARY",'SLRepay_Created_By'=>$id['uid'],'SLRepay_Bid'=>$id['bid'],'SLRepay_Interest'=>$id['slintamt'],'paid_principle'=>$EMI_Amount]);
+					
+					/************ UPDATE TRAN ID OF CHARGES ************/
+					DB::table("all_charges")
+					->whereIn("all_charges_id", $insert_ids)
+					->update(["tran_id"=>$sl_repay_id]);
+					/************ UPDATE TRAN ID OF CHARGES ************/
 				} else {	//DIFFERENT BRANCH - TRANSFER AAMOUNT TO H.O.
 
 					if($login_bid != 6) { //OTHER BRANCHES TRANSFER AMOUNT TO HO
@@ -419,6 +445,7 @@
 			->where('pigmi_transaction.tran_reversed','=',"NO")
 			->where('pigmi_transaction.PgmPayment_Mode','<>',"INTEREST AMOUNT")
 			->where('Transaction_Type','=',"CREDIT")
+			->where('pigmi_transaction.deleted',0)
 			->whereRaw("DATE(pigmi_transaction.PigReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
 			->sum('Amount');
 			
@@ -492,6 +519,8 @@
 			->where('tran_reversed','=',"NO")
 			->where('RD_Particulars','!=',"RD INTEREST CAL")
 			->whereRaw("DATE(rd_transaction.RDReport_TranDate) BETWEEN '".$start."' AND '".$end."'")
+			->where("createaccount.deleted",0)
+			->where("rd_transaction.deleted",0)
 			->sum('RD_Amount');
 			
 			$bvc['totamt']=$tot;
@@ -526,6 +555,7 @@
 			
 			->whereRaw("DATE(JewelLoan_StartDate) BETWEEN '".$start."' AND '".$end."'")
 			->where('JewelLoan_Bid',$BID)
+			->where("jewelloan_allocation.deleted",0)
 			->sum('JewelLoan_SaraparaCharge');
 			
 			if($tot>2000)
@@ -596,6 +626,7 @@
 /*******/
 	$loan_charge_sum = 0;
 /*******/
+			$arr_index = -1;
 			for($i=1;$i<$n;$i++)
 			{
 				
@@ -614,6 +645,25 @@
 				
 				
 				$chargtabid=DB::table('charges_tran')->insertGetId(['charges_id'=>$x,'amount'=>$y,'loanid'=>$loannum,'bid'=>$BID,'charg_tran_date'=>$RepayDte,'loantype'=>"PL",'LedgerHeadId'=>$head,'SubLedgerId'=>$subhead]);
+				/******************** ALL CHARGES ******************/
+				$chareges_info = DB::table("chareges")->where("charges_id",$x)->first();
+				unset($fd);
+				$fd["date"] = $RepayDte;
+				$fd["bid"] = $BID;
+				$fd["transaction_type"] = 2; // DEBIT
+				$fd["payment_mode"] = $pmode;
+				$fd["amount"] = $y;
+				$fd["particulars"] = $chareges_info->charges_name;
+				$fd["paid"] = 1;
+				$fd["tran_table"] = 25; // personalloan_repay
+				$fd["tran_id"] = 0;
+				$fd["created_by"] = $UID;
+				$fd["SubLedgerId"] = $chareges_info->subhead;
+				$fd["deleted"] = 0;
+				$this->all_ch->clear_row_data();
+				$this->all_ch->set_row_data($fd);
+				$insert_ids[++$arr_index] = $this->all_ch->insert_row();
+				/******************** ALL CHARGES ******************/
 				$z++;
 				$chargsum=Floatval($y)+Floatval($chargsum);
 				
@@ -631,6 +681,12 @@
 				DB::table('personalloan_allocation')
 				->where('PersLoanAllocID',$id['loannum'])
 				->update(['RemainingLoan_Amt'=>$loanremainingamt,'caldate'=>$dte]);
+
+				/************ UPDATE TRAN ID OF CHARGES ************/
+				DB::table("all_charges")
+					->whereIn("all_charges_id", $insert_ids)
+					->update(["tran_id"=>$plTran]);
+				/************ UPDATE TRAN ID OF CHARGES ************/
 				
 			}
 			if($pmode=="SB ACCOUNT")
@@ -1063,6 +1119,7 @@
 				->join("createaccount","createaccount.Accid","=","employee.accid")
 				->join("designation","designation.Did","=","employee.Did")
 				->where("salid",$data["sal_id"])
+				->where("createaccount.deleted",0)
 				->first();
 
 			if(empty($ret_data["sal_details"])) {
